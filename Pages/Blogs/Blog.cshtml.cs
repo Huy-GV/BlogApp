@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Pages.Blogs
 {
+    [AllowAnonymous]
     public class BlogModel : BaseModel
     {
         [BindProperty]
@@ -25,15 +26,22 @@ namespace BlogApp.Pages.Blogs
         {
 
         }
-        public async Task OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             Blog = await Context.Blog
                 .Include(blog => blog.Comments)
                 .FirstOrDefaultAsync(blog => blog.ID == id);
+            if (Blog == null)
+                return NotFound();
+            return Page();
         }
-
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Challenge();
+            }
+
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("ERROR");
@@ -51,6 +59,25 @@ namespace BlogApp.Pages.Blogs
             await Context.SaveChangesAsync();
 
             return RedirectToPage("./Blog", new { id = comment.BlogID });
+        }
+        public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Challenge();
+            }
+
+            var user = await UserManager.GetUserAsync(User);
+            var blog = await Context.Blog.FindAsync(blogID);
+            if (user.UserName != blog.Author)
+            {
+                return Forbid();
+            }
+
+            Context.Blog.Remove(blog);
+            await Context.SaveChangesAsync();
+
+            return RedirectToPage("./Index");
         }
 
     }

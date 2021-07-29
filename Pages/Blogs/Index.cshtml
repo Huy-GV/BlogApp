@@ -1,44 +1,62 @@
 ﻿@page
 @model BlogApp.Pages.Blogs.IndexModel
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
 
 @{
     ViewData["Title"] = "Index";
     ViewData["CSSLink"] = "/css/index.css";
-    ViewData["Bootstrap"] = "/css/index.css";
+    ViewData["Shared"] = "/css/shared.css";
 
     ViewData["Script"] = "/js/index.js";
 }
 
-    <nav class="nav-bar">
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = (await UserManager.GetUserAsync(User));
 
+<nav>
+    <span>@user.UserName</span>
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+        <button class="log-btn">Log out</button>
+    </form>
+</nav>
+}
+else
+{
+    <nav>
+        <span><a class="log-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
+        <span><a class="log-btn" asp-area="Identity" asp-page="/Account/Register">Register</a></span>
     </nav>
-    <div class="blog-container">
+}
+<div class="blog-container">
 
 
-        @foreach (var blog in Model.Blog)
-        {
-            <div class="blog">
-                <p class="title">@blog.Title</p>
-                <span class='author'>@blog.Author</span><span class="date">@blog.Date</span>
-                <p>@blog.Content</p>
-                <p class="comment"></p>
-                <div class="blog-button-container">
-                    <a class="blog-button" asp-page="./Blog" asp-route-id="@blog.ID">See more</a>
-                </div>
+    @foreach (var blog in Model.Blog)
+    {
+        <div class="blog">
+            <p class="title">@blog.Title</p>
+            <span class='author'>@blog.Author</span><span class="date">@blog.Date</span>
+            <p>@blog.Content</p>
+            <p class="comment"></p>
+            <div class="blog-button-container">
+                <a class="blog-button" asp-page="./Blog" asp-route-id="@blog.ID">See more</a>
             </div>
-        }
-        <button class="add-button">Make a post !</button>
-        <form class="add-form hidden-element" method="post">
-            <div>
-                <label asp-for="InputBlog.Title"><strong>Title</strong></label>
-                <input asp-for="InputBlog.Title" type="text">
-            </div>
-            <br>
-            <textarea rows="5" cols="50" asp-for="InputBlog.Content" placeholder="What do you want to share?" type="text"></textarea><br>
-            <input type="submit" value="Post"/>
-        </form>
+        </div>
+    }
+    <button class="add-button">Make a post !</button>
+    <form class="add-form hidden-element" method="post">
+        <div>
+            <label asp-for="InputBlog.Title"><strong>Title</strong></label>
+            <input asp-for="InputBlog.Title" type="text">
+        </div>
+        <br>
+        <textarea rows="5" cols="50" asp-for="InputBlog.Content" placeholder="What do you want to share?" type="text"></textarea><br>
+        <input type="submit" value="Post" />
+    </form>
 
-    </div>
+</div>
 
 
 @*<h1>Index</h1>

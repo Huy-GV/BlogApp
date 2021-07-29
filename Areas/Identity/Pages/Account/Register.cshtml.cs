@@ -73,7 +73,10 @@ namespace BlogApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.UserName, Email = Input.UserName };
+                var user = new IdentityUser
+                {
+                    UserName = Input.UserName,
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

@@ -1,0 +1,51 @@
+:root{
+    font-size: 20px;
+}
+
+.log-in-form {
+    background-color: whitesmoke;
+    width: 35%;
+    margin: auto;
+    padding: 1rem;
+    border: 1px solid whitesmoke;
+    border-radius: 3px;
+}
+.text-input {
+    padding: 0.2rem;
+    font-size: 1rem;
+    margin: 0.2rem;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+.log-in-btn {
+    background-color: green;
+    color: white;
+    padding: 0.2rem;
+    font-size: 1.1rem;
+    border: 1px solid green;
+    border-radius: 3px;
+}
+
+.log-btn {
+    background-color: white;
+    border: 2px solid black;
+    padding: 0.2rem;
+    border-radius: 2px;
+    transition: 200ms ease-out;
+    text-decoration:none;
+    margin:0.3rem;
+    color:black;
+}
+
+.log-btn:hover {
+    cursor: pointer;
+    color: white;
+    background-color: black;
+    transition: 200ms ease-in;
+}
+
+
+.hidden-element {
+    display: none;
+}

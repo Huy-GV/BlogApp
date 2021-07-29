@@ -104,3 +104,28 @@
     filter: brightness(0.8);
     transition: 200ms ease-in;
 }
+
+.submit-comment {
+    background-color: green;
+    color: white;
+    border: 1px solid green;
+    border-radius: 3px;
+    height: 2rem;
+    font-size: 0.7rem;
+}
+
+
+.delete-post {
+    background-color: red;
+    color: white;
+    padding: 0.2rem;
+    border: 1px solid red;
+    border-radius: 3px;
+    transition: 100ms ease-out;
+}
+
+.delete-post:hover{
+    cursor: pointer;
+    filter: brightness(0.8);
+    transition: 200ms ease-in;
+}

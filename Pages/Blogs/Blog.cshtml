@@ -1,17 +1,46 @@
 ﻿@page
 @model BlogApp.Pages.Blogs.BlogModel
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
 @{
     ViewData["CSSLink"] = "/css/blog.css";
-    ViewData["Bootstrap"] = "/css/blog.css";
+    ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "/js/blog.js";
 }
 
-<a href="index.html" class="menu-button">Back to menu</a>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = (await UserManager.GetUserAsync(User));
+        
+<nav>
+    <span>@user.UserName</span>
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+        <button class="log-btn">Log out</button>
+    </form>
+</nav>
+    }
+    else
+    {
+<nav>
+    <span><button class="log-btn" asp-area="Identity" asp-page="/Account/Login">Log in</button></span>
+    <span><button class="log-btn" asp-area="Identity" asp-page="/Account/Register">Register</button></span>
+</nav> 
+    }
+
+
+<a asp-page="./Index" class="menu-button">Back to menu</a>
 <div class="blog-container">
     <div class="blog">
         <span class="title">@Model.Blog.Title</span>
-        <span class="date">@Model.Blog.Date</span>
+        <span class="date">@Model.Blog.Date.ToString("ddd/ MM/ yyyy")</span>
         <span class='author'>@Model.Blog.Author</span>
+
+        <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="post">
+            <button class="delete-post">Delete</button>
+        </form>
+
+
         <p>@Model.Blog.Content</p>
     </div>
 </div>

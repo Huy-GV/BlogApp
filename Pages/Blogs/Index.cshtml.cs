@@ -35,6 +35,11 @@ namespace BlogApp.Pages.Blogs
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Challenge();
+            }
+
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("ERROR");
@@ -52,6 +57,7 @@ namespace BlogApp.Pages.Blogs
             Console.WriteLine(blog.Content);
             Console.WriteLine(blog.Date);
             Console.WriteLine(blog.Author);
+
             Context.Blog.Add(blog);
             await Context.SaveChangesAsync();
 
