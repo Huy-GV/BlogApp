@@ -1,4 +1,4 @@
-:root{
+:root {
     font-size: 24px;
 }
 
@@ -11,9 +11,9 @@
     background-color: blue;
 }
 
-.menu-button:hover{
-    cursor: pointer;
-}
+    .menu-button:hover {
+        cursor: pointer;
+    }
 
 .blog-container {
     display: flex;
@@ -47,11 +47,11 @@
     width: 90%;
 }
 
-.comment > .comment-author {
-    color: blue;
-    font-weight: 700;
-    font-size: 1.1rem;
-}
+    .comment > .comment-author {
+        color: blue;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
 
 .comment-button-container {
     display: flex;
@@ -59,7 +59,7 @@
     margin: 0.2rem;
 }
 
-.comment-button{
+.comment-button {
     background-color: blue;
     color: white;
     border: 1px solid blue;
@@ -68,9 +68,9 @@
     width: 7rem;
 }
 
-.comment-button:hover{
-    cursor: pointer;
-}
+    .comment-button:hover {
+        cursor: pointer;
+    }
 
 .comment-form {
     display: flex;
@@ -78,12 +78,12 @@
     align-items: center;
 }
 
-.comment-form > input{
-    padding: 0.4rem;
-    margin: 0.2rem;
-    width: 60%;
-    font-size: 0.8rem;
-}
+    .comment-form > input {
+        padding: 0.4rem;
+        margin: 0.2rem;
+        width: 60%;
+        font-size: 0.8rem;
+    }
 
 .hidden-element {
     display: none;
@@ -99,11 +99,11 @@
     transition: 100ms ease-out;
 }
 
-.cancel-comment:hover{
-    cursor: pointer;
-    filter: brightness(0.8);
-    transition: 200ms ease-in;
-}
+    .cancel-comment:hover {
+        cursor: pointer;
+        filter: brightness(0.8);
+        transition: 200ms ease-in;
+    }
 
 .submit-comment {
     background-color: green;
@@ -114,18 +114,26 @@
     font-size: 0.7rem;
 }
 
-
-.delete-post {
-    background-color: red;
+.edit-post, .delete-post, .edit-comment, .delete-comment {
     color: white;
     padding: 0.2rem;
-    border: 1px solid red;
     border-radius: 3px;
     transition: 100ms ease-out;
 }
 
-.delete-post:hover{
-    cursor: pointer;
-    filter: brightness(0.8);
-    transition: 200ms ease-in;
+.edit-post, .edit-comment {
+    background-color: orange;
+    border: 1px solid orange;
 }
+
+
+.delete-post, .delete-comment {
+    background-color: red;
+    border: 1px solid red;
+}
+
+    .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover {
+        cursor: pointer;
+        filter: brightness(0.8);
+        transition: 200ms ease-in;
+    }

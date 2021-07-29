@@ -18,6 +18,11 @@ namespace BlogApp.Pages.Blogs
     {
         [BindProperty]
         public InputComment InputComment { get; set; }
+        [BindProperty]
+        public EditForm EditForm { get; set; }
+        [BindProperty]
+
+
         public Blog Blog { get; set; }
         public BlogModel(
             ApplicationDbContext context,
@@ -60,6 +65,39 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
+        public async Task<IActionResult> OnPostEditBlogAsync(int blogID)
+        {
+            var user = await UserManager.GetUserAsync(User);
+            var blog = await Context.Blog.FindAsync(blogID);
+
+            if (EditForm.Content == "") return RedirectToPage("./Blog", new { id = blogID });
+
+            blog.Content = EditForm.Content;
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Challenge();
+            }
+
+            if (user.UserName != blog.Author)
+            {
+                return Forbid();
+            }
+
+            Context.Attach(blog).State = EntityState.Modified;
+            try
+            {
+                await Context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                    throw;
+            }
+
+            return RedirectToPage("./Blog", new { id = blogID });
+
+
+        }
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
             if (!User.Identity.IsAuthenticated)
@@ -80,11 +118,54 @@ namespace BlogApp.Pages.Blogs
             return RedirectToPage("./Index");
         }
 
+        public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
+        {
+            var user = await UserManager.GetUserAsync(User);
+            var blog = await Context.Blog.FindAsync(blogID);
+            if (user.UserName != blog.Author)
+            {
+                return Forbid();
+            }
+             var comment = Context.Comment.FindAsync(commentID); 
+            Context.Comment.Remove(comment);
+            await Context.SaveChangesAsync();
+
+            return RedirectToPage("./Blog", new { id = comment.BlogID });
+        }
+
+        public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
+        {
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("ERROR");
+            }
+            Context.Attach(EditComment).State = EntityState.Modified;
+                        try
+            {
+                await Context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            var comment = Context.Comment.FindAsync(commentID);
+            return RedirectToPage("./Blog", new { id = comment.BlogID });
+        }
+
     }
     public class InputComment
     { 
         public string Content { get; set; }
         public int BlogID { get; set; }
+    }
+    public class EditForm
+    { 
+        public string Content { get; set; }
+    }
+
+    public class EditComment 
+    {
+        public string Content {get; set;}
     }
 
 }

@@ -6,26 +6,25 @@
 @{
     ViewData["CSSLink"] = "/css/blog.css";
     ViewData["Shared"] = "/css/shared.css";
-    ViewData["Script"] = "/js/blog.js";
+    ViewData["Script"] = "/js/site.js";
 }
 
     @if (SignInManager.IsSignedIn(User))
     {
         var user = (await UserManager.GetUserAsync(User));
         
-<nav>
-    <span>@user.UserName</span>
-    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-        <button class="log-btn">Log out</button>
-    </form>
-</nav>
+        <nav>
+            <span>@user.UserName</span>
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+            <button class="log-btn">Log out</button>
+            </form>
+        </nav>
     }
-    else
-    {
-<nav>
-    <span><button class="log-btn" asp-area="Identity" asp-page="/Account/Login">Log in</button></span>
-    <span><button class="log-btn" asp-area="Identity" asp-page="/Account/Register">Register</button></span>
-</nav> 
+    else {
+        <nav>
+            <span><button class="log-btn" asp-area="Identity" asp-page="/Account/Login">Log in</button></span>
+            <span><button class="log-btn" asp-area="Identity" asp-page="/Account/Register">Register</button></span>
+        </nav> 
     }
 
 
@@ -35,13 +34,17 @@
         <span class="title">@Model.Blog.Title</span>
         <span class="date">@Model.Blog.Date.ToString("ddd/ MM/ yyyy")</span>
         <span class='author'>@Model.Blog.Author</span>
+        <!-- wrap a form around this -->
+
 
         <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="post">
             <button class="delete-post">Delete</button>
         </form>
-
-
-        <p>@Model.Blog.Content</p>
+        <span><button class="edit-post">Edit</button></span>
+        <form asp-page-handler="EditBlog" asp-route-blogID="@Model.Blog.ID" method="post" class="hidden-element edit-blog-form">
+            <input asp-for="EditForm.Content" value="@Model.Blog.Content" />
+        </form>
+        <p class="blog-content">@Model.Blog.Content</p>
     </div>
 </div>
 
@@ -50,15 +53,36 @@
     <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
     <input asp-for="InputComment.Content" placeholder="Type your comment">
     <button class="cancel-comment" type="button">Cancel</button>
-    <input type="submit" value="Post" />
+    <input type="submit" value="Post" class="submit-comment"/>
 </form>
 <div class="comment-container">
+
     @foreach (var comment in Model.Blog.Comments)
     {
-        <div class="comment">
-            <p class="comment-author">@comment.Author</p>
-            <p class="comment-text">@comment.Content</p>
-        </div>
+    <div class="comment">
+        <span class="comment-author">@comment.Author</span>
+        @{
+            var user = await UserManager.GetUserAsync(User);
+            if (comment.Author == user.UserName)
+            {
+                <span><button class="edit-comment">Edit</button></span>
+                <form asp-page-handler="EditComment" 
+                        asp-route-commentID="@comment.ID" 
+                        method="post" 
+                        class="hidden-element edit-comment-form">
+                    <input asp-for="EditComment.Content" value="@comment.Content" />
+                </form>
+
+                <form asp-page-handler="DeleteComment" 
+                        asp-route-commentID="@comment.ID" 
+                        method="post">
+                    <button class="delete-comment">Delete</button>
+                </form>
+            }
+        }
+
+        <p class="comment-text">@comment.Content</p>
+    </div>
     }
 
 </div>

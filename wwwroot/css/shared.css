@@ -49,3 +49,11 @@
 .hidden-element {
     display: none;
 }
+
+nav {
+    margin: 1.2rem;
+    margin-left: auto;
+    padding: 0.2rem;
+    width: 10rem;
+}
+
