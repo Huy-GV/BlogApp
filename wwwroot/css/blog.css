@@ -1,0 +1,106 @@
+:root{
+    font-size: 24px;
+}
+
+.menu-button {
+    color: white;
+    border: 1px solid blue;
+    border-radius: 4px;
+    text-decoration: none;
+    padding: 0.1rem;
+    background-color: blue;
+}
+
+.menu-button:hover{
+    cursor: pointer;
+}
+
+.blog-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.blog {
+    border: 2px solid black;
+    border-radius: 7px;
+    padding: 0.6rem;
+    width: 60%;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.comment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin: auto;
+    width: 40%;
+}
+
+.comment {
+    width: 90%;
+}
+
+.comment > .comment-author {
+    color: blue;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.comment-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 0.2rem;
+}
+
+.comment-button{
+    background-color: blue;
+    color: white;
+    border: 1px solid blue;
+    border-radius: 4px;
+    padding: 0.4rem;
+    width: 7rem;
+}
+
+.comment-button:hover{
+    cursor: pointer;
+}
+
+.comment-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.comment-form > input{
+    padding: 0.4rem;
+    margin: 0.2rem;
+    width: 60%;
+    font-size: 0.8rem;
+}
+
+.hidden-element {
+    display: none;
+}
+
+.cancel-comment {
+    background-color: red;
+    color: white;
+    border: 1px solid red;
+    border-radius: 3px;
+    height: 2rem;
+    font-size: 0.7rem;
+    transition: 100ms ease-out;
+}
+
+.cancel-comment:hover{
+    cursor: pointer;
+    filter: brightness(0.8);
+    transition: 200ms ease-in;
+}

@@ -1,0 +1,36 @@
+﻿@page
+@model BlogApp.Pages.Blogs.BlogModel
+@{
+    ViewData["CSSLink"] = "/css/blog.css";
+    ViewData["Bootstrap"] = "/css/blog.css";
+    ViewData["Script"] = "/js/blog.js";
+}
+
+<a href="index.html" class="menu-button">Back to menu</a>
+<div class="blog-container">
+    <div class="blog">
+        <span class="title">@Model.Blog.Title</span>
+        <span class="date">@Model.Blog.Date</span>
+        <span class='author'>@Model.Blog.Author</span>
+        <p>@Model.Blog.Content</p>
+    </div>
+</div>
+
+<div class="comment-button-container"><a class="comment-button">Add a comment</a></div>
+<form method="post" class="comment-form hidden-element">
+    <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
+    <input asp-for="InputComment.Content" placeholder="Type your comment">
+    <button class="cancel-comment" type="button">Cancel</button>
+    <input type="submit" value="Post" />
+</form>
+<div class="comment-container">
+    @foreach (var comment in Model.Blog.Comments)
+    {
+        <div class="comment">
+            <p class="comment-author">@comment.Author</p>
+            <p class="comment-text">@comment.Content</p>
+        </div>
+    }
+
+</div>
+
