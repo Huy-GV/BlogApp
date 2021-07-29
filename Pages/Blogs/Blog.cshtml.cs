@@ -21,7 +21,7 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public EditForm EditForm { get; set; }
         [BindProperty]
-
+        public EditComment EditComment { get; set; }
 
         public Blog Blog { get; set; }
         public BlogModel(
@@ -120,13 +120,14 @@ namespace BlogApp.Pages.Blogs
 
         public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
         {
+            //TODO if this doesnt work, write a linq query on Context.Blog
             var user = await UserManager.GetUserAsync(User);
-            var blog = await Context.Blog.FindAsync(blogID);
-            if (user.UserName != blog.Author)
+            var comment = await Context.Comment.FindAsync(commentID);
+            
+            if (user.UserName != comment.Author)
             {
                 return Forbid();
             }
-             var comment = Context.Comment.FindAsync(commentID); 
             Context.Comment.Remove(comment);
             await Context.SaveChangesAsync();
 
@@ -140,7 +141,7 @@ namespace BlogApp.Pages.Blogs
                 Console.WriteLine("ERROR");
             }
             Context.Attach(EditComment).State = EntityState.Modified;
-                        try
+            try
             {
                 await Context.SaveChangesAsync();
             }
@@ -148,7 +149,7 @@ namespace BlogApp.Pages.Blogs
             {
                 throw;
             }
-            var comment = Context.Comment.FindAsync(commentID);
+            var comment = await Context.Comment.FindAsync(commentID);
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
 
