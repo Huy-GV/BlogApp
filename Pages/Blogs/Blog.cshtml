@@ -49,7 +49,7 @@
                       method="post" 
                       class="hidden-element edit-blog-form">
                     <input asp-for="EditForm.Content" value="@Model.Blog.Content" />
-                    <input type="submit" value="Save" />
+                    <input type="submit" value="Save" class="save-btn"/>
                 </form>
             }
         }
@@ -58,15 +58,16 @@
     </div>
 </div>
 
-<div class="comment-button-container"><a class="comment-button">Add a comment</a></div>
+<div class="add-comment-button-container"><a class="comment-button">Add a comment</a></div>
+
 <form method="post" class="comment-form hidden-element">
     <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
     <input asp-for="InputComment.Content" placeholder="Type your comment">
     <button class="cancel-comment" type="button">Cancel</button>
     <input type="submit" value="Post" class="submit-comment"/>
 </form>
-<div class="comment-container">
 
+<div class="comment-container">
     @foreach (var comment in Model.Blog.Comments)
     {
     <div class="comment" data-id= "@comment.ID">
@@ -74,15 +75,15 @@
         @{
                 if (user != null && comment.Author == user.UserName)
                 {
-                    <span><button class="edit-comment" 
-                                  data-id= "@comment.ID">Edit</button></span>
+                <div class="comment-button-container">
+                    <button class="edit-comment" data-id="@comment.ID">Edit</button>
                     <form asp-page-handler="EditComment"
                           asp-route-commentID="@comment.ID"
-                          data-id= "@comment.ID"
+                          data-id="@comment.ID"
                           method="post"
                           class="hidden-element edit-comment-form">
                         <input asp-for="EditComment.Content" value="@comment.Content" />
-                        <input type="submit" value="Save" />
+                        <input type="submit" value="Save" class="save-btn" />
                     </form>
 
                     <form asp-page-handler="DeleteComment"
@@ -90,6 +91,8 @@
                           method="post">
                         <button class="delete-comment">Delete</button>
                     </form>
+                </div>
+
                 }
         }
 

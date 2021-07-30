@@ -47,5 +47,8 @@ commentContainer.addEventListener('click', (e) => {
         console.log(editForm)
         editForm.classList.toggle("hidden-element");
 
+        let deleteCommentBtn = comment.querySelector(".delete-comment");
+        deleteCommentBtn.classList.toggle("hidden-element");
+
     }
 })

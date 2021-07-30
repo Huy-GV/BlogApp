@@ -53,50 +53,8 @@ else
         </div>
         <br>
         <textarea rows="5" cols="50" asp-for="InputBlog.Content" placeholder="What do you want to share?" type="text"></textarea><br>
-        <input type="submit" value="Post" />
+        <input type="submit" value="Post" class="submit-post"/>
     </form>
 
 </div>
 
-
-@*<h1>Index</h1>
-
-    <p>
-        <a asp-page="Create">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Blog[0].Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Blog[0].UserID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Blog[0].Content)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach (var item in Model.Blog) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>*@

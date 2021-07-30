@@ -11,9 +11,9 @@
     background-color: blue;
 }
 
-    .menu-button:hover {
-        cursor: pointer;
-    }
+.menu-button:hover {
+    cursor: pointer;
+}
 
 .blog-container {
     display: flex;
@@ -37,25 +37,33 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid black;
-    border-radius: 3px;
+    background-color:whitesmoke;
     margin: auto;
     width: 40%;
 }
 
 .comment {
     width: 90%;
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.5rem;
 }
 
-    .comment > .comment-author {
-        color: blue;
-        font-weight: 700;
-        font-size: 1.1rem;
-    }
+.comment > .comment-author {
+    color: blue;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.add-comment-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 0.2rem;
+}
 
 .comment-button-container {
     display: flex;
-    justify-content: center;
+    align-content: center;
     margin: 0.2rem;
 }
 
@@ -68,9 +76,9 @@
     width: 7rem;
 }
 
-    .comment-button:hover {
-        cursor: pointer;
-    }
+.comment-button:hover {
+    cursor: pointer;
+}
 
 .comment-form {
     display: flex;
@@ -78,15 +86,10 @@
     align-items: center;
 }
 
-    .comment-form > input {
-        padding: 0.4rem;
-        margin: 0.2rem;
-        width: 60%;
-        font-size: 0.8rem;
-    }
-
-.hidden-element {
-    display: none;
+.comment-form > input {
+    padding: 0.4rem;
+    margin: 0.2rem;
+    font-size: 0.8rem;
 }
 
 .cancel-comment {
@@ -99,11 +102,11 @@
     transition: 100ms ease-out;
 }
 
-    .cancel-comment:hover {
-        cursor: pointer;
-        filter: brightness(0.8);
-        transition: 200ms ease-in;
-    }
+.cancel-comment:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+    transition: 200ms ease-in;
+}
 
 .submit-comment {
     background-color: green;
@@ -114,11 +117,17 @@
     font-size: 0.7rem;
 }
 
-.edit-post, .delete-post, .edit-comment, .delete-comment {
+.submit-comment, .cancel-comment {
+    width: fit-content;
+    font-size: 0.8rem;
+}
+.edit-post, .delete-post, .edit-comment, .delete-comment, .save-btn {
     color: white;
     padding: 0.2rem;
     border-radius: 3px;
     transition: 100ms ease-out;
+    height: 1.2rem;
+    margin:0.1rem;
 }
 
 .edit-post, .edit-comment {
@@ -126,14 +135,21 @@
     border: 1px solid orange;
 }
 
+.save-btn {
+    background-color: green;
+    border: 1px solid green;
+}
 
 .delete-post, .delete-comment {
     background-color: red;
     border: 1px solid red;
 }
 
-    .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover {
-        cursor: pointer;
-        filter: brightness(0.8);
-        transition: 200ms ease-in;
-    }
+.delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .save-btn:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+    transition: 200ms ease-in;
+}
+
+
+
