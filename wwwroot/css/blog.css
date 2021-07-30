@@ -28,6 +28,10 @@
     width: 60%;
 }
 
+.blog-author {
+    color: green;
+}
+
 .title {
     font-weight: 700;
     font-size: 1.4rem;

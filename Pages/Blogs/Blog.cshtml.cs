@@ -145,11 +145,6 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
-        //private async bool CheckOwnership(IdentityUser user, int resourceID)
-        //{
-
-        //}
-
     }
     public class InputComment
     { 
