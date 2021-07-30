@@ -15,8 +15,6 @@ namespace BlogApp.Pages.Blogs
     [AllowAnonymous]
     public class IndexModel : BaseModel
     {
-
-
         public IndexModel(
             ApplicationDbContext context,
             IAuthorizationService authorizationService,

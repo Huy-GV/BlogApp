@@ -76,6 +76,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
                 var user = new IdentityUser
                 {
                     UserName = Input.UserName,
+                    EmailConfirmed = true
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
