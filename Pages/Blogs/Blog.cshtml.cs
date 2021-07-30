@@ -71,9 +71,6 @@ namespace BlogApp.Pages.Blogs
             var blog = await Context.Blog.FindAsync(blogID);
 
             if (EditForm.Content == "") return RedirectToPage("./Blog", new { id = blogID });
-
-            blog.Content = EditForm.Content;
-
             if (!User.Identity.IsAuthenticated)
             {
                 return Challenge();
@@ -83,7 +80,7 @@ namespace BlogApp.Pages.Blogs
             {
                 return Forbid();
             }
-
+            blog.Content = EditForm.Content;
             Context.Attach(blog).State = EntityState.Modified;
             try
             {
@@ -100,17 +97,11 @@ namespace BlogApp.Pages.Blogs
         }
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Challenge();
-            }
-
+            if (!User.Identity.IsAuthenticated) return Challenge();
+            
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
-            if (user.UserName != blog.Author)
-            {
-                return Forbid();
-            }
+            if (user.UserName != blog.Author) return Forbid();
 
             Context.Blog.Remove(blog);
             await Context.SaveChangesAsync();
@@ -140,7 +131,9 @@ namespace BlogApp.Pages.Blogs
             {
                 Console.WriteLine("ERROR");
             }
-            Context.Attach(EditComment).State = EntityState.Modified;
+            var comment = await Context.Comment.FindAsync(commentID);
+            comment.Content = EditComment.Content;
+            Context.Attach(comment).State = EntityState.Modified;
             try
             {
                 await Context.SaveChangesAsync();
@@ -149,9 +142,13 @@ namespace BlogApp.Pages.Blogs
             {
                 throw;
             }
-            var comment = await Context.Comment.FindAsync(commentID);
+
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
+        //private async bool CheckOwnership(IdentityUser user, int resourceID)
+        //{
+
+        //}
 
     }
     public class InputComment
