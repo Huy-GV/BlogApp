@@ -23,7 +23,7 @@
         @{
             if (user != null && user.UserName == Model.Blog.Author)
             {
-                <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="post">
+                <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
                     <button class="delete-post">Delete</button>
                 </form>
                 <span><button class="edit-post">Edit</button></span>

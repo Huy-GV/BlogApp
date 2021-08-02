@@ -23,7 +23,7 @@
             <p>@blog.Content</p>
             <p class="comment"></p>
             <div class="blog-button-container">
-                <a class="blog-button" asp-page="./Blog" asp-route-id="@blog.ID">See more</a>
+                <a class="blog-button" asp-page="./Blog" asp-route-id="@blog.ID">See more (@blog.Comments.Count comments)</a>
             </div>
         </div>
     }

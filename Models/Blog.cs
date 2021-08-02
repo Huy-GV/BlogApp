@@ -12,6 +12,5 @@ namespace BlogApp.Models
         [Required]
         public string Title { get; set; }
         public ICollection<Comment> Comments { get; set; }
-
     }
 }

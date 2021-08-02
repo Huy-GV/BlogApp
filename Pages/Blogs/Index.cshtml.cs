@@ -29,7 +29,10 @@ namespace BlogApp.Pages.Blogs
 
         public async Task OnGetAsync()
         {
-            Blog = await Context.Blog.ToListAsync();
+            Blog = await Context
+                .Blog
+                .Include(blog => blog.Comments)
+                .ToListAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {

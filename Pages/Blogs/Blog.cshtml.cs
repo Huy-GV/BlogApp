@@ -36,16 +36,12 @@ namespace BlogApp.Pages.Blogs
             Blog = await Context.Blog
                 .Include(blog => blog.Comments)
                 .FirstOrDefaultAsync(blog => blog.ID == id);
-            if (Blog == null)
-                return NotFound();
+            if (Blog == null) return NotFound();
             return Page();
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Challenge();
-            }
+            if (!User.Identity.IsAuthenticated) return Challenge();
 
             if (!ModelState.IsValid)
             {
@@ -71,15 +67,9 @@ namespace BlogApp.Pages.Blogs
             var blog = await Context.Blog.FindAsync(blogID);
 
             if (EditForm.Content == "") return RedirectToPage("./Blog", new { id = blogID });
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Challenge();
-            }
-
-            if (user.UserName != blog.Author)
-            {
-                return Forbid();
-            }
+            if (!User.Identity.IsAuthenticated) return Challenge();
+            if (user.UserName != blog.Author) return Forbid();
+            
             blog.Content = EditForm.Content;
             Context.Attach(blog).State = EntityState.Modified;
             try
@@ -101,6 +91,7 @@ namespace BlogApp.Pages.Blogs
             
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
+
             if (user.UserName != blog.Author) return Forbid();
 
             Context.Blog.Remove(blog);
@@ -111,14 +102,10 @@ namespace BlogApp.Pages.Blogs
 
         public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
         {
-            //TODO if this doesnt work, write a linq query on Context.Blog
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
             
-            if (user.UserName != comment.Author)
-            {
-                return Forbid();
-            }
+            if (user.UserName != comment.Author) return Forbid();
             Context.Comment.Remove(comment);
             await Context.SaveChangesAsync();
 
