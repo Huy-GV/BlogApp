@@ -12,24 +12,6 @@
     ViewData["Script"] = "/js/index.js";
 }
 
-@if (SignInManager.IsSignedIn(User))
-{
-    var user = (await UserManager.GetUserAsync(User));
-
-<nav>
-    <span>@user?.UserName</span>
-    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-        <button class="log-btn">Log out</button>
-    </form>
-</nav>
-}
-else
-{
-    <nav>
-        <span><a class="log-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
-        <span><a class="log-btn" asp-area="Identity" asp-page="/Account/Register">Register</a></span>
-    </nav>
-}
 <div class="blog-container">
 
 

@@ -7,26 +7,10 @@
     ViewData["CSSLink"] = "/css/blog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "/js/blog.js";
-    IdentityUser user = null;
+    IdentityUser user = (await UserManager.GetUserAsync(User));
 }
 
-    @if (SignInManager.IsSignedIn(User))
-    {
-        user = (await UserManager.GetUserAsync(User));
-        
-        <nav>
-            <span>@user.UserName</span>
-            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Blogs/Blog" method="post">
-            <button class="log-btn">Log out</button>
-            </form>
-        </nav>
-    }
-    else {
-        <nav>
-            <span><a class="log-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
-            <span><a class="log-btn" asp-area="Identity" asp-page="/Account/Register">Register</a></span>
-        </nav> 
-    }
+
 
 
 <a asp-page="./Index" class="menu-button">Back to menu</a>
