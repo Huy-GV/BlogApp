@@ -16,7 +16,7 @@ namespace BlogApp.Data
             using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
                 var adminID = await EnsureAdmin(serviceProvider, "admin");
-                await AssignRole(adminID, "Admin", serviceProvider);
+                await AssignRole(adminID, Roles.AdminRole, serviceProvider);
             }
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
@@ -42,7 +42,7 @@ namespace BlogApp.Data
         }
         private static async Task<IdentityResult> AssignRole(string userID, string role, IServiceProvider serviceProvider)
         {
-            IdentityResult identityResult;
+            IdentityResult identityResult = null;
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
             if (roleManager == null)
@@ -58,7 +58,7 @@ namespace BlogApp.Data
             var user = await userManager.FindByIdAsync(userID);
             if (user == null)
             {
-                throw new Exception("The testUserPw password was probably not strong enough!");
+                throw new Exception("The password was probably not strong enough!");
             }
 
             identityResult = await userManager.AddToRoleAsync(user, role);
