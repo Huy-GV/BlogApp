@@ -21,20 +21,29 @@
         <span class="blog-author">@Model.Blog.Author</span>
 
         @{
-            if (user != null && user.UserName == Model.Blog.Author)
+            
+            if (user != null)
             {
-                <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
-                    <button class="delete-post">Delete</button>
-                </form>
-                <span><button class="edit-post">Edit</button></span>
-                <form asp-page-handler="EditBlog" 
-                      asp-route-blogID="@Model.Blog.ID" 
-                      method="post" 
-                      class="hidden-element edit-blog-form">
-                    <input asp-for="EditForm.Content" value="@Model.Blog.Content" />
-                    <input type="submit" value="Save" class="save-btn"/>
-                </form>
+                var userRoles = await UserManager.GetRolesAsync(user);
+                if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
+                {
+                    <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
+                        <button class="delete-post">Delete</button>
+                    </form>
+                }
+                if (user.UserName == Model.Blog.Author)
+                {
+                    <span><button class="edit-post">Edit</button></span>
+                    <form asp-page-handler="EditBlog" 
+                          asp-route-blogID="@Model.Blog.ID" 
+                          method="post" 
+                          class="hidden-element edit-blog-form">
+                        <input asp-for="EditForm.Content" value="@Model.Blog.Content" />
+                        <input type="submit" value="Save" class="save-btn"/>
+                    </form>
+                }
             }
+
         }
 
         <p class="blog-content">@Model.Blog.Content</p>
@@ -64,11 +73,22 @@
                 <span class="comment-author">@comment.Author</span>
             }
         }
-
+        
+        <div class="comment-button-container">
         @{
-            if (user != null && comment.Author == user.UserName)
+            if (user != null)
             {
-                <div class="comment-button-container">
+                var userRoles = await UserManager.GetRolesAsync(user);
+                if (comment.Author == user.UserName || userRoles.Contains(Roles.AdminRole))
+                {
+                        <form asp-page-handler="DeleteComment"
+                              asp-route-commentID="@comment.ID"
+                              method="post">
+                            <button class="delete-comment">Delete</button>
+                        </form>
+                }
+                if (comment.Author == user.UserName)
+                {
                     <button class="edit-comment" data-id="@comment.ID">Edit</button>
                     <form asp-page-handler="EditComment"
                           asp-route-commentID="@comment.ID"
@@ -78,17 +98,11 @@
                         <input asp-for="EditComment.Content" value="@comment.Content" />
                         <input type="submit" value="Save" class="save-btn" />
                     </form>
-
-                    <form asp-page-handler="DeleteComment"
-                          asp-route-commentID="@comment.ID"
-                          method="post">
-                        <button class="delete-comment">Delete</button>
-                    </form>
-                </div>
-
+                }
             }
-        }
 
+        }
+        </div>
         <p class="comment-text">@comment.Content</p>
     </div>
     }

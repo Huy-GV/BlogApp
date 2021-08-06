@@ -74,14 +74,9 @@ namespace BlogApp.Pages.Blogs
             
             blog.Content = EditForm.Content;
             Context.Attach(blog).State = EntityState.Modified;
-            try
-            {
-                await Context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                    throw;
-            }
+
+            try {await Context.SaveChangesAsync(); }
+            catch (DbUpdateConcurrencyException) {throw; }
 
             return RedirectToPage("./Blog", new { id = blogID });
 
@@ -94,7 +89,7 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
-            if (user.UserName != blog.Author) return Forbid();
+            if (user.UserName != blog.Author && !User.IsInRole(Roles.AdminRole)) return Forbid();
 
             Context.Blog.Remove(blog);
             await Context.SaveChangesAsync();
@@ -107,7 +102,7 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
             
-            if (user.UserName != comment.Author) return Forbid();
+            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole)) return Forbid();
             Context.Comment.Remove(comment);
             await Context.SaveChangesAsync();
 
@@ -120,7 +115,11 @@ namespace BlogApp.Pages.Blogs
             {
                 Console.WriteLine("ERROR");
             }
+
+            var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
+            if (user.UserName != comment.Author) return Forbid();
+
             comment.Content = EditComment.Content;
             Context.Attach(comment).State = EntityState.Modified;
             try
