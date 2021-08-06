@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 
+//TODO: add admin privileges
+
 namespace BlogApp.Pages.Blogs
 {
     [AllowAnonymous]
