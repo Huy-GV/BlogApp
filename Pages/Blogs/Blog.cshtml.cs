@@ -19,11 +19,12 @@ namespace BlogApp.Pages.Blogs
     public class BlogModel : BaseModel
     {
         [BindProperty]
-        public InputComment InputComment { get; set; }
+        public AddCommentForm InputComment { get; set; }
         [BindProperty]
-        public EditForm EditForm { get; set; }
+        public ContentForm EditBlogForm { get; set; }
         [BindProperty]
-        public EditComment EditComment { get; set; }
+        public ContentForm EditComment { get; set; }
+
 
         public Blog Blog { get; set; }
         public BlogModel(
@@ -68,11 +69,11 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
-            if (EditForm.Content == "") return RedirectToPage("./Blog", new { id = blogID });
+            if (EditBlogForm.Content == "") return RedirectToPage("./Blog", new { id = blogID });
             if (!User.Identity.IsAuthenticated) return Challenge();
             if (user.UserName != blog.Author) return Forbid();
             
-            blog.Content = EditForm.Content;
+            blog.Content = EditBlogForm.Content;
             Context.Attach(blog).State = EntityState.Modified;
 
             try {await Context.SaveChangesAsync(); }
@@ -134,19 +135,13 @@ namespace BlogApp.Pages.Blogs
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
     }
-    public class InputComment
+    public class AddCommentForm : ContentForm
     { 
-        public string Content { get; set; }
         public int BlogID { get; set; }
     }
-    public class EditForm
-    { 
-        public string Content { get; set; }
-    }
-
-    public class EditComment 
+    public class ContentForm
     {
-        public string Content {get; set;}
+        public string Content { get; set; }
     }
 
 }

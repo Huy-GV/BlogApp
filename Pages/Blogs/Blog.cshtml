@@ -19,36 +19,35 @@
         <span class="title">@Model.Blog.Title</span>
         <span>@Model.Blog.Date.ToString("dd-MM-yyyy")</span>
         <span class="blog-author">@Model.Blog.Author</span>
+        <div class="comment-button-container">
+            @{
+                if (user != null)
+                {
+                    var userRoles = await UserManager.GetRolesAsync(user);
+                    if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
+                    {
+                        <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
+                            <button class="delete-post">Delete</button>
+                        </form>
+                    }
+                    if (user.UserName == Model.Blog.Author)
+                    {
+                        <span><button class="edit-post">Edit</button></span>
+                        <form asp-page-handler="EditBlog"
+                              asp-route-blogID="@Model.Blog.ID"
+                              method="post"
+                              class="hidden-element edit-blog-form">
+                            <input asp-for="EditBlogForm.Content" value="@Model.Blog.Content" />
+                            <input type="submit" value="Save" class="save-btn" />
+                        </form>
+                    }
+                }
 
-        @{
-            
-            if (user != null)
-            {
-                var userRoles = await UserManager.GetRolesAsync(user);
-                if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
-                {
-                    <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
-                        <button class="delete-post">Delete</button>
-                    </form>
-                }
-                if (user.UserName == Model.Blog.Author)
-                {
-                    <span><button class="edit-post">Edit</button></span>
-                    <form asp-page-handler="EditBlog" 
-                          asp-route-blogID="@Model.Blog.ID" 
-                          method="post" 
-                          class="hidden-element edit-blog-form">
-                        <input asp-for="EditForm.Content" value="@Model.Blog.Content" />
-                        <input type="submit" value="Save" class="save-btn"/>
-                    </form>
-                }
             }
-
-        }
-
+        </div>
         <p class="blog-content">@Model.Blog.Content</p>
+        </div>
     </div>
-</div>
 
 <div class="add-comment-button-container"><a class="comment-button">Add a comment</a></div>
 
@@ -75,8 +74,7 @@
         }
         
         <div class="comment-button-container">
-        @{
-            if (user != null)
+        @if (user != null)
             {
                 var userRoles = await UserManager.GetRolesAsync(user);
                 if (comment.Author == user.UserName || userRoles.Contains(Roles.AdminRole))
@@ -100,8 +98,6 @@
                     </form>
                 }
             }
-
-        }
         </div>
         <p class="comment-text">@comment.Content</p>
     </div>
