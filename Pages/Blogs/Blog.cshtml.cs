@@ -49,6 +49,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("ERROR");
+                return Page();
             }
             var user = await UserManager.GetUserAsync(User);
             var comment = new Comment
@@ -115,6 +116,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("ERROR");
+                return Page();
             }
 
             var user = await UserManager.GetUserAsync(User);

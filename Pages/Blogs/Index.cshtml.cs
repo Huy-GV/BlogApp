@@ -44,7 +44,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("ERROR");
-                return RedirectToPage("ERROR");
+                return Page();
             }
             var user = await UserManager.GetUserAsync(User);
             var blog = new Blog
@@ -54,10 +54,6 @@ namespace BlogApp.Pages.Blogs
                 Date = DateTime.Now,
                 Author = user.UserName
             };
-            Console.WriteLine(blog.Title);
-            Console.WriteLine(blog.Content);
-            Console.WriteLine(blog.Date);
-            Console.WriteLine(blog.Author);
 
             Context.Blog.Add(blog);
             await Context.SaveChangesAsync();
