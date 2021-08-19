@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using BlogApp.Authorization;
 using BlogApp.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using BlogApp.Areas.Identity.Pages.Account;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlogApp.Pages.Admin
 {
@@ -17,8 +14,8 @@ namespace BlogApp.Pages.Admin
     public class UserDTO
     { 
         public string Username { get; set; }
-        public string ID { get; set; }
         public string JoinDate { get; set; }
+        public bool IsModerator { get; set; } = false;
         public int PostCount { get; set; }
     }
     //TODO: create a custom handler?
@@ -41,7 +38,7 @@ namespace BlogApp.Pages.Admin
         }
         
         //TODO: add a filter that shows moderators only
-        public IActionResult OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             //TODO: IMPLEMENT JOIN DATES FOR USERS, WRITE A CUSTOM USER IDENTITY CLASS?
             var users = _userManager.Users.ToList().Where(user => user.UserName != "admin");
@@ -51,7 +48,7 @@ namespace BlogApp.Pages.Admin
                 userDTOs.Add(new UserDTO()
                 {
                     Username = user.UserName,
-                    ID = user.Id,
+                    IsModerator = await IsModeratorRole(user),
                     PostCount = _context.Blog
                     .Where(blog => blog.Author == user.UserName)
                     .ToList()
@@ -61,25 +58,30 @@ namespace BlogApp.Pages.Admin
             ViewData["UserDTOs"] = userDTOs;
             return Page();
         }
-
-        public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(int userID)
+        private async Task<bool> IsModeratorRole(IdentityUser user)
         {
-            var user = await _context.Users.FindAsync(userID);
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.Contains(Roles.ModeratorRole);
+        }
+
+        public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string username)
+        {
+            var user = _context.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
-                _logger.LogError($"No user with ID {userID} was found");
+                _logger.LogError($"No user with ID {username} was found");
                 return Page();
             }
             await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
 
             return Page();
         }
-        public async Task<IActionResult> OnPostAssignModeratorRoleAsync(int userID)
+        public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {
-            var user = await _context.Users.FindAsync(userID);
+            var user = _context.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
-                _logger.LogError($"No user with ID {userID} was found");
+                _logger.LogError($"No user with ID {username} was found");
                 return Page();
             }
 

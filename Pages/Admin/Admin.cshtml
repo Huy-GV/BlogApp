@@ -25,11 +25,28 @@
 
     @foreach (var user in users)
     {
-        <div class="user-card">
-            <p>@user.Username</p>
-            <p>Posts: @user.PostCount</p>
-            <button class="assign-role">Assign moderator role</button>
-        </div>
+    <div class="user-card">
+        <p>@user.Username</p>
+        <p>Posts: @user.PostCount</p>
+
+        @if (user.IsModerator)
+        {
+            <form asp-page-handler="RemoveModeratorRole"
+                  asp-route-username="@user.Username"
+                  method="post">
+                <button class="button remove-role">Remove moderator role</button>
+            </form>
+        }
+        else
+        {
+            <form asp-page-handler="AssignModeratorRole"
+                  asp-route-username="@user.Username"
+                  method="post">
+                <button class="button assign-role">Assign moderator role</button>
+            </form>
+        }
+
+    </div>
     }
 
 

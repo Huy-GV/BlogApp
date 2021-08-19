@@ -17,6 +17,7 @@ namespace BlogApp.Data
             {
                 var adminID = await EnsureAdmin(serviceProvider, "admin");
                 await AssignRole(adminID, Roles.AdminRole, serviceProvider);
+                await CreateModeratorRole(serviceProvider);
             }
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
@@ -64,6 +65,19 @@ namespace BlogApp.Data
             identityResult = await userManager.AddToRoleAsync(user, role);
 
             return identityResult;
+        }
+        private static async Task CreateModeratorRole(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+            if (roleManager == null)
+            {
+                throw new Exception("roleManager null");
+            }
+
+            if (!await roleManager.RoleExistsAsync(Roles.ModeratorRole))
+            {
+                await roleManager.CreateAsync(new IdentityRole(Roles.ModeratorRole));
+            }
         }
     }
 }
