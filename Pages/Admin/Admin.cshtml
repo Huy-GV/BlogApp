@@ -1,0 +1,37 @@
+﻿@page
+@model BlogApp.Pages.Admin.AdminModel
+@{
+    ViewData["Title"] = "Management";
+    ViewData["CSSLink"] = "/css/admin.css";
+    ViewData["Script"] = "#";
+    ViewData["Shared"] = "/css/shared.css";
+    var users = ViewData["UserDTOs"] as List<UserDTO>;
+}
+
+<div class="user-container">
+    @*<div class="user-card">
+        <p>Name</p>
+        <p>Date joined</p>
+        <p>Posts</p>
+        <button class="assign-role">Assign moderator role</button>
+    </div>
+
+    <div class="user-card">
+        <p>Name</p>
+        <p>Date joined</p>
+        <p>Posts</p>
+        <button class="remove-role">Remove moderator role</button>
+    </div>*@
+
+    @foreach (var user in users)
+    {
+        <div class="user-card">
+            <p>@user.Username</p>
+            <p>Posts: @user.PostCount</p>
+            <button class="assign-role">Assign moderator role</button>
+        </div>
+    }
+
+
+</div>
+

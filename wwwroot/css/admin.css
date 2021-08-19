@@ -1,0 +1,44 @@
+:root{
+    font-size: 20px;
+}
+
+.user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.user-card {
+    background-color: whitesmoke;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    width: 70%;
+}
+
+.user-card >:last-child{
+    margin-left: auto;
+}
+
+.user-card > button {
+    color: white;
+    border-radius: 1px;
+    font-weight: 700;
+}
+
+.user-card > button:hover {
+    filter: brightness(0.6);
+    cursor: pointer;
+}
+
+.assign-role {
+    background-color: green;
+    border: 1px solid green;
+}
+
+.remove-role {
+    background-color: red;
+    border: 1px solid red;
+}
