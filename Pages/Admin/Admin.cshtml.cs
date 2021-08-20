@@ -41,7 +41,9 @@ namespace BlogApp.Pages.Admin
         public async Task<IActionResult> OnGetAsync()
         {
             //TODO: IMPLEMENT JOIN DATES FOR USERS, WRITE A CUSTOM USER IDENTITY CLASS?
-            var users = _userManager.Users.ToList().Where(user => user.UserName != "admin");
+            var users = _userManager.Users
+                .ToList()
+                .Where(user => user.UserName != "admin");
             List<UserDTO> userDTOs = new();
             foreach( var user in users)
             {   
@@ -74,7 +76,8 @@ namespace BlogApp.Pages.Admin
             }
             await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
 
-            return Page();
+            return RedirectToPage("Admin");
+
         }
         public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {
@@ -86,7 +89,7 @@ namespace BlogApp.Pages.Admin
             }
 
             await _userManager.AddToRoleAsync(user, Roles.ModeratorRole);
-            return Page();
+            return RedirectToPage("Admin");
         }
 
     }
