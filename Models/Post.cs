@@ -11,8 +11,12 @@ namespace BlogApp.Models
         public string? UserID { get; set; }
         [Required, MaxLength(255)]
         public string Content { get; set; }
+        [MaxLength(255)]
+        public string? SuspensionExplanation { get; set; }
+        [MaxLength(255)]
         [DataType(DataType.Date), Required]
         public DateTime Date { get; set; }
         public string Author { get; set; }
+        public bool IsHidden { get; set; } = false;
     }
 }

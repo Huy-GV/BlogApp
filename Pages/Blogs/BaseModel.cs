@@ -15,7 +15,6 @@ namespace BlogApp.Pages.Blogs
         protected ApplicationDbContext Context { get; }
         protected IAuthorizationService AuthorizationService { get; }
         protected UserManager<IdentityUser> UserManager { get; }
-
         public BaseModel(
             ApplicationDbContext context, 
             IAuthorizationService authorizationService, 

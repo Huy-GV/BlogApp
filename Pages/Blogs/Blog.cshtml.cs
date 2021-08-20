@@ -9,6 +9,7 @@ using BlogApp.Data;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 
 //TODO: add admin privileges
@@ -25,14 +26,15 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public ContentForm EditComment { get; set; }
 
-
+        private ILogger<BlogModel> _logger;
         public Blog Blog { get; set; }
         public BlogModel(
             ApplicationDbContext context,
             IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager) : base (context, authorizationService, userManager)
+            UserManager<IdentityUser> userManager,
+            ILogger<BlogModel> logger) : base (context, authorizationService, userManager)
         {
-
+            _logger = logger;
         }
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -40,6 +42,8 @@ namespace BlogApp.Pages.Blogs
                 .Include(blog => blog.Comments)
                 .FirstOrDefaultAsync(blog => blog.ID == id);
             if (Blog == null) return NotFound();
+
+
             return Page();
         }
         public async Task<IActionResult> OnPostAsync()
@@ -70,7 +74,8 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
-            if (EditBlogForm.Content == "") return RedirectToPage("./Blog", new { id = blogID });
+            if (EditBlogForm.Content == "") 
+                return RedirectToPage("./Blog", new { id = blogID });
             if (!User.Identity.IsAuthenticated) return Challenge();
             if (user.UserName != blog.Author) return Forbid();
             
@@ -104,7 +109,9 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
             
-            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole)) return Forbid();
+            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole)) 
+                return Forbid();
+
             Context.Comment.Remove(comment);
             await Context.SaveChangesAsync();
 
@@ -136,6 +143,35 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
+
+        public async Task<IActionResult> OnPostHideBlogAsync(int blogID)
+        {
+            var blog = await Context.Blog.FindAsync(blogID);
+            if (blog == null)
+            {
+                _logger.LogInformation("Blog not found error");
+                return Page();
+            }
+            blog.IsHidden = true;
+            blog.SuspensionExplanation = Messages.InappropriateBlog;
+            await Context.SaveChangesAsync();
+            return RedirectToPage("./Blog", new { id = blogID });
+        }
+
+        public async Task<IActionResult> OnPostHideCommentAsync(int commentID)
+        {
+            var comment = await Context.Comment.FindAsync(commentID);
+            if (comment == null)
+            {
+                _logger.LogInformation("Comment not found error");
+                return Page();
+            }
+            comment.IsHidden = true;
+            comment.SuspensionExplanation = Messages.InappropriateComment;
+            await Context.SaveChangesAsync();
+            return RedirectToPage("./Blog", new { id = comment.BlogID });
+        }
+        //TODO: write a single method for the above 2 and use another for typechecking
     }
     public class AddCommentForm : ContentForm
     { 

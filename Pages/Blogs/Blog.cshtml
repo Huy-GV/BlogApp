@@ -11,8 +11,6 @@
 }
 
 
-
-
 <a asp-page="./Index" class="menu-button">Back to menu</a>
 <div class="blog-container">
     <div class="blog">
@@ -20,33 +18,48 @@
         <span>@Model.Blog.Date.ToString("dd-MM-yyyy")</span>
         <span class="blog-author">@Model.Blog.Author</span>
         <div class="comment-button-container">
-            @{
-                if (user != null)
+            @if (user != null)
+            {
+                var userRoles = await UserManager.GetRolesAsync(user);
+                if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
                 {
-                    var userRoles = await UserManager.GetRolesAsync(user);
-                    if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
-                    {
-                        <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
-                            <button class="delete-post">Delete</button>
-                        </form>
-                    }
-                    if (user.UserName == Model.Blog.Author)
-                    {
-                        <span><button class="edit-post">Edit</button></span>
-                        <form asp-page-handler="EditBlog"
-                              asp-route-blogID="@Model.Blog.ID"
-                              method="post"
-                              class="hidden-element edit-blog-form">
-                            <input asp-for="EditBlogForm.Content" value="@Model.Blog.Content" />
-                            <input type="submit" value="Save" class="save-btn" />
-                        </form>
-                    }
+                    <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
+                        <button class="delete-post">Delete</button>
+                    </form>
                 }
-
+                if (userRoles.Contains(Roles.ModeratorRole) 
+                    && user.UserName != Model.Blog.Author 
+                    && !Model.Blog.IsHidden)
+                {
+                    <form asp-page-handler="HideBlog"
+                          asp-route-blogID="@Model.Blog.ID"
+                          method="post">
+                        <button class="delete-comment">Hide</button>
+                    </form>
+                }
+                if (user.UserName == Model.Blog.Author)
+                {
+                    <span><button class="edit-post">Edit</button></span>
+                    <form asp-page-handler="EditBlog"
+                          asp-route-blogID="@Model.Blog.ID"
+                          method="post"
+                          class="hidden-element edit-blog-form">
+                        <input asp-for="EditBlogForm.Content" value="@Model.Blog.Content" />
+                        <input type="submit" value="Save" class="save-btn" />
+                    </form>
+                }
             }
+
         </div>
-        <p class="blog-content">@Model.Blog.Content</p>
-        </div>
+        @if (Model.Blog.IsHidden)
+        {
+            <p class="blog-content suspended-post">@Model.Blog.SuspensionExplanation</p>
+        }
+        else
+        {
+            <p class="blog-content">@Model.Blog.Content</p>
+        }
+    </div>
     </div>
 
 <div class="add-comment-button-container"><a class="comment-button">Add a comment</a></div>
@@ -72,18 +85,28 @@
                 <span class="comment-author">@comment.Author</span>
             }
         }
-        
+
         <div class="comment-button-container">
-        @if (user != null)
+            @if (user != null)
             {
                 var userRoles = await UserManager.GetRolesAsync(user);
                 if (comment.Author == user.UserName || userRoles.Contains(Roles.AdminRole))
                 {
-                        <form asp-page-handler="DeleteComment"
-                              asp-route-commentID="@comment.ID"
-                              method="post">
-                            <button class="delete-comment">Delete</button>
-                        </form>
+                    <form asp-page-handler="DeleteComment"
+                          asp-route-commentID="@comment.ID"
+                          method="post">
+                        <button class="delete-comment">Delete</button>
+                    </form>
+                }
+                if (userRoles.Contains(Roles.ModeratorRole) 
+                    && user.UserName != comment.Author
+                    && !comment.IsHidden)
+                {
+                    <form asp-page-handler="HideComment"
+                          asp-route-commentID="@comment.ID"
+                          method="post">
+                        <button class="delete-comment">Hide</button>
+                    </form>
                 }
                 if (comment.Author == user.UserName)
                 {
@@ -99,7 +122,17 @@
                 }
             }
         </div>
-        <p class="comment-text">@comment.Content</p>
+        @if (comment.IsHidden)
+        {
+            <p class="comment-text suspended-post">@comment.SuspensionExplanation</p>
+        }
+        else
+        {
+            <p class="comment-text">@comment.Content</p>
+        } 
+        
+        
+
     </div>
     }
 
