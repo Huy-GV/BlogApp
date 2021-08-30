@@ -31,6 +31,8 @@ namespace BlogApp.Pages.Admin
             _logger = logger;
         }
         public UserDTO UserDTO { get; set; }
+        [BindProperty]
+        public Suspension SuspensionTicket { get; set; }
         public async Task<IActionResult> OnGetAsync(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -71,6 +73,19 @@ namespace BlogApp.Pages.Admin
                 .Where(comment => comment.Author == username)
                 .Where(comment => comment.IsHidden)
                 .ToList();
+        }
+
+        public async Task<IActionResult> OnPostSuspendUserAsync() 
+        {
+            _context.Add(SuspensionTicket);
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./Details", new { username = SuspensionTicket.Username });
+        }
+        public async Task<IActionResult> OnPostLiftSuspensionAsync() 
+        {
+            _context.Remove(SuspensionTicket);
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./Details", new { username = SuspensionTicket.Username });
         }
     }
 }

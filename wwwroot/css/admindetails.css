@@ -8,13 +8,13 @@
     margin-left: 20%;
 }
 
-.suspended-post-container {
+.suspended-blog-container {
     display: flex;
     flex-direction: column;
     margin-left: 20%;
 }
 
-.suspended-post {
+.suspended-blog {
     padding: 0.2rem;
 }
 
@@ -22,7 +22,7 @@
     margin-left: 20%;
 }
 
-.profile-container, .suspended-post-container, .ban-details-container {
+.profile-container, .suspended-blog-container, .ban-details-container {
     border: 1px solid black;
     padding: 0.4rem;
     margin-top: 0.7rem;
@@ -39,14 +39,14 @@
     margin-top: 0.2rem;
 }
 
-.confirm-ban-btn, .lift-ban-btn, .ban-btn {
+.confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn {
     padding: 0.3rem;
     border-radius: 4px;
     font-size: medium;
 
 }
 
-.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover {
+.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover, .cancel-btn:hover {
     cursor: pointer;
     filter: brightness(0.6);
 }
@@ -66,5 +66,10 @@
 .confirm-ban-btn {
     background-color: rgb(112, 26, 26);
     border: 2px solid rgb(112, 26, 26);
+    color: white;
+}
+
+.cancel-btn {
+    background-color: orange;
     color: white;
 }
