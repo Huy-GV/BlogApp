@@ -14,6 +14,7 @@ using BlogApp.Models;
 
 namespace BlogApp.Pages.Admin
 {
+    [Authorize(Roles = "admin")]
     public class DetailsModel : PageModel
     {
         private ApplicationDbContext _context { get; }
@@ -30,11 +31,13 @@ namespace BlogApp.Pages.Admin
             _userManager = userManager;
             _logger = logger;
         }
-        public UserDTO UserDTO { get; set; }
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }
-        public async Task<IActionResult> OnGetAsync(string username)
+        public async Task<IActionResult> OnGetAsync(string? username)
         {
+            if (username == null)
+                return NotFound();
+            _logger.LogInformation($"username from onget is : {username}");
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
@@ -45,8 +48,13 @@ namespace BlogApp.Pages.Admin
             ViewData["UserDTO"] = GetUserDTO(username);
             ViewData["SuspendedBlogs"] = GetSuspendedBlogs(username);
             ViewData["SuspendedComments"] = GetSuspendedComments(username);
+            ViewData["Suspension"] = GetSuspension(username);
 
+            _logger.LogInformation($"suspension: {GetSuspension(username)}");
             return Page();
+        }
+        private Suspension GetSuspension(string username) {
+            return _context.Suspension.FirstOrDefault(s => s.Username == username);
         }
         private UserDTO GetUserDTO(string username) {
             return new UserDTO()
@@ -77,15 +85,28 @@ namespace BlogApp.Pages.Admin
 
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
-            _context.Add(SuspensionTicket);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("./Details", new { username = SuspensionTicket.Username });
+            if (!SuspensionExists(SuspensionTicket.Username)) {
+                _context.Suspension.Add(SuspensionTicket);
+                await _context.SaveChangesAsync();
+            } else {
+                _logger.LogInformation("User has already been suspended");
+            }
+            return RedirectToPage("Details", new { username = SuspensionTicket.Username });
         }
-        public async Task<IActionResult> OnPostLiftSuspensionAsync() 
+        public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
-            _context.Remove(SuspensionTicket);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("./Details", new { username = SuspensionTicket.Username });
+            if (SuspensionExists(username)) {
+                var suspension = _context.Suspension.FirstOrDefault(s => s.Username == username);
+                _context.Suspension.Remove(suspension);
+                await _context.SaveChangesAsync();
+            } else {
+                _logger.LogInformation("User has no suspensions");
+            }
+            _logger.LogInformation("username lifted " + username);
+            return RedirectToPage("Details", new { username });
+        }
+        private bool SuspensionExists(string username) {
+            return _context.Suspension.Any(s => s.Username == username);
         }
     }
 }

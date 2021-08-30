@@ -8,20 +8,20 @@
     ViewData["CSSLink"] = "/css/admindetails.css";
     ViewData["Script"] = "/js/admindetails.js";
     ViewData["Shared"] = "/css/shared.css";
+
+    var suspension = (Suspension)ViewData["Suspension"];
     var userDTO = ViewData["UserDTO"] as UserDTO;
     var suspendedBlogs = ViewData["SuspendedBlogs"] as List<Blog>;
     var suspendedComments = ViewData["SuspendedComments"] as List<Comment>;
 }
 
-@{
+
 
 <div class="profile-container">
     <div class="profile">
         <p>Username: @userDTO.Username</p>
         <p>Blog count: @userDTO.BlogCount</p>
         <p>Comments: @userDTO.CommentCount</p>
-        @* <p>Cake day</p> *@
-        @* <p>Past suspensions</p> *@
     </div>
 
 </div>
@@ -76,19 +76,24 @@
     <h2>Suspension details</h2>
     @* TODO: ADD LOGIC TO SHOW EXISTING SUSPENSIONS *@
     <div class="current-suspension">
-        
-        <p>Remaining time:</p>
-        <form method="post" asp-page-handler="LiftBan">
-            <input type=hidden asp-for="SuspensionTicket.Username" value="@userDTO.Username"/>
-            <button class="lift-ban-btn">Lift ban</button>
-        </form>
-
+        @{
+            if (suspension != null) {
+                <p>Expiry date: @suspension.Expiry</p>
+                <form method="post" 
+                      asp-page-handler="LiftBan" 
+                      asp-route-username="@userDTO.Username">
+                    <button class="lift-ban-btn">Lift ban</button>
+                </form>     
+            } else {
+                <p>No suspension exists</p>
+            }
+        }
     </div>
     
     <form class="suspend-form" method="post" asp-page-handler="SuspendUser">
         <h4>Suspend</h4>
         <input type="date" asp-for="SuspensionTicket.Expiry"/>
-        <input type=hidden asp-for="SuspensionTicket.Username" value="@userDTO.Username"/>
+        <input type="hidden" asp-for="SuspensionTicket.Username" value="@userDTO.Username"/>
         <button class='ban-btn' type="button">Ban</button>
         <button class='cancel-btn hidden-element' type="button">Cancel</button>
         <button class='confirm-ban-btn hidden-element'>Confirm </button>
@@ -96,4 +101,3 @@
 </div>
 
 
-}
