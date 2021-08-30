@@ -15,5 +15,6 @@ namespace BlogApp.Data
         }
         public DbSet<BlogApp.Models.Blog> Blog { get; set; }
         public DbSet<BlogApp.Models.Comment> Comment { get; set; }
+        public DbSet<BlogApp.Models.Suspension> Suspension { get; set;}
     }
 }
