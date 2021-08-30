@@ -9,8 +9,9 @@ using BlogApp.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using BlogApp.Models.DTOs;
+using BlogApp.Data.DTOs;
 using BlogApp.Models;
+
 namespace BlogApp.Pages.Admin
 {
     public class DetailsModel : PageModel

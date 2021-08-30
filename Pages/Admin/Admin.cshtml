@@ -1,6 +1,6 @@
 ﻿@page
 
-@using BlogApp.Models.DTOs
+@using BlogApp.Data.DTOs
 @model BlogApp.Pages.Admin.AdminModel
 @{
     ViewData["Title"] = "Management";
@@ -24,31 +24,33 @@
         <p>Posts</p>
         <button class="remove-role">Remove moderator role</button>
     </div>*@
-
+    
     @foreach (var user in users)
     {
-    <div class="user-card">
-        <p>@user.Username</p>
-        <p>Posts: @user.BlogCount</p>
+        
+        <div class="user-card">
+            
+            <p>@user.Username</p>
+            <p>Posts: @user.BlogCount</p>
 
-        @if (user.IsModerator)
-        {
-            <form asp-page-handler="RemoveModeratorRole"
-                  asp-route-username="@user.Username"
-                  method="post">
-                <button class="button remove-role">Remove moderator role</button>
-            </form>
-        }
-        else
-        {
-            <form asp-page-handler="AssignModeratorRole"
-                  asp-route-username="@user.Username"
-                  method="post">
-                <button class="button assign-role">Assign moderator role</button>
-            </form>
-        }
-
-    </div>
+            @if (user.IsModerator)
+            {
+                <form asp-page-handler="RemoveModeratorRole"
+                      asp-route-username="@user.Username"
+                      method="post">
+                    <button class="button remove-role">Remove moderator role</button>
+                </form>
+            }
+            else
+            {
+                <form asp-page-handler="AssignModeratorRole"
+                      asp-route-username="@user.Username"
+                      method="post">
+                    <button class="button assign-role">Assign moderator role</button>
+                </form>
+            }
+            <a class="details-btn" asp-route-username="@user.Username" asp-page="Details">Details</a>
+        </div>
     }
 
 

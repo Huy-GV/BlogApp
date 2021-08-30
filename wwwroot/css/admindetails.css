@@ -1,0 +1,70 @@
+:root {
+    font-size: 20px;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20%;
+}
+
+.suspended-post-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20%;
+}
+
+.suspended-post {
+    padding: 0.2rem;
+}
+
+.ban-details-container {
+    margin-left: 20%;
+}
+
+.profile-container, .suspended-post-container, .ban-details-container {
+    border: 1px solid black;
+    padding: 0.4rem;
+    margin-top: 0.7rem;
+    margin-left: 20%;
+    margin-right: 20%;
+    border-radius: 3px;
+}
+
+.suspend-form {
+    background-color: rgb(238, 63, 63);
+    padding: 0.2rem;
+    border-radius: 3px;
+    color: white;
+    margin-top: 0.2rem;
+}
+
+.confirm-ban-btn, .lift-ban-btn, .ban-btn {
+    padding: 0.3rem;
+    border-radius: 4px;
+    font-size: medium;
+
+}
+
+.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover {
+    cursor: pointer;
+    filter: brightness(0.6);
+}
+
+.lift-ban-btn {
+    background-color: rgb(42, 214, 42);
+    border: 1px solid rgb(42, 214, 42);
+    width: 100%;
+    color:white;
+}
+
+.ban-btn {
+    background-color: rgb(237, 250, 50);
+    border: 2px solid rgb(237, 250, 50);
+}
+
+.confirm-ban-btn {
+    background-color: rgb(112, 26, 26);
+    border: 2px solid rgb(112, 26, 26);
+    color: white;
+}

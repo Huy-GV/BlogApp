@@ -1,4 +1,83 @@
 ﻿@page
+@using BlogApp.Data.DTOs
+@using BlogApp.Models
 @model BlogApp.Pages.Admin.DetailsModel
+
 @{
+    ViewData["Title"] = "User Details";
+    ViewData["CSSLink"] = "/css/admindetails.css";
+    ViewData["Script"] = "#";
+    ViewData["Shared"] = "/css/shared.css";
+    var userDTO = ViewData["UserDTO"] as UserDTO;
+    var suspendedBlogs = ViewData["SuspendedBlogs"] as List<Blog>;
+    var suspendedComments = ViewData["SuspendedComments"] as List<Comment>;
+}
+
+@{
+
+<div class="profile-container">
+    <div class="profile">
+        <p>Username: @userDTO.Username</p>
+        <p>Blog count: @userDTO.BlogCount</p>
+        <p>Comments: @userDTO.CommentCount</p>
+        @* <p>Cake day</p> *@
+        @* <p>Past suspensions</p> *@
+    </div>
+
+</div>
+
+<div class="suspended-post-container">
+    <h2>Reported blogs</h2>
+    @* <div class="suspended-post">
+        <p>Original content</p>
+        <p>jfsdfjdsafasdfadsjfadsjfadsfasdfjfsdfjdsafasdfaasdfadsjfadsjfadsfasdf</p>
+        <p>Mod: at Suspend date</p>
+    </div> *@
+    @{
+        foreach(var blog in suspendedBlogs) 
+        {
+            <div class="suspended-post">
+                <p>Original content</p>
+                <p>@blog.Content</p>
+                @* <p>Mod: at Suspend date</p> *@
+            </div>
+        }
+    }
+    <h2>Reported comments</h2>
+    @* <div class="suspended-comment">
+        <p>Original content</p>
+        <p>Mod: at Suspend date</p>
+    </div> *@
+    @{
+        foreach(var comment in suspendedComments) 
+        {
+            <div class="suspended-comment">
+                <p>Original content</p>
+                <p>@comment.Content</p>
+                @* <p>Mod: at Suspend date</p> *@
+            </div>
+        }
+    }
+
+
+</div>
+
+<div class="ban-details-container">
+    <h2>Suspension details</h2>
+    <div class="current-suspension">
+        <p class="type">Type: Comment/ blog</p>
+        <p>Remaining time</p>
+        <button class="lift-ban-btn">Lift ban</button>
+    </div>
+    
+    <form class="suspend-form">
+        <h4>Suspend</h4>
+        <input type="date">
+        <button class='ban-btn'>Ban</button>
+        <!-- hidden confirm button -->
+        <button class='confirm-ban-btn'>Confirm </button>
+    </form>
+</div>
+
+
 }

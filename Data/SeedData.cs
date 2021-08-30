@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace BlogApp.Data
 {
     public class SeedData
@@ -18,7 +19,7 @@ namespace BlogApp.Data
                 var adminID = await EnsureAdmin(serviceProvider, "admin");
                 await AssignRole(adminID, Roles.AdminRole, serviceProvider);
                 await CreateModeratorRole(serviceProvider);
-                AssignUserInfo(serviceProvider);
+                // AssignUserInfo(serviceProvider);
             }
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
@@ -85,16 +86,16 @@ namespace BlogApp.Data
         }
 
         // assign custom data to users who registered before this feature
-        private static void AssignUserInfo(IServiceProvider serviceProvider) 
-        {
-            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
-            var users = userManager.Users.ToList();
-            foreach(BlogUser user in users) {
-                if (user.CakeDay == null) {
-                    user.CakeDay = System.DateTime.Now;
-                }
-            }
-        }
+        // private static void AssignUserInfo(IServiceProvider serviceProvider) 
+        // {
+        //     var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+        //     var users = userManager.Users.ToList();
+        //     foreach(BlogUser user in users) {
+        //         if (user.CakeDay == null) {
+        //             user.CakeDay = DateTime.Now;
+        //         }
+        //     }
+        // }
 
     }
 }
