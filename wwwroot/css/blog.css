@@ -46,11 +46,11 @@
 }
 
 .comment {
-    width: 90%;
+    width: 100%;
     border-radius: 3px;
     padding: 0.5rem;
     margin: 0.1rem;
-    background-color: whitesmoke;
+    background-color: rgb(251, 251, 251);
     border: 1px solid grey;
 }
 
