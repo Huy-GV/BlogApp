@@ -37,7 +37,7 @@ namespace BlogApp.Pages.Admin
         {
             if (username == null)
                 return NotFound();
-            _logger.LogInformation($"username from onget is : {username}");
+
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
@@ -50,7 +50,6 @@ namespace BlogApp.Pages.Admin
             ViewData["SuspendedComments"] = GetSuspendedComments(username);
             ViewData["Suspension"] = GetSuspension(username);
 
-            _logger.LogInformation($"suspension: {GetSuspension(username)}");
             return Page();
         }
         private Suspension GetSuspension(string username) {
@@ -93,6 +92,7 @@ namespace BlogApp.Pages.Admin
             }
             return RedirectToPage("Details", new { username = SuspensionTicket.Username });
         }
+
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
             if (SuspensionExists(username)) {
@@ -102,9 +102,10 @@ namespace BlogApp.Pages.Admin
             } else {
                 _logger.LogInformation("User has no suspensions");
             }
-            _logger.LogInformation("username lifted " + username);
+
             return RedirectToPage("Details", new { username });
         }
+
         private bool SuspensionExists(string username) {
             return _context.Suspension.Any(s => s.Username == username);
         }

@@ -80,7 +80,7 @@
             if (suspension != null) {
                 <p>Expiry date: @suspension.Expiry</p>
                 <form method="post" 
-                      asp-page-handler="LiftBan" 
+                      asp-page-handler="LiftSuspension" 
                       asp-route-username="@userDTO.Username">
                     <button class="lift-ban-btn">Lift ban</button>
                 </form>     
