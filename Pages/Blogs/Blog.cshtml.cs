@@ -44,6 +44,8 @@ namespace BlogApp.Pages.Blogs
             if (Blog == null)
                 return NotFound();
 
+            var user = await UserManager.GetUserAsync(User);
+            ViewData["Suspended"] = Context.Suspension.Any(s => s.Username == user.UserName);
 
             return Page();
         }
@@ -57,7 +59,11 @@ namespace BlogApp.Pages.Blogs
                 Console.WriteLine("ERROR");
                 return Page();
             }
+
             var user = await UserManager.GetUserAsync(User);
+            var username = user.UserName;
+
+
             var comment = new Comment
             {
                 Author = user.UserName,
@@ -65,6 +71,10 @@ namespace BlogApp.Pages.Blogs
                 Date = DateTime.Now,
                 BlogID = InputComment.BlogID
             };
+
+            await CheckSuspensionExpiry(username);
+            if (SuspensionExists(username))
+                return RedirectToPage("./Blog", new { id = comment.BlogID });
 
             Context.Add(comment);
             await Context.SaveChangesAsync();

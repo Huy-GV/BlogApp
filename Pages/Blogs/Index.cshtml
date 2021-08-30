@@ -10,6 +10,7 @@
     ViewData["Shared"] = "/css/shared.css";
 
     ViewData["Script"] = "/js/index.js";
+    var isSuspended = (bool)ViewData["IsSuspended"] ;
 }
 
 <div class="blog-container">
@@ -17,34 +18,38 @@
 
     @foreach (var blog in Model.Blog)
     {
-    <div class="blog">
-        <p class="title">@blog.Title</p>
-        <span class='author'>@blog.Author</span><span class="date">@blog.Date</span>
-        @if (blog.IsHidden)
-        {
-            <p class="suspended-post">@blog.SuspensionExplanation</p>
-        }
-        else
-        {
-            <p>@blog.Content</p>
-        }
+        <div class="blog">
+            <p class="title">@blog.Title</p>
+            <span class='author'>@blog.Author</span><span class="date">@blog.Date</span>
+            @if (blog.IsHidden)
+            {
+                <p class="suspended-post">@blog.SuspensionExplanation</p>
+            }
+            else
+            {
+                <p>@blog.Content</p>
+            }
 
-        <p class="comment"></p>
-        <div class="blog-button-container">
-            <a class="blog-button" asp-page="./Blog" asp-route-id="@blog.ID">See more (@blog.Comments.Count comments)</a>
+            <p class="comment"></p>
+            <div class="blog-button-container">
+                <a class="blog-button" asp-page="./Blog" asp-route-id="@blog.ID">See more (@blog.Comments.Count comments)</a>
+            </div>
         </div>
-    </div>
     }
-    <button class="add-button">Make a post !</button>
-    <form class="add-form hidden-element" method="post">
-        <div>
-            <label asp-for="InputBlog.Title"><strong>Title</strong></label>
-            <input asp-for="InputBlog.Title" type="text">
-        </div>
-        <br>
-        <textarea rows="5" cols="50" asp-for="InputBlog.Content" placeholder="What do you want to share?" type="text"></textarea><br>
-        <input type="submit" value="Post" class="submit-post"/>
-    </form>
+    @if (!isSuspended)
+    {
+        <button class="add-button">Make a post !</button>
+        <form class="add-form hidden-element" method="post">
+            <div>
+                <label asp-for="InputBlog.Title"><strong>Title</strong></label>
+                <input asp-for="InputBlog.Title" type="text">
+            </div>
+            <br>
+            <textarea rows="5" cols="50" asp-for="InputBlog.Content" placeholder="What do you want to share?" type="text"></textarea><br>
+            <input type="submit" value="Post" class="submit-post" />
+        </form>
+    }
+
 
 </div>
 

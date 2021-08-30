@@ -24,5 +24,19 @@ namespace BlogApp.Pages.Blogs
             AuthorizationService = authorizationService;
             UserManager = userManager;
         }
+
+        protected bool SuspensionExists(string username)
+        {
+            return Context.Suspension.Any(s => s.Username == username);
+        }
+        protected async Task CheckSuspensionExpiry(string username)
+        {
+            var suspension = Context.Suspension.First(s => s.Username == username);
+            if (suspension != null && DateTime.Compare(DateTime.Now, suspension.Expiry) > 0)
+            {
+                Context.Remove(suspension);
+                await Context.SaveChangesAsync();
+            }
+        }
     }
 }

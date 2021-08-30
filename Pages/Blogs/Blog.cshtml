@@ -8,8 +8,8 @@
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "/js/blog.js";
     IdentityUser user = (await UserManager.GetUserAsync(User));
+    var isSuspended = (bool)ViewData["IsSuspended"];
 }
-
 
 <a asp-page="./Index" class="menu-button">Back to menu</a>
 <div class="blog-container">
@@ -27,8 +27,8 @@
                         <button class="delete-post">Delete</button>
                     </form>
                 }
-                if (userRoles.Contains(Roles.ModeratorRole) 
-                    && user.UserName != Model.Blog.Author 
+                if (userRoles.Contains(Roles.ModeratorRole)
+                    && user.UserName != Model.Blog.Author
                     && !Model.Blog.IsHidden)
                 {
                     <form asp-page-handler="HideBlog"
@@ -60,82 +60,86 @@
             <p class="blog-content">@Model.Blog.Content</p>
         }
     </div>
-    </div>
+</div>
 
 <div class="add-comment-button-container"><a class="comment-button">Add a comment</a></div>
 
-<form method="post" class="comment-form hidden-element">
-    <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
-    <textarea rows="3" cols="30" 
-              asp-for="InputComment.Content" 
-              placeholder="Type your comment"></textarea>
-    <button class="cancel-comment" type="button">Cancel</button>
-    <input type="submit" value="Post" class="submit-comment"/>
-</form>
+@if (!isSuspended)
+{
+    <form method="post" class="comment-form hidden-element">
+        <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
+        <textarea rows="3" cols="30"
+                  asp-for="InputComment.Content"
+                  placeholder="Type your comment"></textarea>
+        <button class="cancel-comment" type="button">Cancel</button>
+        <input type="submit" value="Post" class="submit-comment" />
+    </form>
+}
+
 
 <div class="comment-container">
     @foreach (var comment in Model.Blog.Comments)
     {
-    <div class="comment" data-id="@comment.ID">
-        @{
-            if (comment.Author == Model.Blog.Author)
+        <div class="comment" data-id="@comment.ID">
+            @{
+                if (comment.Author == Model.Blog.Author)
+                {
+                    <span class="blog-author">@comment.Author</span>
+                }
+                else
+                {
+                    <span class="comment-author">@comment.Author</span>
+                }
+            }
+
+            <div class="comment-button-container">
+                @if (user != null)
+                {
+                    var userRoles = await UserManager.GetRolesAsync(user);
+                    if (comment.Author == user.UserName || userRoles.Contains(Roles.AdminRole))
+                    {
+                        <form asp-page-handler="DeleteComment"
+                              asp-route-commentID="@comment.ID"
+                              method="post">
+                            <button class="delete-comment">Delete</button>
+                        </form>
+                    }
+                    if (userRoles.Contains(Roles.ModeratorRole)
+                        && user.UserName != comment.Author
+                        && !comment.IsHidden)
+                    {
+                        <form asp-page-handler="HideComment"
+                              asp-route-commentID="@comment.ID"
+                              method="post">
+                            <button class="delete-comment">Hide</button>
+                        </form>
+                    }
+                    if (comment.Author == user.UserName)
+                    {
+                        <button class="edit-comment" data-id="@comment.ID">Edit</button>
+                        <form asp-page-handler="EditComment"
+                              asp-route-commentID="@comment.ID"
+                              data-id="@comment.ID"
+                              method="post"
+                              class="hidden-element edit-comment-form">
+                            <input asp-for="EditComment.Content" value="@comment.Content" />
+                            <input type="submit" value="Save" class="save-btn" />
+                        </form>
+                    }
+                }
+            </div>
+            @if (comment.IsHidden)
             {
-                <span class="blog-author">@comment.Author</span>
+                <p class="comment-text suspended-post">@comment.SuspensionExplanation</p>
             }
             else
             {
-                <span class="comment-author">@comment.Author</span>
+                <p class="comment-text">@comment.Content</p>
             }
-        }
 
-        <div class="comment-button-container">
-            @if (user != null)
-            {
-                var userRoles = await UserManager.GetRolesAsync(user);
-                if (comment.Author == user.UserName || userRoles.Contains(Roles.AdminRole))
-                {
-                    <form asp-page-handler="DeleteComment"
-                          asp-route-commentID="@comment.ID"
-                          method="post">
-                        <button class="delete-comment">Delete</button>
-                    </form>
-                }
-                if (userRoles.Contains(Roles.ModeratorRole) 
-                    && user.UserName != comment.Author
-                    && !comment.IsHidden)
-                {
-                    <form asp-page-handler="HideComment"
-                          asp-route-commentID="@comment.ID"
-                          method="post">
-                        <button class="delete-comment">Hide</button>
-                    </form>
-                }
-                if (comment.Author == user.UserName)
-                {
-                    <button class="edit-comment" data-id="@comment.ID">Edit</button>
-                    <form asp-page-handler="EditComment"
-                          asp-route-commentID="@comment.ID"
-                          data-id="@comment.ID"
-                          method="post"
-                          class="hidden-element edit-comment-form">
-                        <input asp-for="EditComment.Content" value="@comment.Content" />
-                        <input type="submit" value="Save" class="save-btn" />
-                    </form>
-                }
-            }
+
+
         </div>
-        @if (comment.IsHidden)
-        {
-            <p class="comment-text suspended-post">@comment.SuspensionExplanation</p>
-        }
-        else
-        {
-            <p class="comment-text">@comment.Content</p>
-        } 
-        
-        
-
-    </div>
     }
 
 </div>
