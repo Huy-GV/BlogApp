@@ -18,6 +18,7 @@ namespace BlogApp.Data
                 var adminID = await EnsureAdmin(serviceProvider, "admin");
                 await AssignRole(adminID, Roles.AdminRole, serviceProvider);
                 await CreateModeratorRole(serviceProvider);
+                AssignUserInfo(serviceProvider);
             }
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
@@ -41,7 +42,10 @@ namespace BlogApp.Data
 
             return user.Id;
         }
-        private static async Task<IdentityResult> AssignRole(string userID, string role, IServiceProvider serviceProvider)
+        private static async Task<IdentityResult> AssignRole(
+            string userID, 
+            string role, 
+            IServiceProvider serviceProvider)
         {
             IdentityResult identityResult = null;
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
@@ -79,5 +83,18 @@ namespace BlogApp.Data
                 await roleManager.CreateAsync(new IdentityRole(Roles.ModeratorRole));
             }
         }
+
+        // assign custom data to users who registered before this feature
+        private static void AssignUserInfo(IServiceProvider serviceProvider) 
+        {
+            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+            var users = userManager.Users.ToList();
+            foreach(BlogUser user in users) {
+                if (user.CakeDay == null) {
+                    user.CakeDay = System.DateTime.Now;
+                }
+            }
+        }
+
     }
 }
