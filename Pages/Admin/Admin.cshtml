@@ -1,4 +1,6 @@
 ﻿@page
+
+@using BlogApp.Models.DTOs
 @model BlogApp.Pages.Admin.AdminModel
 @{
     ViewData["Title"] = "Management";
@@ -27,7 +29,7 @@
     {
     <div class="user-card">
         <p>@user.Username</p>
-        <p>Posts: @user.PostCount</p>
+        <p>Posts: @user.BlogCount</p>
 
         @if (user.IsModerator)
         {

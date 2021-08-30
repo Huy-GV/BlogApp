@@ -7,17 +7,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogApp.Models.DTOs;
 
 namespace BlogApp.Pages.Admin
 {
     //PASSWORD: Admin123@@
-    public class UserDTO
-    { 
-        public string Username { get; set; }
-        public string JoinDate { get; set; }
-        public bool IsModerator { get; set; } = false;
-        public int PostCount { get; set; }
-    }
+
     //TODO: create a custom handler?
     [Authorize(Roles = "admin")]
     public class AdminModel : PageModel
@@ -51,7 +46,7 @@ namespace BlogApp.Pages.Admin
                 {
                     Username = user.UserName,
                     IsModerator = await IsModeratorRole(user),
-                    PostCount = _context.Blog
+                    BlogCount = _context.Blog
                     .Where(blog => blog.Author == user.UserName)
                     .ToList()
                     .Count
@@ -77,7 +72,6 @@ namespace BlogApp.Pages.Admin
             await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
 
             return RedirectToPage("Admin");
-
         }
         public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {

@@ -32,7 +32,7 @@ namespace BlogApp.Pages.Blogs
             ApplicationDbContext context,
             IAuthorizationService authorizationService,
             UserManager<IdentityUser> userManager,
-            ILogger<BlogModel> logger) : base (context, authorizationService, userManager)
+            ILogger<BlogModel> logger) : base(context, authorizationService, userManager)
         {
             _logger = logger;
         }
@@ -41,14 +41,16 @@ namespace BlogApp.Pages.Blogs
             Blog = await Context.Blog
                 .Include(blog => blog.Comments)
                 .FirstOrDefaultAsync(blog => blog.ID == id);
-            if (Blog == null) return NotFound();
+            if (Blog == null)
+                return NotFound();
 
 
             return Page();
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!User.Identity.IsAuthenticated) return Challenge();
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
 
             if (!ModelState.IsValid)
             {
@@ -74,16 +76,19 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
-            if (EditBlogForm.Content == "") 
+            if (EditBlogForm.Content == "")
                 return RedirectToPage("./Blog", new { id = blogID });
-            if (!User.Identity.IsAuthenticated) return Challenge();
-            if (user.UserName != blog.Author) return Forbid();
-            
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+            if (user.UserName != blog.Author)
+                return Forbid();
+
             blog.Content = EditBlogForm.Content;
             Context.Attach(blog).State = EntityState.Modified;
 
-            try {await Context.SaveChangesAsync(); }
-            catch (DbUpdateConcurrencyException) {throw; }
+            try
+            { await Context.SaveChangesAsync(); }
+            catch (DbUpdateConcurrencyException) { throw; }
 
             return RedirectToPage("./Blog", new { id = blogID });
 
@@ -91,12 +96,14 @@ namespace BlogApp.Pages.Blogs
         }
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
-            if (!User.Identity.IsAuthenticated) return Challenge();
-            
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
-            if (user.UserName != blog.Author && !User.IsInRole(Roles.AdminRole)) return Forbid();
+            if (user.UserName != blog.Author && !User.IsInRole(Roles.AdminRole))
+                return Forbid();
 
             Context.Blog.Remove(blog);
             await Context.SaveChangesAsync();
@@ -108,8 +115,8 @@ namespace BlogApp.Pages.Blogs
         {
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
-            
-            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole)) 
+
+            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole))
                 return Forbid();
 
             Context.Comment.Remove(comment);
@@ -128,7 +135,8 @@ namespace BlogApp.Pages.Blogs
 
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
-            if (user.UserName != comment.Author) return Forbid();
+            if (user.UserName != comment.Author)
+                return Forbid();
 
             comment.Content = EditComment.Content;
             Context.Attach(comment).State = EntityState.Modified;
@@ -174,7 +182,7 @@ namespace BlogApp.Pages.Blogs
         //TODO: write a single method for the above 2 and use another for typechecking
     }
     public class AddCommentForm : ContentForm
-    { 
+    {
         public int BlogID { get; set; }
     }
     public class ContentForm
