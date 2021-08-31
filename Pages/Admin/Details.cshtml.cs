@@ -11,24 +11,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using BlogApp.Data.DTOs;
 using BlogApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Pages.Admin
 {
     [Authorize(Roles = "admin")]
-    public class DetailsModel : PageModel
+    public class DetailsModel : BaseModel
     {
-        private ApplicationDbContext _context { get; }
-        private IAuthorizationService _authorizationService { get; }
-        private UserManager<IdentityUser> _userManager { get; }
         private readonly ILogger<AdminModel> _logger;
         public DetailsModel(ApplicationDbContext context,
-                          IAuthorizationService authorizationService,
                           UserManager<IdentityUser> userManager,
-                          ILogger<AdminModel> logger)
+                          ILogger<AdminModel> logger) : base(context, userManager)
         {
-            _context = context;
-            _authorizationService = authorizationService;
-            _userManager = userManager;
             _logger = logger;
         }
         [BindProperty]
@@ -38,7 +32,7 @@ namespace BlogApp.Pages.Admin
             if (username == null)
                 return NotFound();
 
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await UserManager.FindByNameAsync(username);
             if (user == null)
             {
                 _logger.LogInformation("User not found");
@@ -53,30 +47,30 @@ namespace BlogApp.Pages.Admin
             return Page();
         }
         private Suspension GetSuspension(string username) {
-            return _context.Suspension.FirstOrDefault(s => s.Username == username);
+            return Context.Suspension.FirstOrDefault(s => s.Username == username);
         }
         private UserDTO GetUserDTO(string username) {
             return new UserDTO()
             {
                 Username = username,
-                BlogCount = _context.Blog
+                BlogCount = Context.Blog
                     .Where(blog => blog.Author == username)
                     .ToList()
                     .Count,
-                CommentCount = _context.Comment
+                CommentCount = Context.Comment
                     .Where(comment => comment.Author == username)
                     .ToList()
                     .Count
             };
         }
         private List<Blog> GetSuspendedBlogs(string username) {
-            return _context.Blog
+            return Context.Blog
                 .Where(blog => blog.Author == username)
                 .Where(blog => blog.IsHidden)
                 .ToList();
         }
         private List<Comment> GetSuspendedComments(string username) {
-            return _context.Comment
+            return Context.Comment
                 .Where(comment => comment.Author == username)
                 .Where(comment => comment.IsHidden)
                 .ToList();
@@ -85,8 +79,8 @@ namespace BlogApp.Pages.Admin
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
             if (!SuspensionExists(SuspensionTicket.Username)) {
-                _context.Suspension.Add(SuspensionTicket);
-                await _context.SaveChangesAsync();
+                Context.Suspension.Add(SuspensionTicket);
+                await Context.SaveChangesAsync();
             } else {
                 _logger.LogInformation("User has already been suspended");
             }
@@ -96,18 +90,40 @@ namespace BlogApp.Pages.Admin
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
             if (SuspensionExists(username)) {
-                var suspension = _context.Suspension.FirstOrDefault(s => s.Username == username);
-                _context.Suspension.Remove(suspension);
-                await _context.SaveChangesAsync();
+                var suspension = Context.Suspension.FirstOrDefault(s => s.Username == username);
+                Context.Suspension.Remove(suspension);
+                await Context.SaveChangesAsync();
             } else {
                 _logger.LogInformation("User has no suspensions");
             }
 
             return RedirectToPage("Details", new { username });
         }
+        public async Task<IActionResult> OnPostUnhidePostAsync(int postID, string type)
+        {
+            Post post;
+            _logger.LogDebug("Post type is " + type);
+            if (type == "comment")
+            {
+                post = await Context.Comment.FindAsync(postID);
+            } else if (type == "blog")
+            {
+                post = await Context.Blog.FindAsync(postID);
+            } else
+            {
+                return NotFound("Post type not found");
+            }
+            if (post == null)
+            {
+                return NotFound();
+            }
 
-        private bool SuspensionExists(string username) {
-            return _context.Suspension.Any(s => s.Username == username);
+            post.IsHidden = false;
+            Context.Attach(post).State = EntityState.Modified;
+            await Context.SaveChangesAsync();
+
+            return RedirectToPage("Details", new { username = post.Author });
         }
+
     }
 }

@@ -10,9 +10,7 @@ using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-
-
-//TODO: add admin privileges
+using BlogApp.Pages;
 
 namespace BlogApp.Pages.Blogs
 {
@@ -30,9 +28,8 @@ namespace BlogApp.Pages.Blogs
         public Blog Blog { get; set; }
         public BlogModel(
             ApplicationDbContext context,
-            IAuthorizationService authorizationService,
             UserManager<IdentityUser> userManager,
-            ILogger<BlogModel> logger) : base(context, authorizationService, userManager)
+            ILogger<BlogModel> logger) : base(context, userManager)
         {
             _logger = logger;
         }
@@ -44,8 +41,15 @@ namespace BlogApp.Pages.Blogs
             if (Blog == null)
                 return NotFound();
 
-            var user = await UserManager.GetUserAsync(User);
-            ViewData["Suspended"] = Context.Suspension.Any(s => s.Username == user.UserName);
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await UserManager.GetUserAsync(User);
+                await CheckSuspensionExpiry(user.UserName);
+                ViewData["IsSuspended"] = SuspensionExists(user.UserName);
+            } else
+            {
+                ViewData["IsSuspended"] = false;
+            }
 
             return Page();
         }

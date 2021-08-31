@@ -12,21 +12,6 @@ blogContainer.addEventListener('click', (e) => {
 
 })
 
-const commentForm = document.querySelector(".comment-form");
-const commentBtn = document.querySelector(".comment-button");
-
-commentBtn.addEventListener("click", () => {
-    commentBtn.classList.toggle("hidden-element");
-    commentForm.classList.toggle("hidden-element");
-})
-
-const cancelCommentBtn = document.querySelector(".cancel-comment");
-
-cancelCommentBtn.addEventListener("click", () => {
-    commentBtn.classList.toggle("hidden-element");
-    commentForm.classList.toggle("hidden-element");
-})
-
 const commentContainer = document.querySelector(".comment-container");
 
 commentContainer.addEventListener('click', (e) => {

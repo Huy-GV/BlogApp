@@ -62,11 +62,11 @@
     </div>
 </div>
 
-<div class="add-comment-button-container"><a class="comment-button">Add a comment</a></div>
+
 
 @if (!isSuspended)
 {
-    <form method="post" class="comment-form hidden-element">
+    <form method="post" class="comment-form">
         <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
         <textarea rows="3" cols="30"
                   asp-for="InputComment.Content"

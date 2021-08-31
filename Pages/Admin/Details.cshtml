@@ -41,11 +41,22 @@
         }
         foreach(var blog in suspendedBlogs) 
         {
-            <div class="suspended-blog">
-                <p>Original content</p>
-                <p>@blog.Content</p>
-                @* <p>Mod: at Suspend date</p> *@
-            </div>
+<div class="suspended-blog">
+    <h5>Original content</h5>
+    <p>@blog.Content</p>
+    <form method="post"
+          asp-page-handler="UnhidePost"
+          asp-route-postID="@blog.ID"
+          asp-route-type="blog">
+        <button class="lift-ban-btn">Unhide blog</button>
+    </form>
+    <form asp-page-handler="DeleteBlog"
+          asp-route-blogID="@blog.ID"
+          method="post">
+        <button class="delete-comment">Delete blog</button>
+    </form>
+    @* <p>Mod: at Suspend date</p> *@
+</div>
         }
     }
     <h2>Reported comments</h2>
@@ -61,11 +72,22 @@
         }
         foreach(var comment in suspendedComments) 
         {
-            <div class="suspended-comment">
-                <p>Original content</p>
-                <p>@comment.Content</p>
-                @* <p>Mod: at Suspend date</p> *@
-            </div>
+<div class="suspended-comment">
+    <h5>Original content</h5>
+    <p>@comment.Content</p>
+    <form method="post"
+          asp-page-handler="UnhidePost"
+          asp-route-postID="@comment.ID"
+          asp-route-type="comment">
+        <button class="lift-ban-btn">Unhide comment</button>
+    </form>
+    <form asp-page-handler="DeleteComment"
+          asp-route-commentID="@comment.ID"
+          method="post">
+        <button class="delete-comment">Delete comment</button>
+    </form>
+    @* <p>Mod: at Suspend date</p> *@
+</div>
         }
     }
 

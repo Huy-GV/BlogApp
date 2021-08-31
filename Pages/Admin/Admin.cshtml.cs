@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApp.Data.DTOs;
+using BlogApp.Pages;
 
 namespace BlogApp.Pages.Admin
 {
@@ -15,28 +16,20 @@ namespace BlogApp.Pages.Admin
 
     //TODO: create a custom handler?
     [Authorize(Roles = "admin")]
-    public class AdminModel : PageModel
+    public class AdminModel : BaseModel
     {
-        private ApplicationDbContext _context { get; }
-        private IAuthorizationService _authorizationService { get; }
-        private UserManager<IdentityUser> _userManager { get; }
         private ILogger<AdminModel> _logger;
         public AdminModel(ApplicationDbContext context,
-                          IAuthorizationService  authorizationService,
                           UserManager<IdentityUser> userManager,
-                          ILogger<AdminModel> logger)
+                          ILogger<AdminModel> logger) : base(context, userManager)
         {
-            _context = context;
-            _authorizationService = authorizationService;
-            _userManager = userManager;
             _logger = logger;
         }
         
         //TODO: add a filter that shows moderators only
         public async Task<IActionResult> OnGetAsync()
         {
-            //TODO: IMPLEMENT JOIN DATES FOR USERS, WRITE A CUSTOM USER IDENTITY CLASS?
-            var users = _userManager.Users
+            var users = UserManager.Users
                 .ToList()
                 .Where(user => user.UserName != "admin");
             List<UserDTO> userDTOs = new();
@@ -46,7 +39,7 @@ namespace BlogApp.Pages.Admin
                 {
                     Username = user.UserName,
                     IsModerator = await IsModeratorRole(user),
-                    BlogCount = _context.Blog
+                    BlogCount = Context.Blog
                     .Where(blog => blog.Author == user.UserName)
                     .ToList()
                     .Count
@@ -57,32 +50,32 @@ namespace BlogApp.Pages.Admin
         }
         private async Task<bool> IsModeratorRole(IdentityUser user)
         {
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await UserManager.GetRolesAsync(user);
             return roles.Contains(Roles.ModeratorRole);
         }
 
         public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string username)
         {
-            var user = _context.Users.FirstOrDefault(user => user.UserName == username);
+            var user = Context.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
                 _logger.LogError($"No user with ID {username} was found");
                 return Page();
             }
-            await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
+            await UserManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
 
             return RedirectToPage("Admin");
         }
         public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {
-            var user = _context.Users.FirstOrDefault(user => user.UserName == username);
+            var user = Context.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
                 _logger.LogError($"No user with ID {username} was found");
                 return Page();
             }
 
-            await _userManager.AddToRoleAsync(user, Roles.ModeratorRole);
+            await UserManager.AddToRoleAsync(user, Roles.ModeratorRole);
             return RedirectToPage("Admin");
         }
 

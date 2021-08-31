@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BlogApp.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BlogApp.Pages.Blogs
+namespace BlogApp.Pages
 {
     public class BaseModel : PageModel
     {
@@ -17,11 +17,9 @@ namespace BlogApp.Pages.Blogs
         protected UserManager<IdentityUser> UserManager { get; }
         public BaseModel(
             ApplicationDbContext context, 
-            IAuthorizationService authorizationService, 
             UserManager<IdentityUser> userManager)
         {
             Context = context;
-            AuthorizationService = authorizationService;
             UserManager = userManager;
         }
 
@@ -31,12 +29,13 @@ namespace BlogApp.Pages.Blogs
         }
         protected async Task CheckSuspensionExpiry(string username)
         {
-            var suspension = Context.Suspension.First(s => s.Username == username);
+            var suspension = Context.Suspension.FirstOrDefault(s => s.Username == username);
             if (suspension != null && DateTime.Compare(DateTime.Now, suspension.Expiry) > 0)
             {
                 Context.Remove(suspension);
                 await Context.SaveChangesAsync();
             }
         }
+
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using BlogApp.Data;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
+using BlogApp.Pages;
 
 namespace BlogApp.Pages.Blogs
 {
@@ -17,8 +18,7 @@ namespace BlogApp.Pages.Blogs
     {
         public IndexModel(
             ApplicationDbContext context,
-            IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager) : base(context, authorizationService, userManager)
+            UserManager<IdentityUser> userManager) : base(context, userManager)
         {
 
         }
@@ -29,13 +29,22 @@ namespace BlogApp.Pages.Blogs
 
         public async Task OnGetAsync()
         {
-            var user = await UserManager.GetUserAsync(User);
+            
             Blog = await Context
                 .Blog
                 .Include(blog => blog.Comments)
                 .ToListAsync();
-            
-            ViewData["IsSuspended"] = Context.Suspension.Any(s => s.Username == user.UserName);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await UserManager.GetUserAsync(User);
+                await CheckSuspensionExpiry(user.UserName);
+                ViewData["IsSuspended"] = SuspensionExists(user.UserName);
+            } else
+            {
+                ViewData["IsSuspended"] = false;
+            }
+
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -43,6 +52,7 @@ namespace BlogApp.Pages.Blogs
             {
                 return Challenge();
             }
+
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
             await CheckSuspensionExpiry(username);
