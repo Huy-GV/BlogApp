@@ -41,7 +41,7 @@
 
 .confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {
     padding: 0.3rem;
-    border-radius: 3px;
+    border-radius: 2px;
     font-size: medium;
 }
 
