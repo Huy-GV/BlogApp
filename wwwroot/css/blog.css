@@ -35,7 +35,7 @@
 
 .title {
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
 }
 
 .comment-container {
@@ -86,6 +86,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0.2rem;
 }
 
 .comment-form > input {
@@ -119,7 +120,7 @@
     font-size: 0.7rem;
 }
 
-.submit-comment, .cancel-comment {
+.submit-comment {
     width: fit-content;
     font-size: 0.8rem;
 }
@@ -147,10 +148,14 @@
     border: 1px solid red;
 }
 
-.delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .save-btn:hover {
+.delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .save-btn:hover, .submit-comment:hover {
     cursor: pointer;
     filter: brightness(0.8);
     transition: 200ms ease-in;
+}
+
+textarea {
+    font-size: 0.8rem;
 }
 
 

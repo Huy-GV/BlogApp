@@ -68,11 +68,10 @@
 {
     <form method="post" class="comment-form">
         <input asp-for="InputComment.BlogID" value="@Model.Blog.ID" type="hidden" />
-        <textarea rows="3" cols="30"
+        <textarea rows="5" cols="50"
                   asp-for="InputComment.Content"
-                  placeholder="Type your comment"></textarea>
-        <button class="cancel-comment" type="button">Cancel</button>
-        <input type="submit" value="Post" class="submit-comment" />
+                  placeholder="Add your comment" required></textarea>
+        <input type="submit" value="Post Comment" class="submit-comment" />
     </form>
 }
 

@@ -7,8 +7,8 @@
     var user = (await UserManager.GetUserAsync(User));
 
     <nav>
-        <span>@user.UserName</span>
         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Blogs/Index" method="post">
+            <span>@user.UserName</span>
             <button class="log-btn">Log out</button>
         </form>
     </nav>
