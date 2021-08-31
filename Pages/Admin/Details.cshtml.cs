@@ -119,6 +119,7 @@ namespace BlogApp.Pages.Admin
             }
 
             post.IsHidden = false;
+            post.SuspensionExplanation = "";
             Context.Attach(post).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 

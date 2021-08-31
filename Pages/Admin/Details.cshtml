@@ -48,12 +48,12 @@
           asp-page-handler="UnhidePost"
           asp-route-postID="@blog.ID"
           asp-route-type="blog">
-        <button class="lift-ban-btn">Unhide blog</button>
+        <button class="un-hide-post">Unhide blog</button>
     </form>
     <form asp-page-handler="DeleteBlog"
           asp-route-blogID="@blog.ID"
           method="post">
-        <button class="delete-comment">Delete blog</button>
+        <button class="delete-post">Delete blog</button>
     </form>
     @* <p>Mod: at Suspend date</p> *@
 </div>
@@ -79,12 +79,12 @@
           asp-page-handler="UnhidePost"
           asp-route-postID="@comment.ID"
           asp-route-type="comment">
-        <button class="lift-ban-btn">Unhide comment</button>
+        <button class="un-hide-post">Unhide comment</button>
     </form>
     <form asp-page-handler="DeleteComment"
           asp-route-commentID="@comment.ID"
           method="post">
-        <button class="delete-comment">Delete comment</button>
+        <button class="delete-post">Delete comment</button>
     </form>
     @* <p>Mod: at Suspend date</p> *@
 </div>

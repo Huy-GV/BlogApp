@@ -193,7 +193,7 @@ namespace BlogApp.Pages.Blogs
             await Context.SaveChangesAsync();
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
-        //TODO: write a single method for the above 2 and use another for typechecking
+
     }
     public class AddCommentForm : ContentForm
     {
