@@ -23,12 +23,12 @@
 }
 
 .profile-container, .suspended-blog-container, .ban-details-container {
-    border: 1px solid black;
     padding: 0.4rem;
     margin-top: 0.7rem;
     margin-left: 20%;
     margin-right: 20%;
     border-radius: 3px;
+    background-color: white;
 }
 
 .suspend-form {
@@ -45,7 +45,8 @@
     font-size: medium;
 }
 
-.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover, .cancel-btn:hover, .un-hide-post:hover, .delete-post:hover{
+.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover, 
+.cancel-btn:hover, .un-hide-post:hover, .delete-post:hover{
     cursor: pointer;
     filter: brightness(0.6);
 }
