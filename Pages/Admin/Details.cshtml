@@ -72,22 +72,22 @@
         }
         foreach(var comment in suspendedComments) 
         {
-<div class="suspended-comment">
-    <h5>Original content</h5>
-    <p>@comment.Content</p>
-    <form method="post"
-          asp-page-handler="UnhidePost"
-          asp-route-postID="@comment.ID"
-          asp-route-type="comment">
-        <button class="un-hide-post">Unhide comment</button>
-    </form>
-    <form asp-page-handler="DeleteComment"
-          asp-route-commentID="@comment.ID"
-          method="post">
-        <button class="delete-post">Delete comment</button>
-    </form>
-    @* <p>Mod: at Suspend date</p> *@
-</div>
+            <div class="suspended-comment">
+                <h5>Original content</h5>
+                <p>@comment.Content</p>
+                <form method="post"
+                      asp-page-handler="UnhidePost"
+                      asp-route-postID="@comment.ID"
+                      asp-route-type="comment">
+                    <button class="un-hide-post">Unhide comment</button>
+                </form>
+                <form asp-page-handler="DeleteComment"
+                      asp-route-commentID="@comment.ID"
+                      method="post">
+                    <button class="delete-post">Delete comment</button>
+                </form>
+                @* <p>Mod: at Suspend date</p> *@
+            </div>
         }
     }
 

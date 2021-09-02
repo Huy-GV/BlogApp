@@ -25,8 +25,9 @@
     border: 2px solid black;
     border-radius: 3px;
     padding: 0.6rem;
-    width: 60%;
     background-color: white;
+    width: 60%;
+
 }
 
 .blog-author {
