@@ -33,8 +33,12 @@ namespace BlogApp.Pages.Blogs
         {
             _logger = logger;
         }
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (id == null) {
+                return NotFound();
+            }
+
             Blog = await Context.Blog
                 .Include(blog => blog.Comments)
                 .FirstOrDefaultAsync(blog => blog.ID == id);
