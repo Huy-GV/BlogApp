@@ -45,7 +45,9 @@
     align-items: center;
     margin: auto;
     width: 50%;
-    box-shadow: -10px 0 7px 2px #dadada, 10px 0 7px 2px #dadada;
+    border-radius: 3px;
+    /*box-shadow: -10px 0 7px 2px #dadada, 10px 0 7px 2px #dadada;*/
+    box-shadow: 0 10px 7px 12px #dadada;
 }
 
 .comment {
@@ -93,9 +95,15 @@
 }
 
 .comment-form > input {
-    padding: 0.4rem;
+    padding: 0.8rem;
     margin: 0.2rem;
     font-size: 0.8rem;
+}
+
+textarea {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 3px;
 }
 
 .cancel-comment {
@@ -156,10 +164,3 @@
     filter: brightness(0.8);
     transition: 200ms ease-in;
 }
-
-textarea {
-    font-size: 0.8rem;
-}
-
-
-
