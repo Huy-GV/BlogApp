@@ -47,8 +47,10 @@
     margin: auto;
     width: 50%;
     border-radius: 3px;
-    /*box-shadow: -10px 0 7px 2px #dadada, 10px 0 7px 2px #dadada;*/
-    box-shadow: 0 10px 7px 12px #dadada;
+}
+
+.visible-shadow {
+    box-shadow: -10px 0 7px 2px #dadada, 10px 0 7px 2px #dadada;
 }
 
 .comment {
@@ -141,13 +143,14 @@ textarea {
 
 .edit-post, .edit-comment {
     background-color: white;
-    border: 1px solid grey;
+    border: 1px solid blue;
     color: blue;
 }
 
 .delete-post, .delete-comment,.save-btn {
     background-color: blue;
     border: 1px solid blue;
+    color: white;
 }
 
 .delete-post:hover, .edit-post:hover, .delete-comment:hover, 

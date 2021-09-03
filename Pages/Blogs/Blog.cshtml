@@ -51,14 +51,16 @@
             }
 
         </div>
-        @if (Model.Blog.IsHidden)
-        {
-            <p class="blog-content suspended-post">@Model.Blog.SuspensionExplanation</p>
+        @{
+            string blogContentClass = "";
+            string blogContent = Model.Blog.Content;
+            if (Model.Blog.IsHidden) 
+            {
+                blogContentClass = "suspended-post";
+                blogContent = Model.Blog.SuspensionExplanation;
+            }
         }
-        else
-        {
-            <p class="blog-content">@Model.Blog.Content</p>
-        }
+        <p class="blog-content @blogContentClass">@blogContent</p>
     </div>
 </div>
 
@@ -77,20 +79,29 @@
     </form>
 }
 
+@{
+    string visibleShadowClass = "";
+    if (Model.Blog.Comments.Count > 0) 
+    {
+        visibleShadowClass = "visible-shadow";
+    }
+}
 
-<div class="comment-container">
+<div class="comment-container @visibleShadowClass">
     @foreach (var comment in Model.Blog.Comments)
     {
         <div class="comment" data-id="@comment.ID">
             @{
+                string authorClass;
                 if (comment.Author == Model.Blog.Author)
                 {
-                    <span class="blog-author">@comment.Author</span>
+                    authorClass = "blog-author";
                 }
                 else
                 {
-                    <span class="comment-author">@comment.Author</span>
+                    authorClass = "comment-author";
                 }
+                <span class="@authorClass">@comment.Author</span>
             }
 
             <div class="comment-button-container">
@@ -129,17 +140,16 @@
                     }
                 }
             </div>
-            @if (comment.IsHidden)
-            {
-                <p class="comment-text suspended-post">@comment.SuspensionExplanation</p>
+            @{
+                string postClass = "";
+                string commentContent = comment.Content;
+                if (comment.IsHidden)
+                {
+                    postClass = "suspended-post";
+                    commentContent = comment.SuspensionExplanation;
+                }
             }
-            else
-            {
-                <p class="comment-text">@comment.Content</p>
-            }
-
-
-
+            <p class="comment-text @postClass">@commentContent</p>
         </div>
     }
 
