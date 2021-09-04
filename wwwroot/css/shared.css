@@ -56,10 +56,9 @@ body {
 }
 
 nav {
-    margin: 1.2rem;
-    margin-left: auto;
     padding: 0.2rem;
-    width: 10rem;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .suspended-post {

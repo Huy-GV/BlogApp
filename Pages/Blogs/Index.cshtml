@@ -22,17 +22,12 @@
             <p class="title">@blog.Title</p>
             <hr>
             <div class="blog-info">
-                <p class='author'>@blog.Author</p>
-                <p class="date">@blog.Date</p>
-                @if (blog.IsHidden)
-                {
-                    <p class="suspended-post">@blog.SuspensionExplanation</p>
-                }
-                <div class="blog-button-container">
-                    <a class="blog-button" 
-                        asp-page="./Blog" 
-                        asp-route-id="@blog.ID">See more (@blog.Comments.Count comments)</a>
-                </div>
+                <p>@blog.Author</p>
+                <p>@blog.Date.ToString("dd-MM-yyyy")</p>
+                <p>@blog.Comments.Count comments</p>
+                <a class="blog-button" 
+                    asp-page="./Blog" 
+                    asp-route-id="@blog.ID">See more </a>
             </div>
         </div>
     }

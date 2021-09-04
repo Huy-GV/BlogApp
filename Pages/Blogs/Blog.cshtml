@@ -15,8 +15,6 @@
 <div class="blog-container">
     <div class="blog">
         <span class="title">@Model.Blog.Title</span>
-        <span>@Model.Blog.Date.ToString("dd-MM-yyyy")</span>
-        <span class="blog-author">@Model.Blog.Author</span>
         <div class="comment-button-container">
             @if (user != null)
             {
@@ -61,6 +59,11 @@
             }
         }
         <p class="blog-content @blogContentClass">@blogContent</p>
+        <div class="blog-info-container">
+            <span class='blog-info'>@Model.Blog.Date.ToString("dd-MM-yyyy")</span>
+            <span class="blog-info blog-author">@Model.Blog.Author</span>
+        </div>
+
     </div>
 </div>
 

@@ -14,39 +14,44 @@
     background-color: white;
     padding: 0.5rem;
     width: 20rem;
-    height: 15rem;
+    height: 10rem;
 }
 
 .title {
+    height: 30%;
+    overflow: hidden;
     font-weight: 700;
-    font-size: 1.6rem;
 }
 
-.author {
-    color: blue;
-    margin-right: 0.5rem;
-}
-
-.blog-button-container {
+.blog-info {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+}
+
+.blog-info > p, .blog-info > a{
+    font-size: 0.8rem;
+    color: grey;
+    text-align: right;
+    margin: 0;
+    font-style: italic;
 }
 
 .blog-button {
-    background-color: blue;
-    color: white;
-    border-radius: 3px;
-    padding: 0.3rem;
-    width: 60%;
     text-decoration: none;
-    text-align: center;
-    transition: 200ms ease-in;
+    transition: 100ms ease-in;
 }
 
 .blog-button:hover, .add-button:hover {
     cursor: pointer;
-    box-shadow: 0 0 5px 1px #a5a5ff;
     transition: 100ms ease-out;
+}
+
+.blog-button:hover {
+    color: blue;
+}
+
+.add-button:hover {
+    box-shadow: 0 0 5px 1px #a5a5ff;
 }
 
 .add-button-container {
