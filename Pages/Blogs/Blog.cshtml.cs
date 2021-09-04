@@ -81,8 +81,7 @@ namespace BlogApp.Pages.Blogs
                 BlogID = InputComment.BlogID
             };
 
-            await CheckSuspensionExpiry(username);
-            if (SuspensionExists(username))
+            if (await SuspensionExists(username))
                 return RedirectToPage("./Blog", new { id = comment.BlogID });
 
             Context.Add(comment);
@@ -105,10 +104,7 @@ namespace BlogApp.Pages.Blogs
 
             blog.Content = EditBlogForm.Content;
             Context.Attach(blog).State = EntityState.Modified;
-
-            try
-            { await Context.SaveChangesAsync(); }
-            catch (DbUpdateConcurrencyException) { throw; }
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Blog", new { id = blogID });
 
@@ -161,14 +157,7 @@ namespace BlogApp.Pages.Blogs
 
             comment.Content = EditComment.Content;
             Context.Attach(comment).State = EntityState.Modified;
-            try
-            {
-                await Context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }

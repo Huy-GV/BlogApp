@@ -19,14 +19,15 @@ namespace BlogApp.Pages.Admin
     public class DetailsModel : BaseModel
     {
         private readonly ILogger<AdminModel> _logger;
+        [BindProperty]
+        public Suspension SuspensionTicket { get; set; }
         public DetailsModel(ApplicationDbContext context,
                           UserManager<IdentityUser> userManager,
                           ILogger<AdminModel> logger) : base(context, userManager)
         {
             _logger = logger;
         }
-        [BindProperty]
-        public Suspension SuspensionTicket { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string? username)
         {
             if (username == null)
@@ -78,7 +79,7 @@ namespace BlogApp.Pages.Admin
 
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
-            if (!SuspensionExists(SuspensionTicket.Username)) {
+            if (!(await SuspensionExists(SuspensionTicket.Username))) {
                 Context.Suspension.Add(SuspensionTicket);
                 await Context.SaveChangesAsync();
             } else {
@@ -89,7 +90,7 @@ namespace BlogApp.Pages.Admin
 
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
-            if (SuspensionExists(username)) {
+            if (await SuspensionExists(username)) {
                 var suspension = Context.Suspension.FirstOrDefault(s => s.Username == username);
                 Context.Suspension.Remove(suspension);
                 await Context.SaveChangesAsync();

@@ -26,13 +26,12 @@ namespace BlogApp.Pages.Blogs
         }
 
 
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
-            await CheckSuspensionExpiry(username);
-            if (SuspensionExists(username))
+
+            if (await SuspensionExists(username))
                 return RedirectToPage("./Index");
 
             return Page();
@@ -42,8 +41,8 @@ namespace BlogApp.Pages.Blogs
         {
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
-            await CheckSuspensionExpiry(username);
-            if (SuspensionExists(username))
+
+            if (await SuspensionExists(username))
                 return RedirectToPage("./Index");
 
             if (!ModelState.IsValid)

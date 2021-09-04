@@ -23,8 +23,9 @@ namespace BlogApp.Pages
             UserManager = userManager;
         }
 
-        protected bool SuspensionExists(string username)
+        protected async Task<bool> SuspensionExists(string username)
         {
+            await CheckSuspensionExpiry(username);
             return Context.Suspension.Any(s => s.Username == username);
         }
         protected async Task CheckSuspensionExpiry(string username)
