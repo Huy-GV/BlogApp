@@ -23,9 +23,9 @@ namespace BlogApp.Pages.Blogs
         public ContentForm EditBlogForm { get; set; }
         [BindProperty]
         public ContentForm EditComment { get; set; }
-
         private ILogger<BlogModel> _logger;
         public Blog Blog { get; set; }
+
         public BlogModel(
             ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
@@ -33,6 +33,7 @@ namespace BlogApp.Pages.Blogs
         {
             _logger = logger;
         }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null) {
@@ -57,6 +58,7 @@ namespace BlogApp.Pages.Blogs
 
             return Page();
         }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!User.Identity.IsAuthenticated)
@@ -70,7 +72,6 @@ namespace BlogApp.Pages.Blogs
 
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
-
 
             var comment = new Comment
             {
@@ -89,6 +90,7 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("./Blog", new { id = comment.BlogID });
         }
+
         public async Task<IActionResult> OnPostEditBlogAsync(int blogID)
         {
             var user = await UserManager.GetUserAsync(User);
@@ -112,6 +114,7 @@ namespace BlogApp.Pages.Blogs
 
 
         }
+
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
             if (!User.Identity.IsAuthenticated)

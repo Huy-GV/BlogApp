@@ -1,0 +1,24 @@
+﻿@page
+@model BlogApp.Pages.Blogs.CreateBlogModel
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+
+@{
+    ViewData["Title"] = "Post a blog";
+    ViewData["CSSLink"] = "/css/createblog.css";
+    ViewData["Shared"] = "/css/shared.css";
+    ViewData["Script"] = "#";
+
+}
+
+ <h3>Make a post !</h3> 
+ <form class="add-form" method="post">
+        <div>
+            <label asp-for="InputBlog.Title"><strong>Title</strong></label>
+            <input asp-for="InputBlog.Title" type="text">
+        </div>
+        <br>
+        <textarea rows="4" cols="50" asp-for="InputBlog.Content" placeholder="What do you want to share?" type="text"></textarea><br>
+        <input type="submit" value="Post" class="submit-post" />
+</form> 
