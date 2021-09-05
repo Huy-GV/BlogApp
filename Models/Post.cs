@@ -8,11 +8,10 @@ namespace BlogApp.Models
 {
     public class Post
     {
-        public string? UserID { get; set; }
-        [Required, MaxLength(255)]
+        [Required, MaxLength(2500)]
         public string Content { get; set; }
         [MaxLength(255)]
-        public string? SuspensionExplanation { get; set; }
+        public string SuspensionExplanation { get; set; } = "";
         [MaxLength(255)]
         [DataType(DataType.Date), Required]
         public DateTime Date { get; set; }
