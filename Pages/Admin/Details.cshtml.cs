@@ -18,6 +18,10 @@ namespace BlogApp.Pages.Admin
     [Authorize(Roles = "admin")]
     public class DetailsModel : BaseModel
     {
+        private enum PostType {
+            Blog,
+            Comment
+        }
         private readonly ILogger<AdminModel> _logger;
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }
@@ -41,14 +45,11 @@ namespace BlogApp.Pages.Admin
             }
             
             ViewData["UserDTO"] = GetUserDTO(username);
-            ViewData["SuspendedBlogs"] = GetSuspendedBlogs(username);
-            ViewData["SuspendedComments"] = GetSuspendedComments(username);
+            ViewData["SuspendedBlogs"] = GetSuspendedPosts<Blog>(username);
+            ViewData["SuspendedComments"] = GetSuspendedPosts<Comment>(username);
             ViewData["Suspension"] = GetSuspension(username);
 
             return Page();
-        }
-        private Suspension GetSuspension(string username) {
-            return Context.Suspension.FirstOrDefault(s => s.Username == username);
         }
         private UserDTO GetUserDTO(string username) {
             return new UserDTO()
@@ -64,19 +65,25 @@ namespace BlogApp.Pages.Admin
                     .Count
             };
         }
-        private List<Blog> GetSuspendedBlogs(string username) {
-            return Context.Blog
-                .Where(blog => blog.Author == username)
-                .Where(blog => blog.IsHidden)
-                .ToList();
+        private List<T> GetSuspendedPosts<T>(string username) where T : Post
+        {
+            if (typeof(T) == typeof(Comment))
+            {
+                return Context.Comment
+                    .Where(comment => comment.Author == username)
+                    .Where(comment => comment.IsHidden)
+                    .ToList() as List<T>;
+            } else if (typeof(T) == typeof(Blog))
+            {
+                return Context.Blog
+                    .Where(blog => blog.Author == username)
+                    .Where(blog => blog.IsHidden)
+                    .ToList() as List<T>;
+            } else
+            {
+                throw new Exception("Unknown post type");
+            }
         }
-        private List<Comment> GetSuspendedComments(string username) {
-            return Context.Comment
-                .Where(comment => comment.Author == username)
-                .Where(comment => comment.IsHidden)
-                .ToList();
-        }
-
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
             if (!(await SuspensionExists(SuspensionTicket.Username))) {
