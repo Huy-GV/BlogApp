@@ -50,7 +50,7 @@ namespace BlogApp.Pages.Blogs
             {
                 var user = await UserManager.GetUserAsync(User);
                 await CheckSuspensionExpiry(user.UserName);
-                ViewData["IsSuspended"] = SuspensionExists(user.UserName);
+                ViewData["IsSuspended"] = await SuspensionExists(user.UserName);
             } else
             {
                 ViewData["IsSuspended"] = false;
@@ -107,8 +107,6 @@ namespace BlogApp.Pages.Blogs
             await Context.SaveChangesAsync();
 
             return RedirectToPage("./Blog", new { id = blogID });
-
-
         }
 
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)

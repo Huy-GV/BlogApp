@@ -4,7 +4,6 @@
     align-items: center;
     justify-items: center;
     justify-content: center;
-    background-color: rgb(237 237 237);
     gap: 2rem;
 }
 
@@ -50,7 +49,19 @@
     color: blue;
 }
 
+.add-button {
+    background-color: blue;
+    color: white;
+    padding: 0.3rem;
+    text-decoration: none;
+    text-align: center;
+    width: 50%;
+    transition: 100ms ease-in;
+}
+
 .add-button:hover {
+    transform: scale(1.05);
+    transition: 100ms ease-in;
     box-shadow: 0 0 5px 1px #a5a5ff;
 }
 
@@ -61,11 +72,4 @@
     margin: 0.6rem;
 }
 
-.add-button {
-    background-color: blue;
-    color: white;
-    padding: 0.3rem;
-    text-decoration: none;
-    text-align: center;
-    width: 50%;
-}
+

@@ -11,7 +11,7 @@
     var isSuspended = (bool)ViewData["IsSuspended"];
 }
 
-<a asp-page="./Index" class="menu-button">Back to menu</a>
+
 <div class="blog-container">
     <div class="blog">
         <span class="title">@Model.Blog.Title</span>
@@ -83,14 +83,14 @@
 }
 
 @{
-    string visibleShadowClass = "";
+    string visibleBorderClass = "";
     if (Model.Blog.Comments.Count > 0) 
     {
-        visibleShadowClass = "visible-shadow";
+        visibleBorderClass = "visible-border";
     }
 }
 
-<div class="comment-container @visibleShadowClass">
+<div class="comment-container @visibleBorderClass">
     @foreach (var comment in Model.Blog.Comments)
     {
         <div class="comment" data-id="@comment.ID">
