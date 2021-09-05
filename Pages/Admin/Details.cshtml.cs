@@ -28,7 +28,7 @@ namespace BlogApp.Pages.Admin
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnGetAsync(string? username)
+        public async Task<IActionResult> OnGetAsync(string username)
         {
             if (username == null)
                 return NotFound();
