@@ -9,8 +9,8 @@
     <nav>
         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Blogs/Index" method="post">
             <span>Welcome back, @user.UserName</span>
-            <span><a asp-page="./Index" class="nav-btn">Home</a></span>
-            <button class="nav-btn">Log out</button>
+            <span><a asp-page="./Index" ><button class="nav-btn">Home</button></a></span>
+            <span><button class="nav-btn">Log out</button></span>
         </form>
     </nav>
 }

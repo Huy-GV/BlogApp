@@ -94,7 +94,6 @@ namespace BlogApp.Pages.Admin
             }
             return RedirectToPage("Details", new { username = SuspensionTicket.Username });
         }
-
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
             if (await SuspensionExists(username)) {

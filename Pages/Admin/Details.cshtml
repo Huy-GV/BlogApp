@@ -22,6 +22,7 @@
         <p>Username: @userDTO.Username</p>
         <p>Blog count: @userDTO.BlogCount</p>
         <p>Comments: @userDTO.CommentCount</p>
+        <hr>
     </div>
 
 </div>
@@ -37,37 +38,35 @@
         if (suspendedBlogs.Count == 0) {
             <div class="suspended-blog">
                 <p>None</p>
+                <hr>
             </div>
         }
         foreach(var blog in suspendedBlogs) 
         {
-<div class="suspended-blog">
-    <h5>Original content</h5>
-    <p>@blog.Content</p>
-    <form method="post"
-          asp-page-handler="UnhidePost"
-          asp-route-postID="@blog.ID"
-          asp-route-type="blog">
-        <button class="un-hide-post">Unhide blog</button>
-    </form>
-    <form asp-page-handler="DeleteBlog"
-          asp-route-blogID="@blog.ID"
-          method="post">
-        <button class="delete-post">Delete blog</button>
-    </form>
-    @* <p>Mod: at Suspend date</p> *@
-</div>
+            <div class="suspended-blog">
+                <h5>Original content</h5>
+                <p>@blog.Content</p>
+                <form method="post"
+                      asp-page-handler="UnhidePost"
+                      asp-route-postID="@blog.ID"
+                      asp-route-type="blog">
+                    <button class="un-hide-post">Unhide blog</button>
+                </form>
+                <form asp-page-handler="DeleteBlog"
+                      asp-route-blogID="@blog.ID"
+                      method="post">
+                    <button class="delete-post">Delete blog</button>
+                </form>
+                <hr>
+            </div>
         }
     }
     <h2>Reported comments</h2>
-    @* <div class="suspended-comment">
-        <p>Original content</p>
-        <p>Mod: at Suspend date</p>
-    </div> *@
     @{
         if (suspendedComments.Count == 0) {
             <div class="suspended-comment">
                 <p>None</p>
+                <hr>
             </div>
         }
         foreach(var comment in suspendedComments) 
@@ -86,7 +85,7 @@
                       method="post">
                     <button class="delete-post">Delete comment</button>
                 </form>
-                @* <p>Mod: at Suspend date</p> *@
+                <hr>
             </div>
         }
     }
@@ -110,6 +109,7 @@
                 <p>No suspension exists</p>
             }
         }
+        <hr>
     </div>
     
     <form class="suspend-form" method="post" asp-page-handler="SuspendUser">
