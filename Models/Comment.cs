@@ -10,7 +10,7 @@ namespace BlogApp.Models
     {
         public int ID { get; set; }
         [Required, MaxLength(250)]
-        public new string Content { get; set; }
+        public override string Content { get; set; }
         [Required]
         public int BlogID { get; set; }
     }
