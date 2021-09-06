@@ -42,7 +42,8 @@
 
 .title {
     font-weight: 700;
-    font-size: 1.6rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .comment-container {

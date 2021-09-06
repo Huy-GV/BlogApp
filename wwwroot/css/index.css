@@ -9,7 +9,7 @@
 
 .blog {
     box-shadow: 0 0 7px 2px #dadada;
-    border-radius: 3px;
+    border-radius: 10px;
     background-image: linear-gradient(to left, #f4fff7,rgb(255 253 246 / 83%));
     padding: 0.5rem;
     width: 20rem;

@@ -24,8 +24,6 @@ namespace BlogApp.Pages.Blogs
         {
 
         }
-
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await UserManager.GetUserAsync(User);
@@ -36,7 +34,6 @@ namespace BlogApp.Pages.Blogs
 
             return Page();
         }
-
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await UserManager.GetUserAsync(User);
@@ -64,7 +61,6 @@ namespace BlogApp.Pages.Blogs
             return RedirectToPage("./Index");
         }
     }
-
     public class InputBlog
     {
         public string Title { get; set; }
