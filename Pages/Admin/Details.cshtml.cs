@@ -132,6 +132,6 @@ namespace BlogApp.Pages.Admin
 
             return RedirectToPage("Details", new { username = post.Author });
         }
-        
+
     }
 }

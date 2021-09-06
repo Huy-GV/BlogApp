@@ -66,7 +66,7 @@ namespace BlogApp.Pages.Blogs
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ERROR");
+                _logger.LogError("Model state invalid when submitting comments");
                 return Page();
             }
 
@@ -144,7 +144,7 @@ namespace BlogApp.Pages.Blogs
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ERROR");
+                _logger.LogError("Model state invalid when editting comments");
                 return Page();
             }
 

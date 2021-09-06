@@ -31,7 +31,6 @@ namespace BlogApp.Pages.Blogs
                 .Blog
                 .Include(blog => blog.Comments)
                 .ToListAsync();
-
         }
     }
 }

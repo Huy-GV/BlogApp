@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using Microsoft.Extensions.Logging; 
 namespace BlogApp.Pages.Blogs
 {
     [Authorize]
@@ -17,12 +17,13 @@ namespace BlogApp.Pages.Blogs
 
         [BindProperty]
         public InputBlog InputBlog { get; set; }
-
+        private ILogger<CreateBlogModel> _logger;
         public CreateBlogModel(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager) : base(context, userManager)
+            UserManager<IdentityUser> userManager,
+            ILogger<CreateBlogModel> logger) : base(context, userManager)
         {
-
+            _logger = logger;
         }
         public async Task<IActionResult> OnGetAsync()
         {
@@ -44,7 +45,7 @@ namespace BlogApp.Pages.Blogs
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ERROR");
+                _logger.LogError("Invalid model state when submitting new post");
                 return Page();
             }
             var blog = new Blog
