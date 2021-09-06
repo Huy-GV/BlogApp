@@ -11,10 +11,10 @@
             <span>Welcome back, @user.UserName</span>
             @if (User.IsInRole(Roles.AdminRole))
             {
-                <span><a asp-page="./Admin/Admin" ><button class="nav-btn">Admin</button></a></span>
+                <span><a asp-page="/Admin/Admin"  class="nav-btn">Admin</a></span>
             }
-            <span><a asp-page="./Index" ><button class="nav-btn">Home</button></a></span>
-            <span><button class="nav-btn">Log out</button></span>
+            <span><a asp-page="/Blogs/Index" class="nav-btn">Home</a></span>
+            <span><input type="submit" class="nav-btn" value="Log out"/></span>
         </form>
     </nav>
 }

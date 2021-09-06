@@ -80,6 +80,7 @@
     display: flex;
     align-content: center;
     margin: 0.2rem;
+    justify-content: flex-end;
 }
 
 .comment-button {
