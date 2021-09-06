@@ -38,15 +38,12 @@
 .blog-button {
     text-decoration: none;
     transition: 100ms ease-in;
+    color: blue;
 }
 
 .blog-button:hover, .add-button:hover {
     cursor: pointer;
     transition: 100ms ease-out;
-}
-
-.blog-button:hover {
-    color: blue;
 }
 
 .add-button {
