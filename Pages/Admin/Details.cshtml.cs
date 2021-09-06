@@ -45,9 +45,9 @@ namespace BlogApp.Pages.Admin
             }
             
             ViewData["UserDTO"] = GetUserDTO(username);
-            ViewData["SuspendedBlogs"] = GetSuspendedPosts<Blog>(username);
-            ViewData["SuspendedComments"] = GetSuspendedPosts<Comment>(username);
-            ViewData["Suspension"] = GetSuspension(username);
+            ViewData["SuspendedBlogs"] = await GetSuspendedPosts<Blog>(username);
+            ViewData["SuspendedComments"] = await GetSuspendedPosts<Comment>(username);
+            ViewData["Suspension"] = await GetSuspension(username);
 
             return Page();
         }
@@ -65,23 +65,23 @@ namespace BlogApp.Pages.Admin
                     .Count
             };
         }
-        private List<T> GetSuspendedPosts<T>(string username) where T : Post
+        private async Task<IList<T>> GetSuspendedPosts<T>(string username) where T : Post
         {
             if (typeof(T) == typeof(Comment))
             {
-                return Context.Comment
+                return await Context.Comment
                     .Where(comment => comment.Author == username)
                     .Where(comment => comment.IsHidden)
-                    .ToList() as List<T>;
+                    .ToListAsync() as IList<T>;
             } else if (typeof(T) == typeof(Blog))
             {
-                return Context.Blog
+                return await Context.Blog
                     .Where(blog => blog.Author == username)
                     .Where(blog => blog.IsHidden)
-                    .ToList() as List<T>;
+                    .ToListAsync() as IList<T>;
             } else
             {
-                throw new Exception("Unknown post type");
+                throw new Exception("Unknown type for suspended post");
             }
         }
         public async Task<IActionResult> OnPostSuspendUserAsync() 

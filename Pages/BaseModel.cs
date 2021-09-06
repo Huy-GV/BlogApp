@@ -30,15 +30,15 @@ namespace BlogApp.Pages
         }
         protected async Task CheckSuspensionExpiry(string username)
         {
-            var suspension = GetSuspension(username);
+            var suspension = await GetSuspension(username);
             if (suspension != null && DateTime.Compare(DateTime.Now, suspension.Expiry) > 0)
             {
                 Context.Remove(suspension);
                 await Context.SaveChangesAsync();
             }
         }
-        protected Suspension GetSuspension(string username) {
-            return Context.Suspension.FirstOrDefault(s => s.Username == username);
+        protected async Task<Suspension> GetSuspension(string username) {
+            return await Context.Suspension.FirstOrDefaultAsync(s => s.Username == username);
         }
     }
 }
