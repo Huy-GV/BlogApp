@@ -8,11 +8,10 @@
 }
 
 .blog {
-    box-shadow: 0 0 5px 0.1px #dadada;
-    border-radius: 10px;
-    background-image: linear-gradient(to left, #e6ffff82,rgb(253 237 255 / 28%));
+    box-shadow: 0 0 1px 1px #dadada;
     padding: 0.5rem;
     width: 20rem;
+    border-left: 5px solid blue;
     height: 10rem;
 }
 

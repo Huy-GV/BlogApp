@@ -13,8 +13,6 @@ using BlogApp.Pages;
 namespace BlogApp.Pages.Admin
 {
     //PASSWORD: Admin123@@
-
-    //TODO: create a custom handler?
     [Authorize(Roles = "admin")]
     public class AdminModel : BaseModel
     {
