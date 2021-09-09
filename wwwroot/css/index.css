@@ -1,74 +1,97 @@
 .blog-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem,20rem));
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
-    gap: 2rem;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(20rem, 20rem))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(20rem, 20rem));
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  justify-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 2rem;
 }
 
 .blog {
-    box-shadow: 0 0 1px 1px #dadada;
-    padding: 0.5rem;
-    width: 20rem;
-    border-left: 5px solid blue;
-    height: 10rem;
+  -webkit-box-shadow: 0 0 1px 1px #dadada;
+          box-shadow: 0 0 1px 1px #dadada;
+  padding: 0.5rem;
+  width: 20rem;
+  border-left: 5px solid blue;
+  height: 10rem;
 }
 
 .title {
-    height: 30%;
-    overflow: hidden;
-    font-weight: 700;
+  height: 30%;
+  overflow: hidden;
+  font-weight: 700;
 }
 
 .blog-info {
-    display: flex;
-    flex-direction: column;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
-.blog-info > p, .blog-button {
-    font-size: 0.8rem;
-    text-align: right;
-    margin: 0;
-    font-style: italic;
+.blog-info p, .blog-info .blog-button {
+  font-size: 0.8rem;
+  text-align: right;
+  margin: 0;
+  font-style: italic;
 }
 
-.blog-info > p {
-    color: grey;
+.blog-info p:hover, .blog-info .blog-button:hover {
+  cursor: pointer;
+  -webkit-transition: 100ms ease-out;
+  transition: 100ms ease-out;
 }
 
-.blog-button {
-    text-decoration: none;
-    transition: 100ms ease-in;
-    color: blue;
+.blog-info p {
+  color: grey;
 }
 
-.blog-button:hover, .add-button:hover {
-    cursor: pointer;
-    transition: 100ms ease-out;
-}
-
-.add-button {
-    background-color: blue;
-    color: white;
-    padding: 0.3rem;
-    text-decoration: none;
-    text-align: center;
-    width: 50%;
-    transition: 100ms ease-in;
-}
-
-.add-button:hover {
-    transform: scale(1.05);
-    transition: 100ms ease-in;
-    box-shadow: 0 0 5px 1px #a5a5ff;
+.blog-info .blog-button {
+  text-decoration: none;
+  -webkit-transition: 100ms ease-in;
+  transition: 100ms ease-in;
+  color: blue;
 }
 
 .add-button-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0.6rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 0.6rem;
 }
 
+.add-button-container .add-button {
+  background-color: blue;
+  color: white;
+  padding: 0.3rem;
+  text-decoration: none;
+  text-align: center;
+  width: 50%;
+  -webkit-transition: 100ms ease-in;
+  transition: 100ms ease-in;
+}
 
+.add-button-container .add-button:hover {
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
+  -webkit-transition: 100ms ease-in;
+  transition: 100ms ease-in;
+  -webkit-box-shadow: 0 0 5px 1px #a5a5ff;
+          box-shadow: 0 0 5px 1px #a5a5ff;
+}
+/*# sourceMappingURL=index.css.map */

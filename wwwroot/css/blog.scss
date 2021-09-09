@@ -1,0 +1,141 @@
+$primary-color: blue;
+
+.menu-button {
+    color: white;
+    border: 1px solid $primary-color;
+    border-radius: 4px;
+    text-decoration: none;
+    padding: 0.3rem;
+    background-color: $primary-color;
+
+    &:hover {
+        cursor: pointer;
+        filter: brightness(0.8);
+    }
+}
+
+
+.blog-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.blog {
+    padding: 0.6rem;
+    width: 60%;
+}
+
+.blog-info-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.blog-info {
+    font-size: 0.7rem;
+    font-style: italic;
+    margin-left: 0.1rem;
+}
+
+.blog-author {
+    color: green;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.comment-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.1rem;
+    margin: auto;
+    width: 50%;
+    border-radius: 3px;
+
+    .comment {
+        padding: 0.5rem;
+        background-color: white;
+    
+        .comment-author {
+            color: $primary-color;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+    }
+}
+
+.visible-border {
+    border: 0.1px solid #cecece;
+}
+
+.add-comment-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 0.2rem;
+
+    .comment-button {
+        background-color: $primary-color;
+        color: white;
+        border: 1px solid $primary-color;
+        border-radius: 4px;
+        padding: 0.4rem;
+        width: 7rem;
+    
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.comment-button-container {
+    display: flex;
+    align-content: center;
+    margin: 0.2rem;
+    justify-content: flex-end;
+}
+
+.comment-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.2rem;
+
+    textarea {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+        border-radius: 3px;
+    }
+}
+
+.submit-comment {
+    height: 2rem;
+    width: fit-content;
+    margin: 0.2rem;
+    font-size: 0.8rem;
+}
+
+.delete-post, .edit-post, .delete-comment, 
+.edit-comment, .save-btn, .submit-comment {
+    
+    background-color: white;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+    border-radius: 3px;
+    padding: 0.3rem;
+    transition: 200ms ease-out;
+
+    &:not(.submit-comment) {
+        height: 1.2rem;
+        margin:0.1rem;
+    }
+
+    &:hover {
+        cursor: pointer;
+        filter: brightness(0.8);
+        transition: 200ms ease-in;
+    }
+
+}
