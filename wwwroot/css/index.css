@@ -26,12 +26,15 @@
     flex-direction: column;
 }
 
-.blog-info > p, .blog-info > a{
+.blog-info > p, .blog-button {
     font-size: 0.8rem;
-    color: grey;
     text-align: right;
     margin: 0;
     font-style: italic;
+}
+
+.blog-info > p {
+    color: grey;
 }
 
 .blog-button {
