@@ -1,3 +1,5 @@
+$primary-purple: rgb(99, 0, 148);
+
 .blog-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem,20rem));
@@ -10,7 +12,7 @@
         box-shadow: 0 0 1px 1px #dadada;
         padding: 0.5rem;
         width: 20rem;
-        border-left: 5px solid blue;
+        border-left: 5px solid $primary-purple;
         height: 10rem;
 
         .title {
@@ -41,7 +43,7 @@
             .blog-button {
                 text-decoration: none;
                 transition: 100ms ease-in;
-                color: blue;
+                color: $primary-purple;
             }
         }
     }
@@ -54,7 +56,7 @@
     margin: 0.6rem;
 
     .add-button {
-        background-color: blue;
+        background-color: $primary-purple;
         color: white;
         padding: 0.3rem;
         text-decoration: none;

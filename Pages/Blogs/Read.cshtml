@@ -4,19 +4,18 @@
 @inject SignInManager<IdentityUser> SignInManager
 
 @{
-    ViewData["CSSLink"] = "/css/blog.css";
+    ViewData["CSSLink"] = "/css/readblog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "/js/blog.js";
     IdentityUser user = (await UserManager.GetUserAsync(User));
     var isSuspended = (bool)ViewData["IsSuspended"];
 }
 
-
 <div class="blog-container">
     <div class="blog">
         <p class="title">@Model.Blog.Title</p>
         <hr>
-        <div class="comment-button-container">
+        <div class="comment-option-container">
             @if (user != null)
             {
                 var userRoles = await UserManager.GetRolesAsync(user);

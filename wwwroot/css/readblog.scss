@@ -1,12 +1,12 @@
-$primary-color: blue;
+$primary-purple: rgb(99, 0, 148);
 
 .menu-button {
     color: white;
-    border: 1px solid $primary-color;
+    border: 1px solid $primary-purple;
     border-radius: 4px;
     text-decoration: none;
     padding: 0.3rem;
-    background-color: $primary-color;
+    background-color: $primary-purple;
 
     &:hover {
         cursor: pointer;
@@ -60,7 +60,7 @@ $primary-color: blue;
         background-color: white;
     
         .comment-author {
-            color: $primary-color;
+            color: $primary-purple;
             font-weight: 700;
             font-size: 1.1rem;
         }
@@ -77,9 +77,9 @@ $primary-color: blue;
     margin: 0.2rem;
 
     .comment-button {
-        background-color: $primary-color;
+        background-color: $primary-purple;
         color: white;
-        border: 1px solid $primary-color;
+        border: 1px solid $primary-purple;
         border-radius: 4px;
         padding: 0.4rem;
         width: 7rem;
@@ -92,6 +92,7 @@ $primary-color: blue;
 
 .comment-option-container {
     display: flex;
+    flex-direction: row;
     align-content: center;
     margin: 0.2rem;
     justify-content: flex-end;
@@ -121,20 +122,17 @@ $primary-color: blue;
 .edit-comment, .save-btn, .submit-comment {
     
     background-color: white;
-    border: 1px solid $primary-color;
-    color: $primary-color;
+    border: 1px solid $primary-purple;
+    color: $primary-purple;
     border-radius: 3px;
     padding: 0.3rem;
     transition: 200ms ease-out;
+    margin: 0.1rem;
 
-    &:not(.submit-comment) {
-        height: 1.2rem;
-        margin:0.1rem;
-    }
-
-    &:hover {
+    &:hover, &:focus {
         cursor: pointer;
-        filter: brightness(0.8);
+        background-color: $primary-purple;
+        color: white;
         transition: 200ms ease-in;
     }
 

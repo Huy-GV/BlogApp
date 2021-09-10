@@ -13,22 +13,22 @@
   gap: 2rem;
 }
 
-.blog {
+.blog-container .blog {
   -webkit-box-shadow: 0 0 1px 1px #dadada;
           box-shadow: 0 0 1px 1px #dadada;
   padding: 0.5rem;
   width: 20rem;
-  border-left: 5px solid blue;
+  border-left: 5px solid #630094;
   height: 10rem;
 }
 
-.title {
+.blog-container .blog .title {
   height: 30%;
   overflow: hidden;
   font-weight: 700;
 }
 
-.blog-info {
+.blog-container .blog .blog-info {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -38,28 +38,28 @@
           flex-direction: column;
 }
 
-.blog-info p, .blog-info .blog-button {
+.blog-container .blog .blog-info p, .blog-container .blog .blog-info .blog-button {
   font-size: 0.8rem;
   text-align: right;
   margin: 0;
   font-style: italic;
 }
 
-.blog-info p:hover, .blog-info .blog-button:hover {
+.blog-container .blog .blog-info p:hover, .blog-container .blog .blog-info .blog-button:hover {
   cursor: pointer;
   -webkit-transition: 100ms ease-out;
   transition: 100ms ease-out;
 }
 
-.blog-info p {
+.blog-container .blog .blog-info p {
   color: grey;
 }
 
-.blog-info .blog-button {
+.blog-container .blog .blog-info .blog-button {
   text-decoration: none;
   -webkit-transition: 100ms ease-in;
   transition: 100ms ease-in;
-  color: blue;
+  color: #630094;
 }
 
 .add-button-container {
@@ -76,7 +76,7 @@
 }
 
 .add-button-container .add-button {
-  background-color: blue;
+  background-color: #630094;
   color: white;
   padding: 0.3rem;
   text-decoration: none;
