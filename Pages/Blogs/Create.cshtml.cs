@@ -7,21 +7,19 @@ using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging; 
 namespace BlogApp.Pages.Blogs
 {
     [Authorize]
-    public class CreateBlogModel : BaseModel
+    public class CreateModel : BaseModel
     {
-
         [BindProperty]
         public InputBlog InputBlog { get; set; }
-        private ILogger<CreateBlogModel> _logger;
-        public CreateBlogModel(
+        private ILogger<CreateModel> _logger;
+        public CreateModel(
             ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
-            ILogger<CreateBlogModel> logger) : base(context, userManager)
+            ILogger<CreateModel> logger) : base(context, userManager)
         {
             _logger = logger;
         }

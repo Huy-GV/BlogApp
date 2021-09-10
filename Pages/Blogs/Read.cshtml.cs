@@ -15,7 +15,7 @@ using BlogApp.Pages;
 namespace BlogApp.Pages.Blogs
 {
     [AllowAnonymous]
-    public class BlogModel : BaseModel
+    public class ReadModel : BaseModel
     {
         [BindProperty]
         public AddCommentForm InputComment { get; set; }
@@ -23,13 +23,13 @@ namespace BlogApp.Pages.Blogs
         public ContentForm EditBlogForm { get; set; }
         [BindProperty]
         public ContentForm EditComment { get; set; }
-        private ILogger<BlogModel> _logger;
+        private ILogger<ReadModel> _logger;
         public Blog Blog { get; set; }
 
-        public BlogModel(
+        public ReadModel(
             ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
-            ILogger<BlogModel> logger) : base(context, userManager)
+            ILogger<ReadModel> logger) : base(context, userManager)
         {
             _logger = logger;
         }

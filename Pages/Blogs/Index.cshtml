@@ -12,7 +12,7 @@
     ViewData["Script"] = "#";
 }
 <div class="add-button-container">
-    <a class="add-button" asp-page="/Blogs/CreateBlog">Make a post!</a>
+    <a class="add-button" asp-page="/Blogs/Create">Make a post!</a>
 </div>
 
 <div class="blog-container">
@@ -26,7 +26,7 @@
                 <p>@blog.Date.ToString("dd MMMM yyyy")</p>
                 <p>@blog.Comments.Count comments</p>
                 <a class="blog-button" 
-                    asp-page="./Blog" 
+                    asp-page="/Blogs/Read" 
                     asp-route-id="@blog.ID">See more &#10148;</a>
             </div>
         </div>
