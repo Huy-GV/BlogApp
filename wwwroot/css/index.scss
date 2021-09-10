@@ -5,45 +5,45 @@
     justify-items: center;
     justify-content: center;
     gap: 2rem;
-}
 
-.blog {
-    box-shadow: 0 0 1px 1px #dadada;
-    padding: 0.5rem;
-    width: 20rem;
-    border-left: 5px solid blue;
-    height: 10rem;
-}
+    .blog {
+        box-shadow: 0 0 1px 1px #dadada;
+        padding: 0.5rem;
+        width: 20rem;
+        border-left: 5px solid blue;
+        height: 10rem;
 
-.title {
-    height: 30%;
-    overflow: hidden;
-    font-weight: 700;
-}
-
-.blog-info {
-    display: flex;
-    flex-direction: column;
-
-    p, .blog-button {
-        font-size: 0.8rem;
-        text-align: right;
-        margin: 0;
-        font-style: italic;
-        &:hover {
-            cursor: pointer;
-            transition: 100ms ease-out;
+        .title {
+            height: 30%;
+            overflow: hidden;
+            font-weight: 700;
         }
-    }
-
-    p {
-        color: grey;
-    }
-
-    .blog-button {
-        text-decoration: none;
-        transition: 100ms ease-in;
-        color: blue;
+        .blog-info {
+            display: flex;
+            flex-direction: column;
+        
+            p, .blog-button {
+                font-size: 0.8rem;
+                text-align: right;
+                margin: 0;
+                font-style: italic;
+                
+                &:hover {
+                    cursor: pointer;
+                    transition: 100ms ease-out;
+                }
+            }
+        
+            p {
+                color: grey;
+            }
+        
+            .blog-button {
+                text-decoration: none;
+                transition: 100ms ease-in;
+                color: blue;
+            }
+        }
     }
 }
 
