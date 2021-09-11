@@ -4,6 +4,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 
 @{
+    ViewData["Title"] = "Read Blog";
     ViewData["CSSLink"] = "/css/readblog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "/js/blog.js";
@@ -21,9 +22,16 @@
                 var userRoles = await UserManager.GetRolesAsync(user);
                 if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
                 {
-                    <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="get">
-                        <button class="delete-post">Delete</button>
+                    <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="post">
+                        <input class="delete-post" type="submit" value="Delete">
                     </form>
+                } 
+                if (user.UserName == Model.Blog.Author) 
+                {
+                    <a class="edit-post"
+                        asp-page="/Blogs/Edit" 
+                        asp-route-username="@user.UserName"
+                        asp-route-blogID="@Model.Blog.ID">Edit</a>
                 }
                 if (userRoles.Contains(Roles.ModeratorRole)
                     && user.UserName != Model.Blog.Author
@@ -35,17 +43,7 @@
                         <button class="delete-comment">Hide</button>
                     </form>
                 }
-                if (user.UserName == Model.Blog.Author)
-                {
-                    <span><button class="edit-post">Edit</button></span>
-                    <form asp-page-handler="EditBlog"
-                          asp-route-blogID="@Model.Blog.ID"
-                          method="post"
-                          class="hidden-element edit-blog-form">
-                        <input asp-for="EditBlogForm.Content" value="@Model.Blog.Content" />
-                        <input type="submit" value="Save" class="save-btn" />
-                    </form>
-                }
+                
             }
 
         </div>
@@ -131,14 +129,20 @@
                     }
                     if (comment.Author == user.UserName)
                     {
-                        <button class="edit-comment" data-id="@comment.ID">Edit</button>
+                        
                         <form asp-page-handler="EditComment"
                               asp-route-commentID="@comment.ID"
                               data-id="@comment.ID"
                               method="post"
-                              class="hidden-element edit-comment-form">
-                            <input asp-for="EditComment.Content" value="@comment.Content" />
-                            <input type="submit" value="Save" class="save-btn" />
+                              class="edit-comment-form">
+                            <textarea rows="5" cols="50"
+                                name="EditComment.Content" 
+                                class="edit-comment-textarea hidden-element"
+                                required>@comment.Content</textarea>
+                            <button class="edit-comment" 
+                                    data-id="@comment.ID" 
+                                    type="button">Edit</button>
+                            <input type="submit" value="Save" class="save-btn hidden-element" />
                         </form>
                     }
                 }

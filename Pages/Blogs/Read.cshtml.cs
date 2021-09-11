@@ -14,15 +14,21 @@ using BlogApp.Pages;
 
 namespace BlogApp.Pages.Blogs
 {
+    public class AddComment : EditComment
+    {
+        public int BlogID { get; set; }
+    }
+    public class EditComment
+    {
+        public string Content { get; set; }
+    }
     [AllowAnonymous]
     public class ReadModel : BaseModel
     {
         [BindProperty]
-        public AddCommentForm InputComment { get; set; }
+        public AddComment InputComment { get; set; }
         [BindProperty]
-        public ContentForm EditBlogForm { get; set; }
-        [BindProperty]
-        public ContentForm EditComment { get; set; }
+        public EditComment EditComment { get; set; }
         private ILogger<ReadModel> _logger;
         public Blog Blog { get; set; }
 
@@ -58,12 +64,9 @@ namespace BlogApp.Pages.Blogs
 
             return Page();
         }
-
+        [Authorize]
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!User.Identity.IsAuthenticated)
-                return Challenge();
-
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Model state invalid when submitting comments");
@@ -82,38 +85,16 @@ namespace BlogApp.Pages.Blogs
             };
 
             if (await SuspensionExists(username))
-                return RedirectToPage("./Blog", new { id = comment.BlogID });
+                return RedirectToPage("/Blogs/Index", new { id = comment.BlogID });
 
             Context.Add(comment);
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("./Blog", new { id = comment.BlogID });
+            return RedirectToPage("/Blogs/Index", new { id = comment.BlogID });
         }
-
-        public async Task<IActionResult> OnPostEditBlogAsync(int blogID)
-        {
-            var user = await UserManager.GetUserAsync(User);
-            var blog = await Context.Blog.FindAsync(blogID);
-
-            if (EditBlogForm.Content == "")
-                return RedirectToPage("./Blog", new { id = blogID });
-            if (!User.Identity.IsAuthenticated)
-                return Challenge();
-            if (user.UserName != blog.Author)
-                return Forbid();
-
-            blog.Content = EditBlogForm.Content;
-            Context.Attach(blog).State = EntityState.Modified;
-            await Context.SaveChangesAsync();
-
-            return RedirectToPage("./Blog", new { id = blogID });
-        }
-
+        [Authorize]
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Challenge();
-
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
@@ -123,9 +104,9 @@ namespace BlogApp.Pages.Blogs
             Context.Blog.Remove(blog);
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Blogs/Index");
         }
-
+        [Authorize]
         public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
         {
             var user = await UserManager.GetUserAsync(User);
@@ -137,9 +118,9 @@ namespace BlogApp.Pages.Blogs
             Context.Comment.Remove(comment);
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("./Blog", new { id = comment.BlogID });
+            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
-
+        [Authorize]
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
             if (!ModelState.IsValid)
@@ -157,9 +138,9 @@ namespace BlogApp.Pages.Blogs
             Context.Attach(comment).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("./Blog", new { id = comment.BlogID });
+            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
-
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> OnPostHideBlogAsync(int blogID)
         {
             var blog = await Context.Blog.FindAsync(blogID);
@@ -171,9 +152,9 @@ namespace BlogApp.Pages.Blogs
             blog.IsHidden = true;
             blog.SuspensionExplanation = Messages.InappropriateBlog;
             await Context.SaveChangesAsync();
-            return RedirectToPage("./Blog", new { id = blogID });
+            return RedirectToPage("/Blogs/Read", new { id = blogID });
         }
-
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> OnPostHideCommentAsync(int commentID)
         {
             var comment = await Context.Comment.FindAsync(commentID);
@@ -185,17 +166,8 @@ namespace BlogApp.Pages.Blogs
             comment.IsHidden = true;
             comment.SuspensionExplanation = Messages.InappropriateComment;
             await Context.SaveChangesAsync();
-            return RedirectToPage("./Blog", new { id = comment.BlogID });
+            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
 
     }
-    public class AddCommentForm : ContentForm
-    {
-        public int BlogID { get; set; }
-    }
-    public class ContentForm
-    {
-        public string Content { get; set; }
-    }
-
 }

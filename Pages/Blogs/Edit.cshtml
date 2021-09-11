@@ -1,0 +1,27 @@
+﻿@page
+@model BlogApp.Pages.Blogs.EditModel
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+
+@{
+    ViewData["Title"] = "Edit Blog";
+    ViewData["CSSLink"] = "/css/createblog.css";
+    ViewData["Shared"] = "/css/shared.css";
+    ViewData["Script"] = "#";
+
+}
+
+<form class="add-form" method="post" asp-page-handler="EditBlog">
+    <div>
+        <label asp-for="EditBlog.Title"><strong>Title</strong></label>
+        <input name="EditBlog.Title" required value="@Model.EditBlog.Content">
+    </div>
+    <br>
+    <textarea rows="18" cols="50"
+              name="EditBlog.Content"
+              required>@Model.EditBlog.Content</textarea>
+    <br>
+    <input type="hidden" value="@Model.EditBlog.ID" asp-for="EditBlog.ID" />
+    <input type="submit" value="Post" class="submit-post" />
+</form>

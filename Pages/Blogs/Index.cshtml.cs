@@ -17,14 +17,12 @@ namespace BlogApp.Pages.Blogs
     public class IndexModel : BaseModel
     {
         public IList<Blog> Blog { get; set; }
-
         public IndexModel(
             ApplicationDbContext context,
             UserManager<IdentityUser> userManager) : base(context, userManager)
         {
 
         }
-
         public async Task OnGetAsync()
         {
             Blog = await Context

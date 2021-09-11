@@ -10,11 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging; 
 namespace BlogApp.Pages.Blogs
 {
+    public class InputBlog
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+    }
     [Authorize]
     public class CreateModel : BaseModel
     {
         [BindProperty]
-        public InputBlog InputBlog { get; set; }
+        public InputBlog CreateBlog { get; set; }
         private ILogger<CreateModel> _logger;
         public CreateModel(
             ApplicationDbContext context,
@@ -48,8 +53,8 @@ namespace BlogApp.Pages.Blogs
             }
             var blog = new Blog
             {
-                Title = InputBlog.Title,
-                Content = InputBlog.Content,
+                Title = CreateBlog.Title,
+                Content = CreateBlog.Content,
                 Date = DateTime.Now,
                 Author = user.UserName
             };
@@ -60,10 +65,6 @@ namespace BlogApp.Pages.Blogs
             return RedirectToPage("./Index");
         }
     }
-    public class InputBlog
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-    }
+
 }
 

@@ -5,7 +5,7 @@
 
 
 @{
-    ViewData["Title"] = "Post a blog";
+    ViewData["Title"] = "Create Blog";
     ViewData["CSSLink"] = "/css/createblog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "#";
@@ -14,12 +14,12 @@
 
 <form class="add-form" method="post">
     <div>
-        <label asp-for="InputBlog.Title"><strong>Title</strong></label>
-        <input asp-for="InputBlog.Title" type="text">
+        <label asp-for="CreateBlog.Title"><strong>Title</strong></label>
+        <input asp-for="CreateBlog.Title" type="text">
     </div>
     <br>
     <textarea rows="18" cols="50" 
-        asp-for="InputBlog.Content" 
+        asp-for="CreateBlog.Content" 
         required
         placeholder="What do you want to share?" type="text"></textarea><br>
     <input type="submit" value="Post" class="submit-post" />
