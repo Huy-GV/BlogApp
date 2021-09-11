@@ -14,19 +14,19 @@ using BlogApp.Pages;
 
 namespace BlogApp.Pages.Blogs
 {
-    public class AddComment : EditComment
-    {
-        public int BlogID { get; set; }
-    }
     public class EditComment
     {
         public string Content { get; set; }
+    }
+    public class AddComment : EditComment
+    {
+        public int BlogID { get; set; }
     }
     [AllowAnonymous]
     public class ReadModel : BaseModel
     {
         [BindProperty]
-        public AddComment InputComment { get; set; }
+        public AddComment CreateComment { get; set; }
         [BindProperty]
         public EditComment EditComment { get; set; }
         private ILogger<ReadModel> _logger;
@@ -64,9 +64,11 @@ namespace BlogApp.Pages.Blogs
 
             return Page();
         }
-        [Authorize]
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Model state invalid when submitting comments");
@@ -79,9 +81,9 @@ namespace BlogApp.Pages.Blogs
             var comment = new Comment
             {
                 Author = user.UserName,
-                Content = InputComment.Content,
+                Content = CreateComment.Content,
                 Date = DateTime.Now,
-                BlogID = InputComment.BlogID
+                BlogID = CreateComment.BlogID
             };
 
             if (await SuspensionExists(username))
@@ -92,9 +94,11 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("/Blogs/Index", new { id = comment.BlogID });
         }
-        [Authorize]
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+
             var user = await UserManager.GetUserAsync(User);
             var blog = await Context.Blog.FindAsync(blogID);
 
@@ -106,9 +110,12 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("/Blogs/Index");
         }
-        [Authorize]
         public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+            
+
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
 
@@ -120,9 +127,11 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
-        [Authorize]
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Model state invalid when editting comments");
@@ -140,9 +149,16 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
-        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> OnPostHideBlogAsync(int blogID)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+
+            var user = await UserManager.GetUserAsync(User);
+            var roles = await UserManager.GetRolesAsync(user);
+            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.AdminRole))) 
+                return Forbid();
+
             var blog = await Context.Blog.FindAsync(blogID);
             if (blog == null)
             {
@@ -154,9 +170,16 @@ namespace BlogApp.Pages.Blogs
             await Context.SaveChangesAsync();
             return RedirectToPage("/Blogs/Read", new { id = blogID });
         }
-        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> OnPostHideCommentAsync(int commentID)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+
+            var user = await UserManager.GetUserAsync(User);
+            var roles = await UserManager.GetRolesAsync(user);
+            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.AdminRole))) 
+                return Forbid();
+
             var comment = await Context.Comment.FindAsync(commentID);
             if (comment == null)
             {

@@ -51,7 +51,6 @@ namespace BlogApp.Pages.Blogs
 
             return Page();
         }
-        [Authorize]
         public async Task<IActionResult> OnPostEditBlogAsync()
         {
             if (!ModelState.IsValid)
