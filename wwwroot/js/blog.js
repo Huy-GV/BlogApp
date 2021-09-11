@@ -13,24 +13,21 @@ blogContainer.addEventListener('click', (e) => {
 })
 
 const commentContainer = document.querySelector(".comment-container");
+const editBlogBtn = document.querySelector(".edit-blog");
 
 commentContainer.addEventListener('click', (e) => {
     if (e.target && e.target.className === "edit-comment") {
-        let editBtn = e.target;
-        editBtn.innerHTML = editBtn.innerHTML == "Edit" ? "Cancel" : "Edit";
-
-        let id = editBtn.dataset.id;
+        let editCommentBtn = e.target;
+        editCommentBtn.innerHTML = editCommentBtn.innerHTML == "Edit" ? "Cancel" : "Edit";
+        let id = editCommentBtn.dataset.id;
         let comment = document.querySelector(`.comment[data-id="${id}"]`);
-        console.log(comment);
-
         let commentContent = comment.querySelector(".comment-text");
-        console.log(commentContent);
         commentContent.classList.toggle("hidden-element");
 
-
-        let editForm = comment.querySelector(".edit-comment-form");
-        console.log(editForm)
-        editForm.classList.toggle("hidden-element");
+        let editTextarea = comment.querySelector(".edit-comment-textarea");
+        let saveCommentEditBtn = comment.querySelector(".save-btn")
+        editTextarea.classList.toggle("hidden-element");
+        saveCommentEditBtn.classList.toggle("hidden-element");
 
         let deleteCommentBtn = comment.querySelector(".delete-comment");
         deleteCommentBtn.classList.toggle("hidden-element");

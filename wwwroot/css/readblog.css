@@ -1,18 +1,3 @@
-.menu-button {
-  color: white;
-  border: 1px solid #630094;
-  border-radius: 4px;
-  text-decoration: none;
-  padding: 0.3rem;
-  background-color: #630094;
-}
-
-.menu-button:hover {
-  cursor: pointer;
-  -webkit-filter: brightness(0.8);
-          filter: brightness(0.8);
-}
-
 .blog-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -162,11 +147,12 @@
   -webkit-transition: 200ms ease-out;
   transition: 200ms ease-out;
   margin: 0.1rem;
+  text-decoration: none;
+  font-size: 0.7rem;
 }
 
-.delete-post:hover, .delete-post:focus, .edit-post:hover, .edit-post:focus, .delete-comment:hover, .delete-comment:focus,
-.edit-comment:hover,
-.edit-comment:focus, .save-btn:hover, .save-btn:focus, .submit-comment:hover, .submit-comment:focus {
+.delete-post:hover, .edit-post:hover, .delete-comment:hover,
+.edit-comment:hover, .save-btn:hover, .submit-comment:hover {
   cursor: pointer;
   background-color: #630094;
   color: white;

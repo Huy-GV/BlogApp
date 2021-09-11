@@ -1,18 +1,18 @@
 $primary-purple: rgb(99, 0, 148);
 
-.menu-button {
-    color: white;
-    border: 1px solid $primary-purple;
-    border-radius: 4px;
-    text-decoration: none;
-    padding: 0.3rem;
-    background-color: $primary-purple;
+// .menu-button {
+//     color: white;
+//     border: 1px solid $primary-purple;
+//     border-radius: 4px;
+//     text-decoration: none;
+//     padding: 0.3rem;
+//     background-color: $primary-purple;
 
-    &:hover {
-        cursor: pointer;
-        filter: brightness(0.8);
-    }
-}
+//     &:hover {
+//         cursor: pointer;
+//         filter: brightness(0.8);
+//     }
+// }
 
 
 .blog-container {
@@ -128,8 +128,10 @@ $primary-purple: rgb(99, 0, 148);
     padding: 0.3rem;
     transition: 200ms ease-out;
     margin: 0.1rem;
-
-    &:hover, &:focus {
+    text-decoration: none;
+    font-size: 0.7rem;
+    
+    &:hover {
         cursor: pointer;
         background-color: $primary-purple;
         color: white;
