@@ -52,8 +52,9 @@
                       asp-route-type="blog">
                     <button class="un-hide-post">Unhide blog</button>
                 </form>
-                <form asp-page-handler="DeleteBlog"
-                      asp-route-blogID="@blog.ID"
+                <form asp-page-handler="DeletePost"
+                      asp-route-postID="@blog.ID"
+                      asp-route-type="blog"
                       method="post">
                     <button class="delete-post">Delete blog</button>
                 </form>
@@ -80,8 +81,9 @@
                       asp-route-type="comment">
                     <button class="un-hide-post">Unhide comment</button>
                 </form>
-                <form asp-page-handler="DeleteComment"
-                      asp-route-commentID="@comment.ID"
+                <form asp-page-handler="DeletePost"
+                      asp-route-postID="@comment.ID"
+                      asp-route-type="comment"
                       method="post">
                     <button class="delete-post">Delete comment</button>
                 </form>

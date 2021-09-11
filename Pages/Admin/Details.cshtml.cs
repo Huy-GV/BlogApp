@@ -132,6 +132,36 @@ namespace BlogApp.Pages.Admin
 
             return RedirectToPage("Details", new { username = post.Author });
         }
-
+        public async Task<IActionResult> OnPostDeletePostAsync(int postID, string type)
+        {
+            string username;
+            if (type == "comment")
+            {
+                var comment = await Context.Comment.FindAsync(postID);
+                if (comment == null)
+                {
+                    _logger.LogError("Comment not found");
+                    return NotFound();
+                }
+                username = comment.Author;
+                Context.Comment.Remove(comment);
+            } else if (type == "blog")
+            {
+                var blog = await Context.Blog.FindAsync(postID);
+                if (blog == null)
+                {
+                    _logger.LogError("Blog not found");
+                    return NotFound();
+                }
+                username = blog.Author;
+                Context.Blog.Remove(blog);
+            } else 
+            {
+                _logger.LogError("Unable to delete post with unknown type");
+                return NotFound();
+            }
+            await Context.SaveChangesAsync();
+            return RedirectToPage("Details", new { username });
+        }
     }
 }

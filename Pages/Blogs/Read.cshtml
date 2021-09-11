@@ -20,7 +20,7 @@
             @if (user != null)
             {
                 var userRoles = await UserManager.GetRolesAsync(user);
-                if ((user.UserName == Model.Blog.Author) || userRoles.Contains(Roles.AdminRole))
+                if ((user.UserName == Model.Blog.Author))
                 {
                     <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="post">
                         <input class="delete-post" type="submit" value="Delete">
@@ -34,6 +34,7 @@
                         asp-route-blogID="@Model.Blog.ID">Edit</a>
                 }
                 if (userRoles.Contains(Roles.ModeratorRole)
+                    && Model.Blog.Author != "admin"
                     && user.UserName != Model.Blog.Author
                     && !Model.Blog.IsHidden)
                 {
@@ -108,7 +109,7 @@
                 @if (user != null)
                 {
                     var userRoles = await UserManager.GetRolesAsync(user);
-                    if (comment.Author == user.UserName || userRoles.Contains(Roles.AdminRole))
+                    if (comment.Author == user.UserName)
                     {
                         <form asp-page-handler="DeleteComment"
                               asp-route-commentID="@comment.ID"
@@ -116,7 +117,9 @@
                             <button class="delete-comment">Delete</button>
                         </form>
                     }
+                    
                     if (userRoles.Contains(Roles.ModeratorRole)
+                        && comment.Author != "admin"
                         && user.UserName != comment.Author
                         && !comment.IsHidden)
                     {

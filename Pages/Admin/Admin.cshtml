@@ -16,13 +16,6 @@
         <p>Date joined</p>
         <p>Posts</p>
         <button class="assign-role">Assign moderator role</button>
-    </div>
-
-    <div class="user-card">
-        <p>Name</p>
-        <p>Date joined</p>
-        <p>Posts</p>
-        <button class="remove-role">Remove moderator role</button>
     </div>*@
     
     @foreach (var user in users)
@@ -52,7 +45,5 @@
             <a class="details-btn" asp-route-username="@user.Username" asp-page="Details">Details</a>
         </div>
     }
-
-
 </div>
 

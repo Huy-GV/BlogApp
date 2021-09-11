@@ -94,39 +94,6 @@ namespace BlogApp.Pages.Blogs
 
             return RedirectToPage("/Blogs/Index", new { id = comment.BlogID });
         }
-        public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
-        {
-            if (!User.Identity.IsAuthenticated)
-                return Challenge();
-
-            var user = await UserManager.GetUserAsync(User);
-            var blog = await Context.Blog.FindAsync(blogID);
-
-            if (user.UserName != blog.Author && !User.IsInRole(Roles.AdminRole))
-                return Forbid();
-
-            Context.Blog.Remove(blog);
-            await Context.SaveChangesAsync();
-
-            return RedirectToPage("/Blogs/Index");
-        }
-        public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
-        {
-            if (!User.Identity.IsAuthenticated)
-                return Challenge();
-            
-
-            var user = await UserManager.GetUserAsync(User);
-            var comment = await Context.Comment.FindAsync(commentID);
-
-            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole))
-                return Forbid();
-
-            Context.Comment.Remove(comment);
-            await Context.SaveChangesAsync();
-
-            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
-        }
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
             if (!User.Identity.IsAuthenticated)
@@ -156,10 +123,14 @@ namespace BlogApp.Pages.Blogs
 
             var user = await UserManager.GetUserAsync(User);
             var roles = await UserManager.GetRolesAsync(user);
-            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.AdminRole))) 
+            
+            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.ModeratorRole))) 
                 return Forbid();
 
             var blog = await Context.Blog.FindAsync(blogID);
+            if (blog.Author == "admin")
+                return Forbid();
+
             if (blog == null)
             {
                 _logger.LogInformation("Blog not found error");
@@ -177,10 +148,12 @@ namespace BlogApp.Pages.Blogs
 
             var user = await UserManager.GetUserAsync(User);
             var roles = await UserManager.GetRolesAsync(user);
-            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.AdminRole))) 
+            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.ModeratorRole))) 
                 return Forbid();
 
             var comment = await Context.Comment.FindAsync(commentID);
+            if (comment.Author == "admin")
+                return Forbid();
             if (comment == null)
             {
                 _logger.LogInformation("Comment not found error");
