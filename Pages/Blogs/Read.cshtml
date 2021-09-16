@@ -8,7 +8,7 @@
     ViewData["CSSLink"] = "/css/readblog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "/js/blog.js";
-    IdentityUser user = (await UserManager.GetUserAsync(User));
+    IdentityUser user = await UserManager.GetUserAsync(User);
     var isSuspended = (bool)ViewData["IsSuspended"];
 }
 
@@ -60,7 +60,7 @@
         <p class="blog-content @blogContentClass">@blogContent</p>
         <div class="blog-info-container">
             <span class='blog-info'>@Model.Blog.Date.ToString("dd MMMM yyyy")</span>
-            <span class="blog-info blog-author">@Model.Blog.Author</span>
+            <span class="blog-info blog-author"> - @Model.Blog.Author</span>
         </div>
 
     </div>

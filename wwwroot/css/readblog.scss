@@ -1,20 +1,5 @@
 $primary-purple: rgb(99, 0, 148);
 
-// .menu-button {
-//     color: white;
-//     border: 1px solid $primary-purple;
-//     border-radius: 4px;
-//     text-decoration: none;
-//     padding: 0.3rem;
-//     background-color: $primary-purple;
-
-//     &:hover {
-//         cursor: pointer;
-//         filter: brightness(0.8);
-//     }
-// }
-
-
 .blog-container {
     display: flex;
     flex-direction: column;
@@ -112,7 +97,6 @@ $primary-purple: rgb(99, 0, 148);
 }
 
 .submit-comment {
-    height: 2rem;
     width: fit-content;
     margin: 0.2rem;
     font-size: 0.8rem;

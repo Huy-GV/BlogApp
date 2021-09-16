@@ -72,7 +72,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Model state invalid when submitting comments");
-                return Page();
+                return NotFound();
             }
 
             var user = await UserManager.GetUserAsync(User);
@@ -87,12 +87,12 @@ namespace BlogApp.Pages.Blogs
             };
 
             if (await SuspensionExists(username))
-                return RedirectToPage("/Blogs/Index", new { id = comment.BlogID });
+                return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
 
             Context.Add(comment);
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("/Blogs/Index", new { id = comment.BlogID });
+            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
@@ -102,7 +102,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Model state invalid when editting comments");
-                return Page();
+                return NotFound();
             }
 
             var user = await UserManager.GetUserAsync(User);
@@ -134,7 +134,7 @@ namespace BlogApp.Pages.Blogs
             if (blog == null)
             {
                 _logger.LogInformation("Blog not found error");
-                return Page();
+                return NotFound();
             }
             blog.IsHidden = true;
             blog.SuspensionExplanation = Messages.InappropriateBlog;
@@ -157,7 +157,7 @@ namespace BlogApp.Pages.Blogs
             if (comment == null)
             {
                 _logger.LogInformation("Comment not found error");
-                return Page();
+                return NotFound();
             }
             comment.IsHidden = true;
             comment.SuspensionExplanation = Messages.InappropriateComment;
