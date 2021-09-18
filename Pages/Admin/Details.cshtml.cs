@@ -132,6 +132,7 @@ namespace BlogApp.Pages.Admin
 
             return RedirectToPage("Details", new { username = post.Author });
         }
+        //TODO: separate methods again because the length are similar
         public async Task<IActionResult> OnPostDeletePostAsync(int postID, string type)
         {
             string username;

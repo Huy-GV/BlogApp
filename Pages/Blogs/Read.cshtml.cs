@@ -164,6 +164,38 @@ namespace BlogApp.Pages.Blogs
             await Context.SaveChangesAsync();
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
+        public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
 
+            var user = await UserManager.GetUserAsync(User);
+            var blog = await Context.Blog.FindAsync(blogID);
+
+            if (user.UserName != blog.Author && !User.IsInRole(Roles.AdminRole))
+                return Forbid();
+
+            Context.Blog.Remove(blog);
+            await Context.SaveChangesAsync();
+
+            return RedirectToPage("/Blogs/Index");
+        }
+        public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Challenge();
+            
+
+            var user = await UserManager.GetUserAsync(User);
+            var comment = await Context.Comment.FindAsync(commentID);
+
+            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole))
+                return Forbid();
+
+            Context.Comment.Remove(comment);
+            await Context.SaveChangesAsync();
+
+            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
+        }
     }
 }
