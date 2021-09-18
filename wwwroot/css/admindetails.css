@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     margin-left: 20%;
+    margin-top: 4rem;
 }
 
 .suspended-blog-container {

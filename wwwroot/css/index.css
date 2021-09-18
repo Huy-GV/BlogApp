@@ -14,8 +14,8 @@
 }
 
 .blog-container .blog {
-  -webkit-box-shadow: 0 0 1px 1px #dadada;
-          box-shadow: 0 0 1px 1px #dadada;
+  -webkit-box-shadow: 0 0 3px 1.2px #dadada;
+          box-shadow: 0 0 3px 1.2px #dadada;
   padding: 0.5rem;
   width: 20rem;
   border-left: 5px solid #630094;
@@ -73,6 +73,7 @@
       -ms-flex-pack: center;
           justify-content: center;
   margin: 0.6rem;
+  margin-top: 4rem;
 }
 
 .add-button-container .add-button {

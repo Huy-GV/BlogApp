@@ -7,6 +7,7 @@
   border: 2.5px solid #630094;
   width: 35%;
   margin: auto;
+  margin-top: 4rem;
   padding: 1rem;
   border-radius: 3px;
 }
@@ -17,6 +18,22 @@
   margin: 0.2rem;
   border: 2px solid black;
   border-radius: 4px;
+}
+
+nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  position: fixed;
+  background-color: white;
+  top: 0;
+  padding: 0.3rem;
+  width: 100%;
+  padding: 1rem;
+  width: 96%;
 }
 
 .nav-btn {
@@ -44,15 +61,6 @@
 
 .hidden-element {
   display: none;
-}
-
-nav {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
 }
 
 .suspended-post {

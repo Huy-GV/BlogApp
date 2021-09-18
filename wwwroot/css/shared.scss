@@ -1,5 +1,6 @@
 :root {
     font-size: 20px;
+    //TODO: add custom fonts?
 }
 
 $primary-purple: rgb(99, 0, 148);
@@ -9,6 +10,7 @@ $primary-purple: rgb(99, 0, 148);
     border: 2.5px solid $primary-purple;
     width: 35%;
     margin: auto;
+    margin-top: 4rem;
     padding: 1rem;
     border-radius: 3px;
 }
@@ -19,6 +21,18 @@ $primary-purple: rgb(99, 0, 148);
     margin: 0.2rem;
     border: 2px solid black;
     border-radius: 4px;
+}
+
+nav {
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    background-color: white;
+    top: 0;
+    padding: 0.3rem;
+    width: 100%;
+    padding: 1rem;
+    width: 96%;
 }
 
 .nav-btn {
@@ -42,11 +56,6 @@ $primary-purple: rgb(99, 0, 148);
 
 .hidden-element {
     display: none;
-}
-
-nav {
-    display: flex;
-    justify-content: flex-end;
 }
 
 .suspended-post {
