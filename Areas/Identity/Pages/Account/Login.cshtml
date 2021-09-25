@@ -30,12 +30,15 @@
     </div>
 
     <hr />
-    <button type="submit" class="log-in-btn">Log in</button>
-    <p>
-        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-    </p>
-    <p>
-        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a>
-    </p>
+    <div class="button-container">
+        <button type="submit" class="log-in-btn">Log in</button>
+        <a id="forgot-password" 
+            asp-page="./ForgotPassword"  
+            class="log-in-btn">Forgot your password?</a>
+        <a asp-page="./Register" 
+            asp-route-returnUrl="@Model.ReturnUrl"  
+            class="log-in-btn">Sign up</a>
+    </div>
+
 
 </form>

@@ -12,7 +12,8 @@ $primary-purple: rgb(99, 0, 148);
         box-shadow: 0 0 3px 1.2px #dadada;
         padding: 0.5rem;
         width: 20rem;
-        border-left: 5px solid $primary-purple;
+        border-left: 7px solid $primary-purple;
+        border-radius: 5px;
         height: 10rem;
 
         .title {
@@ -63,12 +64,13 @@ $primary-purple: rgb(99, 0, 148);
         text-decoration: none;
         text-align: center;
         width: 50%;
+        border-radius: 5px;
         transition: 100ms ease-in;
     
         &:hover {
-            transform: scale(1.05);
+            transform: scale(1.01);
             transition: 100ms ease-in;
-            box-shadow: 0 0 5px 1px #a5a5ff;
+            box-shadow: 0 0 3px 1px #a5a5ff;
         }
     }
 }

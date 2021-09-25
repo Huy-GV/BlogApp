@@ -21,6 +21,8 @@ $primary-purple: rgb(99, 0, 148);
     margin: 0.2rem;
     border: 2px solid black;
     border-radius: 4px;
+    display: block;
+    width: 96%;
 }
 
 nav {
@@ -71,12 +73,24 @@ p {
     color: $primary-purple;
     padding: 0.3rem;
     border: 1px solid white;
-    border-radius: 3px;
+    border-radius: 4px;
+    border: 2px solid $primary-purple;
+    font-size: 1rem;
+    text-decoration: none;
+    display: block;
+    margin: 0.2rem;
+    text-align: center;
+
+    &:hover{
+        cursor: pointer;
+        background-color: $primary-purple;
+        border: 1px solid $primary-purple;
+        color: white;
+    }
 }
 
-.log-in-btn:hover {
-    cursor: pointer;
-    background-color: $primary-purple;
-    border: 1px solid $primary-purple;
-    color: white;
+.button-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

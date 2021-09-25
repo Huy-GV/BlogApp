@@ -5,6 +5,10 @@
 input[type="text"], textarea {
     padding: 0.3rem;
     font-size: 0.9rem;
+    display: block;
+    width: 30rem;
+    min-width: 80%;
+    margin: 0.2rem;
 }
 
 .submit-post {
