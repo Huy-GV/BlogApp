@@ -11,19 +11,14 @@
 <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="log-in-form">
     <h4>Create a new account.</h4>
     <hr />
-    <div asp-validation-summary="All"></div>
-
     <label asp-for="Input.UserName">Username</label>
     <input asp-for="Input.UserName" class="text-input" autocomplete="off" />
-    <span asp-validation-for="Input.UserName"></span>
     <br>
     <label asp-for="Input.Password">Password</label>
     <input asp-for="Input.Password" class="text-input" autocomplete="off" />
-    <span asp-validation-for="Input.Password"></span>
     <br>
     <label asp-for="Input.ConfirmPassword"></label>
     <input asp-for="Input.ConfirmPassword" class="text-input" />
-    <span asp-validation-for="Input.ConfirmPassword"></span>
 
     <button type="submit" class="log-in-btn">Register</button>
 </form>

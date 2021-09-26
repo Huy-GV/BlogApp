@@ -102,20 +102,46 @@ $primary-purple: rgb(99, 0, 148);
     width: fit-content;
     margin: 0.2rem;
     font-size: 0.8rem;
+    padding: 0.3rem;
+}
+
+.save-btn {
+    padding: 0.2rem;
+    font-size: 0.6rem;
+}
+
+.submit-comment, .save-btn {
+    color: white;
+    border: 1px solid $primary-purple;
+    background-color: $primary-purple;
+
+    &:hover{
+        filter: brightness(0.8);
+    }
 }
 
 .delete-post, .edit-post, .delete-comment, 
 .edit-comment, .save-btn, .submit-comment {
     
+    border-radius: 3px;
+    transition: 200ms ease-out;
+    margin: 0.1rem;
+    text-decoration: none;
+
+    &:hover {
+        cursor: pointer;
+        transition: 200ms ease-in;
+    }
+
+}
+
+.delete-post, .edit-post, .delete-comment, .edit-comment {
     background-color: white;
     border: 1px solid $primary-purple;
     color: $primary-purple;
     border-radius: 3px;
-    padding: 0.3rem;
-    transition: 200ms ease-out;
-    margin: 0.1rem;
-    text-decoration: none;
-    font-size: 0.7rem;
+    padding: 0.2rem;
+    font-size: 0.6rem;
     
     &:hover {
         cursor: pointer;
