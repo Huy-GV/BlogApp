@@ -69,8 +69,6 @@ p {
 }
 
 .log-in-btn {
-    background-color: white;
-    color: $primary-purple;
     padding: 0.3rem;
     border: 1px solid white;
     border-radius: 4px;
@@ -80,12 +78,29 @@ p {
     display: block;
     margin: 0.2rem;
     text-align: center;
+    transition: 200ms ease-out;
 
     &:hover{
         cursor: pointer;
+        transition: 200ms ease-in;
+        color: white;
+    }
+}
+
+.primary-btn {
+    background-color: $primary-purple;
+    color: white;
+    &:hover{
+        filter: brightness(0.8);
+    }
+}
+
+.secondary-btn {
+    background-color: white;
+    color: $primary-purple;
+    &:hover{
         background-color: $primary-purple;
         border: 1px solid $primary-purple;
-        color: white;
     }
 }
 

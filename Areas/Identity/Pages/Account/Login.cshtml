@@ -31,13 +31,13 @@
 
     <hr />
     <div class="button-container">
-        <button type="submit" class="log-in-btn">Log in</button>
+        <button type="submit" class="log-in-btn primary-btn">Log in</button>
         <a id="forgot-password" 
             asp-page="./ForgotPassword"  
-            class="log-in-btn">Forgot your password?</a>
+            class="log-in-btn secondary-btn">Forgot your password?</a>
         <a asp-page="./Register" 
             asp-route-returnUrl="@Model.ReturnUrl"  
-            class="log-in-btn">Sign up</a>
+            class="log-in-btn secondary-btn">Sign up</a>
     </div>
 
 

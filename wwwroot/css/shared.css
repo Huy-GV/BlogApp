@@ -74,8 +74,6 @@ p {
 }
 
 .log-in-btn {
-  background-color: white;
-  color: #630094;
   padding: 0.3rem;
   border: 1px solid white;
   border-radius: 4px;
@@ -85,13 +83,35 @@ p {
   display: block;
   margin: 0.2rem;
   text-align: center;
+  -webkit-transition: 200ms ease-out;
+  transition: 200ms ease-out;
 }
 
 .log-in-btn:hover {
   cursor: pointer;
+  -webkit-transition: 200ms ease-in;
+  transition: 200ms ease-in;
+  color: white;
+}
+
+.primary-btn {
+  background-color: #630094;
+  color: white;
+}
+
+.primary-btn:hover {
+  -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+}
+
+.secondary-btn {
+  background-color: white;
+  color: #630094;
+}
+
+.secondary-btn:hover {
   background-color: #630094;
   border: 1px solid #630094;
-  color: white;
 }
 
 .button-container {
