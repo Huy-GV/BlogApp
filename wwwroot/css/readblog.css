@@ -34,6 +34,7 @@
 
 .blog-author {
   color: green;
+  font-weight: 800;
 }
 
 .title {
@@ -52,23 +53,21 @@
           flex-direction: column;
   padding: 0.1rem;
   margin: auto;
-  width: 50%;
+  width: 40%;
   border-radius: 3px;
 }
 
 .comment-container .comment {
   padding: 0.5rem;
   background-color: white;
+  border-radius: 10px;
+  margin: 0.3rem;
+  border: 1px solid grey;
+  font-size: 0.7rem;
 }
 
 .comment-container .comment .comment-author {
   color: #630094;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.visible-border {
-  border: 0.1px solid #cecece;
 }
 
 .add-comment-button-container {
@@ -102,9 +101,6 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  -ms-flex-line-pack: center;
-      align-content: center;
-  margin: 0.2rem;
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
@@ -127,6 +123,10 @@
   font-size: 0.8rem;
   padding: 0.5rem;
   border-radius: 3px;
+}
+
+.edit-comment-form textarea {
+  width: 99%;
 }
 
 .submit-comment {

@@ -26,7 +26,7 @@ $primary-purple: rgb(99, 0, 148);
             flex-direction: column;
         
             p, .blog-button {
-                font-size: 0.8rem;
+                
                 text-align: right;
                 margin: 0;
                 font-style: italic;
@@ -36,9 +36,14 @@ $primary-purple: rgb(99, 0, 148);
                     transition: 100ms ease-out;
                 }
             }
+
+            .blog-button {
+                font-size: 0.8rem;
+            }
         
             p {
                 color: grey;
+                font-size: 0.6rem;
             }
         
             .blog-button {
@@ -69,7 +74,6 @@ $primary-purple: rgb(99, 0, 148);
         transition: 100ms ease-in;
     
         &:hover {
-            transform: scale(1.01);
             transition: 100ms ease-in;
             box-shadow: 0 0 3px 1px #a5a5ff;
         }

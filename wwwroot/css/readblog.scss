@@ -25,6 +25,7 @@ $primary-purple: rgb(99, 0, 148);
 
 .blog-author {
     color: green;
+    font-weight: 800;
 }
 
 .title {
@@ -38,23 +39,21 @@ $primary-purple: rgb(99, 0, 148);
     flex-direction: column;
     padding: 0.1rem;
     margin: auto;
-    width: 50%;
+    width: 40%;
     border-radius: 3px;
 
     .comment {
         padding: 0.5rem;
         background-color: white;
-    
+        border-radius: 10px;
+        margin: 0.3rem;
+        border: 1px solid grey;
+        font-size: 0.7rem;
+
         .comment-author {
             color: $primary-purple;
-            font-weight: 700;
-            font-size: 1.1rem;
         }
-    }
-}
-
-.visible-border {
-    border: 0.1px solid #cecece;
+    }  
 }
 
 .add-comment-button-container {
@@ -80,8 +79,6 @@ $primary-purple: rgb(99, 0, 148);
 .comment-option-container {
     display: flex;
     flex-direction: row;
-    align-content: center;
-    margin: 0.2rem;
     justify-content: flex-end;
 }
 
@@ -96,6 +93,15 @@ $primary-purple: rgb(99, 0, 148);
         padding: 0.5rem;
         border-radius: 3px;
     }
+}
+
+.edit-comment-form {
+
+    textarea {
+        width: 99%;
+
+    }
+
 }
 
 .submit-comment {

@@ -80,15 +80,8 @@
     </form>
 }
 
-@{
-    string visibleBorderClass = "";
-    if (Model.Blog.Comments.Count > 0) 
-    {
-        visibleBorderClass = "visible-border";
-    }
-}
-
-<div class="comment-container @visibleBorderClass">
+<div class="comment-container">
+    <p><strong>Comments</strong></p>
     @foreach (var comment in Model.Blog.Comments)
     {
         <div class="comment" data-id="@comment.ID">
