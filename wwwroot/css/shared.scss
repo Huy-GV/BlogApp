@@ -39,19 +39,20 @@ nav {
 
 .nav-btn {
     background-color: white;
-    border: 2px solid white;
-    padding: 0.2rem;
+    border: none;
+    margin: 0.1rem;
+    padding: 0.3rem;
     transition: 200ms ease-out;
     text-decoration: none;
-    color: $primary-purple;
-    height: fit-content;
+    color: #630094;
+    height: fit-content; 
+    border-radius: 5px;
     font-size: 0.8rem;
 
     &:hover {
         cursor: pointer;
         color: white;
         background-color: $primary-purple;
-        border: 2px solid $primary-purple;
         transition: 200ms ease-in;
     }
 }

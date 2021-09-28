@@ -1,3 +1,15 @@
+.info-text, .blog-container .blog .blog-info p, .blog-container .blog .blog-info .blog-link {
+  text-align: right;
+  margin: 0;
+  font-style: italic;
+}
+
+.info-text:hover, .blog-container .blog .blog-info p:hover, .blog-container .blog .blog-info .blog-link:hover {
+  cursor: pointer;
+  -webkit-transition: 100ms ease-out;
+  transition: 100ms ease-out;
+}
+
 .blog-container {
   display: -ms-grid;
   display: grid;
@@ -39,28 +51,13 @@
           flex-direction: column;
 }
 
-.blog-container .blog .blog-info p, .blog-container .blog .blog-info .blog-button {
-  text-align: right;
-  margin: 0;
-  font-style: italic;
-}
-
-.blog-container .blog .blog-info p:hover, .blog-container .blog .blog-info .blog-button:hover {
-  cursor: pointer;
-  -webkit-transition: 100ms ease-out;
-  transition: 100ms ease-out;
-}
-
-.blog-container .blog .blog-info .blog-button {
-  font-size: 0.8rem;
-}
-
 .blog-container .blog .blog-info p {
   color: grey;
   font-size: 0.6rem;
 }
 
-.blog-container .blog .blog-info .blog-button {
+.blog-container .blog .blog-info .blog-link {
+  font-size: 0.8rem;
   text-decoration: none;
   -webkit-transition: 100ms ease-in;
   transition: 100ms ease-in;

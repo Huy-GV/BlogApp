@@ -25,9 +25,9 @@
                 <p>@blog.Author</p>
                 <p>@blog.Date.ToString("dd MMM yyyy")</p>
                 <p>@blog.Comments.Count comments</p>
-                <a class="blog-button" 
+                <a class="blog-link" 
                     asp-page="/Blogs/Read" 
-                    asp-route-id="@blog.ID">See more &#10148;</a>
+                    asp-route-id="@blog.ID">See more</a>
             </div>
         </div>
     }

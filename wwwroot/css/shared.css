@@ -40,8 +40,9 @@ nav {
 
 .nav-btn {
   background-color: white;
-  border: 2px solid white;
-  padding: 0.2rem;
+  border: none;
+  margin: 0.1rem;
+  padding: 0.3rem;
   -webkit-transition: 200ms ease-out;
   transition: 200ms ease-out;
   text-decoration: none;
@@ -49,6 +50,7 @@ nav {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
+  border-radius: 5px;
   font-size: 0.8rem;
 }
 
@@ -56,7 +58,6 @@ nav {
   cursor: pointer;
   color: white;
   background-color: #630094;
-  border: 2px solid #630094;
   -webkit-transition: 200ms ease-in;
   transition: 200ms ease-in;
 }

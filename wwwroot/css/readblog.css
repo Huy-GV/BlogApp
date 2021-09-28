@@ -26,15 +26,14 @@
           justify-content: flex-end;
 }
 
-.blog-info {
+.blog-info-container .blog-info, .blog-info-container .blog-author {
   font-size: 0.7rem;
-  font-style: italic;
   margin-left: 0.1rem;
 }
 
 .blog-author {
   color: green;
-  font-weight: 800;
+  font-weight: bold;
 }
 
 .title {
@@ -141,7 +140,7 @@
   font-size: 0.6rem;
 }
 
-.submit-comment, .save-btn {
+.primary-btn, .submit-comment, .save-btn {
   color: white;
   border: 1px solid #630094;
   background-color: #630094;
@@ -150,21 +149,19 @@
   padding: 0.3rem;
 }
 
-.submit-comment:hover, .save-btn:hover {
+.primary-btn:hover, .submit-comment:hover, .save-btn:hover {
   -webkit-filter: brightness(0.8);
           filter: brightness(0.8);
 }
 
-.delete-post, .edit-post, .delete-comment,
-.edit-comment, .save-btn, .submit-comment {
+.link, .submit-comment, .save-btn, .delete-post, .edit-post, .delete-comment, .edit-comment {
   -webkit-transition: 200ms ease-out;
   transition: 200ms ease-out;
   margin: 0.1rem;
   text-decoration: none;
 }
 
-.delete-post:hover, .edit-post:hover, .delete-comment:hover,
-.edit-comment:hover, .save-btn:hover, .submit-comment:hover {
+.link:hover, .submit-comment:hover, .save-btn:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover {
   cursor: pointer;
   -webkit-transition: 200ms ease-in;
   transition: 200ms ease-in;

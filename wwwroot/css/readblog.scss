@@ -15,18 +15,19 @@ $primary-purple: rgb(99, 0, 148);
 .blog-info-container {
     display: flex;
     justify-content: flex-end;
-}
 
-.blog-info {
-    font-size: 0.7rem;
-    font-style: italic;
-    margin-left: 0.1rem;
+    .blog-info {
+        font-size: 0.7rem;
+        margin-left: 0.1rem;
+    }
 }
 
 .blog-author {
+    @extend .blog-info;
     color: green;
-    font-weight: 800;
+    font-weight: bold;
 }
+
 
 .title {
     font-weight: 700;
@@ -105,16 +106,20 @@ $primary-purple: rgb(99, 0, 148);
 }
 
 .submit-comment {
+    @extend .link;
+    @extend .primary-btn;
     width: fit-content;
     margin: 0.2rem;
     font-size: 0.8rem;
 }
 
 .save-btn {
+    @extend .link;
+    @extend .primary-btn;
     font-size: 0.6rem;
 }
 
-.submit-comment, .save-btn {
+.primary-btn {
     color: white;
     border: 1px solid $primary-purple;
     background-color: $primary-purple;
@@ -127,23 +132,19 @@ $primary-purple: rgb(99, 0, 148);
     }
 }
 
-.delete-post, .edit-post, .delete-comment, 
-.edit-comment, .save-btn, .submit-comment {
-    
+.link {
     transition: 200ms ease-out;
     margin: 0.1rem;
     text-decoration: none;
-
 
     &:hover {
         cursor: pointer;
         transition: 200ms ease-in;
     }
-
 }
 
 .delete-post, .edit-post, .delete-comment, .edit-comment {
-    
+    @extend .link;
     color: grey;
     border: none;
     background: white;

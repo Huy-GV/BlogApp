@@ -1,5 +1,16 @@
 $primary-purple: rgb(99, 0, 148);
 
+.info-text {
+    text-align: right;
+    margin: 0;
+    font-style: italic;
+    
+    &:hover {
+        cursor: pointer;
+        transition: 100ms ease-out;
+    }
+}
+
 .blog-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem,20rem));
@@ -21,32 +32,20 @@ $primary-purple: rgb(99, 0, 148);
             overflow: hidden;
             font-weight: 700;
         }
+        
         .blog-info {
             display: flex;
             flex-direction: column;
-        
-            p, .blog-button {
-                
-                text-align: right;
-                margin: 0;
-                font-style: italic;
-                
-                &:hover {
-                    cursor: pointer;
-                    transition: 100ms ease-out;
-                }
-            }
 
-            .blog-button {
-                font-size: 0.8rem;
-            }
-        
             p {
+                @extend .info-text;
                 color: grey;
                 font-size: 0.6rem;
             }
         
-            .blog-button {
+            .blog-link {
+                @extend .info-text;
+                font-size: 0.8rem;
                 text-decoration: none;
                 transition: 100ms ease-in;
                 color: $primary-purple;
