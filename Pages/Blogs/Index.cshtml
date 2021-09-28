@@ -11,11 +11,11 @@
 
     ViewData["Script"] = "#";
 }
-<div class="add-button-container">
+<section class="add-button-container">
     <a class="add-button" asp-page="/Blogs/Create">Make a post!</a>
-</div>
+</section>
 
-<div class="blog-container">
+<main class="blog-container">
     @foreach (var blog in Model.Blog)
     {
         <div class="blog">
@@ -31,4 +31,4 @@
             </div>
         </div>
     }
-</div>
+</main>

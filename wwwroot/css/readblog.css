@@ -69,6 +69,10 @@
   color: #630094;
 }
 
+.comment-container .comment p {
+  margin: 0;
+}
+
 .add-comment-button-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -122,6 +126,8 @@
   font-size: 0.8rem;
   padding: 0.5rem;
   border-radius: 3px;
+  width: 20rem;
+  height: 50px;
 }
 
 .edit-comment-form textarea {

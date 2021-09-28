@@ -10,7 +10,7 @@
     var users = ViewData["UserDTOs"] as List<UserDTO>;
 }
 
-<div class="user-container">
+<main class="user-container">
     @*<div class="user-card">
         <p>Name</p>
         <p>Date joined</p>
@@ -45,5 +45,5 @@
             <a class="details-btn" asp-route-username="@user.Username" asp-page="Details">Details</a>
         </div>
     }
-</div>
+</main>
 

@@ -12,8 +12,8 @@
     var isSuspended = (bool)ViewData["IsSuspended"];
 }
 
-<div class="blog-container">
-    <div class="blog">
+<main class="blog-container">
+    <article class="blog">
         <p class="title">@Model.Blog.Title</p>
         <hr>
         <div class="comment-option-container">
@@ -63,8 +63,8 @@
             <span class="blog-author"> - @Model.Blog.Author</span>
         </div>
 
-    </div>
-</div>
+    </article>
+</main>
 
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
@@ -80,11 +80,11 @@
     </form>
 }
 
-<div class="comment-container">
+<section class="comment-container">
     <p><strong>Comments</strong></p>
     @foreach (var comment in Model.Blog.Comments)
     {
-        <div class="comment" data-id="@comment.ID">
+        <article class="comment" data-id="@comment.ID">
             @{
                 string authorClass;
                 if (comment.Author == Model.Blog.Author)
@@ -152,8 +152,8 @@
                 }
             }
             <p class="comment-text @postClass">@commentContent</p>
-        </div>
+        </article>
     }
 
-</div>
+</section>
 
