@@ -3,7 +3,7 @@ $primary-purple: rgb(99, 0, 148);
 .info-text {
     text-align: right;
     margin: 0;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     
     &:hover {
         cursor: pointer;
@@ -17,12 +17,11 @@ $primary-purple: rgb(99, 0, 148);
     align-items: center;
     justify-items: center;
     justify-content: center;
-    gap: 2rem;
 
     .blog {
         box-shadow: 0 0 3px 1.2px #dadada;
         padding: 0.5rem;
-        width: 20rem;
+        width: 16rem;
         border-left: 7px solid $primary-purple;
         border-radius: 5px;
         height: 10rem;
@@ -32,6 +31,7 @@ $primary-purple: rgb(99, 0, 148);
             height: 30%;
             overflow: hidden;
             font-weight: 700;
+            font-size: 1.1rem;
         }
         
         .blog-info {

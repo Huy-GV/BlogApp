@@ -5,12 +5,18 @@ $primary-purple: rgb(99, 0, 148);
     flex-direction: column;
     align-items: center;
     margin-top: 3rem;
+
+    .blog {
+        padding: 0.6rem;
+        width: 60%;
+
+        .blog-content {
+            line-height: 1.6rem;
+        }
+    }
 }
 
-.blog {
-    padding: 0.6rem;
-    width: 60%;
-}
+
 
 .blog-info-container {
     display: flex;

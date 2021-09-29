@@ -3,6 +3,10 @@
     //TODO: add custom fonts?
 }
 
+body { 
+    margin: 0;
+}
+
 $primary-purple: rgb(99, 0, 148);
 
 .log-in-form {
@@ -31,10 +35,12 @@ nav {
     position: fixed;
     background-color: white;
     top: 0;
-    padding: 0.3rem;
     width: 100%;
-    padding: 1rem;
-    width: 96%;
+    box-shadow: 0 1px 4px 0.2px grey;
+
+    form {
+        padding: 0.6rem;
+    }
 }
 
 .nav-btn {

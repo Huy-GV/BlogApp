@@ -12,9 +12,13 @@
   margin-top: 3rem;
 }
 
-.blog {
+.blog-container .blog {
   padding: 0.6rem;
   width: 60%;
+}
+
+.blog-container .blog .blog-content {
+  line-height: 1.6rem;
 }
 
 .blog-info-container {

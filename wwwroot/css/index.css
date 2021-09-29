@@ -1,7 +1,7 @@
 .info-text, .blog-container .blog .blog-info p, .blog-container .blog .blog-info .blog-link {
   text-align: right;
   margin: 0;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
 }
 
 .info-text:hover, .blog-container .blog .blog-info p:hover, .blog-container .blog .blog-info .blog-link:hover {
@@ -22,14 +22,13 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  gap: 2rem;
 }
 
 .blog-container .blog {
   -webkit-box-shadow: 0 0 3px 1.2px #dadada;
           box-shadow: 0 0 3px 1.2px #dadada;
   padding: 0.5rem;
-  width: 20rem;
+  width: 16rem;
   border-left: 7px solid #630094;
   border-radius: 5px;
   height: 10rem;
@@ -40,6 +39,7 @@
   height: 30%;
   overflow: hidden;
   font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .blog-container .blog .blog-info {
