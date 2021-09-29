@@ -3,7 +3,7 @@ $primary-purple: rgb(99, 0, 148);
 .info-text {
     text-align: right;
     margin: 0;
-    font-style: italic;
+    font-size: 0.6rem;
     
     &:hover {
         cursor: pointer;
@@ -28,6 +28,7 @@ $primary-purple: rgb(99, 0, 148);
         height: 10rem;
 
         .title {
+            font-family: Garamond, serif;
             height: 30%;
             overflow: hidden;
             font-weight: 700;
@@ -38,15 +39,15 @@ $primary-purple: rgb(99, 0, 148);
             flex-direction: column;
 
             p {
+                font-style: italic;
                 @extend .info-text;
                 color: grey;
-                font-size: 0.6rem;
+                margin: 0.1rem;
             }
         
             .blog-link {
                 @extend .info-text;
-                font-size: 0.8rem;
-                text-decoration: none;
+                // text-decoration: none;
                 transition: 100ms ease-in;
                 color: $primary-purple;
                 font-weight: 800;

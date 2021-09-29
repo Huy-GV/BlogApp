@@ -1,7 +1,7 @@
 .info-text, .blog-container .blog .blog-info p, .blog-container .blog .blog-info .blog-link {
   text-align: right;
   margin: 0;
-  font-style: italic;
+  font-size: 0.6rem;
 }
 
 .info-text:hover, .blog-container .blog .blog-info p:hover, .blog-container .blog .blog-info .blog-link:hover {
@@ -36,6 +36,7 @@
 }
 
 .blog-container .blog .title {
+  font-family: Garamond, serif;
   height: 30%;
   overflow: hidden;
   font-weight: 700;
@@ -52,13 +53,12 @@
 }
 
 .blog-container .blog .blog-info p {
+  font-style: italic;
   color: grey;
-  font-size: 0.6rem;
+  margin: 0.1rem;
 }
 
 .blog-container .blog .blog-info .blog-link {
-  font-size: 0.8rem;
-  text-decoration: none;
   -webkit-transition: 100ms ease-in;
   transition: 100ms ease-in;
   color: #630094;

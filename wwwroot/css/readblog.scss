@@ -33,6 +33,7 @@ $primary-purple: rgb(99, 0, 148);
     font-weight: 700;
     font-size: 2rem;
     text-align: center;
+    font-family: Garamond, serif;
 }
 
 .comment-container {
@@ -46,17 +47,17 @@ $primary-purple: rgb(99, 0, 148);
     .comment {
         padding: 0.5rem;
         background-color: white;
-        border-radius: 10px;
+        border-radius: 5px;
         margin: 0.3rem;
-        border: 1px solid grey;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
+        box-shadow: 0 1px 3px 0px grey;
 
         .comment-author {
             color: $primary-purple;
         }
 
         p {
-            margin: 0;
+            margin-top: 0.8rem;
         }
     }  
 }
@@ -155,7 +156,7 @@ $primary-purple: rgb(99, 0, 148);
     border: none;
     background: white;
     font-weight: bold;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     padding: 0.3rem;
     
     &:hover {
