@@ -36,11 +36,12 @@ nav {
     background-color: white;
     top: 0;
     width: 100%;
-    box-shadow: 0 1px 4px 0.2px grey;
+    box-shadow: 0 0 2px 0.5px grey;
 
-    form {
-        padding: 0.6rem;
+    * {
+        padding: 0.5rem;
     }
+
 }
 
 .nav-btn {

@@ -2,6 +2,8 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
+@* TODO: 
+        2) find a logo and align it to the right *@
 @if (SignInManager.IsSignedIn(User))
 {
     var user = (await UserManager.GetUserAsync(User));
@@ -21,6 +23,7 @@
 else
 {
     <nav>
+        @* <img src="/images/logo.png" alt="logo"> *@
         <span><a asp-page="./Index" class="nav-btn">Home</a></span>
         <span><a class="nav-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
         <span><a class="nav-btn" asp-area="Identity" asp-page="/Account/Register">Sign up</a></span>

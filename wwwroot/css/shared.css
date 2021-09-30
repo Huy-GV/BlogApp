@@ -37,12 +37,12 @@ nav {
   background-color: white;
   top: 0;
   width: 100%;
-  -webkit-box-shadow: 0 1px 4px 0.2px grey;
-          box-shadow: 0 1px 4px 0.2px grey;
+  -webkit-box-shadow: 0 0 2px 0.5px grey;
+          box-shadow: 0 0 2px 0.5px grey;
 }
 
-nav form {
-  padding: 0.6rem;
+nav * {
+  padding: 0.5rem;
 }
 
 .nav-btn {
