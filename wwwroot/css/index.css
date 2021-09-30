@@ -65,36 +65,7 @@
   font-weight: 800;
 }
 
-.add-button-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  margin: 0.6rem;
+main {
   margin-top: 4rem;
-}
-
-.add-button-container .add-button {
-  background-color: #630094;
-  color: white;
-  padding: 0.3rem;
-  text-decoration: none;
-  text-align: center;
-  width: 50%;
-  border-radius: 5px;
-  -webkit-transition: 100ms ease-in;
-  transition: 100ms ease-in;
-}
-
-.add-button-container .add-button:hover {
-  -webkit-transition: 100ms ease-in;
-  transition: 100ms ease-in;
-  -webkit-box-shadow: 0 0 3px 1px #a5a5ff;
-          box-shadow: 0 0 3px 1px #a5a5ff;
 }
 /*# sourceMappingURL=index.css.map */

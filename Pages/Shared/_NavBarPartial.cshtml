@@ -4,28 +4,25 @@
 
 @* TODO: 
         2) find a logo and align it to the right *@
-@if (SignInManager.IsSignedIn(User))
-{
+<nav>
+    <img src="/images/razor.svg" alt="logo">
+    @if (SignInManager.IsSignedIn(User))
+    {
     var user = (await UserManager.GetUserAsync(User));
 
-    <nav>
         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Blogs/Index" method="post">
-            <span>Welcome back, @user.UserName</span>
+            <span>@user.UserName</span>
             @if (User.IsInRole(Roles.AdminRole))
             {
-                <span><a asp-page="/Admin/Admin"  class="nav-btn">Admin</a></span>
+                <span><a asp-page="/Admin/Admin"  class="nav-btn">Users</a></span>
             }
-            <span><a asp-page="/Blogs/Index" class="nav-btn">Home</a></span>
-            <span><input type="submit" class="nav-btn" value="Log out"/></span>
+            <span><a class="primary-btn" asp-page="/Blogs/Create">Post</a></span>
+            <span><input type="submit" class="nav-btn last-child" value="Log out"/></span>
         </form>
-    </nav>
-}
-else
-{
-    <nav>
-        @* <img src="/images/logo.png" alt="logo"> *@
-        <span><a asp-page="./Index" class="nav-btn">Home</a></span>
-        <span><a class="nav-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
-        <span><a class="nav-btn" asp-area="Identity" asp-page="/Account/Register">Sign up</a></span>
-    </nav>
-}
+    }
+    else
+    {
+        <span><a class="secondary-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
+        <span><a class="last-child primary-btn" asp-area="Identity" asp-page="/Account/Register">Sign up</a></span>
+    }
+</nav>

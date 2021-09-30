@@ -56,28 +56,32 @@ $primary-purple: rgb(99, 0, 148);
     }
 }
 
-.add-button-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0.6rem;
+main {
     margin-top: 4rem;
-
-    .add-button {
-        background-color: $primary-purple;
-        color: white;
-        padding: 0.3rem;
-        text-decoration: none;
-        text-align: center;
-        width: 50%;
-        border-radius: 5px;
-        transition: 100ms ease-in;
-    
-        &:hover {
-            transition: 100ms ease-in;
-            box-shadow: 0 0 3px 1px #a5a5ff;
-        }
-    }
 }
+
+// .add-button-container {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     margin: 0.6rem;
+//     margin-top: 4rem;
+
+//     .add-button {
+//         background-color: $primary-purple;
+//         color: white;
+//         padding: 0.3rem;
+//         text-decoration: none;
+//         text-align: center;
+//         width: 50%;
+//         border-radius: 5px;
+//         transition: 100ms ease-in;
+    
+//         &:hover {
+//             transition: 100ms ease-in;
+//             box-shadow: 0 0 3px 1px #a5a5ff;
+//         }
+//     }
+// }
 
 

@@ -32,36 +32,49 @@ $primary-purple: rgb(99, 0, 148);
 nav {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     position: fixed;
     background-color: white;
     top: 0;
     width: 100%;
-    box-shadow: 0 0 2px 0.5px grey;
+    box-shadow: 0 0 5px 0.2px grey;
+    height: 3rem;
 
     * {
         padding: 0.5rem;
     }
 
+    img {
+        margin-left: 2.5rem;
+        margin-right: auto;
+        height: 2.8rem;
+    }
+
+    .last-child {
+        margin-right: 2.5rem;
+    }
+
+}
+
+.button {
+    transition: 200ms ease-out;
+    &:hover {
+        cursor: pointer;
+        transition: 200ms ease-in;
+    }
 }
 
 .nav-btn {
+    @extend .button;
     background-color: white;
     border: none;
     margin: 0.1rem;
     padding: 0.3rem;
-    transition: 200ms ease-out;
     text-decoration: none;
     color: #630094;
     height: fit-content; 
     border-radius: 5px;
     font-size: 0.8rem;
-
-    &:hover {
-        cursor: pointer;
-        color: white;
-        background-color: $primary-purple;
-        transition: 200ms ease-in;
-    }
 }
 
 .hidden-element {
@@ -77,6 +90,7 @@ p {
 }
 
 .log-in-btn {
+    @extend .button;
     padding: 0.3rem;
     border: 1px solid white;
     border-radius: 4px;
@@ -86,17 +100,17 @@ p {
     display: block;
     margin: 0.2rem;
     text-align: center;
-    transition: 200ms ease-out;
 
     &:hover{
-        cursor: pointer;
-        transition: 200ms ease-in;
         color: white;
     }
 }
 
 .primary-btn {
+    @extend .button;
     background-color: $primary-purple;
+    text-decoration: none;
+    border-radius: 4px;
     color: white;
     &:hover{
         filter: brightness(0.8);
@@ -104,11 +118,16 @@ p {
 }
 
 .secondary-btn {
+    @extend .button;
     background-color: white;
     color: $primary-purple;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid $primary-purple;
+
     &:hover{
+        color: white;
         background-color: $primary-purple;
-        border: 1px solid $primary-purple;
     }
 }
 
