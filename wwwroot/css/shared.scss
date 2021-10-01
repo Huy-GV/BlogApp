@@ -44,10 +44,13 @@ nav {
         padding: 0.5rem;
     }
 
-    img {
+    .home-link {
         margin-left: 2.5rem;
         margin-right: auto;
-        height: 2.8rem;
+
+        img {
+            height: 2.8rem;
+        }
     }
 
     .last-child {
@@ -58,6 +61,7 @@ nav {
 
 .button {
     transition: 200ms ease-out;
+    
     &:hover {
         cursor: pointer;
         transition: 200ms ease-in;

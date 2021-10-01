@@ -19,6 +19,7 @@
 
 .blog-container .blog .blog-content {
   line-height: 1.6rem;
+  white-space: pre-line;
 }
 
 .blog-info-container {

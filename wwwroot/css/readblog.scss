@@ -12,11 +12,10 @@ $primary-purple: rgb(99, 0, 148);
 
         .blog-content {
             line-height: 1.6rem;
+            white-space: pre-line;
         }
     }
 }
-
-
 
 .blog-info-container {
     display: flex;
@@ -110,12 +109,9 @@ $primary-purple: rgb(99, 0, 148);
 }
 
 .edit-comment-form {
-
     textarea {
         width: 99%;
-
     }
-
 }
 
 .submit-comment {

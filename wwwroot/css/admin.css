@@ -16,18 +16,18 @@
     display: flex;
     flex-direction: row;
     gap: 0.3rem;
-    width: 70%;
+    width: 50%;
 }
 
-.user-card >:last-child{
-    margin-left: auto;
-}
 
 .button {
     color: white;
     border-radius: 1px;
     font-weight: 700;
     height: 100%;
+    border-radius: 5px;
+    border: none;
+    width: 10rem;
 }
 
 .button:hover {
@@ -37,20 +37,17 @@
 
 .assign-role {
     background-color: green;
-    border: 1px solid green;
 }
 
 .remove-role {
     background-color: red;
-    border: 1px solid red;
 }
 
 
-
 .details-btn {
-    background-color: antiquewhite;
-    border: 1px solid antiquewhite;
-    text-decoration: none;
-    font-weight: 650;
-    border-radius: 1px;
+    padding: 1rem;
+}
+
+form {
+    margin-left: auto;
 }

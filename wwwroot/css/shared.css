@@ -49,9 +49,12 @@ nav * {
   padding: 0.5rem;
 }
 
-nav img {
+nav .home-link {
   margin-left: 2.5rem;
   margin-right: auto;
+}
+
+nav .home-link img {
   height: 2.8rem;
 }
 
