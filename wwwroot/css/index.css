@@ -1,20 +1,24 @@
-.info-text, .blog-container .blog .blog-info p, .blog-container .blog .blog-info .blog-link {
+.info-text, .blog-container .blog .blog-info p:not(.title), .blog-container .blog .blog-info .blog-link {
   text-align: right;
   margin: 0;
   font-size: 0.7rem;
 }
 
-.info-text:hover, .blog-container .blog .blog-info p:hover, .blog-container .blog .blog-info .blog-link:hover {
+.info-text:hover, .blog-container .blog .blog-info p:hover:not(.title), .blog-container .blog .blog-info .blog-link:hover {
   cursor: pointer;
   -webkit-transition: 100ms ease-out;
   transition: 100ms ease-out;
 }
 
+body {
+  background-color: #effcff87;
+}
+
 .blog-container {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(20rem, 20rem))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(20rem, 20rem));
+  -ms-grid-columns: (minmax(28rem, 28rem))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(28rem, 28rem));
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -25,21 +29,23 @@
 }
 
 .blog-container .blog {
-  -webkit-box-shadow: 0 0 3px 1.2px #dadada;
-          box-shadow: 0 0 3px 1.2px #dadada;
+  -webkit-box-shadow: 0 0 5px 0.3px #dadada;
+          box-shadow: 0 0 5px 0.3px #dadada;
   padding: 0.5rem;
-  width: 16rem;
-  border-left: 7px solid #630094;
+  width: 25rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   border-radius: 5px;
   height: 10rem;
+  margin: 0.5rem;
+  border-radius: 15px;
 }
 
-.blog-container .blog .title {
-  font-family: Garamond, serif;
-  height: 30%;
-  overflow: hidden;
-  font-weight: 700;
-  font-size: 1.1rem;
+.blog-container .blog img {
+  width: 40%;
+  border-radius: 15px;
+  height: 100%;
 }
 
 .blog-container .blog .blog-info {
@@ -50,12 +56,29 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  width: 60%;
 }
 
-.blog-container .blog .blog-info p {
+.blog-container .blog .blog-info p:not(.title) {
   font-style: italic;
   color: grey;
   margin: 0.1rem;
+}
+
+.blog-container .blog .blog-info .title {
+  font-family: Garamond, serif;
+  height: 30%;
+  overflow: hidden;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.8rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.blog-container .blog .blog-info .additional-info {
+  margin-top: auto;
+  margin-left: auto;
 }
 
 .blog-container .blog .blog-info .blog-link {
