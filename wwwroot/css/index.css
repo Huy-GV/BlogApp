@@ -11,7 +11,7 @@
 }
 
 body {
-  background-color: #effcff87;
+  background-color: #effcff54;
 }
 
 .blog-container {
@@ -40,6 +40,7 @@ body {
   height: 10rem;
   margin: 0.5rem;
   border-radius: 15px;
+  background: white;
 }
 
 .blog-container .blog img {

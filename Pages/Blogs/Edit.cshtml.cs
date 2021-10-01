@@ -14,6 +14,7 @@ namespace BlogApp.Pages.Blogs
     public class EditBlog : InputBlog
     {
         public int ID {get; set;}
+        public string ImagePath {get; set;}
     }
     [Authorize]
     public class EditModel : BaseModel
@@ -42,10 +43,12 @@ namespace BlogApp.Pages.Blogs
             }
             _logger.LogInformation($"User {username} is editing the blog with ID {blogID}");
             var blog = await Context.Blog.FirstOrDefaultAsync(blog => blog.ID == blogID);
+            
             EditBlog = new EditBlog
             { 
                 ID = blog.ID,
                 Title = blog.Title,
+                ImagePath = blog.ImagePath,
                 Content = blog.Content
             };
 

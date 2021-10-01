@@ -4,7 +4,7 @@
 
 <nav>
     
-    <a asp-page="/Blogs/Index" class="home-link"><img src="/images/razor.svg" alt="logo"></a>
+    <a asp-page="/Blogs/Index" class="home-link"><img src="/images/logo.svg" alt="logo"></a>
     @if (SignInManager.IsSignedIn(User))
     {
     var user = (await UserManager.GetUserAsync(User));

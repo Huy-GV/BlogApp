@@ -14,6 +14,7 @@ namespace BlogApp.Pages.Blogs
     {
         public string Title { get; set; }
         public string Content { get; set; }
+        public string ImagePath { get; set; }
     }
     [Authorize]
     public class CreateModel : BaseModel
@@ -55,6 +56,7 @@ namespace BlogApp.Pages.Blogs
             {
                 Title = CreateBlog.Title,
                 Content = CreateBlog.Content,
+                ImagePath = CreateBlog.ImagePath,
                 Date = DateTime.Now,
                 Author = user.UserName
             };

@@ -12,7 +12,7 @@ $primary-purple: rgb(99, 0, 148);
 }
 
 body {
-    background-color: #effcff87;
+    background-color: #effcff54;
 }
 
 .blog-container {
@@ -24,7 +24,7 @@ body {
     justify-content: center;
 
     .blog {
-        box-shadow: 0 0 5px 0.3px #dadada;
+        box-shadow: 0 0 1px 0.4px black;
         padding: 0.5rem;
         width: 25rem;
         display: flex;
@@ -32,6 +32,7 @@ body {
         height: 10rem;
         margin: 0.5rem;
         border-radius: 15px;
+        background: white;
 
         img {
             width: 40%;
