@@ -11,7 +11,7 @@
 }
 
 body {
-  background-color: #effcff54;
+  background-color: #f8feff54;
 }
 
 .blog-container {
@@ -29,8 +29,8 @@ body {
 }
 
 .blog-container .blog {
-  -webkit-box-shadow: 0 0 5px 0.3px #dadada;
-          box-shadow: 0 0 5px 0.3px #dadada;
+  -webkit-box-shadow: 0 0 1px 0.4px black;
+          box-shadow: 0 0 1px 0.4px black;
   padding: 0.5rem;
   width: 25rem;
   display: -webkit-box;

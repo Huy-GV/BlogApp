@@ -14,7 +14,6 @@ namespace BlogApp.Pages.Blogs
     public class EditBlog : InputBlog
     {
         public int ID {get; set;}
-        public string ImagePath {get; set;}
     }
     [Authorize]
     public class EditModel : BaseModel
