@@ -15,7 +15,7 @@
 <form class="add-form" method="post" asp-page-handler="EditBlog">
     <div>
         <label asp-for="EditBlog.Title"><strong>Title</strong></label>
-        <input type="text" name="EditBlog.Title" required value="@Model.EditBlog.Content">
+        <input type="text" name="EditBlog.Title" required value="@Model.EditBlog.Title">
 
         <label asp-for="EditBlog.ImagePath"><strong>Image path</strong></label>
         <input type="text" name="EditBlog.ImagePath" required value="@Model.EditBlog.ImagePath">
