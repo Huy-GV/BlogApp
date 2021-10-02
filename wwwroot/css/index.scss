@@ -1,8 +1,6 @@
 $primary-purple: rgb(99, 0, 148);
 
 .info-text {
-    text-align: right;
-    margin: 0;
     font-size: 0.7rem;
     
     &:hover {
@@ -24,13 +22,12 @@ body {
     justify-content: center;
 
     .blog {
-        box-shadow: 0 0 1px 0.4px black;
-        padding: 0.5rem;
-        width: 25rem;
-        display: flex;
-        border-radius: 5px;
-        height: 10rem;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        padding: 1rem;
         margin: 0.5rem;
+        width: 25rem;
+        height: 10rem;
+        display: flex;
         border-radius: 15px;
         background: white;
 
@@ -42,14 +39,15 @@ body {
         
         .blog-info {
             display: flex;
+            align-content: flex-start;
             flex-direction: column;
             width: 60%;
+            margin-left: 1rem;
 
             p:not(.title) {
                 font-style: italic;
                 @extend .info-text;
                 color: grey;
-                margin: 0.1rem;
             }
 
             .title {
@@ -58,14 +56,15 @@ body {
                 overflow: hidden;
                 font-weight: 700;
                 font-size: 1.1rem;
-                padding: 0.8rem;
-                text-align: center;
                 overflow: hidden;
             }
 
-            .additional-info {
+            .additional-info, .title {
                 margin-top: auto;
-                margin-left: auto
+            }
+
+            .additional-info p {
+                margin: 0;
             }
 
             .blog-link {
