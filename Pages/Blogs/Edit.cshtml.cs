@@ -75,6 +75,9 @@ namespace BlogApp.Pages.Blogs
                 return Forbid();
 
             blog.Content = EditBlog.Content;
+            blog.ImagePath = EditBlog.ImagePath;
+            blog.Title = EditBlog.Title;
+            
             Context.Attach(blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 

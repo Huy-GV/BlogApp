@@ -37,7 +37,7 @@ body {
         img {
             width: 40%;
             border-radius: 15px;
-            height: 100%;
+            object-fit: cover;
         }
         
         .blog-info {

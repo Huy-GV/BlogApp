@@ -46,7 +46,8 @@ body {
 .blog-container .blog img {
   width: 40%;
   border-radius: 15px;
-  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .blog-container .blog .blog-info {
