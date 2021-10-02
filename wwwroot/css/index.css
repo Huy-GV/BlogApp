@@ -1,8 +1,8 @@
-.info-text, .blog-container .blog .blog-info p:not(.title), .blog-container .blog .blog-info .blog-link {
+.info-text, .blog-container .blog .blog-info .author, .blog-container .blog .blog-info .additional-info p, .blog-container .blog .blog-info .blog-link {
   font-size: 0.7rem;
 }
 
-.info-text:hover, .blog-container .blog .blog-info p:hover:not(.title), .blog-container .blog .blog-info .blog-link:hover {
+.info-text:hover, .blog-container .blog .blog-info .author:hover, .blog-container .blog .blog-info .additional-info p:hover, .blog-container .blog .blog-info .blog-link:hover {
   cursor: pointer;
   -webkit-transition: 100ms ease-out;
   transition: 100ms ease-out;
@@ -61,9 +61,9 @@ body {
   margin-left: 1rem;
 }
 
-.blog-container .blog .blog-info p:not(.title) {
-  font-style: italic;
-  color: grey;
+.blog-container .blog .blog-info .author {
+  color: green;
+  font-weight: 800;
 }
 
 .blog-container .blog .blog-info .title {
@@ -81,13 +81,14 @@ body {
 
 .blog-container .blog .blog-info .additional-info p {
   margin: 0;
+  font-style: italic;
+  color: grey;
 }
 
 .blog-container .blog .blog-info .blog-link {
   -webkit-transition: 100ms ease-in;
   transition: 100ms ease-in;
   color: #630094;
-  font-weight: 800;
 }
 
 main {

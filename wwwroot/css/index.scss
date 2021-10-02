@@ -44,10 +44,10 @@ body {
             width: 60%;
             margin-left: 1rem;
 
-            p:not(.title) {
-                font-style: italic;
+            .author {
                 @extend .info-text;
-                color: grey;
+                color: green;
+                font-weight: 800;
             }
 
             .title {
@@ -64,7 +64,10 @@ body {
             }
 
             .additional-info p {
+                @extend .info-text;
                 margin: 0;
+                font-style: italic;
+                color: grey;
             }
 
             .blog-link {
@@ -72,7 +75,6 @@ body {
                 // text-decoration: none;
                 transition: 100ms ease-in;
                 color: $primary-purple;
-                font-weight: 800;
             }
         }
     }
