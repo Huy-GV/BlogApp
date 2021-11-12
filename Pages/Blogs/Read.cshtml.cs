@@ -185,7 +185,6 @@ namespace BlogApp.Pages.Blogs
             if (!User.Identity.IsAuthenticated)
                 return Challenge();
             
-
             var user = await UserManager.GetUserAsync(User);
             var comment = await Context.Comment.FindAsync(commentID);
 

@@ -45,13 +45,14 @@ namespace BlogApp.Pages.Admin
             }
             
             ViewData["UserDTO"] = GetUserDTO(username);
-            ViewData["SuspendedBlogs"] = await GetSuspendedPosts<Blog>(username);
-            ViewData["SuspendedComments"] = await GetSuspendedPosts<Comment>(username);
+            ViewData["HiddenBlogs"] = await GetHiddenBlogs(username);
+            ViewData["HiddenComments"] = await GetHiddenComments(username);
             ViewData["Suspension"] = await GetSuspension(username);
 
             return Page();
         }
         private UserDTO GetUserDTO(string username) {
+            //TODO: change to SingleOrDefault
             return new UserDTO()
             {
                 Username = username,
@@ -65,24 +66,18 @@ namespace BlogApp.Pages.Admin
                     .Count
             };
         }
-        private async Task<IList<T>> GetSuspendedPosts<T>(string username) where T : Post
+
+        private async Task<List<Blog>> GetHiddenBlogs(string username)
         {
-            if (typeof(T) == typeof(Comment))
-            {
-                return await Context.Comment
-                    .Where(comment => comment.Author == username)
-                    .Where(comment => comment.IsHidden)
-                    .ToListAsync() as IList<T>;
-            } else if (typeof(T) == typeof(Blog))
-            {
-                return await Context.Blog
-                    .Where(blog => blog.Author == username)
-                    .Where(blog => blog.IsHidden)
-                    .ToListAsync() as IList<T>;
-            } else
-            {
-                throw new Exception("Unknown type for suspended post");
-            }
+            return await Context.Blog
+                   .Where(blog => blog.Author == username && blog.IsHidden)
+                   .ToListAsync();
+        }
+        private async Task<List<Comment>> GetHiddenComments(string username)
+        {
+            return await Context.Comment
+                .Where(comment => comment.Author == username && comment.IsHidden)
+                .ToListAsync();
         }
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
@@ -106,63 +101,60 @@ namespace BlogApp.Pages.Admin
 
             return RedirectToPage("Details", new { username });
         }
-        public async Task<IActionResult> OnPostUnhidePostAsync(int postID, string type)
+        public async Task<IActionResult> OnPostUnhideBlogAsync(int blogID)
         {
-            Post post;
-            _logger.LogDebug("Post type is " + type);
-            if (type == "comment")
+            var blog = await Context.Blog.FindAsync(blogID);
+            if (blog == null)
             {
-                post = await Context.Comment.FindAsync(postID);
-            } else if (type == "blog")
-            {
-                post = await Context.Blog.FindAsync(postID);
-            } else
-            {
-                return NotFound("Post type not found");
-            }
-            if (post == null)
-            {
+                _logger.LogError("blog not found");
                 return NotFound();
             }
-
-            post.IsHidden = false;
-            post.SuspensionExplanation = "";
-            Context.Attach(post).State = EntityState.Modified;
+            blog.IsHidden = false;
+            blog.SuspensionExplanation = string.Empty;
+            Context.Attach(blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("Details", new { username = post.Author });
+            return RedirectToPage("Details", new { username = blog.Author });
         }
-        //TODO: separate methods again because the length are similar
-        public async Task<IActionResult> OnPostDeletePostAsync(int postID, string type)
+        public async Task<IActionResult> OnPostUnhideCommentAsync(int commentID)
         {
-            string username;
-            if (type == "comment")
+            var comment = await Context.Comment.FindAsync(commentID);
+            if (comment == null)
             {
-                var comment = await Context.Comment.FindAsync(postID);
-                if (comment == null)
-                {
-                    _logger.LogError("Comment not found");
-                    return NotFound();
-                }
-                username = comment.Author;
-                Context.Comment.Remove(comment);
-            } else if (type == "blog")
-            {
-                var blog = await Context.Blog.FindAsync(postID);
-                if (blog == null)
-                {
-                    _logger.LogError("Blog not found");
-                    return NotFound();
-                }
-                username = blog.Author;
-                Context.Blog.Remove(blog);
-            } else 
-            {
-                _logger.LogError("Unable to delete post with unknown type");
+                _logger.LogError("Comment not found");
                 return NotFound();
             }
+
+            comment.IsHidden = false;
+            comment.SuspensionExplanation = string.Empty;
+            Context.Attach(comment).State = EntityState.Modified;
             await Context.SaveChangesAsync();
-            return RedirectToPage("Details", new { username });
+
+            return RedirectToPage("Details", new { username = comment.Author });
+        }
+        public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
+        {
+            var comment = await Context.Comment.FindAsync(commentID);
+            if (comment == null)
+            {
+                _logger.LogError("Comment not found");
+                return NotFound();
+            }
+            Context.Comment.Remove(comment);
+            await Context.SaveChangesAsync();
+            return RedirectToPage("Details", new { username = comment.Author });
+        }
+        public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
+        {
+            var blog = await Context.Blog.FindAsync(blogID);
+            if (blog == null)
+            {
+                _logger.LogError("blog not found");
+                return NotFound();
+            }
+            Context.Blog.Remove(blog);
+            await Context.SaveChangesAsync();
+            return RedirectToPage("Details", new { username = blog.Author });
         }
     }
 }

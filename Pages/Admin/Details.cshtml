@@ -11,12 +11,9 @@
 
     var suspension = (Suspension)ViewData["Suspension"];
     var userDTO = ViewData["UserDTO"] as UserDTO;
-    var suspendedBlogs = ViewData["SuspendedBlogs"] as List<Blog>;
-    var suspendedComments = ViewData["SuspendedComments"] as List<Comment>;
+    var suspendedBlogs = ViewData["HiddenBlogs"] as List<Blog>;
+    var suspendedComments = ViewData["HiddenComments"] as List<Comment>;
 }
-
-
-
 
 
 <main class="suspended-blog-container">
@@ -49,13 +46,13 @@
                 <h5>Original content</h5>
                 <p>@blog.Content</p>
                 <form method="post"
-                      asp-page-handler="UnhidePost"
-                      asp-route-postID="@blog.ID"
+                      asp-page-handler="UnhideBlog"
+                      asp-route-blogID="@blog.ID"
                       asp-route-type="blog">
                     <button class="un-hide-post">Unhide blog</button>
                 </form>
-                <form asp-page-handler="DeletePost"
-                      asp-route-postID="@blog.ID"
+                <form asp-page-handler="DeleteBlog"
+                      asp-route-blogID="@blog.ID"
                       asp-route-type="blog"
                       method="post">
                     <button class="delete-post">Delete blog</button>
@@ -78,14 +75,12 @@
                 <h5>Original content</h5>
                 <p>@comment.Content</p>
                 <form method="post"
-                      asp-page-handler="UnhidePost"
-                      asp-route-postID="@comment.ID"
-                      asp-route-type="comment">
+                      asp-page-handler="UnhideComment"
+                      asp-route-commentID="@comment.ID">
                     <button class="un-hide-post">Unhide comment</button>
                 </form>
-                <form asp-page-handler="DeletePost"
-                      asp-route-postID="@comment.ID"
-                      asp-route-type="comment"
+                <form asp-page-handler="DeleteComment"
+                      asp-route-commentID="@comment.ID"
                       method="post">
                     <button class="delete-post">Delete comment</button>
                 </form>
