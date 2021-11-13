@@ -1,16 +1,11 @@
 ﻿@page
 @model BlogApp.Pages.Blogs.EditModel
-@using BlogApp.Models
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
-
 
 @{
     ViewData["Title"] = "Edit Blog";
     ViewData["CSSLink"] = "/css/createblog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "#";
-
 }
 
 <form class="add-form" method="post" asp-page-handler="EditBlog">

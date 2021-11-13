@@ -29,9 +29,8 @@ namespace BlogApp.Pages.Blogs
         public AddComment CreateComment { get; set; }
         [BindProperty]
         public EditComment EditComment { get; set; }
-        private ILogger<ReadModel> _logger;
+        private readonly ILogger<ReadModel> _logger;
         public Blog Blog { get; set; }
-
         public ReadModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,

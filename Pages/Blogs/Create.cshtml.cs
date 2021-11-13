@@ -21,7 +21,7 @@ namespace BlogApp.Pages.Blogs
     {
         [BindProperty]
         public InputBlog CreateBlog { get; set; }
-        private ILogger<CreateModel> _logger;
+        private readonly ILogger<CreateModel> _logger;
         public CreateModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,

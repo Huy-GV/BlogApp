@@ -16,7 +16,7 @@ namespace BlogApp.Pages.Admin
     [Authorize(Roles = "admin")]
     public class AdminModel : BaseModel
     {
-        private ILogger<AdminModel> _logger;
+        private readonly ILogger<AdminModel> _logger;
         public AdminModel(ApplicationDbContext context,
                           UserManager<ApplicationUser> userManager,
                           ILogger<AdminModel> logger) : base(context, userManager)

@@ -20,7 +20,7 @@ namespace BlogApp.Pages.Blogs
     {
         [BindProperty]
         public EditBlog EditBlog { get; set; }
-        private ILogger<CreateModel> _logger;
+        private readonly ILogger<CreateModel> _logger;
         public EditModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,

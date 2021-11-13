@@ -1,16 +1,11 @@
 ﻿@page
 @model BlogApp.Pages.Blogs.CreateModel
-@using BlogApp.Models
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
-
 
 @{
     ViewData["Title"] = "Create Blog";
     ViewData["CSSLink"] = "/css/createblog.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "#";
-
 }
 
 <form class="add-form" method="post">
