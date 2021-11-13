@@ -26,7 +26,7 @@ namespace BlogApp.Pages.Admin
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }
         public DetailsModel(ApplicationDbContext context,
-                          UserManager<IdentityUser> userManager,
+                          UserManager<ApplicationUser> userManager,
                           ILogger<AdminModel> logger) : base(context, userManager)
         {
             _logger = logger;

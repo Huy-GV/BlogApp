@@ -1,7 +1,8 @@
 ﻿@page
 @model BlogApp.Pages.Blogs.EditModel
-@inject UserManager<IdentityUser> UserManager
-@inject SignInManager<IdentityUser> SignInManager
+@using BlogApp.Models
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 
 @{

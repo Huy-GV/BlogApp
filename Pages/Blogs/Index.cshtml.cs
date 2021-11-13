@@ -19,7 +19,7 @@ namespace BlogApp.Pages.Blogs
         public IList<Blog> Blog { get; set; }
         public IndexModel(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager) : base(context, userManager)
+            UserManager<ApplicationUser> userManager) : base(context, userManager)
         {
 
         }

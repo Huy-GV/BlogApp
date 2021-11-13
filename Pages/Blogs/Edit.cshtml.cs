@@ -23,7 +23,7 @@ namespace BlogApp.Pages.Blogs
         private ILogger<CreateModel> _logger;
         public EditModel(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger) : base(context, userManager)
         {
             _logger = logger;

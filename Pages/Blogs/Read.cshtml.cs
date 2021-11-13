@@ -34,7 +34,7 @@ namespace BlogApp.Pages.Blogs
 
         public ReadModel(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<ReadModel> logger) : base(context, userManager)
         {
             _logger = logger;

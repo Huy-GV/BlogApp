@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApp.Data.DTOs;
-using BlogApp.Pages;
+using BlogApp.Models;
 
 namespace BlogApp.Pages.Admin
 {
@@ -18,7 +18,7 @@ namespace BlogApp.Pages.Admin
     {
         private ILogger<AdminModel> _logger;
         public AdminModel(ApplicationDbContext context,
-                          UserManager<IdentityUser> userManager,
+                          UserManager<ApplicationUser> userManager,
                           ILogger<AdminModel> logger) : base(context, userManager)
         {
             _logger = logger;
@@ -46,7 +46,7 @@ namespace BlogApp.Pages.Admin
             ViewData["UserDTOs"] = userDTOs;
             return Page();
         }
-        private async Task<bool> IsModeratorRole(IdentityUser user)
+        private async Task<bool> IsModeratorRole(ApplicationUser user)
         {
             var roles = await UserManager.GetRolesAsync(user);
             return roles.Contains(Roles.ModeratorRole);

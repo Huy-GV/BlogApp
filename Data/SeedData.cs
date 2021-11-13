@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,15 +25,16 @@ namespace BlogApp.Data
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
         {
-            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
             var user = await userManager.FindByNameAsync(username);
 
             if (user == null)
             {
-                user = new IdentityUser
+                user = new ApplicationUser
                 {
                     UserName = username,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    RegistrationDate = DateTime.UtcNow,
                 };
                 await userManager.CreateAsync(user, "Admin123@@");
             }
@@ -50,7 +52,7 @@ namespace BlogApp.Data
         {
             IdentityResult identityResult = null;
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
             if (roleManager == null)
             {
                 throw new Exception("roleManager null");
@@ -74,11 +76,6 @@ namespace BlogApp.Data
         private static async Task CreateModeratorRole(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
-            if (roleManager == null)
-            {
-                throw new Exception("roleManager null");
-            }
-
             if (!await roleManager.RoleExistsAsync(Roles.ModeratorRole))
             {
                 await roleManager.CreateAsync(new IdentityRole(Roles.ModeratorRole));
@@ -86,16 +83,18 @@ namespace BlogApp.Data
         }
 
         // assign custom data to users who registered before this feature
-        // private static void AssignUserInfo(IServiceProvider serviceProvider) 
-        // {
-        //     var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
-        //     var users = userManager.Users.ToList();
-        //     foreach(BlogUser user in users) {
-        //         if (user.CakeDay == null) {
-        //             user.CakeDay = DateTime.Now;
-        //         }
-        //     }
-        // }
+        private static void AssignUserInfo(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+            var users = userManager.Users.ToList();
+            foreach (ApplicationUser user in users)
+            {
+                if (user.RegistrationDate == null)
+                {
+                    user.RegistrationDate = DateTime.Now;
+                }
+            }
+        }
 
     }
 }

@@ -14,10 +14,10 @@ namespace BlogApp.Pages
     {
         protected ApplicationDbContext Context { get; }
         protected IAuthorizationService AuthorizationService { get; }
-        protected UserManager<IdentityUser> UserManager { get; }
+        protected UserManager<ApplicationUser> UserManager { get; }
         public BaseModel(
             ApplicationDbContext context, 
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             Context = context;
             UserManager = userManager;
