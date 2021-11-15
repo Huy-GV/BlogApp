@@ -13,6 +13,10 @@ body {
     background-color: whitesmoke;
 }
 
+.smooth-transition {
+    transition: 160ms ease-in
+}
+
 .blog-container {
     display: -ms-grid;
     display: grid;
@@ -28,12 +32,20 @@ body {
         width: 25rem;
         height: 10rem;
         display: flex;
-        border-radius: 15px;
+        border-radius: 10px;
         background: white;
+        text-decoration: none;
+        color: black;
+        @extend .smooth-transition;
+
+        &:hover {
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+            @extend .smooth-transition;
+        }
 
         img {
             width: 40%;
-            border-radius: 15px;
+            border-radius: 10px;
             object-fit: cover;
         }
         
@@ -44,30 +56,19 @@ body {
             width: 60%;
             margin-left: 1rem;
 
-            .author {
+            .info {
                 @extend .info-text;
-                color: green;
-                font-weight: 800;
+                font-weight: 600;
+                color: #2a2aa5;
             }
 
             .title {
                 font-family: Garamond, serif;
                 height: 30%;
                 overflow: hidden;
-                font-weight: 700;
+                font-weight: 800;
                 font-size: 1.1rem;
                 overflow: hidden;
-            }
-
-            .additional-info, .title {
-                margin-top: auto;
-            }
-
-            .additional-info p {
-                @extend .info-text;
-                margin: 0;
-                font-style: italic;
-                color: grey;
             }
 
             .blog-link {

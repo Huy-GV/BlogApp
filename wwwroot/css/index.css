@@ -1,8 +1,8 @@
-.info-text, .blog-container .blog .blog-info .author, .blog-container .blog .blog-info .additional-info p, .blog-container .blog .blog-info .blog-link {
+.info-text, .blog-container .blog .blog-info .info, .blog-container .blog .blog-info .blog-link {
   font-size: 0.7rem;
 }
 
-.info-text:hover, .blog-container .blog .blog-info .author:hover, .blog-container .blog .blog-info .additional-info p:hover, .blog-container .blog .blog-info .blog-link:hover {
+.info-text:hover, .blog-container .blog .blog-info .info:hover, .blog-container .blog .blog-info .blog-link:hover {
   cursor: pointer;
   -webkit-transition: 100ms ease-out;
   transition: 100ms ease-out;
@@ -10,6 +10,11 @@
 
 body {
   background-color: whitesmoke;
+}
+
+.smooth-transition, .blog-container .blog, .blog-container .blog:hover {
+  -webkit-transition: 160ms ease-in;
+  transition: 160ms ease-in;
 }
 
 .blog-container {
@@ -36,13 +41,20 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  border-radius: 15px;
+  border-radius: 10px;
   background: white;
+  text-decoration: none;
+  color: black;
+}
+
+.blog-container .blog:hover {
+  -webkit-box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
 }
 
 .blog-container .blog img {
   width: 40%;
-  border-radius: 15px;
+  border-radius: 10px;
   -o-object-fit: cover;
      object-fit: cover;
 }
@@ -61,28 +73,18 @@ body {
   margin-left: 1rem;
 }
 
-.blog-container .blog .blog-info .author {
-  color: green;
-  font-weight: 800;
+.blog-container .blog .blog-info .info {
+  font-weight: 600;
+  color: #2a2aa5;
 }
 
 .blog-container .blog .blog-info .title {
   font-family: Garamond, serif;
   height: 30%;
   overflow: hidden;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.1rem;
   overflow: hidden;
-}
-
-.blog-container .blog .blog-info .additional-info, .blog-container .blog .blog-info .title {
-  margin-top: auto;
-}
-
-.blog-container .blog .blog-info .additional-info p {
-  margin: 0;
-  font-style: italic;
-  color: grey;
 }
 
 .blog-container .blog .blog-info .blog-link {

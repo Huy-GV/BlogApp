@@ -13,20 +13,14 @@
 <main class="blog-container">
     @foreach (var blog in Model.Blog)
     {
-        <div class="blog">
+        <a class="blog" asp-page="/Blogs/Read" 
+                        asp-route-id="@blog.ID">
             <img src="/images/@blog.ImagePath">
             <div class="blog-info">
-                <p class="author">@blog.Author</p>
+                <span class="info">@blog.Author</span>
+                <span class="info">@blog.Date.ToString("dd MMM yyyy")</span>
                 <p class="title">@blog.Title</p>
-                <div class="additional-info">
-                    <p>@blog.Date.ToString("dd MMM yyyy")</p>
-                    <p>@blog.Comments.Count comments</p>
-                    <a class="blog-link" 
-                        asp-page="/Blogs/Read" 
-                        asp-route-id="@blog.ID">See more</a>
-                </div>
-
             </div>
-        </div>
+        </a>
     }
 </main>
