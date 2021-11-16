@@ -14,6 +14,7 @@ namespace BlogApp.Pages.Blogs
     {
         public string Title { get; set; }
         public string Content { get; set; }
+        public string Description { get; set; }
         public string ImagePath { get; set; }
     }
     [Authorize]
@@ -55,6 +56,7 @@ namespace BlogApp.Pages.Blogs
             var blog = new Blog
             {
                 Title = CreateBlog.Title,
+                Description = CreateBlog.Description,
                 Content = CreateBlog.Content,
                 ImagePath = CreateBlog.ImagePath,
                 Date = DateTime.Now,

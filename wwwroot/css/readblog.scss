@@ -10,6 +10,18 @@ $primary-purple: rgb(99, 0, 148);
         padding: 0.6rem;
         width: 50%;
 
+        .blog-description {
+            line-height: 1.4rem;
+            white-space: pre-line;
+            color: #606060;;
+        }
+
+        img {
+            border-radius: 10px;
+            object-fit: cover;
+            width: 100%;
+        }
+
         .blog-content {
             line-height: 1.6rem;
             white-space: pre-line;

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-BlogApp-ED49C29B-6D6C-4506-B3D3-B3C3454112CE</UserSecretsId>
   </PropertyGroup>
 

@@ -11,6 +11,7 @@ namespace BlogApp.Models
         public int ID { get; set; }
         [Required]
         public string Title { get; set; }
+        public string Description { get; set; } = string.Empty;
         [Required]
         public string ImagePath { get; set; }
         public ICollection<Comment> Comments { get; set; }

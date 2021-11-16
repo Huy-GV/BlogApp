@@ -17,6 +17,19 @@
   width: 50%;
 }
 
+.blog-container .blog .blog-description {
+  line-height: 1.4rem;
+  white-space: pre-line;
+  color: #606060;
+}
+
+.blog-container .blog img {
+  border-radius: 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
 .blog-container .blog .blog-content {
   line-height: 1.6rem;
   white-space: pre-line;

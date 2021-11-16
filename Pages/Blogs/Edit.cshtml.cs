@@ -13,7 +13,7 @@ namespace BlogApp.Pages.Blogs
 {
     public class EditBlog : InputBlog
     {
-        public int ID {get; set;}
+        public int ID { get; set;}
     }
     [Authorize]
     public class EditModel : BaseModel
@@ -74,9 +74,11 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != blog.Author)
                 return Forbid();
 
+            //TODO: pass edited blog as argument?
             blog.Content = EditBlog.Content;
             blog.ImagePath = EditBlog.ImagePath;
             blog.Title = EditBlog.Title;
+            blog.Description = EditBlog.Description;
             
             Context.Attach(blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();

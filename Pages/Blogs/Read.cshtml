@@ -57,6 +57,8 @@
                 blogContent = Model.Blog.SuspensionExplanation;
             }
         }
+        <p class="blog-description">@Model.Blog.Description</p>
+        <img src="/images/@Model.Blog.ImagePath">
         <p class="blog-content @blogContentClass">@blogContent</p>
         <div class="blog-info-container">
             <span class="blog-info">@Model.Blog.Date.ToString("dd MMMM yyyy")</span>
