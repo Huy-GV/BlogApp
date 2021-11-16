@@ -33,8 +33,8 @@
 }
 
 .blog-container .blog {
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
   padding: 1rem;
   margin: 0.5rem;
   width: 25rem;
@@ -87,6 +87,7 @@
 }
 
 .blog-container .blog .blog-info .description {
+  font-family: "Open Sans",Helvetica,arial,sans-serif;
   font-size: 0.7rem;
 }
 
@@ -96,7 +97,11 @@
   color: #630094;
 }
 
-main {
-  margin-top: 4rem;
+.today {
+  margin-top: 5rem;
+  margin-inline: 10rem;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Times New Roman', serif;
 }
 /*# sourceMappingURL=index.css.map */

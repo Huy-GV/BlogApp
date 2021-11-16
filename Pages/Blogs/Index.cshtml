@@ -8,9 +8,12 @@
     ViewData["CSSLink"] = "/css/index.css";
     ViewData["Shared"] = "/css/shared.css";
     ViewData["Script"] = "#";
+    string today = DateTime.Now.ToString("dddd d MMMM yyyy");
 }
 
+<p class="today">@today</p>
 <main class="blog-container">
+
     @foreach (var blog in Model.Blog)
     {
         <a class="blog" asp-page="/Blogs/Read" 

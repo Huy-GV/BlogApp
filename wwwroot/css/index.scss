@@ -27,7 +27,7 @@ $primary-purple: rgb(99, 0, 148);
     justify-content: center;
 
     .blog {
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.25);
         padding: 1rem;
         margin: 0.5rem;
         width: 25rem;
@@ -87,32 +87,12 @@ $primary-purple: rgb(99, 0, 148);
     }
 }
 
-main {
-    margin-top: 4rem;
+.today {
+    margin-top: 5rem;
+    margin-inline: 10rem;
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'Times New Roman', serif;
 }
-
-// .add-button-container {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     margin: 0.6rem;
-//     margin-top: 4rem;
-
-//     .add-button {
-//         background-color: $primary-purple;
-//         color: white;
-//         padding: 0.3rem;
-//         text-decoration: none;
-//         text-align: center;
-//         width: 50%;
-//         border-radius: 5px;
-//         transition: 100ms ease-in;
-    
-//         &:hover {
-//             transition: 100ms ease-in;
-//             box-shadow: 0 0 3px 1px #a5a5ff;
-//         }
-//     }
-// }
 
 
