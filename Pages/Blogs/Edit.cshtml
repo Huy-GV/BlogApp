@@ -14,15 +14,17 @@
         <input type="text" name="EditBlog.Title" required value="@Model.EditBlog.Title">
 
         <label asp-for="EditBlog.Description"><strong>Description</strong></label>
-        <input type="text" name="EditBlog.Description" required value="@Model.EditBlog.Description">
+        <textarea rows="8" cols="50"
+                name="EditBlog.Description"
+                required><@Model.EditBlog.Description</textarea>
 
         <label asp-for="EditBlog.ImagePath"><strong>Image path</strong></label>
         <input type="text" name="EditBlog.ImagePath" required value="@Model.EditBlog.ImagePath">
     </div>
     <br>
     <textarea rows="18" cols="50"
-              name="EditBlog.Content"
-              required>@Model.EditBlog.Content</textarea>
+            name="EditBlog.Content"
+            required>@Model.EditBlog.Content</textarea>
     <br>
     <input type="hidden" value="@Model.EditBlog.ID" asp-for="EditBlog.ID" />
     <input type="submit" value="Save changes" class="submit-post" />

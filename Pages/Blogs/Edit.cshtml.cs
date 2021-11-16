@@ -48,7 +48,8 @@ namespace BlogApp.Pages.Blogs
                 ID = blog.ID,
                 Title = blog.Title,
                 ImagePath = blog.ImagePath,
-                Content = blog.Content
+                Content = blog.Content,
+                Description = blog.Description
             };
 
             return Page();

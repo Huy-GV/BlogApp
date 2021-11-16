@@ -9,12 +9,13 @@ $primary-purple: rgb(99, 0, 148);
     }
 }
 
-body {
-    background-color: whitesmoke;
-}
-
 .smooth-transition {
     transition: 160ms ease-in
+}
+
+.content-info {
+    margin-bottom: 0;
+    overflow: hidden;
 }
 
 .blog-container {
@@ -63,18 +64,17 @@ body {
             }
 
             .title {
+                @extend .content-info;
                 font-family: Garamond, serif;
                 height: 30%;
-                overflow: hidden;
                 font-weight: 800;
                 font-size: 1.1rem;
-                margin-bottom: 0;
             }
 
             .description {
-                overflow: hidden;
+                font-family: "Open Sans",Helvetica,arial,sans-serif;
+                @extend .content-info;
                 font-size: 0.7rem;
-                margin-bottom: 0;
             }
 
             .blog-link {

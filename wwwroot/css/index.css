@@ -8,13 +8,14 @@
   transition: 100ms ease-out;
 }
 
-body {
-  background-color: whitesmoke;
-}
-
 .smooth-transition, .blog-container .blog, .blog-container .blog:hover {
   -webkit-transition: 160ms ease-in;
   transition: 160ms ease-in;
+}
+
+.content-info, .blog-container .blog .blog-info .title, .blog-container .blog .blog-info .description {
+  margin-bottom: 0;
+  overflow: hidden;
 }
 
 .blog-container {
@@ -81,16 +82,12 @@ body {
 .blog-container .blog .blog-info .title {
   font-family: Garamond, serif;
   height: 30%;
-  overflow: hidden;
   font-weight: 800;
   font-size: 1.1rem;
-  margin-bottom: 0;
 }
 
 .blog-container .blog .blog-info .description {
-  overflow: hidden;
   font-size: 0.7rem;
-  margin-bottom: 0;
 }
 
 .blog-container .blog .blog-info .blog-link {

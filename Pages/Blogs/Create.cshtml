@@ -14,7 +14,12 @@
         <input asp-for="CreateBlog.Title" type="text" required>
 
         <label asp-for="CreateBlog.Description"><strong>Description</strong></label>
-        <input asp-for="CreateBlog.Description" type="text" required>
+        <textarea rows="8" cols="50" 
+            asp-for="CreateBlog.Description" 
+            required
+            type="text"
+            placeholder="Description">
+        </textarea>
 
         <label asp-for="CreateBlog.ImagePath"><strong>Image path</strong></label>
         <input asp-for="CreateBlog.ImagePath" type="text" required>
@@ -23,6 +28,7 @@
     <textarea rows="18" cols="50" 
         asp-for="CreateBlog.Content" 
         required
-        placeholder="What do you want to share?" type="text"></textarea><br>
+        placeholder="What do you want to share?" 
+        type="text"></textarea><br>
     <input type="submit" value="Post" class="submit-post" />
 </form> 
