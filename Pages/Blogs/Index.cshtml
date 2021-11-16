@@ -1,4 +1,4 @@
-﻿@page
+﻿@page 
 @model BlogApp.Pages.Blogs.IndexModel
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -12,9 +12,13 @@
 }
 
 <p class="today">@today</p>
-<main class="blog-container">
+<form method="get" class="search-form">
+    <input type="text" asp-for="SearchString" required placeholder="Enter author or blog title">
+    <input type="submit" value="Search">
+</form>
 
-    @foreach (var blog in Model.Blog)
+<main class="blog-container">
+    @foreach (var blog in Model.Blogs)
     {
         <a class="blog" asp-page="/Blogs/Read" 
                         asp-route-id="@blog.ID">

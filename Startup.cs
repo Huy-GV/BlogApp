@@ -40,7 +40,6 @@ namespace BlogApp
                 .AddDefaultTokenProviders();
 
             services.AddRazorPages();
-
             services.AddMvc().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Blogs/Index", "");

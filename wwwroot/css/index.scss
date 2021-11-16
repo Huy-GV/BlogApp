@@ -18,6 +18,35 @@ $primary-purple: rgb(99, 0, 148);
     overflow: hidden;
 }
 
+.search-form {
+    margin: auto;
+    width: 50%;
+
+    input[type="submit"] {
+        border: none;
+        border-radius: 5px;
+        padding: 0.7rem;
+        font-size: 1rem;
+        background: $primary-purple;
+        color: white;
+        @extend .smooth-transition;
+
+        &:hover{
+            @extend .smooth-transition;
+            cursor: pointer;
+            filter: brightness(0.8);
+        }
+    }
+
+    input[type="text"] {
+        padding: 0.6rem;
+        font-size: 1rem;
+        border-radius: 2px;
+        border: 1px solid $primary-purple;
+        width: 80%;
+    }
+}
+
 .blog-container {
     display: -ms-grid;
     display: grid;
