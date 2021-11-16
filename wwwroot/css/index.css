@@ -84,7 +84,13 @@ body {
   overflow: hidden;
   font-weight: 800;
   font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+.blog-container .blog .blog-info .description {
   overflow: hidden;
+  font-size: 0.7rem;
+  margin-bottom: 0;
 }
 
 .blog-container .blog .blog-info .blog-link {
