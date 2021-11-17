@@ -5,6 +5,7 @@
 
 body { 
     margin: 0;
+    margin-bottom: 3rem;
 }
 
 $primary-purple: rgb(99, 0, 148);
@@ -90,6 +91,10 @@ nav {
 
     }
 
+}
+
+nav + * {
+    margin-top: 5rem;
 }
 
 .button {

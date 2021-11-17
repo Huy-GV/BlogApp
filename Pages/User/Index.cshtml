@@ -1,5 +1,51 @@
 ﻿@page
 @model BlogApp.Pages.User.IndexModel
 @{
-    
+    ViewData["Title"] = "Profile";
+    ViewData["CSSLink"] = "/css/user/user.css";
+    ViewData["Shared"] = "/css/shared.css";
+    ViewData["Script"] = "#";
+    var userDTO = Model.UserDTO;
 }
+<p class="page-title">Profile</p>
+<main>
+    <div class="basic-info">
+        <img src="/images/profiles/@userDTO.ProfilePath">
+        <div class="info">
+            <p>Name: @userDTO.Username</p>
+            <p>Country: @userDTO.Country</p>
+            <div class="button-container">
+                <a class="edit-profile">Edit Profile</a>
+                <a class="change-password">Change Password</a>
+            </div>
+
+        </div>
+    </div>
+    <div class="description">
+        <p class="card-title">Description</p>
+        <p>@userDTO.Description</p>
+    </div>
+    <div class="stats">
+        <p class="card-title">Statistics</p>
+        <p>Total blogs: @userDTO.BlogCount</p>
+        <p>Total comments: @userDTO.CommentCount</p>
+        <p>Blogs in @DateTime.Now.Year: @userDTO.BlogCountCurrentYear</p>
+    </div>
+</main>
+<section class="blog-container">
+@*    <a class="blog">
+        <p>Title</p> 
+        <p>Date</p>
+        <p>Description</p>
+    </a>*@
+    <h1>History: </h1>
+    @foreach(var blog in userDTO.Blogs)
+    {
+        <a class="blog" asp-page="/Blogs/Read" 
+                        asp-route-id="@blog.ID">
+            <p class="title">@blog.Title</p> 
+            <p>@blog.Date</p>
+            <p>@blog.Description</p>
+        </a>
+    }
+</section>

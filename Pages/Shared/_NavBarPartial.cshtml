@@ -17,7 +17,7 @@
         method="post">
             @if (User.Identity.IsAuthenticated)
             {
-                <a>My Profile</a>
+                <a asp-page="/User/Index" asp-route-username="@User.Identity.Name">My Profile</a>
             }
 
             @if (User.IsInRole(Roles.AdminRole))

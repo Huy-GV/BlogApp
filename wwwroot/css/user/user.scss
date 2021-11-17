@@ -1,0 +1,160 @@
+.smooth-transition {
+    transition: 160ms ease-in
+}
+$primary-purple: rgb(99, 0, 148);
+
+a {
+    @extend .smooth-transition;
+}
+
+.page-title {
+    font-weight: 700;
+    font-size: 3rem;
+    margin-left: 20%;
+    margin-bottom: 1rem;
+}
+
+main {
+    width: 60%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 20rem));
+    grid-template-rows: auto;
+    gap: 1rem;
+
+    .basic-info {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+
+        img {
+            object-fit: cover;
+            width: 12rem;
+            height: 12rem;
+            justify-self: center;
+            align-self: center;
+            border-radius: 100%;
+            
+        }
+
+        .info {
+            height: 12rem;
+            display: flex;
+            flex-direction: column;
+            justify-self: center;
+            padding: 1rem;
+            margin-top: 0.5rem;
+
+            p {
+                margin-block: 0;
+                margin-left: 2.5rem;
+            }
+
+            a {
+                border-radius: 5px;
+                padding: 0.8rem;
+                margin: 0.3rem;
+                margin-inline: auto;
+                text-align: center;
+                width: 50%;
+                font-size: 0.7rem;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                
+                &:hover{
+                    cursor: pointer;
+                }
+            }
+
+            .edit-profile {
+                margin-top: 3rem;
+                background-color: $primary-purple;
+                color: white;
+                border: none;
+                &:hover{
+                    filter: brightness(0.8);
+                }
+            }
+
+            .change-password {
+                border: 1px solid $primary-purple;
+                color: $primary-purple;
+                background-color: white;
+
+                &:hover {
+                    background-color: $primary-purple;
+                    color: white;
+                }
+            }
+
+        }
+        
+    }
+
+    .description {
+        border-radius: 10px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+        align-self: center;
+        padding: 1rem;
+        min-height: 15rem;
+        max-height: 20rem;
+        align-self: baseline;
+
+    }
+
+    .card-title {
+        font-weight: 700;
+    }
+
+    .stats {
+        align-self: center;
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+    }
+    
+}
+
+.blog-container{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    margin-top: 2rem;
+    border-radius: 10px;
+
+    h1 {
+        padding-left: 1rem;
+    }
+
+    .blog {
+        padding: 1rem;
+        max-height: 8rem;
+        margin-top: 1rem;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        text-decoration: none;
+        color: black;
+
+        .title {
+            font-weight: 700;
+        }
+
+        &:hover {
+            
+            @extend .smooth-transition;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    p {
+        overflow: hidden;
+    }
+}
+
+
+
+

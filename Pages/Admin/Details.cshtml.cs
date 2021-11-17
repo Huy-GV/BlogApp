@@ -18,10 +18,6 @@ namespace BlogApp.Pages.Admin
     [Authorize(Roles = "admin")]
     public class DetailsModel : BaseModel
     {
-        private enum PostType {
-            Blog,
-            Comment
-        }
         private readonly ILogger<AdminModel> _logger;
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }

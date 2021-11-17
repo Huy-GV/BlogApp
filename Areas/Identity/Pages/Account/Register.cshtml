@@ -8,7 +8,7 @@
 
 
 
-<form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="log-in-form">
+<form enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="log-in-form">
     <h4>Create a new account.</h4>
     <hr />
     <label asp-for="Input.UserName">Username</label>
@@ -19,7 +19,9 @@
     <br>
     <label asp-for="Input.ConfirmPassword"></label>
     <input asp-for="Input.ConfirmPassword" class="text-input" />
-
+    <br>
+    <label asp-for="Input.ProfilePicture"></label>
+    <input type="file" asp-for="Input.ProfilePicture" accept=".png,.jpg,.jpeg" multiple>
     <button type="submit" class="log-in-btn">Register</button>
 </form>
 

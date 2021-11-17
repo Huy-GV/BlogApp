@@ -6,13 +6,16 @@
     display: flex;
     flex-direction: column;
     margin-left: 20%;
-    margin-top: 4rem;
 }
 
 .suspended-blog-container {
     display: flex;
     flex-direction: column;
     margin-left: 20%;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
 .suspended-blog {
@@ -21,13 +24,16 @@
 
 .ban-details-container {
     margin-left: 20%;
+    margin-top: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
 .profile-container, .suspended-blog-container, .ban-details-container {
     padding: 0.4rem;
-    margin-top: 0.7rem;
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-inline: 20%;
     border-radius: 3px;
     background-color: white;
 }

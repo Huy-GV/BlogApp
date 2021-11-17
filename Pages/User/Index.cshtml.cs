@@ -1,13 +1,59 @@
+using BlogApp.Data;
+using BlogApp.Data.DTOs;
+using BlogApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlogApp.Pages.User
 {
-    public class IndexModel : PageModel
+    [Authorize]
+    public class IndexModel : BaseModel
     {
-        public void OnGet()
+        [BindProperty]
+        public UserDTO UserDTO { get; set; }
+        public IndexModel(      
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager) : base(context, userManager)
         {
 
+        }
+        public async Task<IActionResult> OnGetAsync(string username)
+        {
+            var user = await UserManager.FindByNameAsync(username);
+            if (user == null)
+                return NotFound();
+            if (user.UserName != User.Identity.Name)
+                return Forbid();
+
+            var blogs = Context.Blog
+                .Where(blog => blog.Author == username)
+                .ToList();
+
+            UserDTO = new UserDTO()
+            {
+                Username = username,
+                BlogCount = blogs.Count,
+                ProfilePath = user.ProfilePicture,
+                Blogs = blogs,
+                CommentCount = Context.Comment
+                    .Where(comment => comment.Author == username)
+                    .ToList()
+                    .Count,
+                BlogCountCurrentYear = blogs
+                    .Where(blog => blog.Author == username 
+                    && blog.Date.Month == DateTime.Now.Month)
+                    .ToList()
+                    .Count,
+                Country = user.Country,
+                RegistrationDate = user.RegistrationDate?.ToString("dd MM yyyy") ?? "",
+             };
+
+
+            return Page();
         }
     }
 }
