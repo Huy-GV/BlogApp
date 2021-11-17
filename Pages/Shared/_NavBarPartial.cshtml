@@ -5,25 +5,44 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <nav>
+    <img src="/images/logo.svg" alt="logo">
+    <a asp-page="/Blogs/Index" class="home-link">Home</a>
     
-    <a asp-page="/Blogs/Index" class="home-link"><img src="/images/logo.svg" alt="logo"></a>
     @if (SignInManager.IsSignedIn(User))
     {
-    var user = (await UserManager.GetUserAsync(User));
+        var user = (await UserManager.GetUserAsync(User));
+        <form asp-area="Identity" 
+        asp-page="/Account/Logout" 
+        asp-route-returnUrl="/Blogs/Index"    
+        method="post">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a>My Profile</a>
+            }
 
-        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Blogs/Index" method="post">
-            <span>@user.UserName</span>
             @if (User.IsInRole(Roles.AdminRole))
             {
-                <span><a asp-page="/Admin/Admin"  class="nav-btn">Users</a></span>
+                <a asp-page="/Admin/Admin" >Users</a>
             }
-            <span><a class="primary-btn" asp-page="/Blogs/Create">Write</a></span>
-            <span><input type="submit" class="nav-btn last-child" value="Log out"/></span>
+            <a  asp-page="/Blogs/Create">Write</a>
+            <div class="authentication-links">
+                <p>@user.UserName</p>
+                <p class="middle-bar"></p>
+                <input type="submit" class="secondary-btn log-btn" value="Log Out"/>
+            </div>
+
         </form>
     }
     else
     {
-        <span><a class="secondary-btn" asp-area="Identity" asp-page="/Account/Login">Log in</a></span>
-        <span><a class="last-child primary-btn" asp-area="Identity" asp-page="/Account/Register">Sign up</a></span>
+        <div class="authentication-links">
+            <a class="secondary-btn log-btn" 
+                asp-area="Identity" 
+                asp-page="/Account/Login">Log In</a>
+            <p class="middle-bar"></p>
+            <a class="log-btn primary-btn" 
+                asp-area="Identity" 
+                asp-page="/Account/Register">Sign Up</a>
+        </div>
     }
 </nav>
