@@ -32,7 +32,7 @@ $primary-purple: rgb(99, 0, 148);
 
 .blog-info-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
 
     .blog-info {
         font-size: 0.7rem;
@@ -98,6 +98,35 @@ $primary-purple: rgb(99, 0, 148);
             cursor: pointer;
         }
     }
+}
+
+.author-info {
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    padding: 1rem;
+    margin-inline: auto;
+    margin-block: 2rem;
+    width: 40%;
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+
+        span {
+            margin-left: 1rem;
+            font-weight: 600;
+        }
+
+        img {
+            height: 3rem;
+            width: 3rem;
+            border-radius: 100%;
+        }
+    }
+
+
+
+    
 }
 
 .comment-option-container {

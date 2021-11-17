@@ -14,6 +14,11 @@
 
 <main class="blog-container">
     <article class="blog">
+        <div class="blog-info-container">
+            <span class="blog-author">@Model.Blog.Author,</span>
+            <span class="blog-info"> @Model.Blog.Date.ToString("dd MMMM yyyy")</span>
+        </div>
+
         <p class="title">@Model.Blog.Title</p>
         <hr>
         <div class="comment-option-container">
@@ -60,14 +65,23 @@
         <p class="blog-description">@Model.Blog.Description</p>
         <img src="/images/@Model.Blog.ImagePath">
         <p class="blog-content @blogContentClass">@blogContent</p>
-        <div class="blog-info-container">
-            <span class="blog-info">@Model.Blog.Date.ToString("dd MMMM yyyy")</span>
-            <span class="blog-author"> - @Model.Blog.Author</span>
-        </div>
+
 
     </article>
 </main>
 
+
+@{
+    var author = await UserManager.FindByNameAsync(Model.Blog.Author);
+}
+<section class="author-info">
+    <div class="profile-header">
+        <img src="/images/profiles/@author.ProfilePicture">
+        <span>@author.UserName</span>
+    </div>
+
+    <p>@author.Description adasdasdas asdas ads asdas dasd sda adasdasdas asdas ads asdas dasd sdas adasdasdas asdas ads asdas dasd sdass</p>
+</section>
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
 {

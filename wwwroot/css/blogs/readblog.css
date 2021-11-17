@@ -40,9 +40,9 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .blog-info-container .blog-info, .blog-info-container .blog-author {
@@ -115,6 +115,36 @@
 
 .add-comment-button-container .comment-button:hover {
   cursor: pointer;
+}
+
+.author-info {
+  border-radius: 5px;
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  margin-inline: auto;
+  margin-block: 2rem;
+  width: 40%;
+}
+
+.author-info .profile-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.author-info .profile-header span {
+  margin-left: 1rem;
+  font-weight: 600;
+}
+
+.author-info .profile-header img {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 100%;
 }
 
 .comment-option-container {
