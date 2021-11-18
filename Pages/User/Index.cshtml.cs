@@ -46,9 +46,13 @@ namespace BlogApp.Pages.User
                     .Count,
                 BlogCountCurrentYear = blogs
                     .Where(blog => blog.Author == username 
-                    && blog.Date.Month == DateTime.Now.Month)
+                    && blog.Date.Year == DateTime.Now.Year)
                     .ToList()
                     .Count,
+                ViewCountCurrentYear = blogs
+                    .Where(blog => blog.Author == username
+                    && blog.Date.Year == DateTime.Now.Year)
+                    .Sum(blogs => blogs.ViewCount),
                 Country = user.Country,
                 RegistrationDate = user.RegistrationDate?.ToString("dd MM yyyy") ?? "",
             };

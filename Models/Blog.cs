@@ -12,6 +12,7 @@ namespace BlogApp.Models
         [Required]
         public string Title { get; set; }
         public string Description { get; set; } = string.Empty;
+        public int ViewCount { get; set; } = 0;
         [Required]
         public string ImagePath { get; set; }
         public ICollection<Comment> Comments { get; set; }

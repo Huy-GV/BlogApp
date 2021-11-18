@@ -42,9 +42,9 @@
 
 .blog-container .blog .blog-content {
   font-family: "Open Sans",Helvetica,arial,sans-serif;
-  line-height: 1.6rem;
+  line-height: 1.8rem;
   white-space: pre-line;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
 .blog-info-container {
@@ -213,7 +213,9 @@
   background-color: #630094;
   border-radius: 3px;
   font-weight: bold;
-  padding: 0.3rem;
+  padding: 0.6rem;
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .primary-btn:hover, .submit-comment:hover, .save-btn:hover {

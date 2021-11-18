@@ -10,6 +10,7 @@
     ViewData["Script"] = "/js/blog.js";
     ApplicationUser user = await UserManager.GetUserAsync(User);
     var isSuspended = (bool)ViewData["IsSuspended"];
+    var authorProfile = (SimpleProfileDTO) ViewData["AuthorProfile"];
 }
 
 <main class="blog-container">
@@ -73,14 +74,15 @@
 
 @{
     var author = await UserManager.FindByNameAsync(Model.Blog.Author);
+
 }
 <section class="author-info">
     <div class="profile-header">
-        <img src="/images/profiles/@author.ProfilePicture">
-        <span>@author.UserName</span>
+        <img src="/images/profiles/@authorProfile.ProfilePath">
+        <span>@authorProfile.Username</span>
     </div>
 
-    <p>@author.Description adasdasdas asdas ads asdas dasd sda adasdasdas asdas ads asdas dasd sdas adasdasdas asdas ads asdas dasd sdass</p>
+    <p>@authorProfile.Description adasdasdas asdas ads asdas dasd sda adasdasdas asdas ads asdas dasd sdas adasdasdas asdas ads asdas dasd sdass</p>
 </section>
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
@@ -111,7 +113,12 @@
                 {
                     authorClass = "comment-author";
                 }
-                <span class="@authorClass">@comment.Author</span>
+
+                
+                <div class="author-container">
+                    <img src="">
+                    <span class="@authorClass">@comment.Author</span>
+                </div>
             }
 
             <div class="comment-option-container">

@@ -34,9 +34,10 @@ $primary-purple: rgb(99, 0, 148);
 
         .blog-content {
             font-family: "Open Sans",Helvetica,arial,sans-serif;
-            line-height: 1.6rem;
+            line-height: 1.8rem;
             white-space: pre-line;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+        
         }
     }
 }
@@ -189,7 +190,8 @@ $primary-purple: rgb(99, 0, 148);
     background-color: $primary-purple;
     border-radius: 3px;
     font-weight: bold;
-    padding: 0.3rem;
+    padding: 0.6rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 
     &:hover{
         filter: brightness(0.8);

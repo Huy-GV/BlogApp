@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BlogApp.Data;
+using BlogApp.Data.DTOs;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using BlogApp.Pages;
+
 
 namespace BlogApp.Pages.Blogs
 {
@@ -51,6 +53,8 @@ namespace BlogApp.Pages.Blogs
             if (Blog == null)
                 return NotFound();
 
+            await IncrementViewCountAsync();
+
             if (User.Identity.IsAuthenticated)
             {
                 var user = await UserManager.GetUserAsync(User);
@@ -61,7 +65,26 @@ namespace BlogApp.Pages.Blogs
                 ViewData["IsSuspended"] = false;
             }
 
+
+            ViewData["AuthorProfile"] = await GetSimpleProfileDTOAsync(Blog.Author);
+
             return Page();
+        }
+        private async Task<SimpleProfileDTO> GetSimpleProfileDTOAsync(string username)
+        {
+            var user = await UserManager.FindByNameAsync(Blog.Author);
+            return new SimpleProfileDTO()
+            {
+                Username = Blog.Author,
+                Description = Blog.Description,
+                ProfilePath = user.ProfilePicture
+            };
+        }
+        private async Task IncrementViewCountAsync()
+        {
+            Blog.ViewCount++;
+            Context.Attach(Blog).State = EntityState.Modified;
+            await Context.SaveChangesAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {

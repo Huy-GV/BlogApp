@@ -19,7 +19,7 @@ $primary-purple: rgb(99, 0, 148);
 }
 
 .search-form {
-    margin: auto;
+    margin: 0 0 1rem 10rem;
     width: 50%;
 
     input[type="submit"] {
@@ -57,13 +57,13 @@ $primary-purple: rgb(99, 0, 148);
     justify-content: center;
 
     .blog {
-        box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
         padding: 1rem;
         margin: 0.5rem;
         width: 30rem;
         height: 10rem;
         display: flex;
-        border-radius: 10px;
+        border-radius: 5px;
         background: white;
         text-decoration: none;
         color: black;

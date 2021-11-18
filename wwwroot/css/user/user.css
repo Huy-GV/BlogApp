@@ -181,5 +181,6 @@ main .stats {
 
 .blog-container p {
   overflow: hidden;
+  max-height: 3.5rem;
 }
 /*# sourceMappingURL=user.css.map */

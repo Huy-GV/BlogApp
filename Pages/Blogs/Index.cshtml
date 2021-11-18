@@ -24,8 +24,8 @@
                         asp-route-id="@blog.ID">
             <img src="/images/@blog.ImagePath">
             <div class="blog-info">
-                <span class="info">@blog.Author</span>
-                <span class="info">@blog.Date.ToString("dd MMM yyyy")</span>
+                <span class="info">@blog.Author on @blog.Date.ToString("dd MMM yyyy")</span>
+                <span class="info">&#128065; @blog.ViewCount</span>
                 <p class="title">@blog.Title</p>
                 <p class="description">@blog.Description</p>
             </div>

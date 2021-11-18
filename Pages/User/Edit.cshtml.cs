@@ -13,6 +13,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.Logging;
 
 namespace BlogApp.Pages.User
 {
@@ -33,12 +34,15 @@ namespace BlogApp.Pages.User
         [BindProperty]
         public EditUserModel EditUser { get; set; }
         private readonly IWebHostEnvironment _webHostEnv;
+        private readonly ILogger<EditModel> _logger;
         public EditModel(      
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
+            ILogger<EditModel> logger,
             IWebHostEnvironment webHostEnv) : base(context, userManager)
         {
             _webHostEnv = webHostEnv;
+            _logger = logger;
         }
         public async Task<IActionResult> OnGetAsync(string username)
         {
@@ -58,8 +62,8 @@ namespace BlogApp.Pages.User
             return Page();
         }
         public async Task<IActionResult> OnPostAsync() 
-        {
-            Console.WriteLine("username in on post: " + EditUser.UserName);
+        {   
+            _logger.LogInformation($"User named ${EditUser.UserName} attempted to update their profile");
             var user = await UserManager.FindByNameAsync(EditUser.UserName);
             if (user == null)
                 return NotFound();
@@ -71,6 +75,7 @@ namespace BlogApp.Pages.User
             applicationUser.Country = EditUser.Country ?? "Australia";
             if (EditUser.ProfilePicture != null) 
             {
+                RemoveOldProfilePicture(applicationUser.ProfilePicture);
                 applicationUser.ProfilePicture = await GetProfilePicturePath(EditUser);
             }
 
@@ -88,7 +93,6 @@ namespace BlogApp.Pages.User
             try
             {
                 string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
-                RemoveOldProfilePicture(fileName, directoryPath);
                 fileName = DateTime.Now.Ticks.ToString() + "_" + editUser.ProfilePicture.FileName;
                 string filePath = Path.Combine(directoryPath, fileName);
                 using (var stream = System.IO.File.Create(filePath))
@@ -97,18 +101,26 @@ namespace BlogApp.Pages.User
                 }
             } catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError($"Failed to upload new profile picture: ${ex}");
             }
 
 
             return fileName;
         }
-        private void RemoveOldProfilePicture(string oldFileName, string directoryPath)
+        private void RemoveOldProfilePicture(string oldFileName)
         {
-            if (oldFileName != "default") 
+            if (oldFileName != "default" && oldFileName != string.Empty) 
             {
+                string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
                 string filePath = Path.Combine(directoryPath, oldFileName);
-                System.IO.File.Delete(filePath);
+                try 
+                {
+                    System.IO.File.Delete(filePath);        
+                } catch 
+                {
+                    _logger.LogError($"Failed to remove profile picture with file path: ${filePath}");
+                }
+                
             }
         }
     }
