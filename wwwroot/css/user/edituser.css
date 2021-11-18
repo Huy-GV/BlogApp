@@ -1,0 +1,52 @@
+.smooth-transition, .submit-changes {
+  -webkit-transition: 160ms ease-in;
+  transition: 160ms ease-in;
+}
+
+input[type="text"], textarea {
+  font-size: 0.9rem;
+  display: block;
+  width: 30rem;
+  min-width: 80%;
+  margin: 0.2rem;
+  border-radius: 6px;
+  border: 2px solid lightgray;
+  padding: 0.5rem;
+}
+
+.submit-changes {
+  background-color: #630094;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  padding: 0.2rem;
+  font-size: 1rem;
+  width: 80%;
+  height: 2rem;
+  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+}
+
+.submit-changes:hover {
+  cursor: pointer;
+  -webkit-filter: brightness(0.6);
+          filter: brightness(0.6);
+}
+
+.edit-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 50%;
+  margin-inline: auto;
+  background: white;
+  padding: 0.5rem;
+}
+/*# sourceMappingURL=edituser.css.map */

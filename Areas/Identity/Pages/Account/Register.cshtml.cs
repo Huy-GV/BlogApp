@@ -111,7 +111,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
 
             try
             {
-                string filePath = Path.Combine(_webHostEnv.ContentRootPath, "images");
+                string filePath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
 
                 fileName = DateTime.Now.Ticks.ToString() + "_" + inputModel.ProfilePicture.FileName;
                 filePath = Path.Combine(filePath, fileName);

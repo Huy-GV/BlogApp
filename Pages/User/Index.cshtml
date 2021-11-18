@@ -14,8 +14,11 @@
         <div class="info">
             <p>Name: @userDTO.Username</p>
             <p>Country: @userDTO.Country</p>
+            <p>Joined on: @userDTO.RegistrationDate</p>
             <div class="button-container">
-                <a class="edit-profile">Update Profile</a>
+                <a class="edit-profile" 
+                asp-page="/User/Edit" 
+                asp-route-username="@userDTO.Username">Update Profile</a>
                 <a class="change-password">Change Password</a>
             </div>
 

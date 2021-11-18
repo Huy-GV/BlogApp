@@ -39,6 +39,7 @@ namespace BlogApp.Pages.User
                 BlogCount = blogs.Count,
                 ProfilePath = user.ProfilePicture,
                 Blogs = blogs,
+                Description = user.Description,
                 CommentCount = Context.Comment
                     .Where(comment => comment.Author == username)
                     .ToList()
@@ -50,7 +51,7 @@ namespace BlogApp.Pages.User
                     .Count,
                 Country = user.Country,
                 RegistrationDate = user.RegistrationDate?.ToString("dd MM yyyy") ?? "",
-             };
+            };
 
 
             return Page();
