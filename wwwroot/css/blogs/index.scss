@@ -51,7 +51,7 @@ $primary-purple: rgb(99, 0, 148);
 .blog-container {
     display: -ms-grid;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(28rem, 28rem));
+    grid-template-columns: repeat(auto-fit, minmax(32rem, 34rem));
     align-items: center;
     justify-items: center;
     justify-content: center;
@@ -60,7 +60,7 @@ $primary-purple: rgb(99, 0, 148);
         box-shadow: 0 3px 10px rgba(0,0,0,0.25);
         padding: 1rem;
         margin: 0.5rem;
-        width: 25rem;
+        width: 30rem;
         height: 10rem;
         display: flex;
         border-radius: 10px;

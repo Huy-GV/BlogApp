@@ -128,6 +128,7 @@ main .description {
 
 main .card-title {
   font-weight: 700;
+  font-size: 1.2rem;
 }
 
 main .stats {

@@ -16,6 +16,15 @@
   width: 50%;
 }
 
+.blog-container .blog .title {
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  font-family: Garamond, serif;
+  font-size: 3rem;
+  margin-top: 0.1rem;
+}
+
 .blog-container .blog .blog-description {
   font-family: "Open Sans",Helvetica,arial,sans-serif;
   line-height: 1.4rem;
@@ -28,12 +37,14 @@
   -o-object-fit: cover;
      object-fit: cover;
   width: 100%;
+  max-height: 25rem;
 }
 
 .blog-container .blog .blog-content {
   font-family: "Open Sans",Helvetica,arial,sans-serif;
   line-height: 1.6rem;
   white-space: pre-line;
+  font-size: 1.2rem;
 }
 
 .blog-info-container {
@@ -46,20 +57,12 @@
 }
 
 .blog-info-container .blog-info, .blog-info-container .blog-author {
-  font-size: 0.7rem;
   margin-left: 0.1rem;
 }
 
 .blog-author {
   color: green;
   font-weight: bold;
-}
-
-.title {
-  font-weight: 700;
-  font-size: 2rem;
-  text-align: center;
-  font-family: Garamond, serif;
 }
 
 .comment-container {
@@ -77,7 +80,7 @@
 }
 
 .comment-container .comment {
-  padding: 0.5rem;
+  padding: 1rem;
   background-color: white;
   border-radius: 5px;
   margin: 0.3rem;
@@ -92,6 +95,7 @@
 
 .comment-container .comment p {
   margin-top: 0.8rem;
+  font-size: 1rem;
 }
 
 .add-comment-button-container {

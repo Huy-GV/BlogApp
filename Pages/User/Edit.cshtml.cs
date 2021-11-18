@@ -87,10 +87,10 @@ namespace BlogApp.Pages.User
             //TODO: get config string from json
             try
             {
-                string filePath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
+                string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
+                RemoveOldProfilePicture(fileName, directoryPath);
                 fileName = DateTime.Now.Ticks.ToString() + "_" + editUser.ProfilePicture.FileName;
-                filePath = Path.Combine(filePath, fileName);
-                Console.WriteLine(filePath);
+                string filePath = Path.Combine(directoryPath, fileName);
                 using (var stream = System.IO.File.Create(filePath))
                 {
                     await editUser.ProfilePicture.CopyToAsync(stream);
@@ -102,6 +102,14 @@ namespace BlogApp.Pages.User
 
 
             return fileName;
+        }
+        private void RemoveOldProfilePicture(string oldFileName, string directoryPath)
+        {
+            if (oldFileName != "default") 
+            {
+                string filePath = Path.Combine(directoryPath, oldFileName);
+                System.IO.File.Delete(filePath);
+            }
         }
     }
 }

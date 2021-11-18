@@ -18,13 +18,17 @@ body {
 }
 
 .text-input {
-  padding: 0.2rem;
+  padding: 0.4rem;
   font-size: 1rem;
   margin: 0.2rem;
   border: 2px solid black;
   border-radius: 4px;
   display: block;
   width: 96%;
+}
+
+a {
+  text-decoration: none;
 }
 
 nav {
@@ -144,6 +148,8 @@ p {
   display: block;
   margin: 0.2rem;
   text-align: center;
+  padding: 0.6rem;
+  font-weight: 600;
 }
 
 .log-in-btn:hover {

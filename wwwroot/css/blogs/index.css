@@ -51,8 +51,8 @@
 .blog-container {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(28rem, 28rem))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(28rem, 28rem));
+  -ms-grid-columns: (minmax(32rem, 34rem))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(32rem, 34rem));
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -67,7 +67,7 @@
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
   padding: 1rem;
   margin: 0.5rem;
-  width: 25rem;
+  width: 30rem;
   height: 10rem;
   display: -webkit-box;
   display: -ms-flexbox;
