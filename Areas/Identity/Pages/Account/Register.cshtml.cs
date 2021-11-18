@@ -65,6 +65,8 @@ namespace BlogApp.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Display(Name = "Profile picture")]
             public IFormFile ProfilePicture { get; set; }
+            [Display(Name = "Country")]
+            public string Country { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
@@ -75,8 +77,11 @@ namespace BlogApp.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
-            string profilePath = await GetProfilePicturePath(Input);
+            string profilePath = "default";
+            if (Input.ProfilePicture != null) 
+            {
+                profilePath = await GetProfilePicturePath(Input);
+            } 
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser

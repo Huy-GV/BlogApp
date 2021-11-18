@@ -84,9 +84,7 @@ namespace BlogApp.Pages.User
         {
             string fileName = "";
             //TODO: santinise file name by removing file paths
-
             //TODO: get config string from json
-
             try
             {
                 string filePath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
