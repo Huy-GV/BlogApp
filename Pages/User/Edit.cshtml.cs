@@ -63,7 +63,7 @@ namespace BlogApp.Pages.User
         }
         public async Task<IActionResult> OnPostAsync() 
         {   
-            _logger.LogInformation($"User named ${EditUser.UserName} attempted to update their profile");
+            _logger.LogInformation($"User named {EditUser.UserName} attempted to update their profile");
             var user = await UserManager.FindByNameAsync(EditUser.UserName);
             if (user == null)
                 return NotFound();
@@ -101,7 +101,7 @@ namespace BlogApp.Pages.User
                 }
             } catch (Exception ex)
             {
-                _logger.LogError($"Failed to upload new profile picture: ${ex}");
+                _logger.LogError($"Failed to upload new profile picture: {ex}");
             }
 
 
