@@ -17,6 +17,7 @@ using BlogApp.Models;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using BlogApp.Services;
 
 namespace BlogApp.Areas.Identity.Pages.Account
 {
@@ -26,18 +27,18 @@ namespace BlogApp.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IWebHostEnvironment _webHostEnv;
+        private readonly ImageFileService _imageFileService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IWebHostEnvironment webHostEnvironment)
+            ImageFileService imageFileService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _webHostEnv = webHostEnvironment;
+            _imageFileService = imageFileService;
         }
 
         [BindProperty]
@@ -110,28 +111,13 @@ namespace BlogApp.Areas.Identity.Pages.Account
         private async Task<string> GetProfilePicturePath(InputModel inputModel) 
         {
             string fileName = "";
-            //TODO: santinise file name by removing file paths
-
-            //TODO: get config string from json
-
             try
             {
-                string filePath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
-
-                fileName = DateTime.Now.Ticks.ToString() + "_" + inputModel.ProfilePicture.FileName;
-                filePath = Path.Combine(filePath, fileName);
-                Console.WriteLine(fileName);
-                Console.WriteLine(filePath);
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    await inputModel.ProfilePicture.CopyToAsync(stream);
-                }
+                fileName = await _imageFileService.UploadImageAsync(inputModel.ProfilePicture);
             } catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError($"Failed to upload new profile picture: {ex}");
             }
-
-
             return fileName;
         }
     }

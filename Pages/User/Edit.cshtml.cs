@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.Logging;
+using BlogApp.Services;
 
 namespace BlogApp.Pages.User
 {
@@ -33,16 +34,16 @@ namespace BlogApp.Pages.User
     {
         [BindProperty]
         public EditUserModel EditUser { get; set; }
-        private readonly IWebHostEnvironment _webHostEnv;
         private readonly ILogger<EditModel> _logger;
+        private readonly ImageFileService _imageFileService;
         public EditModel(      
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            IWebHostEnvironment webHostEnv) : base(context, userManager)
+            ImageFileService imageFileService) : base(context, userManager)
         {
-            _webHostEnv = webHostEnv;
             _logger = logger;
+            _imageFileService = imageFileService;
         }
         public async Task<IActionResult> OnGetAsync(string username)
         {
@@ -75,7 +76,7 @@ namespace BlogApp.Pages.User
             applicationUser.Country = EditUser.Country ?? "Australia";
             if (EditUser.ProfilePicture != null) 
             {
-                RemoveOldProfilePicture(applicationUser.ProfilePicture);
+                _imageFileService.DeleteImage(applicationUser.ProfilePicture);
                 applicationUser.ProfilePicture = await GetProfilePicturePath(EditUser);
             }
 
@@ -84,44 +85,17 @@ namespace BlogApp.Pages.User
 
             return RedirectToPage("/User/Index", new { username = EditUser.UserName });
         }
-        //TODO: write a service for this?
         private async Task<string> GetProfilePicturePath(EditUserModel editUser) 
         {
             string fileName = "";
-            //TODO: santinise file name by removing file paths
-            //TODO: get config string from json
             try
             {
-                string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
-                fileName = DateTime.Now.Ticks.ToString() + "_" + editUser.ProfilePicture.FileName;
-                string filePath = Path.Combine(directoryPath, fileName);
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    await editUser.ProfilePicture.CopyToAsync(stream);
-                }
+                fileName = await _imageFileService.UploadImageAsync(EditUser.ProfilePicture);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
             }
-
-
             return fileName;
-        }
-        private void RemoveOldProfilePicture(string oldFileName)
-        {
-            if (oldFileName != "default" && oldFileName != string.Empty) 
-            {
-                string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
-                string filePath = Path.Combine(directoryPath, oldFileName);
-                try 
-                {
-                    System.IO.File.Delete(filePath);        
-                } catch 
-                {
-                    _logger.LogError($"Failed to remove profile picture with file path: ${filePath}");
-                }
-                
-            }
         }
     }
 }
