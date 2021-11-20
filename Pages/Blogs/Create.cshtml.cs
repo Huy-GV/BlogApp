@@ -8,24 +8,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging; 
-using Microsoft.AspNetCore.Http;
 using BlogApp.Services;
-using System.ComponentModel.DataAnnotations;
+using BlogApp.Data.FormModels;
 namespace BlogApp.Pages.Blogs
 {
-    public class InputBlog
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public string Description { get; set; }
-        [Display(Name = "Cover image")]
-        public IFormFile CoverImage { get; set; }
-    }
     [Authorize]
     public class CreateModel : BaseModel
     {
         [BindProperty]
-        public InputBlog CreateBlog { get; set; }
+        public CreateBlog CreateBlog { get; set; }
         private readonly ILogger<CreateModel> _logger;
         private readonly ImageFileService _imageFileService;
         public CreateModel(

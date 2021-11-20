@@ -10,16 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
+using BlogApp.Data.FormModels;
 namespace BlogApp.Pages.Blogs
 {
-    public class EditBlog : InputBlog
-    {
-        public int ID { get; set;}
-        [Display(Name = "Change cover image")]
-        public new IFormFile CoverImage { get; set; }
-    }
+
     [Authorize]
     public class EditModel : BaseModel
     {

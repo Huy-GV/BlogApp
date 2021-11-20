@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -12,18 +9,10 @@ using Microsoft.Extensions.Logging;
 using BlogApp.Data;
 using BlogApp.Data.DTOs;
 using BlogApp.Data.Constants;
-
-
+using BlogApp.Data.FormModels;
 namespace BlogApp.Pages.Blogs
 {
-    public class EditComment
-    {
-        public string Content { get; set; }
-    }
-    public class AddComment : EditComment
-    {
-        public int BlogID { get; set; }
-    }
+
     [AllowAnonymous]
     public class ReadModel : BaseModel
     {
