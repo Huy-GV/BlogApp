@@ -28,7 +28,9 @@
                 var userRoles = await UserManager.GetRolesAsync(user);
                 if ((user.UserName == Model.Blog.Author))
                 {
-                    <form asp-page-handler="DeleteBlog" asp-route-blogID="@Model.Blog.ID" method="post">
+                    <form asp-page-handler="DeleteBlog" 
+                    asp-route-blogID="@Model.Blog.ID" 
+                    method="post">
                         <input class="delete-post" type="submit" value="Delete">
                     </form>
                 } 
@@ -64,7 +66,7 @@
             }
         }
         <p class="blog-description">@Model.Blog.Description</p>
-        <img src="/images/@Model.Blog.ImagePath">
+        <img src="/images/blogs/@Model.Blog.ImagePath">
         <p class="blog-content @blogContentClass">@blogContent</p>
 
 

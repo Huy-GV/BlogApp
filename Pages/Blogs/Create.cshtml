@@ -8,13 +8,13 @@
     ViewData["Script"] = "#";
 }
 
-<form class="add-form" method="post">
+<form class="add-form" method="post" enctype="multipart/form-data">
     <div>
-        <label asp-for="CreateBlog.Title"><strong>Title</strong></label>
+        <label asp-for="CreateBlog.Title">Title</label>
         <input asp-for="CreateBlog.Title" type="text" required>
         
         <br>
-        <label asp-for="CreateBlog.Description"><strong>Description</strong></label>
+        <label asp-for="CreateBlog.Description">Description</label>
         <textarea rows="8" cols="50" 
             asp-for="CreateBlog.Description" 
             required
@@ -23,11 +23,14 @@
         </textarea>
 
         <br>
-        <label asp-for="CreateBlog.ImagePath"><strong>Image path</strong></label>
-        <input asp-for="CreateBlog.ImagePath" type="text" required>
+        @* <label asp-for="CreateBlog.ImagePath"><strong>Image path</strong></label>
+        <input asp-for="CreateBlog.ImagePath" type="text" required> *@
+
+        <label asp-for="CreateBlog.CoverImage"></label>
+        <input type="file" asp-for="CreateBlog.CoverImage" accept=".png,.jpg,.jpeg" multiple>
 
         <br>
-        <label asp-for="CreateBlog.Content"><strong>Content</strong></label>
+        <label asp-for="CreateBlog.Content">Content</label>
         <textarea rows="18" cols="50" 
             asp-for="CreateBlog.Content" 
             required

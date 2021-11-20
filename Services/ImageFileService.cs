@@ -16,18 +16,32 @@ namespace BlogApp.Services
             _webHostEnv = webHostEnv;
             _logger = logger;
         }
-        public async Task<string> UploadImageAsync(IFormFile imageFile)
+        public async Task<string> UploadProfileImageAsync(IFormFile imageFile)
+        {
+            string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
+            string fileName = DateTime.Now.Ticks.ToString() + "_profile_" + imageFile.FileName;
+            await UploadImageAsync(directoryPath, imageFile, fileName);
+            return fileName;
+        }
+        public async Task<string> UploadBlogImageAsync(IFormFile imageFile)
+        {
+            string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "blogs");
+            string fileName = DateTime.Now.Ticks.ToString() + "_blog_" + imageFile.FileName;
+            await UploadImageAsync(directoryPath, imageFile, fileName);
+            return fileName;
+        }
+        private async Task UploadImageAsync(
+            string directoryPath, 
+            IFormFile imageFile,
+            string formattedFileName)
         {
             //TODO: place images and profiles to config
-            string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
-            string fileName = DateTime.Now.Ticks.ToString() + "_" + imageFile.FileName;
-            string filePath = Path.Combine(directoryPath, fileName);
+            string filePath = Path.Combine(directoryPath, formattedFileName);
             _logger.LogInformation($"File path of uploaded image is {filePath}");
             using (var stream = File.Create(filePath))
             {
                 await imageFile.CopyToAsync(stream);
             }
-            return fileName;
         }
         public void DeleteImage(string fileName)
         {

@@ -90,7 +90,7 @@ namespace BlogApp.Pages.User
             string fileName = "";
             try
             {
-                fileName = await _imageFileService.UploadImageAsync(EditUser.ProfilePicture);
+                fileName = await _imageFileService.UploadProfileImageAsync(EditUser.ProfilePicture);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");

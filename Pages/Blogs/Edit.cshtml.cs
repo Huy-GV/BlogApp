@@ -9,11 +9,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using BlogApp.Services;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 namespace BlogApp.Pages.Blogs
 {
     public class EditBlog : InputBlog
     {
         public int ID { get; set;}
+        [Display(Name = "Change cover image")]
+        public new IFormFile CoverImage { get; set; }
     }
     [Authorize]
     public class EditModel : BaseModel
@@ -21,12 +26,15 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public EditBlog EditBlog { get; set; }
         private readonly ILogger<CreateModel> _logger;
+        private readonly ImageFileService _imageFileService;
         public EditModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<CreateModel> logger) : base(context, userManager)
+            ILogger<CreateModel> logger,
+            ImageFileService imageFileService) : base(context, userManager)
         {
             _logger = logger;
+            _imageFileService = imageFileService;
         }
         public async Task<IActionResult> OnGetAsync(int? blogID, string? username)
         {
@@ -47,7 +55,6 @@ namespace BlogApp.Pages.Blogs
             { 
                 ID = blog.ID,
                 Title = blog.Title,
-                ImagePath = blog.ImagePath,
                 Content = blog.Content,
                 Description = blog.Description
             };
@@ -75,11 +82,15 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != blog.Author)
                 return Forbid();
 
-            //TODO: pass edited blog as argument?
             blog.Content = EditBlog.Content;
-            blog.ImagePath = EditBlog.ImagePath;
             blog.Title = EditBlog.Title;
             blog.Description = EditBlog.Description;
+
+            if (EditBlog.CoverImage != null)
+            {
+                _imageFileService.DeleteImage(blog.ImagePath);
+                blog.ImagePath = await _imageFileService.UploadBlogImageAsync(EditBlog.CoverImage);
+            }
             
             Context.Attach(blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();

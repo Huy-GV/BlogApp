@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging; 
+using Microsoft.AspNetCore.Http;
+using BlogApp.Services;
+using System.ComponentModel.DataAnnotations;
 namespace BlogApp.Pages.Blogs
 {
     public class InputBlog
@@ -15,7 +18,8 @@ namespace BlogApp.Pages.Blogs
         public string Title { get; set; }
         public string Content { get; set; }
         public string Description { get; set; }
-        public string ImagePath { get; set; }
+        [Display(Name = "Cover image")]
+        public IFormFile CoverImage { get; set; }
     }
     [Authorize]
     public class CreateModel : BaseModel
@@ -23,12 +27,15 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public InputBlog CreateBlog { get; set; }
         private readonly ILogger<CreateModel> _logger;
+        private readonly ImageFileService _imageFileService;
         public CreateModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<CreateModel> logger) : base(context, userManager)
+            ILogger<CreateModel> logger,
+            ImageFileService imageFileService) : base(context, userManager)
         {
             _logger = logger;
+            _imageFileService = imageFileService;
         }
         public async Task<IActionResult> OnGetAsync()
         {
@@ -58,7 +65,7 @@ namespace BlogApp.Pages.Blogs
                 Title = CreateBlog.Title,
                 Description = CreateBlog.Description,
                 Content = CreateBlog.Content,
-                ImagePath = CreateBlog.ImagePath,
+                ImagePath = await _imageFileService.UploadBlogImageAsync(CreateBlog.CoverImage),
                 Date = DateTime.Now,
                 Author = user.UserName
             };

@@ -8,18 +8,21 @@
     ViewData["Script"] = "#";
 }
 
-<form class="add-form" method="post" asp-page-handler="EditBlog">
+<form class="add-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
     <div>
-        <label asp-for="EditBlog.Title"><strong>Title</strong></label>
+        <label asp-for="EditBlog.Title">Title</label>
         <input type="text" name="EditBlog.Title" required value="@Model.EditBlog.Title">
 
-        <label asp-for="EditBlog.Description"><strong>Description</strong></label>
+        <label asp-for="EditBlog.Description">Description</label>
         <textarea rows="8" cols="50"
                 name="EditBlog.Description"
                 required><@Model.EditBlog.Description</textarea>
 
-        <label asp-for="EditBlog.ImagePath"><strong>Image path</strong></label>
-        <input type="text" name="EditBlog.ImagePath" required value="@Model.EditBlog.ImagePath">
+        @* <label asp-for="EditBlog.ImagePath"><strong>Image path</strong></label>
+        <input type="text" name="EditBlog.ImagePath" required value="@Model.EditBlog.ImagePath"> *@
+
+        <label asp-for="EditBlog.CoverImage"></label>
+        <input type="file" asp-for="EditBlog.CoverImage" accept=".png,.jpg,.jpeg" multiple>
     </div>
     <br>
     <textarea rows="18" cols="50"

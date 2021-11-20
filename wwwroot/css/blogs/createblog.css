@@ -16,6 +16,7 @@ input[type="text"], textarea {
 label {
     margin-left: 1rem;
     font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .submit-post {

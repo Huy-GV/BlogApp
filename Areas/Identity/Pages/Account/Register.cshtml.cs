@@ -113,7 +113,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
             string fileName = "";
             try
             {
-                fileName = await _imageFileService.UploadImageAsync(inputModel.ProfilePicture);
+                fileName = await _imageFileService.UploadProfileImageAsync(inputModel.ProfilePicture);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
