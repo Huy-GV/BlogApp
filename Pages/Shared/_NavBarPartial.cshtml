@@ -28,7 +28,7 @@
             <div class="authentication-links">
                 <p>@user.UserName</p>
                 <p class="middle-bar"></p>
-                <input type="submit" class="secondary-btn log-btn" value="Log Out"/>
+                <input type="submit" class="secondary-button log-btn" value="Log Out"/>
             </div>
 
         </form>
@@ -36,11 +36,11 @@
     else
     {
         <div class="authentication-links">
-            <a class="secondary-btn log-btn" 
+            <a class="secondary-button log-btn" 
                 asp-area="Identity" 
                 asp-page="/Account/Login">Log In</a>
             <p class="middle-bar"></p>
-            <a class="log-btn primary-btn" 
+            <a class="log-btn primary-button" 
                 asp-area="Identity" 
                 asp-page="/Account/Register">Sign Up</a>
         </div>

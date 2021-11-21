@@ -1,6 +1,61 @@
-.smooth-transition, .submit-changes {
-  -webkit-transition: 160ms ease-in;
-  transition: 160ms ease-in;
+.smooth-transition, .button, .primary-button, .submit-changes, .secondary-button, .clickable-card {
+  -webkit-transition: 180ms ease-in;
+  transition: 180ms ease-in;
+}
+
+.smooth-transition:hover, .button:hover, .primary-button:hover, .submit-changes:hover, .secondary-button:hover, .clickable-card:hover {
+  -webkit-transition: 180ms ease-in;
+  transition: 180ms ease-in;
+}
+
+.button, .primary-button, .submit-changes, .secondary-button {
+  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.button:hover, .primary-button:hover, .submit-changes:hover, .secondary-button:hover {
+  cursor: pointer;
+}
+
+.primary-button, .submit-changes {
+  border: none;
+  background-color: #630094;
+  text-decoration: none;
+  color: white;
+}
+
+.primary-button:hover, .submit-changes:hover {
+  -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+}
+
+.secondary-button {
+  color: #630094;
+  background-color: white;
+  border: 1px solid #630094;
+}
+
+.secondary-button:hover {
+  background-color: #630094;
+  color: white;
+}
+
+.card {
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+.clickable-card {
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+.clickable-card:hover {
+  -webkit-box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
 }
 
 input[type="text"], textarea {
@@ -15,22 +70,10 @@ input[type="text"], textarea {
 }
 
 .submit-changes {
-  background-color: #630094;
-  border: none;
-  border-radius: 3px;
-  color: white;
   padding: 0.2rem;
   font-size: 1rem;
   width: 80%;
   height: 2rem;
-  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-}
-
-.submit-changes:hover {
-  cursor: pointer;
-  -webkit-filter: brightness(0.6);
-          filter: brightness(0.6);
 }
 
 .edit-form {

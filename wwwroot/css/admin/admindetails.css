@@ -62,6 +62,7 @@
     background-color: rgb(42, 214, 42);
     border: 1px solid rgb(42, 214, 42);
     width: 100%;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
     color:white;
 }
 
@@ -74,14 +75,18 @@
     background-color: rgb(112, 26, 26);
     border: 2px solid rgb(112, 26, 26);
     color: white;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
 }
 
 .cancel-btn {
     background-color: orange;
     color: white;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
 }
 
 .un-hide-post {
+    margin-top: 0.2rem;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
     background-color: orange;
     border: 1px solid orange;
     width: 100%;
@@ -89,6 +94,8 @@
 }
 
 .delete-post {
+    margin-top: 0.2rem;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
     background-color: red;
     border: 1px solid red;
     width: 100%;

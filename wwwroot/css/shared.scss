@@ -1,14 +1,13 @@
+@import "./base.scss";
+
 :root {
     font-size: 20px;
-    //TODO: add custom fonts?
 }
 
 body { 
     margin: 0;
     margin-bottom: 3rem;
 }
-
-$primary-purple: rgb(99, 0, 148);
 
 .log-in-form {
     background-color: white;
@@ -68,7 +67,6 @@ nav {
         }     
     }
     
-
     img {
         height: 2.8rem;
     }
@@ -89,36 +87,11 @@ nav {
             padding: 0.6rem;
             font-size: 1rem;
         }
-
-
     }
-
 }
 
 nav + * {
     margin-top: 5rem;
-}
-
-.button {
-    transition: 200ms ease-out;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-
-    &:hover {
-        cursor: pointer;
-        transition: 200ms ease-in;
-    }
-}
-
-.nav-btn {
-    @extend .button;
-    background-color: white;
-    border: none;
-    margin: 0.1rem;
-    text-decoration: none;
-    color: #630094;
-    height: fit-content; 
-    border-radius: 5px;
-    font-size: 0.8rem;
 }
 
 .hidden-element {
@@ -134,11 +107,7 @@ p {
 }
 
 .log-in-btn {
-    @extend .button;
     padding: 0.3rem;
-    border: 1px solid white;
-    border-radius: 4px;
-    border: 2px solid $primary-purple;
     font-size: 1rem;
     text-decoration: none;
     display: block;
@@ -146,37 +115,8 @@ p {
     text-align: center;
     padding: 0.6rem;
     font-weight: 600;
-
-    &:hover{
-        color: white;
-    }
 }
 
-.primary-btn {
-    @extend .button;
-    background-color: $primary-purple;
-    text-decoration: none;
-    border-radius: 4px;
-    color: white;
-
-    &:hover{
-        filter: brightness(0.8);
-    }
-}
-
-.secondary-btn {
-    @extend .button;
-    background-color: white;
-    color: $primary-purple;
-    text-decoration: none;
-    border-radius: 4px;
-    border: 1px solid $primary-purple;
-
-    &:hover{
-        color: white;
-        background-color: $primary-purple;
-    }
-}
 
 .button-container{
     display: flex;

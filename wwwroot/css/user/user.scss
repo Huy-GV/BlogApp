@@ -1,7 +1,4 @@
-.smooth-transition {
-    transition: 160ms ease-in
-}
-$primary-purple: rgb(99, 0, 148);
+@import "../base.scss";
 
 a {
     @extend .smooth-transition;
@@ -28,8 +25,7 @@ main {
         display: flex;
         flex-direction: column;
         padding: 1rem;
-        border-radius: 10px;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+        @extend .card;
 
         img {
             object-fit: cover;
@@ -38,7 +34,6 @@ main {
             justify-self: center;
             align-self: center;
             border-radius: 100%;
-            
         }
 
         .info {
@@ -55,39 +50,21 @@ main {
             }
 
             a {
-                border-radius: 5px;
                 padding: 0.8rem;
                 margin: 0.3rem;
                 margin-inline: auto;
                 text-align: center;
                 width: 50%;
                 font-size: 0.7rem;
-                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-                
-                &:hover{
-                    cursor: pointer;
-                }
             }
 
             .edit-profile {
                 margin-top: 3rem;
-                background-color: $primary-purple;
-                color: white;
-                border: none;
-                &:hover{
-                    filter: brightness(0.8);
-                }
+                @extend .primary-button;
             }
 
             .change-password {
-                border: 1px solid $primary-purple;
-                color: $primary-purple;
-                background-color: white;
-
-                &:hover {
-                    background-color: $primary-purple;
-                    color: white;
-                }
+                @extend .secondary-button;
             }
 
         }
@@ -95,14 +72,12 @@ main {
     }
 
     .description {
-        border-radius: 10px;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+        @extend .card;
         align-self: center;
         padding: 1rem;
         min-height: 15rem;
         max-height: 20rem;
         align-self: baseline;
-
     }
 
     .card-title {
@@ -111,10 +86,9 @@ main {
     }
 
     .stats {
+        @extend .card;
         align-self: center;
-        border-radius: 10px;
         padding: 1rem;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
     }
     
 }
@@ -135,19 +109,12 @@ main {
         padding: 1rem;
         max-height: 8rem;
         margin-top: 1rem;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.3);
-        border-radius: 10px;
         text-decoration: none;
         color: black;
+        @extend .clickable-card;
 
         .title {
             font-weight: 700;
-        }
-
-        &:hover {
-            
-            @extend .smooth-transition;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
         }
     }
 

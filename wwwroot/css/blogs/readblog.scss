@@ -1,4 +1,4 @@
-$primary-purple: rgb(99, 0, 148);
+@import "../base.scss";
 
 .blog-container {
     display: flex;
@@ -57,9 +57,6 @@ $primary-purple: rgb(99, 0, 148);
     font-weight: bold;
 }
 
-
-
-
 .comment-container {
     display: flex;
     flex-direction: column;
@@ -71,11 +68,9 @@ $primary-purple: rgb(99, 0, 148);
     .comment {
         padding: 1rem;
         background-color: white;
-        border-radius: 5px;
         margin: 0.3rem;
         font-size: 0.8rem;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-
+        @extend .card;
         .comment-author {
             color: $primary-purple;
         }
@@ -87,33 +82,12 @@ $primary-purple: rgb(99, 0, 148);
     }  
 }
 
-.add-comment-button-container {
-    display: flex;
-    justify-content: center;
-    margin: 0.2rem;
-    
-
-    .comment-button {
-        background-color: $primary-purple;
-        color: white;
-        border: 1px solid $primary-purple;
-        border-radius: 6px;
-        padding: 0.7rem;
-        width: 7rem;
-    
-        &:hover {
-            cursor: pointer;
-        }
-    }
-}
-
 .author-info {
-    border-radius: 5px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     padding: 1rem;
     margin-inline: auto;
     margin-block: 2rem;
     width: 40%;
+    @extend .card;
 
     .profile-header {
         display: flex;
@@ -131,9 +105,6 @@ $primary-purple: rgb(99, 0, 148);
         }
     }
 
-
-
-    
 }
 
 .comment-option-container {
@@ -172,7 +143,7 @@ $primary-purple: rgb(99, 0, 148);
 
 .submit-comment {
     @extend .link;
-    @extend .primary-btn;
+    @extend .primary-button;
     width: fit-content;
     margin: 0.2rem;
     font-size: 0.8rem;
@@ -180,32 +151,17 @@ $primary-purple: rgb(99, 0, 148);
 
 .save-btn {
     @extend .link;
-    @extend .primary-btn;
+    @extend .primary-button;
     font-size: 0.6rem;
 }
 
-.primary-btn {
-    color: white;
-    border: 1px solid $primary-purple;
-    background-color: $primary-purple;
-    border-radius: 3px;
-    font-weight: bold;
-    padding: 0.6rem;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-
-    &:hover{
-        filter: brightness(0.8);
-    }
-}
-
 .link {
-    transition: 200ms ease-out;
+    @extend .smooth-transition;
     margin: 0.1rem;
     text-decoration: none;
 
     &:hover {
         cursor: pointer;
-        transition: 200ms ease-in;
     }
 }
 
@@ -217,11 +173,6 @@ $primary-purple: rgb(99, 0, 148);
     font-weight: bold;
     font-size: 0.7rem;
     padding: 0.3rem;
-    
-    &:hover {
-        cursor: pointer;
-        transition: 200ms ease-in;
-    }
 
 }
 

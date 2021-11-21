@@ -1,0 +1,59 @@
+.smooth-transition {
+    transition: 180ms ease-in;
+    &:hover{
+        transition: 180ms ease-in; 
+    }
+}
+
+$button-shadow: 0 3px 15px rgba(0,0,0,0.3);
+$primary-purple: rgb(99, 0, 148);
+
+.button {
+    box-shadow: $button-shadow;
+    @extend .smooth-transition;
+    border-radius: 4px;
+    &:hover {
+        cursor: pointer;
+    } 
+}
+
+.primary-button {
+    @extend .button;
+    border: none;
+    background-color: $primary-purple;
+    text-decoration: none;
+    
+    color: white;
+
+    &:hover{
+        filter: brightness(0.8);
+    }
+}
+
+.secondary-button {
+    @extend .button;
+    color: $primary-purple;
+    background-color: white;
+    border: 1px solid $primary-purple;
+
+    &:hover {
+        background-color: $primary-purple;
+        color: white;
+    }
+}
+
+.card {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);;
+    border-radius: 5px;
+}
+
+.clickable-card {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);;
+    border-radius: 5px;
+    @extend .smooth-transition;
+
+    &:hover {
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+    }
+}
+

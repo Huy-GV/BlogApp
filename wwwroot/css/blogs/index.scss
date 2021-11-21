@@ -1,4 +1,5 @@
-$primary-purple: rgb(99, 0, 148);
+@import "../base.scss";
+
 
 .info-text {
     font-size: 0.7rem;
@@ -7,10 +8,6 @@ $primary-purple: rgb(99, 0, 148);
         cursor: pointer;
         transition: 100ms ease-out;
     }
-}
-
-.smooth-transition {
-    transition: 160ms ease-in
 }
 
 .content-info {
@@ -27,16 +24,7 @@ $primary-purple: rgb(99, 0, 148);
         border-radius: 5px;
         padding: 0.7rem;
         font-size: 1rem;
-        background: $primary-purple;
-        color: white;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-        @extend .smooth-transition;
-
-        &:hover{
-            @extend .smooth-transition;
-            cursor: pointer;
-            filter: brightness(0.8);
-        }
+        @extend .primary-button;
     }
 
     input[type="text"] {
@@ -57,22 +45,15 @@ $primary-purple: rgb(99, 0, 148);
     justify-content: center;
 
     .blog {
-        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        @extend .clickable-card;
         padding: 1rem;
         margin: 0.5rem;
         width: 30rem;
         height: 10rem;
-        display: flex;
-        border-radius: 5px;
+        display: flex; 
         background: white;
         text-decoration: none;
         color: black;
-        @extend .smooth-transition;
-
-        &:hover {
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
-            @extend .smooth-transition;
-        }
 
         img {
             width: 40%;
@@ -106,13 +87,6 @@ $primary-purple: rgb(99, 0, 148);
                 @extend .content-info;
                 font-size: 0.7rem;
                 color: #606060;
-            }
-
-            .blog-link {
-                @extend .info-text;
-                // text-decoration: none;
-                transition: 100ms ease-in;
-                color: $primary-purple;
             }
         }
     }

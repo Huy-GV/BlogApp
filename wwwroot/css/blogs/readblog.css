@@ -1,3 +1,63 @@
+.smooth-transition, .button, .primary-button, .submit-comment, .save-btn, .secondary-button, .clickable-card, .link, .delete-post, .edit-post, .delete-comment, .edit-comment {
+  -webkit-transition: 180ms ease-in;
+  transition: 180ms ease-in;
+}
+
+.smooth-transition:hover, .button:hover, .primary-button:hover, .submit-comment:hover, .save-btn:hover, .secondary-button:hover, .clickable-card:hover, .link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover {
+  -webkit-transition: 180ms ease-in;
+  transition: 180ms ease-in;
+}
+
+.button, .primary-button, .submit-comment, .save-btn, .secondary-button {
+  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.button:hover, .primary-button:hover, .submit-comment:hover, .save-btn:hover, .secondary-button:hover {
+  cursor: pointer;
+}
+
+.primary-button, .submit-comment, .save-btn {
+  border: none;
+  background-color: #630094;
+  text-decoration: none;
+  color: white;
+}
+
+.primary-button:hover, .submit-comment:hover, .save-btn:hover {
+  -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+}
+
+.secondary-button {
+  color: #630094;
+  background-color: white;
+  border: 1px solid #630094;
+}
+
+.secondary-button:hover {
+  background-color: #630094;
+  color: white;
+}
+
+.card, .comment-container .comment, .author-info {
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+.clickable-card {
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+.clickable-card:hover {
+  -webkit-box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
 .blog-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -82,11 +142,8 @@
 .comment-container .comment {
   padding: 1rem;
   background-color: white;
-  border-radius: 5px;
   margin: 0.3rem;
   font-size: 0.8rem;
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .comment-container .comment .comment-author {
@@ -98,33 +155,7 @@
   font-size: 1rem;
 }
 
-.add-comment-button-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  margin: 0.2rem;
-}
-
-.add-comment-button-container .comment-button {
-  background-color: #630094;
-  color: white;
-  border: 1px solid #630094;
-  border-radius: 6px;
-  padding: 0.7rem;
-  width: 7rem;
-}
-
-.add-comment-button-container .comment-button:hover {
-  cursor: pointer;
-}
-
 .author-info {
-  border-radius: 5px;
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   padding: 1rem;
   margin-inline: auto;
   margin-block: 2rem;
@@ -207,33 +238,13 @@
   font-size: 0.6rem;
 }
 
-.primary-btn, .submit-comment, .save-btn {
-  color: white;
-  border: 1px solid #630094;
-  background-color: #630094;
-  border-radius: 3px;
-  font-weight: bold;
-  padding: 0.6rem;
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-.primary-btn:hover, .submit-comment:hover, .save-btn:hover {
-  -webkit-filter: brightness(0.8);
-          filter: brightness(0.8);
-}
-
 .link, .submit-comment, .save-btn, .delete-post, .edit-post, .delete-comment, .edit-comment {
-  -webkit-transition: 200ms ease-out;
-  transition: 200ms ease-out;
   margin: 0.1rem;
   text-decoration: none;
 }
 
 .link:hover, .submit-comment:hover, .save-btn:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover {
   cursor: pointer;
-  -webkit-transition: 200ms ease-in;
-  transition: 200ms ease-in;
 }
 
 .delete-post, .edit-post, .delete-comment, .edit-comment {
@@ -243,12 +254,6 @@
   font-weight: bold;
   font-size: 0.7rem;
   padding: 0.3rem;
-}
-
-.delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover {
-  cursor: pointer;
-  -webkit-transition: 200ms ease-in;
-  transition: 200ms ease-in;
 }
 
 .delete-post:hover, .delete-comment:hover {
