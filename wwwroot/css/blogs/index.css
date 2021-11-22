@@ -1,4 +1,9 @@
-.smooth-transition, .button, .primary-button, .search-form input[type="submit"], .secondary-button, .button:hover, .primary-button:hover, .secondary-button:hover, .clickable-card, .blog-container .blog, .clickable-card:hover {
+.smooth-transition, .button, .primary-button, .search-form input[type="submit"], .secondary-button, .clickable-card, .blog-container .blog {
+  -webkit-transition: 180ms ease-in;
+  transition: 180ms ease-in;
+}
+
+.smooth-transition:hover, .button:hover, .primary-button:hover, .search-form input:hover[type="submit"], .secondary-button:hover, .clickable-card:hover, .blog-container .blog:hover {
   -webkit-transition: 180ms ease-in;
   transition: 180ms ease-in;
 }
@@ -6,6 +11,7 @@
 .button, .primary-button, .search-form input[type="submit"], .secondary-button {
   -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
           box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 
 .button:hover, .primary-button:hover, .search-form input:hover[type="submit"], .secondary-button:hover {
@@ -16,7 +22,6 @@
   border: none;
   background-color: #630094;
   text-decoration: none;
-  border-radius: 4px;
   color: white;
 }
 
@@ -91,8 +96,8 @@
 .blog-container {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(32rem, 34rem))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(32rem, 34rem));
+  -ms-grid-columns: (minmax(30rem, 1fr))[auto-fill];
+      grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -100,12 +105,14 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  width: 80%;
+  margin: auto;
 }
 
 .blog-container .blog {
   padding: 1rem;
   margin: 0.5rem;
-  width: 30rem;
+  width: 90%;
   height: 10rem;
   display: -webkit-box;
   display: -ms-flexbox;

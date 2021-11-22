@@ -37,18 +37,19 @@
 }
 
 .blog-container {
-    display: -ms-grid;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(32rem, 34rem));
+    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
     align-items: center;
     justify-items: center;
     justify-content: center;
+    width: 80%;
+    margin: auto;
 
     .blog {
         @extend .clickable-card;
         padding: 1rem;
         margin: 0.5rem;
-        width: 30rem;
+        width: 90%;
         height: 10rem;
         display: flex; 
         background: white;

@@ -15,7 +15,7 @@ main {
     width: 60%;
     margin: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 20rem));
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     grid-template-rows: auto;
     gap: 1rem;
 
@@ -74,7 +74,7 @@ main {
     .description {
         @extend .card;
         align-self: center;
-        padding: 1rem;
+        padding: 1.2rem;
         min-height: 15rem;
         max-height: 20rem;
         align-self: baseline;
@@ -83,12 +83,13 @@ main {
     .card-title {
         font-weight: 700;
         font-size: 1.2rem;
+        margin: 0;
     }
 
     .stats {
         @extend .card;
         align-self: center;
-        padding: 1rem;
+        padding: 1.2rem;
     }
     
 }
