@@ -17,7 +17,7 @@ namespace BlogApp.Pages.Blogs
     public class ReadModel : BaseModel
     {
         [BindProperty]
-        public AddComment CreateComment { get; set; }
+        public CreateComment CreateComment { get; set; }
         [BindProperty]
         public EditComment EditComment { get; set; }
         private readonly ILogger<ReadModel> _logger;

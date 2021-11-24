@@ -25,13 +25,14 @@ main {
     width: 60%;
     margin: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    grid-template-columns: repeat(2, minmax(20rem, 1fr));
     grid-template-rows: auto;
     gap: 1rem;
 
 
     @media screen and (max-width: $medium-screen-width) {
         width: 80%;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     }
 
     @media screen and (max-width: $small-screen-width) {

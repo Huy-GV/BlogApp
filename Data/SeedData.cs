@@ -20,7 +20,7 @@ namespace BlogApp.Data
                 var adminID = await EnsureAdmin(serviceProvider, "admin");
                 await AssignRole(adminID, Roles.AdminRole, serviceProvider);
                 await CreateModeratorRole(serviceProvider);
-                // AssignUserInfo(serviceProvider);
+                await AssignUserInfo(serviceProvider);
             }
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
@@ -82,15 +82,18 @@ namespace BlogApp.Data
         }
 
         // assign custom data to users who registered before this feature
-        private static void AssignUserInfo(IServiceProvider serviceProvider)
+        private async static Task AssignUserInfo(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+            var context = serviceProvider.GetService<ApplicationDbContext>();
             var users = userManager.Users.ToList();
             foreach (ApplicationUser user in users)
             {
                 if (user.RegistrationDate == null)
                 {
                     user.RegistrationDate = DateTime.Now;
+                    context.Attach(user).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
                 }
             }
         }
