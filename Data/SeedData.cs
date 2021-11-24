@@ -53,11 +53,6 @@ namespace BlogApp.Data
             IdentityResult identityResult = null;
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-            if (roleManager == null)
-            {
-                throw new Exception("roleManager null");
-            }
-
             if (!await roleManager.RoleExistsAsync(role))
             {
                 identityResult = await roleManager.CreateAsync(new IdentityRole(role));
@@ -69,7 +64,11 @@ namespace BlogApp.Data
                 throw new Exception("The password was probably not strong enough!");
             }
 
-            identityResult = await userManager.AddToRoleAsync(user, role);
+            if (!(await userManager.GetRolesAsync(user)).Contains(Constants.Roles.AdminRole))
+            {
+                identityResult = await userManager.AddToRoleAsync(user, role);
+            }
+            
 
             return identityResult;
         }
