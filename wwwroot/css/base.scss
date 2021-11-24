@@ -6,7 +6,12 @@
 }
 
 $button-shadow: 0 3px 15px rgba(0,0,0,0.3);
+
 $primary-purple: rgb(99, 0, 148);
+
+$medium-screen-width: 1000px;
+$small-screen-width: 700px;
+
 
 .button {
     box-shadow: $button-shadow;

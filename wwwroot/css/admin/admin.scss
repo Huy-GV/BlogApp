@@ -1,0 +1,65 @@
+@import "../base.scss";
+
+:root{
+    font-size: 20px;
+}
+
+.user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    width: 50%;
+    margin-inline: auto;
+    margin-top: 5rem;
+
+    @media screen and (max-width: $medium-screen-width) {
+        width: 80%;
+    } 
+
+    .user-card {
+        box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        padding: 1rem;
+        display: flex;
+        flex-direction: row;
+        gap: 0.3rem;
+        width: 100%;
+
+
+    }
+
+
+}
+
+
+.button {
+    color: white;
+    border-radius: 1px;
+    font-weight: 700;
+    height: 100%;
+    border-radius: 5px;
+    border: none;
+    width: 10rem;
+
+    &:hover {
+        filter: brightness(0.6);
+        cursor: pointer;
+    }
+}
+
+.assign-role {
+    background-color: green;
+}
+
+.remove-role {
+    background-color: red;
+}
+
+.details-btn {
+    padding: 1rem;
+}
+
+.user-container form {
+    margin-left: auto;
+}
+

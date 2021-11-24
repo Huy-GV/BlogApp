@@ -76,6 +76,12 @@
   width: 50%;
 }
 
+@media screen and (max-width: 1000px) {
+  .blog-container .blog {
+    width: 80%;
+  }
+}
+
 .blog-container .blog .title {
   font-weight: 700;
   font-size: 2rem;
@@ -83,6 +89,18 @@
   font-family: Garamond, serif;
   font-size: 3rem;
   margin-top: 0.1rem;
+}
+
+@media screen and (max-width: 1000px) {
+  .blog-container .blog .title {
+    font-size: 2rem;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .blog-container .blog .title {
+    font-size: 1.8rem;
+  }
 }
 
 .blog-container .blog .blog-description {
@@ -139,6 +157,12 @@
   border-radius: 3px;
 }
 
+@media screen and (max-width: 1000px) {
+  .comment-container {
+    width: 60%;
+  }
+}
+
 .comment-container .comment {
   padding: 1rem;
   background-color: white;
@@ -160,6 +184,12 @@
   margin-inline: auto;
   margin-block: 2rem;
   width: 40%;
+}
+
+@media screen and (max-width: 1000px) {
+  .author-info {
+    width: 60%;
+  }
 }
 
 .author-info .profile-header {

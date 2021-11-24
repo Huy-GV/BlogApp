@@ -19,12 +19,21 @@
     margin: 0 0 1rem 10rem;
     width: 50%;
 
+    @media screen and (max-width: $medium-screen-width) {
+        width: 70%;
+        margin-inline: auto;
+    }
+
     input[type="submit"] {
         border: none;
         border-radius: 5px;
         padding: 0.7rem;
         font-size: 1rem;
         @extend .primary-button;
+
+        @media screen and (max-width: $medium-screen-width) {
+            width: 20%;
+        }
     }
 
     input[type="text"] {
@@ -32,7 +41,7 @@
         font-size: 1rem;
         border-radius: 2px;
         border: 1px solid $primary-purple;
-        width: 80%;
+        width: 70%;
     }
 }
 
@@ -98,6 +107,13 @@
     font-size: 2rem;
     font-weight: 700;
     font-family: 'Times New Roman', serif;
+    width: fit-content;
+    
+    @media screen and (max-width: $medium-screen-width) {
+        margin-inline: auto;
+        font-size: 1.5rem;
+    }
+
 }
 
 
