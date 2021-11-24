@@ -4,7 +4,7 @@
 
 A Blog application where users can write blogs or comment on others. All blogs can be monitored by Moderators and Administrators.
 
-## Frameworks used
+## Tools used
 
 - .NET 5 Razor Pages
 - .NET Identity
