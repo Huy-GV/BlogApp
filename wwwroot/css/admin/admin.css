@@ -48,14 +48,14 @@
 }
 
 .clickable-card {
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
 
 .clickable-card:hover {
-  -webkit-box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
-          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 :root {
@@ -100,7 +100,7 @@
   width: 100%;
 }
 
-.button, .primary-button, .secondary-button {
+.user-container .user-card .button, .user-container .user-card .primary-button, .user-container .user-card .secondary-button {
   color: white;
   border-radius: 1px;
   font-weight: 700;
@@ -110,7 +110,7 @@
   width: 10rem;
 }
 
-.button:hover, .primary-button:hover, .secondary-button:hover {
+.user-container .user-card .button:hover, .user-container .user-card .primary-button:hover, .user-container .user-card .secondary-button:hover {
   -webkit-filter: brightness(0.6);
           filter: brightness(0.6);
   cursor: pointer;

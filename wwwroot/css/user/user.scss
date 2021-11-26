@@ -32,12 +32,13 @@ main {
 
     @media screen and (max-width: $medium-screen-width) {
         width: 80%;
-        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        grid-template-columns: 1fr;
     }
 
     @media screen and (max-width: $small-screen-width) {
         width: 90%;
     }
+    
     .basic-info {
         grid-column: 1;
         grid-row: 1 / 3;

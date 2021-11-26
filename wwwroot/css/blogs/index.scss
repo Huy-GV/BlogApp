@@ -51,14 +51,13 @@
     align-items: center;
     justify-items: center;
     justify-content: center;
-    width: 80%;
+    width: #{"min(800rem, 90%);"} ;
     margin: auto;
 
     .blog {
         @extend .clickable-card;
         padding: 1rem;
         margin: 0.5rem;
-        width: 90%;
         height: 10rem;
         display: flex; 
         background: white;

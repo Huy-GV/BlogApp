@@ -24,28 +24,26 @@
         flex-direction: row;
         gap: 0.3rem;
         width: 100%;
-
-
-    }
-
-
-}
-
-
-.button {
-    color: white;
-    border-radius: 1px;
-    font-weight: 700;
-    height: 100%;
-    border-radius: 5px;
-    border: none;
-    width: 10rem;
-
-    &:hover {
-        filter: brightness(0.6);
-        cursor: pointer;
+        
+        .button {
+            color: white;
+            border-radius: 1px;
+            font-weight: 700;
+            height: 100%;
+            border-radius: 5px;
+            border: none;
+            width: 10rem;
+        
+            &:hover {
+                filter: brightness(0.6);
+                cursor: pointer;
+            }
+        }
+    
     }
 }
+
+
 
 .assign-role {
     background-color: green;
