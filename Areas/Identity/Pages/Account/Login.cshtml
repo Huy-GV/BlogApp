@@ -13,19 +13,18 @@
     <h1>Log in</h1>
     <hr />
     <div asp-validation-summary="All"></div>
-    <label asp-for="Input.UserName"></label>
-    <input asp-for="Input.UserName" class="text-input" />
-    <span asp-validation-for="Input.UserName"></span>
-    <br>
-    <label asp-for="Input.Password"></label>
-    <input asp-for="Input.Password" class="text-input" />
-    <span asp-validation-for="Input.Password" class="text-danger"></span>
-
+    <label asp-for="LogIn.UserName"></label>
+    <input asp-for="LogIn.UserName" class="text-input" />
+    <span asp-validation-for="LogIn.UserName" class="error-message"></span>
+    
+    <label asp-for="LogIn.Password"></label>
+    <input asp-for="LogIn.Password" class="text-input" />
+    <span asp-validation-for="LogIn.Password" class="error-message"></span>
 
     <div>
-        <label asp-for="Input.RememberMe">
-            <input asp-for="Input.RememberMe" />
-            @Html.DisplayNameFor(m => m.Input.RememberMe)
+        <label asp-for="LogIn.RememberMe">
+            <input asp-for="LogIn.RememberMe" />
+            @Html.DisplayNameFor(m => m.LogIn.RememberMe)
         </label>
     </div>
 

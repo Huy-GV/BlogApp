@@ -15,25 +15,15 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
+using BlogApp.Data.FormModels;
 
 namespace BlogApp.Pages.User
 {
-    public class EditUserModel
-    {
-        public string UserName { get; set; }
-        [Required]
-        public string Country { get; set; }
-        public string Occupation { get; set; }
-        public string Description { get; set; }
-        public IFormFile ProfilePicture { get; set; }
-    }
-
-
     [Authorize]
     public class EditModel : BaseModel
     {
         [BindProperty]
-        public EditUserModel EditUser { get; set; }
+        public EditUser EditUser { get; set; }
         private readonly ILogger<EditModel> _logger;
         private readonly ImageFileService _imageFileService;
         public EditModel(      
@@ -53,7 +43,7 @@ namespace BlogApp.Pages.User
             if (user.UserName != User.Identity.Name)
                 return Forbid();
 
-            EditUser = new EditUserModel()
+            EditUser = new EditUser()
             {
                 UserName = username,
                 Country = user.Country,
@@ -70,6 +60,11 @@ namespace BlogApp.Pages.User
                 return NotFound();
             if (user.UserName != User.Identity.Name)
                 return Forbid();
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state when editing blog");
+                return Page();
+            }
 
             var applicationUser = await Context.ApplicationUser.FindAsync(user.Id);
             applicationUser.Description = EditUser.Description;
@@ -85,7 +80,7 @@ namespace BlogApp.Pages.User
 
             return RedirectToPage("/User/Index", new { username = EditUser.UserName });
         }
-        private async Task<string> GetProfilePicturePath(EditUserModel editUser) 
+        private async Task<string> GetProfilePicturePath(EditUser editUser) 
         {
             string fileName = "";
             try

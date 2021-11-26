@@ -60,10 +60,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid model state when editing blog");
-                foreach(var error in ModelState.Values.SelectMany( e => e.Errors))
-                {
-                    _logger.LogError($"ERROR: {error}");
-                }
+                return Page();
             }
 
             var user = await UserManager.GetUserAsync(User);

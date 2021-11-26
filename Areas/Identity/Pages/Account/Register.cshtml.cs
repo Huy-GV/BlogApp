@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using BlogApp.Services;
+using BlogApp.Data.FormModels;
 
 namespace BlogApp.Areas.Identity.Pages.Account
 {
@@ -28,7 +29,6 @@ namespace BlogApp.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly ImageFileService _imageFileService;
-
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -42,33 +42,11 @@ namespace BlogApp.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public CreateUser CreateUser { get; set; }
 
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [Display(Name = "UserName")]
-            public string UserName { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-            [Display(Name = "Profile picture")]
-            public IFormFile ProfilePicture { get; set; }
-            [Display(Name = "Country")]
-            public string Country { get; set; }
-        }
 
         public void OnGet(string returnUrl = null)
         {
@@ -79,41 +57,39 @@ namespace BlogApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             string profilePath = "default";
-            if (Input.ProfilePicture != null) 
-            {
-                profilePath = await GetProfilePicturePath(Input);
-            } 
+
+
             if (ModelState.IsValid)
             {
+                if (CreateUser.ProfilePicture != null) 
+                {
+                    profilePath = await GetProfilePicturePath(CreateUser);
+                } 
                 var user = new ApplicationUser
                 {
-                    UserName = Input.UserName,
+                    UserName = CreateUser.UserName,
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.Now,
                     ProfilePicture = profilePath,
                     Country = "Australia"
                 };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(user, CreateUser.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
 
             return Page();
         }
-        private async Task<string> GetProfilePicturePath(InputModel inputModel) 
+        private async Task<string> GetProfilePicturePath(CreateUser createUser) 
         {
             string fileName = "";
             try
             {
-                fileName = await _imageFileService.UploadProfileImageAsync(inputModel.ProfilePicture);
+                fileName = await _imageFileService.UploadProfileImageAsync(createUser.ProfilePicture);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");

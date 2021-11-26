@@ -11,20 +11,26 @@
 <form enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="log-in-form">
     <h4>Create a new account.</h4>
     <hr />
-    <label asp-for="Input.UserName">Username</label>
-    <input asp-for="Input.UserName" class="text-input" autocomplete="off" />
-    <br>
-    <label asp-for="Input.Password">Password</label>
-    <input asp-for="Input.Password" class="text-input" autocomplete="off" />
-    <br>
-    <label asp-for="Input.ConfirmPassword"></label>
-    <input asp-for="Input.ConfirmPassword" class="text-input" />
-    <br>
-    <label asp-for="Input.Country"></label>
-    <input asp-for="Input.Country" class="text-input" />
-    <br>
-    <label asp-for="Input.ProfilePicture"></label>
-    <input type="file" asp-for="Input.ProfilePicture" accept=".png,.jpg,.jpeg" multiple>
+    <label asp-for="CreateUser.UserName">Username</label>
+    <input asp-for="CreateUser.UserName" class="text-input" autocomplete="off" />
+    <span asp-validation-for="CreateUser.UserName" class="error-message"></span>
+
+    <label asp-for="CreateUser.Password">Password</label>
+    <input asp-for="CreateUser.Password" class="text-input" autocomplete="off" />
+    <span asp-validation-for="CreateUser.Password" class="error-message"></span>
+
+    <label asp-for="CreateUser.ConfirmPassword"></label>
+    <input asp-for="CreateUser.ConfirmPassword" class="text-input" />
+    <span asp-validation-for="CreateUser.ConfirmPassword" class="error-message"></span>
+
+    <label asp-for="CreateUser.Country"></label>
+    <input asp-for="CreateUser.Country" class="text-input" />
+    <span asp-validation-for="CreateUser.Country" class="error-message"></span>
+
+    <label asp-for="CreateUser.ProfilePicture"></label>
+    <input type="file" asp-for="CreateUser.ProfilePicture" accept=".png,.jpg,.jpeg" multiple>
+    <span asp-validation-for="CreateUser.ProfilePicture" class="error-message"></span>
+
     <button type="submit" class="primary-button log-in-btn">Register</button>
 </form>
 

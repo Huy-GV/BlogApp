@@ -12,8 +12,7 @@
     <div>
         <label asp-for="CreateBlog.Title">Title</label>
         <input asp-for="CreateBlog.Title" type="text" required>
-        
-        <br>
+        <span asp-validation-for="CreateBlog.Title" class="error-message"></span>
         <label asp-for="CreateBlog.Description">Description</label>
         <textarea rows="8" cols="50" 
             asp-for="CreateBlog.Description" 
@@ -21,21 +20,17 @@
             type="text"
             placeholder="Description">
         </textarea>
-
-        <br>
-        @* <label asp-for="CreateBlog.ImagePath"><strong>Image path</strong></label>
-        <input asp-for="CreateBlog.ImagePath" type="text" required> *@
-
+        <span asp-validation-for="CreateBlog.Description" class="error-message"></span>
         <label asp-for="CreateBlog.CoverImage"></label>
         <input type="file" asp-for="CreateBlog.CoverImage" accept=".png,.jpg,.jpeg" multiple>
-
-        <br>
+        <span asp-validation-for="CreateBlog.CoverImage" class="error-message"></span>
         <label asp-for="CreateBlog.Content">Content</label>
         <textarea rows="18" cols="50" 
             asp-for="CreateBlog.Content" 
             required
             placeholder="What do you want to share?" 
             type="text"></textarea><br>
+        <span asp-validation-for="CreateBlog.Content" class="error-message"></span>
     </div>
 
     <input type="submit" value="Add blog" class="submit-post" />

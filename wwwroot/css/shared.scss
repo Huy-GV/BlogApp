@@ -28,13 +28,14 @@ body {
 }
 
 .text-input {
-    padding: 0.4rem;
+    padding: 0.6rem;
     font-size: 1rem;
     margin: 0.2rem;
     border: 2px solid black;
     border-radius: 4px;
     display: block;
-    width: 96%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 a {
@@ -147,6 +148,12 @@ p {
     word-break: break-word;
 }
 
+.error-message {
+    display: block;
+    color: red;
+    font-size: 0.9rem;
+}
+
 .log-in-btn {
     padding: 0.3rem;
     font-size: 1rem;
@@ -158,6 +165,13 @@ p {
     font-weight: 600;
 }
 
+label {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: block;
+    margin-block: 1rem;
+}
 
 .button-container{
     display: flex;
