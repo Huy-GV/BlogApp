@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using BlogApp.Services;
-using BlogApp.Data.FormModels;
+using BlogApp.Data.ViewModel;
 
 namespace BlogApp.Areas.Identity.Pages.Account
 {
@@ -42,7 +42,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public CreateUser CreateUser { get; set; }
+        public CreateUserViewModel CreateUser { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -84,7 +84,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
 
             return Page();
         }
-        private async Task<string> GetProfilePicturePath(CreateUser createUser) 
+        private async Task<string> GetProfilePicturePath(CreateUserViewModel createUser) 
         {
             string fileName = "";
             try

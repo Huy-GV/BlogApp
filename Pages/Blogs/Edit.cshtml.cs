@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
-using BlogApp.Data.FormModels;
+using BlogApp.Data.ViewModel;
 namespace BlogApp.Pages.Blogs
 {
 
@@ -18,13 +18,13 @@ namespace BlogApp.Pages.Blogs
     public class EditModel : BaseModel
     {
         [BindProperty]
-        public EditBlog EditBlog { get; set; }
-        private readonly ILogger<CreateModel> _logger;
+        public EditBlogViewModel EditBlogVM { get; set; }
+        private readonly ILogger<EditModel> _logger;
         private readonly ImageFileService _imageFileService;
         public EditModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<CreateModel> logger,
+            ILogger<EditModel> logger,
             ImageFileService imageFileService) : base(context, userManager)
         {
             _logger = logger;
@@ -45,7 +45,7 @@ namespace BlogApp.Pages.Blogs
             _logger.LogInformation($"User {username} is editing the blog with ID {blogID}");
             var blog = await Context.Blog.FirstOrDefaultAsync(blog => blog.ID == blogID);
             
-            EditBlog = new EditBlog
+            EditBlogVM = new EditBlogViewModel
             { 
                 ID = blog.ID,
                 Title = blog.Title,
@@ -60,29 +60,31 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid model state when editing blog");
+                // foreach(var error in ModelState.)
                 return Page();
             }
 
             var user = await UserManager.GetUserAsync(User);
-            var blog = await Context.Blog.FindAsync(EditBlog.ID);
+            var blog = await Context.Blog.FindAsync(EditBlogVM.ID);
 
             if (blog == null)
                 return NotFound();
-            if (EditBlog.Content == "")
+            if (EditBlogVM.Content == "")
                 return RedirectToPage("/Blogs/Read", new { id = blog.ID });
             if (user.UserName != blog.Author)
                 return Forbid();
 
-            blog.Content = EditBlog.Content;
-            blog.Title = EditBlog.Title;
-            blog.Description = EditBlog.Description;
+            blog.Content = EditBlogVM.Content;
+            blog.Title = EditBlogVM.Title;
+            blog.Description = EditBlogVM.Description;
 
-            if (EditBlog.CoverImage != null)
+            if (EditBlogVM.CoverImage != null)
             {
                 _imageFileService.DeleteImage(blog.ImagePath);
-                blog.ImagePath = await _imageFileService.UploadBlogImageAsync(EditBlog.CoverImage);
+                blog.ImagePath = await _imageFileService.UploadBlogImageAsync(EditBlogVM.CoverImage);
             }
-            
+
+
             Context.Attach(blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 

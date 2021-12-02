@@ -10,27 +10,27 @@
 
 <form class="add-form" method="post" enctype="multipart/form-data">
     <div>
-        <label asp-for="CreateBlog.Title">Title</label>
-        <input asp-for="CreateBlog.Title" type="text" required>
-        <span asp-validation-for="CreateBlog.Title" class="error-message"></span>
-        <label asp-for="CreateBlog.Description">Description</label>
+        <label asp-for="CreateBlogVM.Title">Title</label>
+        <input asp-for="CreateBlogVM.Title" type="text" required>
+        <span asp-validation-for="CreateBlogVM.Title" class="error-message"></span>
+        <label asp-for="CreateBlogVM.Description">Description</label>
         <textarea rows="8" cols="50" 
-            asp-for="CreateBlog.Description" 
+            asp-for="CreateBlogVM.Description" 
             required
             type="text"
             placeholder="Description">
         </textarea>
-        <span asp-validation-for="CreateBlog.Description" class="error-message"></span>
-        <label asp-for="CreateBlog.CoverImage"></label>
-        <input type="file" asp-for="CreateBlog.CoverImage" accept=".png,.jpg,.jpeg" multiple>
-        <span asp-validation-for="CreateBlog.CoverImage" class="error-message"></span>
-        <label asp-for="CreateBlog.Content">Content</label>
+        <span asp-validation-for="CreateBlogVM.Description" class="error-message"></span>
+        <label asp-for="CreateBlogVM.CoverImage"></label>
+        <input type="file" asp-for="CreateBlogVM.CoverImage" accept=".png,.jpg,.jpeg" multiple>
+        <span asp-validation-for="CreateBlogVM.CoverImage" class="error-message"></span>
+        <label asp-for="CreateBlogVM.Content">Content</label>
         <textarea rows="18" cols="50" 
-            asp-for="CreateBlog.Content" 
+            asp-for="CreateBlogVM.Content" 
             required
             placeholder="What do you want to share?" 
             type="text"></textarea><br>
-        <span asp-validation-for="CreateBlog.Content" class="error-message"></span>
+        <span asp-validation-for="CreateBlogVM.Content" class="error-message"></span>
     </div>
 
     <input type="submit" value="Add blog" class="submit-post" />

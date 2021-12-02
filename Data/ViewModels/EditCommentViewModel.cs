@@ -1,9 +1,9 @@
   using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace BlogApp.Data.FormModels
+namespace BlogApp.Data.ViewModel
 {  
-    public class EditComment
+    public class EditCommentViewModel
     {
         public string Content { get; set; }
     }

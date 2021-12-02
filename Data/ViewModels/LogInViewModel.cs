@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
  
 
 
-namespace BlogApp.Data.FormModels{
-    public class LogIn
+namespace BlogApp.Data.ViewModel{
+    public class LogInViewModel
     {
         [Required]
         [Display(Name = "Username")]

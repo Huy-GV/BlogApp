@@ -89,11 +89,11 @@
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
 {
-    <form method="post" class="comment-form">
-        <input asp-for="CreateComment.BlogID" value="@Model.Blog.ID" type="hidden" />
+    <form method="post" class="comment-form" asp-page-handler="CreateComment">
+        <input asp-for="CreateCommentVM.BlogID" value="@Model.Blog.ID" type="hidden" />
         <p>
             <textarea rows="5" cols="50"
-                      asp-for="CreateComment.Content"
+                      asp-for="CreateCommentVM.Content"
                       placeholder="Add a comment" required></textarea>
         </p>
         <input type="submit" value="POST" class="submit-comment" />

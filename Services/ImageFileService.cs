@@ -47,15 +47,16 @@ namespace BlogApp.Services
                 _logger.LogInformation($"File path of deleted image is {filePath}");
             }
         }
-        private string BuildFileName(string type, string fileName)
+        private string BuildFileName(string type, string fileName = "image")
         {
-            return  string.Concat
+            return  string.Join
             (
                 "_", 
-                new string[] {
+                new string[] 
+                {
                     DateTime.Now.Ticks.ToString(),
                     type,
-                    fileName ?? "image"
+                    fileName
                 }
             );
         }

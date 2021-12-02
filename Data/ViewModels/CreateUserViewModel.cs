@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http; 
 
-namespace BlogApp.Data.FormModels
+namespace BlogApp.Data.ViewModel
 {
-    public class CreateUser
+    public class CreateUserViewModel
     {
         [Required]
         [Display(Name = "UserName")]

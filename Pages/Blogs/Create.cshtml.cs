@@ -9,14 +9,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging; 
 using BlogApp.Services;
-using BlogApp.Data.FormModels;
+using BlogApp.Data.ViewModel;
 namespace BlogApp.Pages.Blogs
 {
     [Authorize]
     public class CreateModel : BaseModel
     {
         [BindProperty]
-        public CreateBlog CreateBlog { get; set; }
+        public CreateBlogViewModel CreateBlogVM { get; set; }
         private readonly ILogger<CreateModel> _logger;
         private readonly ImageFileService _imageFileService;
         public CreateModel(
@@ -51,17 +51,16 @@ namespace BlogApp.Pages.Blogs
                 _logger.LogError("Invalid model state when submitting new post");
                 return Page();
             }
-            var blog = new Blog
+
+            var entry = Context.Blog.Add(new Blog()
             {
-                Title = CreateBlog.Title,
-                Description = CreateBlog.Description,
-                Content = CreateBlog.Content,
-                ImagePath = await _imageFileService.UploadBlogImageAsync(CreateBlog.CoverImage),
+                ImagePath = await _imageFileService
+                .UploadBlogImageAsync(CreateBlogVM.CoverImage),
                 Date = DateTime.Now,
                 Author = user.UserName
-            };
+            });
 
-            Context.Blog.Add(blog);
+            entry.CurrentValues.SetValues(CreateBlogVM);
             await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

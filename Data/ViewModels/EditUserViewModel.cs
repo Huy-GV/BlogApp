@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace BlogApp.Data.FormModels
+namespace BlogApp.Data.ViewModel
 {
-    public class EditUser
+    public class EditUserViewModel
     {
         public string UserName { get; set; }
         [Required]

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using BlogApp.Data;
 using BlogApp.Data.DTOs;
 using BlogApp.Data.Constants;
-using BlogApp.Data.FormModels;
+using BlogApp.Data.ViewModel;
 namespace BlogApp.Pages.Blogs
 {
 
@@ -17,9 +17,9 @@ namespace BlogApp.Pages.Blogs
     public class ReadModel : BaseModel
     {
         [BindProperty]
-        public CreateComment CreateComment { get; set; }
+        public CreateCommentViewModel CreateCommentVM { get; set; }
         [BindProperty]
-        public EditComment EditComment { get; set; }
+        public EditCommentViewModel EditCommentVM { get; set; }
         private readonly ILogger<ReadModel> _logger;
         public Blog Blog { get; set; }
         public ReadModel(
@@ -75,7 +75,7 @@ namespace BlogApp.Pages.Blogs
             Context.Attach(Blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();
         }
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostCreateCommentAsync()
         {
             if (!User.Identity.IsAuthenticated)
                 return Challenge();
@@ -89,21 +89,27 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
 
-            var comment = new Comment
-            {
-                Author = user.UserName,
-                Content = CreateComment.Content,
-                Date = DateTime.Now,
-                BlogID = CreateComment.BlogID
-            };
+            // var comment = new Comment
+            // {
+            //     Author = user.UserName,
+            //     Content = CreateCommentVM.Content,
+            //     Date = DateTime.Now,
+            //     BlogID = CreateCommentVM.BlogID
+            // };
 
             if (await SuspensionExists(username))
-                return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
+                return RedirectToPage("/Blogs/Read", new { id = CreateCommentVM.BlogID });
 
-            Context.Add(comment);
+            var entry = Context.Comment.Add(new Comment
+            {
+                Author = user.UserName,
+                Date = DateTime.Now
+            });
+
+            entry.CurrentValues.SetValues(CreateCommentVM);
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
+            return RedirectToPage("/Blogs/Read", new { id = CreateCommentVM.BlogID });
         }
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
@@ -121,7 +127,7 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != comment.Author)
                 return Forbid();
 
-            comment.Content = EditComment.Content;
+            comment.Content = EditCommentVM.Content;
             Context.Attach(comment).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 

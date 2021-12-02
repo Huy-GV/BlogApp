@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
-using BlogApp.Data.FormModels;
+using BlogApp.Data.ViewModel;
 
 namespace BlogApp.Pages.User
 {
@@ -23,7 +23,7 @@ namespace BlogApp.Pages.User
     public class EditModel : BaseModel
     {
         [BindProperty]
-        public EditUser EditUser { get; set; }
+        public EditUserViewModel EditUserVM { get; set; }
         private readonly ILogger<EditModel> _logger;
         private readonly ImageFileService _imageFileService;
         public EditModel(      
@@ -43,7 +43,7 @@ namespace BlogApp.Pages.User
             if (user.UserName != User.Identity.Name)
                 return Forbid();
 
-            EditUser = new EditUser()
+            EditUserVM = new EditUserViewModel()
             {
                 UserName = username,
                 Country = user.Country,
@@ -54,8 +54,8 @@ namespace BlogApp.Pages.User
         }
         public async Task<IActionResult> OnPostAsync() 
         {   
-            _logger.LogInformation($"User named {EditUser.UserName} attempted to update their profile");
-            var user = await UserManager.FindByNameAsync(EditUser.UserName);
+            _logger.LogInformation($"User named {EditUserVM.UserName} attempted to update their profile");
+            var user = await UserManager.FindByNameAsync(EditUserVM.UserName);
             if (user == null)
                 return NotFound();
             if (user.UserName != User.Identity.Name)
@@ -67,25 +67,25 @@ namespace BlogApp.Pages.User
             }
 
             var applicationUser = await Context.ApplicationUser.FindAsync(user.Id);
-            applicationUser.Description = EditUser.Description;
-            applicationUser.Country = EditUser.Country ?? "Australia";
-            if (EditUser.ProfilePicture != null) 
+            applicationUser.Description = EditUserVM.Description;
+            applicationUser.Country = EditUserVM.Country ?? "Australia";
+            if (EditUserVM.ProfilePicture != null) 
             {
                 _imageFileService.DeleteImage(applicationUser.ProfilePicture);
-                applicationUser.ProfilePicture = await GetProfilePicturePath(EditUser);
+                applicationUser.ProfilePicture = await GetProfilePicturePath(EditUserVM);
             }
 
             Context.Attach(applicationUser).State = EntityState.Modified;
             await Context.SaveChangesAsync();
 
-            return RedirectToPage("/User/Index", new { username = EditUser.UserName });
+            return RedirectToPage("/User/Index", new { username = EditUserVM.UserName });
         }
-        private async Task<string> GetProfilePicturePath(EditUser editUser) 
+        private async Task<string> GetProfilePicturePath(EditUserViewModel editUser) 
         {
             string fileName = "";
             try
             {
-                fileName = await _imageFileService.UploadProfileImageAsync(EditUser.ProfilePicture);
+                fileName = await _imageFileService.UploadProfileImageAsync(EditUserVM.ProfilePicture);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");

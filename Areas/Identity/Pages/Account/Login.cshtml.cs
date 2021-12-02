@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using BlogApp.Models;
-using BlogApp.Data.FormModels;
+using BlogApp.Data.ViewModel;
 
 namespace BlogApp.Areas.Identity.Pages.Account
 {
@@ -33,7 +33,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public LogIn LogIn { get; set; }
+        public LogInViewModel LogIn { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 

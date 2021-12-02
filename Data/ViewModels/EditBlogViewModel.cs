@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace BlogApp.Data.FormModels
+namespace BlogApp.Data.ViewModel
 {
-    public class EditBlog : CreateBlog
+    public class EditBlogViewModel : CreateBlogViewModel
     {
         public int ID { get; set;}
         [Display(Name = "Change cover image")]
