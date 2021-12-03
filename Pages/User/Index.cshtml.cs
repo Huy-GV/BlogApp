@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Pages.User
 {
@@ -30,6 +31,7 @@ namespace BlogApp.Pages.User
                 return Forbid();
 
             var blogs = Context.Blog
+                .AsNoTracking()
                 .Where(blog => blog.Author == username)
                 .ToList();
 

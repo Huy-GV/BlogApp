@@ -60,7 +60,6 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Invalid model state when editing blog");
-                // foreach(var error in ModelState.)
                 return Page();
             }
 
@@ -74,16 +73,15 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != blog.Author)
                 return Forbid();
 
-            blog.Content = EditBlogVM.Content;
-            blog.Title = EditBlogVM.Title;
-            blog.Description = EditBlogVM.Description;
+            var entry = Context.Blog.Attach(blog); 
+            Context.Blog.Attach(blog).CurrentValues.SetValues(EditBlogVM);
 
             if (EditBlogVM.CoverImage != null)
             {
                 _imageFileService.DeleteImage(blog.ImagePath);
-                blog.ImagePath = await _imageFileService.UploadBlogImageAsync(EditBlogVM.CoverImage);
+                blog.ImagePath = await _imageFileService
+                .UploadBlogImageAsync(EditBlogVM.CoverImage);
             }
-
 
             Context.Attach(blog).State = EntityState.Modified;
             await Context.SaveChangesAsync();

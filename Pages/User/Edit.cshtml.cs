@@ -67,9 +67,9 @@ namespace BlogApp.Pages.User
             }
 
             var applicationUser = await Context.ApplicationUser.FindAsync(user.Id);
-            applicationUser.Description = EditUserVM.Description;
-            applicationUser.Country = EditUserVM.Country ?? "Australia";
-            if (EditUserVM.ProfilePicture != null) 
+            Context.Attach(applicationUser).CurrentValues.SetValues(EditUserVM);
+
+            if (EditUserVM.NewProfilePicture != null) 
             {
                 _imageFileService.DeleteImage(applicationUser.ProfilePicture);
                 applicationUser.ProfilePicture = await GetProfilePicturePath(EditUserVM);
@@ -85,7 +85,7 @@ namespace BlogApp.Pages.User
             string fileName = "";
             try
             {
-                fileName = await _imageFileService.UploadProfileImageAsync(EditUserVM.ProfilePicture);
+                fileName = await _imageFileService.UploadProfileImageAsync(EditUserVM.NewProfilePicture);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
