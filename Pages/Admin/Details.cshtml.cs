@@ -12,19 +12,23 @@ using Microsoft.AspNetCore.Identity;
 using BlogApp.Data.DTOs;
 using BlogApp.Models;
 using Microsoft.EntityFrameworkCore;
-
+using BlogApp.Services;
 namespace BlogApp.Pages.Admin
 {
     [Authorize(Roles = "admin")]
     public class DetailsModel : BaseModel
     {
         private readonly ILogger<AdminModel> _logger;
+        private readonly UserSuspensionService _suspensionService;
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }
         public DetailsModel(ApplicationDbContext context,
-                          UserManager<ApplicationUser> userManager,
-                          ILogger<AdminModel> logger) : base(context, userManager)
+            UserManager<ApplicationUser> userManager,
+            ILogger<AdminModel> logger,
+            UserSuspensionService userSuspensionService
+            ) : base(context, userManager)
         {
+            _suspensionService = userSuspensionService;
             _logger = logger;
         }
 
@@ -43,12 +47,11 @@ namespace BlogApp.Pages.Admin
             ViewData["UserDTO"] = GetUserDTO(username);
             ViewData["HiddenBlogs"] = await GetHiddenBlogs(username);
             ViewData["HiddenComments"] = await GetHiddenComments(username);
-            ViewData["Suspension"] = await GetSuspension(username);
+            ViewData["Suspension"] = await _suspensionService.FindAsync(username);
 
             return Page();
         }
         private UserDTO GetUserDTO(string username) {
-            //TODO: change to SingleOrDefault
             return new UserDTO()
             {
                 Username = username,
@@ -77,7 +80,7 @@ namespace BlogApp.Pages.Admin
         }
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
-            if (!(await SuspensionExists(SuspensionTicket.Username))) {
+            if (!(await _suspensionService.ExistsAsync(SuspensionTicket.Username))) {
                 Context.Suspension.Add(SuspensionTicket);
                 await Context.SaveChangesAsync();
             } else {
@@ -87,10 +90,9 @@ namespace BlogApp.Pages.Admin
         }
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
-            if (await SuspensionExists(username)) {
+            if (await _suspensionService.ExistsAsync(username)) {
                 var suspension = Context.Suspension.FirstOrDefault(s => s.Username == username);
-                Context.Suspension.Remove(suspension);
-                await Context.SaveChangesAsync();
+                await _suspensionService.RemoveAsync(suspension);
             } else {
                 _logger.LogInformation("User has no suspensions");
             }

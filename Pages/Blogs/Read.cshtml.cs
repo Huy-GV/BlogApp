@@ -10,6 +10,7 @@ using BlogApp.Data;
 using BlogApp.Data.DTOs;
 using BlogApp.Data.Constants;
 using BlogApp.Data.ViewModel;
+using BlogApp.Services;
 namespace BlogApp.Pages.Blogs
 {
 
@@ -21,13 +22,16 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public EditCommentViewModel EditCommentVM { get; set; }
         private readonly ILogger<ReadModel> _logger;
+        private readonly UserSuspensionService _suspensionService;
         public Blog Blog { get; set; }
         public ReadModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<ReadModel> logger) : base(context, userManager)
+            ILogger<ReadModel> logger,
+            UserSuspensionService suspensionService) : base(context, userManager)
         {
             _logger = logger;
+            _suspensionService = suspensionService;
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -47,8 +51,7 @@ namespace BlogApp.Pages.Blogs
             if (User.Identity.IsAuthenticated)
             {
                 var user = await UserManager.GetUserAsync(User);
-                await CheckSuspensionExpiry(user.UserName);
-                ViewData["IsSuspended"] = await SuspensionExists(user.UserName);
+                ViewData["IsSuspended"] = await _suspensionService.ExistsAsync(user.UserName);
             } else
             {
                 ViewData["IsSuspended"] = false;
@@ -97,7 +100,7 @@ namespace BlogApp.Pages.Blogs
             //     BlogID = CreateCommentVM.BlogID
             // };
 
-            if (await SuspensionExists(username))
+            if (await _suspensionService.ExistsAsync(username))
                 return RedirectToPage("/Blogs/Read", new { id = CreateCommentVM.BlogID });
 
             var entry = Context.Comment.Add(new Comment

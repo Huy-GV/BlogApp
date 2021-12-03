@@ -18,22 +18,25 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public CreateBlogViewModel CreateBlogVM { get; set; }
         private readonly ILogger<CreateModel> _logger;
+        private readonly UserSuspensionService _suspensionService;
         private readonly ImageFileService _imageFileService;
         public CreateModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
-            ImageFileService imageFileService) : base(context, userManager)
+            ImageFileService imageFileService,
+            UserSuspensionService suspensionService) : base(context, userManager)
         {
             _logger = logger;
             _imageFileService = imageFileService;
+            _suspensionService = suspensionService;
         }
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
 
-            if (await SuspensionExists(username))
+            if (await _suspensionService.ExistsAsync(username))
                 return RedirectToPage("./Index");
 
             return Page();
@@ -43,7 +46,7 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
 
-            if (await SuspensionExists(username))
+            if (await _suspensionService.ExistsAsync(username))
                 return RedirectToPage("./Index");
 
             if (!ModelState.IsValid)
