@@ -15,7 +15,7 @@ namespace BlogApp.Data
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
 
-            using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+            using (var context = new RazorBlogDbContext(serviceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>()))
             {
                 var adminID = await EnsureAdmin(serviceProvider, "admin");
                 await AssignRole(adminID, Roles.AdminRole, serviceProvider);
@@ -35,6 +35,7 @@ namespace BlogApp.Data
                     UserName = username,
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.UtcNow,
+                    Country = "Australia"
                 };
                 await userManager.CreateAsync(user, "Admin123@@");
             }
@@ -85,7 +86,7 @@ namespace BlogApp.Data
         private async static Task AssignUserInfo(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-            var context = serviceProvider.GetService<ApplicationDbContext>();
+            var context = serviceProvider.GetService<RazorBlogDbContext>();
             var users = userManager.Users.ToList();
             foreach (ApplicationUser user in users)
             {

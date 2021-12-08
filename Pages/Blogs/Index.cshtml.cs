@@ -19,14 +19,14 @@ namespace BlogApp.Pages.Blogs
         [BindProperty(SupportsGet = true)]
         public string SearchString { get; set; }
         public IndexModel(
-            ApplicationDbContext context,
+            RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager) : base(context, userManager)
         {
 
         }
         public async Task OnGetAsync()
         {
-            IQueryable<Blog> blogs = from blog in Context.Blog
+            IQueryable<Blog> blogs = from blog in DbContext.Blog
                     select blog;
 
             if (!string.IsNullOrEmpty(SearchString)) 

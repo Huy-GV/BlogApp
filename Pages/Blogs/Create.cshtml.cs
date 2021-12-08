@@ -21,7 +21,7 @@ namespace BlogApp.Pages.Blogs
         private readonly UserSuspensionService _suspensionService;
         private readonly ImageFileService _imageFileService;
         public CreateModel(
-            ApplicationDbContext context,
+            RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
             ImageFileService imageFileService,
@@ -55,7 +55,7 @@ namespace BlogApp.Pages.Blogs
                 return Page();
             }
 
-            var entry = Context.Blog.Add(new Blog()
+            var entry = DbContext.Blog.Add(new Blog()
             {
                 ImagePath = await _imageFileService
                 .UploadBlogImageAsync(CreateBlogVM.CoverImage),
@@ -64,7 +64,7 @@ namespace BlogApp.Pages.Blogs
             });
 
             entry.CurrentValues.SetValues(CreateBlogVM);
-            await Context.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

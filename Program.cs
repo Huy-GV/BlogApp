@@ -22,7 +22,7 @@ namespace BlogApp
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    var context = services.GetRequiredService<RazorBlogDbContext>();
                     context.Database.Migrate();
                     SeedData.Initialize(services).Wait();
                 }

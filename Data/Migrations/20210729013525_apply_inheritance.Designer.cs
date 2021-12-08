@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlogApp.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(RazorBlogDbContext))]
     [Migration("20210729013525_apply_inheritance")]
     partial class apply_inheritance
     {

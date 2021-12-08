@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlogApp.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(RazorBlogDbContext))]
     [Migration("20210830100317_SuspensionModel")]
     partial class SuspensionModel
     {

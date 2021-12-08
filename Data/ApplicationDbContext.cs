@@ -7,9 +7,9 @@ using BlogApp.Models;
 
 namespace BlogApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class RazorBlogDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options)
             : base(options)
         {
         }

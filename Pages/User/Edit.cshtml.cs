@@ -27,7 +27,7 @@ namespace BlogApp.Pages.User
         private readonly ILogger<EditModel> _logger;
         private readonly ImageFileService _imageFileService;
         public EditModel(      
-            ApplicationDbContext context,
+            RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
             ImageFileService imageFileService) : base(context, userManager)
@@ -66,8 +66,8 @@ namespace BlogApp.Pages.User
                 return Page();
             }
 
-            var applicationUser = await Context.ApplicationUser.FindAsync(user.Id);
-            Context.Attach(applicationUser).CurrentValues.SetValues(EditUserVM);
+            var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
+            DbContext.Attach(applicationUser).CurrentValues.SetValues(EditUserVM);
 
             if (EditUserVM.NewProfilePicture != null) 
             {
@@ -75,8 +75,8 @@ namespace BlogApp.Pages.User
                 applicationUser.ProfilePicture = await GetProfilePicturePath(EditUserVM);
             }
 
-            Context.Attach(applicationUser).State = EntityState.Modified;
-            await Context.SaveChangesAsync();
+            DbContext.Attach(applicationUser).State = EntityState.Modified;
+            await DbContext.SaveChangesAsync();
 
             return RedirectToPage("/User/Index", new { username = EditUserVM.UserName });
         }

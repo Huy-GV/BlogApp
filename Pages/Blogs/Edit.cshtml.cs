@@ -22,7 +22,7 @@ namespace BlogApp.Pages.Blogs
         private readonly ILogger<EditModel> _logger;
         private readonly ImageFileService _imageFileService;
         public EditModel(
-            ApplicationDbContext context,
+            RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
             ImageFileService imageFileService) : base(context, userManager)
@@ -43,7 +43,7 @@ namespace BlogApp.Pages.Blogs
                 return Unauthorized();
             }
             _logger.LogInformation($"User {username} is editing the blog with ID {blogID}");
-            var blog = await Context.Blog.FirstOrDefaultAsync(blog => blog.ID == blogID);
+            var blog = await DbContext.Blog.FirstOrDefaultAsync(blog => blog.ID == blogID);
             
             EditBlogVM = new EditBlogViewModel
             { 
@@ -64,7 +64,7 @@ namespace BlogApp.Pages.Blogs
             }
 
             var user = await UserManager.GetUserAsync(User);
-            var blog = await Context.Blog.FindAsync(EditBlogVM.ID);
+            var blog = await DbContext.Blog.FindAsync(EditBlogVM.ID);
 
             if (blog == null)
                 return NotFound();
@@ -73,8 +73,8 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != blog.Author)
                 return Forbid();
 
-            var entry = Context.Blog.Attach(blog); 
-            Context.Blog.Attach(blog).CurrentValues.SetValues(EditBlogVM);
+            var entry = DbContext.Blog.Attach(blog); 
+            DbContext.Blog.Attach(blog).CurrentValues.SetValues(EditBlogVM);
 
             if (EditBlogVM.CoverImage != null)
             {
@@ -83,8 +83,8 @@ namespace BlogApp.Pages.Blogs
                 .UploadBlogImageAsync(EditBlogVM.CoverImage);
             }
 
-            Context.Attach(blog).State = EntityState.Modified;
-            await Context.SaveChangesAsync();
+            DbContext.Attach(blog).State = EntityState.Modified;
+            await DbContext.SaveChangesAsync();
 
             return RedirectToPage("/Blogs/Read", new { id = blog.ID });
         }

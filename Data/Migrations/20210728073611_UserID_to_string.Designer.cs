@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlogApp.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(RazorBlogDbContext))]
     [Migration("20210728073611_UserID_to_string")]
     partial class UserID_to_string
     {

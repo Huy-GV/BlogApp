@@ -18,7 +18,7 @@ namespace BlogApp.Pages.Admin
     public class AdminModel : BaseModel
     {
         private readonly ILogger<AdminModel> _logger;
-        public AdminModel(ApplicationDbContext context,
+        public AdminModel(RazorBlogDbContext context,
                           UserManager<ApplicationUser> userManager,
                           ILogger<AdminModel> logger) : base(context, userManager)
         {
@@ -31,20 +31,15 @@ namespace BlogApp.Pages.Admin
             var users = UserManager.Users
                 .ToList()
                 .Where(user => user.UserName != "admin");
+            
             List<UserDTO> userDTOs = new();
             foreach( var user in users)
             {   
-                userDTOs.Add(new UserDTO()
-                {
-                    Username = user.UserName,
-                    IsModerator = await IsModeratorRole(user),
-                    BlogCount = Context.Blog
-                    .Where(blog => blog.Author == user.UserName)
-                    .ToList()
-                    .Count
-                });
+                userDTOs.Add(await CreateUserDTOAsync(user));
             }
+
             ViewData["UserDTOs"] = userDTOs;
+
             return Page();
         }
         private async Task<bool> IsModeratorRole(ApplicationUser user)
@@ -52,10 +47,22 @@ namespace BlogApp.Pages.Admin
             var roles = await UserManager.GetRolesAsync(user);
             return roles.Contains(Roles.ModeratorRole);
         }
+        private async Task<UserDTO> CreateUserDTOAsync(ApplicationUser user)
+        {
+            return new UserDTO
+            {
+                Username = user.UserName,
+                IsModerator = await IsModeratorRole(user),
+                BlogCount = DbContext.Blog
+                .Where(blog => blog.Author == user.UserName)
+                .ToList()
+                .Count
+            };
+        }
 
         public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string username)
         {
-            var user = Context.Users.FirstOrDefault(user => user.UserName == username);
+            var user = DbContext.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
                 _logger.LogError($"No user with ID {username} was found");
@@ -67,7 +74,7 @@ namespace BlogApp.Pages.Admin
         }
         public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {
-            var user = Context.Users.FirstOrDefault(user => user.UserName == username);
+            var user = DbContext.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
                 _logger.LogError($"No user with ID {username} was found");

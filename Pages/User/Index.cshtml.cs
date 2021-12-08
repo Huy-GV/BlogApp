@@ -17,7 +17,7 @@ namespace BlogApp.Pages.User
         [BindProperty]
         public UserDTO UserDTO { get; set; }
         public IndexModel(      
-            ApplicationDbContext context,
+            RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager) : base(context, userManager)
         {
 
@@ -30,7 +30,7 @@ namespace BlogApp.Pages.User
             if (user.UserName != User.Identity.Name)
                 return Forbid();
 
-            var blogs = Context.Blog
+            var blogs = DbContext.Blog
                 .AsNoTracking()
                 .Where(blog => blog.Author == username)
                 .ToList();
@@ -42,7 +42,7 @@ namespace BlogApp.Pages.User
                 ProfilePath = user.ProfilePicture,
                 Blogs = blogs,
                 Description = user.Description,
-                CommentCount = Context.Comment
+                CommentCount = DbContext.Comment
                     .Where(comment => comment.Author == username)
                     .ToList()
                     .Count,

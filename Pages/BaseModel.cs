@@ -12,14 +12,13 @@ namespace BlogApp.Pages
 {
     public class BaseModel : PageModel
     {
-        protected ApplicationDbContext Context { get; }
-        // protected IAuthorizationService AuthorizationService { get; }
+        protected RazorBlogDbContext DbContext { get; }
         protected UserManager<ApplicationUser> UserManager { get; }
         public BaseModel(
-            ApplicationDbContext context, 
+            RazorBlogDbContext context, 
             UserManager<ApplicationUser> userManager)
         {
-            Context = context;
+            DbContext = context;
             UserManager = userManager;
         }
     }

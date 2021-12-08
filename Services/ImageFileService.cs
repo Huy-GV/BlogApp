@@ -11,7 +11,9 @@ namespace BlogApp.Services
     {
         private readonly IWebHostEnvironment _webHostEnv;
         private readonly ILogger<ImageFileService> _logger; 
-        public ImageFileService(IWebHostEnvironment webHostEnv, ILogger<ImageFileService> logger)
+        public ImageFileService(
+            IWebHostEnvironment webHostEnv, 
+            ILogger<ImageFileService> logger)
         {
             _webHostEnv = webHostEnv;
             _logger = logger;

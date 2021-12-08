@@ -13,10 +13,11 @@ namespace BlogApp.Services
 {
     public class UserSuspensionService
     {
-        private readonly IWebHostEnvironment _webHostEnv;
         private readonly ILogger<ImageFileService> _logger; 
-        private readonly ApplicationDbContext _dbContext;
-        public UserSuspensionService(ApplicationDbContext dbContext, ILogger<ImageFileService> logger)
+        private readonly RazorBlogDbContext _dbContext;
+        public UserSuspensionService(
+            RazorBlogDbContext dbContext, 
+            ILogger<ImageFileService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
