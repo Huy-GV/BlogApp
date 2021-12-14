@@ -19,8 +19,8 @@ A Blog application where users can write blogs or comment on others. All blogs c
 
 ## Images
 
+![Screenshot (1085)](https://user-images.githubusercontent.com/78300296/145921039-838cb3af-6adc-41d9-b154-6be44df7d827.png)
 
-![Screenshot (1060)](https://user-images.githubusercontent.com/78300296/142516965-55b25703-46fe-46d5-894a-1c2d5cbd3117.png)
 
 # **<p align="center">Home page</p>**
 
