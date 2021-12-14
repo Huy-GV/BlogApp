@@ -43,7 +43,7 @@ namespace BlogApp.Pages.Blogs
                 return Unauthorized();
             }
             _logger.LogInformation($"User {username} is editing the blog with ID {blogID}");
-            var blog = await DbContext.Blog.FirstOrDefaultAsync(blog => blog.ID == blogID);
+            var blog = await DbContext.Blog.FindAsync(blogID);
             
             EditBlogVM = new EditBlogViewModel
             { 
@@ -73,7 +73,6 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != blog.Author)
                 return Forbid();
 
-            var entry = DbContext.Blog.Attach(blog); 
             DbContext.Blog.Attach(blog).CurrentValues.SetValues(EditBlogVM);
 
             if (EditBlogVM.CoverImage != null)

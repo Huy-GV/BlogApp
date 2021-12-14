@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BlogApp.Data.DTOs;
 using BlogApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Pages.Admin
 {
@@ -74,7 +75,8 @@ namespace BlogApp.Pages.Admin
         }
         public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {
-            var user = DbContext.Users.FirstOrDefault(user => user.UserName == username);
+            var user = await DbContext.Users
+                .SingleOrDefaultAsync(user => user.UserName == username);
             if (user == null)
             {
                 _logger.LogError($"No user with ID {username} was found");

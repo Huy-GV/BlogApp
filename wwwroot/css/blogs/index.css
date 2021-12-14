@@ -123,9 +123,8 @@
 }
 
 .blog-container .blog {
-  padding: 1rem;
   margin: 0.5rem;
-  height: 10rem;
+  height: 13rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -136,12 +135,13 @@
 
 .blog-container .blog img {
   width: 40%;
-  border-radius: 10px;
+  border-radius: 5px 0 0 5px;
   -o-object-fit: cover;
      object-fit: cover;
 }
 
 .blog-container .blog .blog-info {
+  padding: 1rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

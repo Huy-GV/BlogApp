@@ -72,7 +72,8 @@ namespace BlogApp.Pages.User
             if (EditUserVM.NewProfilePicture != null) 
             {
                 _imageFileService.DeleteImage(applicationUser.ProfilePicture);
-                applicationUser.ProfilePicture = await GetProfilePicturePath(EditUserVM);
+                applicationUser.ProfilePicture = await 
+                    GetProfilePicturePath(EditUserVM);
             }
 
             DbContext.Attach(applicationUser).State = EntityState.Modified;

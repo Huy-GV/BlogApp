@@ -91,7 +91,8 @@ namespace BlogApp.Pages.Admin
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
         {
             if (await _suspensionService.ExistsAsync(username)) {
-                var suspension = DbContext.Suspension.FirstOrDefault(s => s.Username == username);
+                var suspension = await DbContext.Suspension
+                    .SingleOrDefaultAsync(s => s.Username == username);
                 await _suspensionService.RemoveAsync(suspension);
             } else {
                 _logger.LogInformation("User has no suspensions");

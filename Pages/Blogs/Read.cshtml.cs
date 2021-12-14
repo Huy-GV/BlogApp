@@ -42,7 +42,9 @@ namespace BlogApp.Pages.Blogs
 
             Blog = await DbContext.Blog
                 .Include(blog => blog.Comments)
-                .FirstOrDefaultAsync(blog => blog.ID == id);
+                .AsNoTracking()
+                .FirstAsync(blog => blog.ID == id);
+
             if (Blog == null)
                 return NotFound();
 
@@ -58,11 +60,11 @@ namespace BlogApp.Pages.Blogs
             }
 
 
-            ViewData["AuthorProfile"] = await GetSimpleProfileDTOAsync(Blog.Author);
+            ViewData["AuthorProfile"] = await GetSimpleProfileDTOAsync();
 
             return Page();
         }
-        private async Task<SimpleProfileDTO> GetSimpleProfileDTOAsync(string username)
+        private async Task<SimpleProfileDTO> GetSimpleProfileDTOAsync()
         {
             var user = await UserManager.FindByNameAsync(Blog.Author);
             return new SimpleProfileDTO()
@@ -144,7 +146,8 @@ namespace BlogApp.Pages.Blogs
             var user = await UserManager.GetUserAsync(User);
             var roles = await UserManager.GetRolesAsync(user);
             
-            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.ModeratorRole))) 
+            if (!(roles.Contains(Roles.AdminRole) || 
+                roles.Contains(Roles.ModeratorRole))) 
                 return Forbid();
 
             var blog = await DbContext.Blog.FindAsync(blogID);
@@ -168,7 +171,8 @@ namespace BlogApp.Pages.Blogs
 
             var user = await UserManager.GetUserAsync(User);
             var roles = await UserManager.GetRolesAsync(user);
-            if (!(roles.Contains(Roles.AdminRole) || roles.Contains(Roles.ModeratorRole))) 
+            if (!(roles.Contains(Roles.AdminRole) 
+                || roles.Contains(Roles.ModeratorRole))) 
                 return Forbid();
 
             var comment = await DbContext.Comment.FindAsync(commentID);

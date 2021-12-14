@@ -210,6 +210,8 @@
   height: 3rem;
   width: 3rem;
   border-radius: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .comment-option-container {
