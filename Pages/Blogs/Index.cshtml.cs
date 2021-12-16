@@ -32,7 +32,7 @@ namespace BlogApp.Pages.Blogs
             if (!string.IsNullOrEmpty(SearchString)) 
             {
                 SearchString = SearchString.ToLower().Trim();
-                blogs = from blog in blogs
+                blogs = from blog in blogs.AsNoTracking()
                         where blog.Title.ToLower().Contains(SearchString) 
                         || blog.Author.ToLower().Contains(SearchString)
                         select blog;

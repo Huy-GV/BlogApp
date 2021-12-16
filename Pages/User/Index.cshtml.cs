@@ -22,8 +22,10 @@ namespace BlogApp.Pages.User
         {
 
         }
-        public async Task<IActionResult> OnGetAsync(string username)
+        public async Task<IActionResult> OnGetAsync(string? username)
         {
+            if (username == null)
+                return NotFound();
             var user = await UserManager.FindByNameAsync(username);
             if (user == null)
                 return NotFound();

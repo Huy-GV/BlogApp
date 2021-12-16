@@ -35,11 +35,15 @@ namespace BlogApp.Pages.User
             _logger = logger;
             _imageFileService = imageFileService;
         }
-        public async Task<IActionResult> OnGetAsync(string username)
+        public async Task<IActionResult> OnGetAsync(string? username)
         {
+            if (username == null)
+                return NotFound();
+
             var user = await UserManager.FindByNameAsync(username);
             if (user == null)
                 return NotFound();
+
             if (user.UserName != User.Identity.Name)
                 return Forbid();
 
@@ -54,16 +58,22 @@ namespace BlogApp.Pages.User
         }
         public async Task<IActionResult> OnPostAsync() 
         {   
-            _logger.LogInformation($"User named {EditUserVM.UserName} attempted to update their profile");
             var user = await UserManager.FindByNameAsync(EditUserVM.UserName);
             if (user == null)
                 return NotFound();
             if (user.UserName != User.Identity.Name)
                 return Forbid();
+
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Invalid model state when editing blog");
-                return Page();
+                var errors = ModelState.Values
+                    .SelectMany( m => m.Errors)
+                    .Select(e => e.ErrorMessage);
+
+                foreach (var error in errors) 
+                    _logger.LogError(error);
+
+                return RedirectToPage("/User/Edit", new { username = EditUserVM.UserName });
             }
 
             var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);

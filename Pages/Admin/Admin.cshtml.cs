@@ -30,6 +30,7 @@ namespace BlogApp.Pages.Admin
         public async Task<IActionResult> OnGetAsync()
         {
             var users = UserManager.Users
+                .AsNoTracking()
                 .ToList()
                 .Where(user => user.UserName != "admin");
             

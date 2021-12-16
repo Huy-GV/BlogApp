@@ -12,6 +12,6 @@ namespace BlogApp.Data.ViewModel
         [Required]
         [StringLength(350, MinimumLength = 20)]
         public string Description { get; set; }
-        public IFormFile NewProfilePicture { get; set; }
+        public IFormFile? NewProfilePicture { get; set; }
     }
 }
