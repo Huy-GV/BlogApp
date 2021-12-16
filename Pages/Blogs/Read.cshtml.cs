@@ -15,22 +15,21 @@ namespace BlogApp.Pages.Blogs
 {
 
     [AllowAnonymous]
-    public class ReadModel : BaseModel
+    public class ReadModel : BaseModel<ReadModel>
     {
         [BindProperty]
         public CreateCommentViewModel CreateCommentVM { get; set; }
         [BindProperty]
         public EditCommentViewModel EditCommentVM { get; set; }
-        private readonly ILogger<ReadModel> _logger;
         private readonly UserSuspensionService _suspensionService;
         public Blog Blog { get; set; }
         public ReadModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<ReadModel> logger,
-            UserSuspensionService suspensionService) : base(context, userManager)
+            UserSuspensionService suspensionService) : base(
+                context, userManager, logger)
         {
-            _logger = logger;
             _suspensionService = suspensionService;
         }
 
@@ -52,8 +51,7 @@ namespace BlogApp.Pages.Blogs
 
             if (User.Identity.IsAuthenticated)
             {
-                var user = await UserManager.GetUserAsync(User);
-                ViewData["IsSuspended"] = await _suspensionService.ExistsAsync(user.UserName);
+                ViewData["IsSuspended"] = await _suspensionService.ExistsAsync(User.Identity.Name);
             } else
             {
                 ViewData["IsSuspended"] = false;
@@ -87,7 +85,7 @@ namespace BlogApp.Pages.Blogs
 
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Model state invalid when submitting comments");
+                Logger.LogError("Model state invalid when submitting comments");
                 return NotFound();
             }
 
@@ -123,7 +121,7 @@ namespace BlogApp.Pages.Blogs
 
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Model state invalid when editting comments");
+                Logger.LogError("Model state invalid when editting comments");
                 return NotFound();
             }
 
@@ -156,7 +154,7 @@ namespace BlogApp.Pages.Blogs
 
             if (blog == null)
             {
-                _logger.LogInformation("Blog not found error");
+                Logger.LogInformation("Blog not found error");
                 return NotFound();
             }
             blog.IsHidden = true;
@@ -180,7 +178,7 @@ namespace BlogApp.Pages.Blogs
                 return Forbid();
             if (comment == null)
             {
-                _logger.LogInformation("Comment not found error");
+                Logger.LogInformation("Comment not found error");
                 return NotFound();
             }
             comment.IsHidden = true;
@@ -193,10 +191,9 @@ namespace BlogApp.Pages.Blogs
             if (!User.Identity.IsAuthenticated)
                 return Challenge();
 
-            var user = await UserManager.GetUserAsync(User);
             var blog = await DbContext.Blog.FindAsync(blogID);
 
-            if (user.UserName != blog.Author && !User.IsInRole(Roles.AdminRole))
+            if (User.Identity.Name != blog.Author && !User.IsInRole(Roles.AdminRole))
                 return Forbid();
 
             DbContext.Blog.Remove(blog);

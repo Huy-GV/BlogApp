@@ -16,14 +16,13 @@ namespace BlogApp.Pages.Admin
 {
     //PASSWORD: Admin123@@
     [Authorize(Roles = "admin")]
-    public class AdminModel : BaseModel
+    public class AdminModel : BaseModel<AdminModel>
     {
-        private readonly ILogger<AdminModel> _logger;
         public AdminModel(RazorBlogDbContext context,
                           UserManager<ApplicationUser> userManager,
-                          ILogger<AdminModel> logger) : base(context, userManager)
+                          ILogger<AdminModel> logger) : base(context, userManager, logger)
         {
-            _logger = logger;
+            
         }
         
         //TODO: add a filter that shows moderators only
@@ -67,7 +66,7 @@ namespace BlogApp.Pages.Admin
             var user = DbContext.Users.FirstOrDefault(user => user.UserName == username);
             if (user == null)
             {
-                _logger.LogError($"No user with ID {username} was found");
+                Logger.LogError($"No user with ID {username} was found");
                 return Page();
             }
             await UserManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
@@ -80,7 +79,7 @@ namespace BlogApp.Pages.Admin
                 .SingleOrDefaultAsync(user => user.UserName == username);
             if (user == null)
             {
-                _logger.LogError($"No user with ID {username} was found");
+                Logger.LogError($"No user with ID {username} was found");
                 return Page();
             }
 

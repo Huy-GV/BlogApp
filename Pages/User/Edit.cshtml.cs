@@ -20,7 +20,7 @@ using BlogApp.Data.ViewModel;
 namespace BlogApp.Pages.User
 {
     [Authorize]
-    public class EditModel : BaseModel
+    public class EditModel : BaseModel<EditModel>
     {
         [BindProperty]
         public EditUserViewModel EditUserVM { get; set; }
@@ -30,7 +30,7 @@ namespace BlogApp.Pages.User
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            ImageFileService imageFileService) : base(context, userManager)
+            ImageFileService imageFileService) : base(context, userManager, logger)
         {
             _logger = logger;
             _imageFileService = imageFileService;

@@ -8,17 +8,20 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BlogApp.Pages.User
 {
     [Authorize]
-    public class IndexModel : BaseModel
+    public class IndexModel : BaseModel<IndexModel>
     {
         [BindProperty]
         public UserDTO UserDTO { get; set; }
         public IndexModel(      
             RazorBlogDbContext context,
-            UserManager<ApplicationUser> userManager) : base(context, userManager)
+            UserManager<ApplicationUser> userManager,
+            ILogger<IndexModel> logger) : base(
+                context, userManager, logger)
         {
 
         }

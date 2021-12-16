@@ -9,18 +9,21 @@ using BlogApp.Data;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using BlogApp.Pages;
+using Microsoft.Extensions.Logging;
 
 namespace BlogApp.Pages.Blogs
 {
     [AllowAnonymous]
-    public class IndexModel : BaseModel
+    public class IndexModel : BaseModel<IndexModel>
     {
         public IEnumerable<Blog> Blogs { get; set; }
         [BindProperty(SupportsGet = true)]
         public string SearchString { get; set; }
         public IndexModel(
             RazorBlogDbContext context,
-            UserManager<ApplicationUser> userManager) : base(context, userManager)
+            UserManager<ApplicationUser> userManager,
+            ILogger<IndexModel> logger) : base(
+                context, userManager, logger)
         {
 
         }

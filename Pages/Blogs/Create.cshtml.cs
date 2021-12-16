@@ -13,11 +13,10 @@ using BlogApp.Data.ViewModel;
 namespace BlogApp.Pages.Blogs
 {
     [Authorize]
-    public class CreateModel : BaseModel
+    public class CreateModel : BaseModel<CreateModel>
     {
         [BindProperty]
         public CreateBlogViewModel CreateBlogVM { get; set; }
-        private readonly ILogger<CreateModel> _logger;
         private readonly UserSuspensionService _suspensionService;
         private readonly ImageFileService _imageFileService;
         public CreateModel(
@@ -25,9 +24,9 @@ namespace BlogApp.Pages.Blogs
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
             ImageFileService imageFileService,
-            UserSuspensionService suspensionService) : base(context, userManager)
+            UserSuspensionService suspensionService) : base(
+                context, userManager, logger)
         {
-            _logger = logger;
             _imageFileService = imageFileService;
             _suspensionService = suspensionService;
         }
@@ -51,7 +50,7 @@ namespace BlogApp.Pages.Blogs
 
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Invalid model state when submitting new post");
+                Logger.LogError("Invalid model state when submitting new post");
                 return Page();
             }
 

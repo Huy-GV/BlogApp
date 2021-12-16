@@ -15,34 +15,29 @@ namespace BlogApp.Pages.Blogs
 {
 
     [Authorize]
-    public class EditModel : BaseModel
+    public class EditModel : BaseModel<EditModel>
     {
         [BindProperty]
         public EditBlogViewModel EditBlogVM { get; set; }
-        private readonly ILogger<EditModel> _logger;
         private readonly ImageFileService _imageFileService;
         public EditModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            ImageFileService imageFileService) : base(context, userManager)
+            ImageFileService imageFileService) : base(context, userManager, logger)
         {
-            _logger = logger;
             _imageFileService = imageFileService;
         }
         public async Task<IActionResult> OnGetAsync(int? blogID, string? username)
         {
             if (blogID == null || username == null)
-            {
                 return NotFound();
-            }
 
-            var user = await UserManager.GetUserAsync(User);
-            if (user.UserName != username)
+            if (User.Identity.Name != username)
             {
                 return Unauthorized();
             }
-            _logger.LogInformation($"User {username} is editing the blog with ID {blogID}");
+
             var blog = await DbContext.Blog.FindAsync(blogID);
             
             EditBlogVM = new EditBlogViewModel
@@ -59,7 +54,7 @@ namespace BlogApp.Pages.Blogs
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Invalid model state when editing blog");
+                Logger.LogError("Invalid model state when editing blog");
                 return Page();
             }
 

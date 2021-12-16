@@ -16,23 +16,21 @@ using BlogApp.Services;
 namespace BlogApp.Pages.Admin
 {
     [Authorize(Roles = "admin")]
-    public class DetailsModel : BaseModel
+    public class DetailsModel : BaseModel<DetailsModel>
     {
-        private readonly ILogger<AdminModel> _logger;
         private readonly UserSuspensionService _suspensionService;
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }
         public DetailsModel(RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<AdminModel> logger,
+            ILogger<DetailsModel> logger,
             UserSuspensionService userSuspensionService
-            ) : base(context, userManager)
+            ) : base(context, userManager, logger)
         {
             _suspensionService = userSuspensionService;
-            _logger = logger;
         }
 
-        public async Task<IActionResult> OnGetAsync(string username)
+        public async Task<IActionResult> OnGetAsync(string? username)
         {
             if (username == null)
                 return NotFound();
@@ -40,7 +38,7 @@ namespace BlogApp.Pages.Admin
             var user = await UserManager.FindByNameAsync(username);
             if (user == null)
             {
-                _logger.LogInformation("User not found");
+                Logger.LogInformation("User not found");
                 return NotFound();
             }
             
@@ -84,7 +82,7 @@ namespace BlogApp.Pages.Admin
                 DbContext.Suspension.Add(SuspensionTicket);
                 await DbContext.SaveChangesAsync();
             } else {
-                _logger.LogInformation("User has already been suspended");
+                Logger.LogInformation("User has already been suspended");
             }
             return RedirectToPage("Details", new { username = SuspensionTicket.Username });
         }
@@ -95,7 +93,7 @@ namespace BlogApp.Pages.Admin
                     .SingleOrDefaultAsync(s => s.Username == username);
                 await _suspensionService.RemoveAsync(suspension);
             } else {
-                _logger.LogInformation("User has no suspensions");
+                Logger.LogInformation("User has no suspensions");
             }
 
             return RedirectToPage("Details", new { username });
@@ -105,7 +103,7 @@ namespace BlogApp.Pages.Admin
             var blog = await DbContext.Blog.FindAsync(blogID);
             if (blog == null)
             {
-                _logger.LogError("blog not found");
+                Logger.LogError("blog not found");
                 return NotFound();
             }
             blog.IsHidden = false;
@@ -120,7 +118,7 @@ namespace BlogApp.Pages.Admin
             var comment = await DbContext.Comment.FindAsync(commentID);
             if (comment == null)
             {
-                _logger.LogError("Comment not found");
+                Logger.LogError("Comment not found");
                 return NotFound();
             }
 
@@ -136,7 +134,7 @@ namespace BlogApp.Pages.Admin
             var comment = await DbContext.Comment.FindAsync(commentID);
             if (comment == null)
             {
-                _logger.LogError("Comment not found");
+                Logger.LogError("Comment not found");
                 return NotFound();
             }
             DbContext.Comment.Remove(comment);
@@ -148,7 +146,7 @@ namespace BlogApp.Pages.Admin
             var blog = await DbContext.Blog.FindAsync(blogID);
             if (blog == null)
             {
-                _logger.LogError("blog not found");
+                Logger.LogError("blog not found");
                 return NotFound();
             }
             DbContext.Blog.Remove(blog);
