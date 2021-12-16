@@ -56,6 +56,8 @@ namespace BlogApp
             });
             services.AddAuthorization();
 
+            //TODO: configure cookie options
+
             //transient because service is stateless and lightweight
             services.AddTransient<ImageFileService>(); 
 

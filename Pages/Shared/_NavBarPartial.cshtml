@@ -11,10 +11,6 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var user = (await UserManager.GetUserAsync(User));
-        <form asp-area="Identity" 
-        asp-page="/Account/Logout" 
-        asp-route-returnUrl="/Blogs/Index"    
-        method="post">
             @if (User.Identity.IsAuthenticated)
             {
                 <a asp-page="/User/Index" asp-route-username="@User.Identity.Name">Profile</a>
@@ -28,10 +24,10 @@
             <div class="authentication-links">
                 <p>@user.UserName</p>
                 <p class="middle-bar"></p>
-                <input type="submit" class="secondary-button log-btn" value="Log Out"/>
+                <a asp-area="Identity" class="secondary-button log-btn" asp-page="/Account/Logout" >Log Out</a>
+                @*<input type="submit" class="secondary-button log-btn" value="Log Out"/>*@
             </div>
 
-        </form>
     }
     else
     {

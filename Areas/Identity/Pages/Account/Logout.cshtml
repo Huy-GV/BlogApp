@@ -6,19 +6,14 @@
     ViewData["Shared"] = "/css/shared.css";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity.IsAuthenticated)
-        {
-            <form asp-area="Identity" asp-page="/Account/Logout" 
-                asp-route-returnUrl="@Url.Page("/Blogs/Index")" method="post">
-                <button type="submit" >Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
-        }
-    }
-</header>
+<form id="account" method="post" class="log-in-form">
+
+    <h1>Log Out</h1>
+    <p>Are you sure you want to log out?</p>
+    <hr />
+    <div class="button-container">
+        <input type="submit" class="secondary-button log-in-btn" value="Log Out"/>
+    </div>
+
+
+</form>

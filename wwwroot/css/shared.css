@@ -70,7 +70,7 @@ body {
 .log-in-form {
   background-color: white;
   border: 2.5px solid #630094;
-  width: 50%;
+  width: 40%;
   margin: auto;
   margin-top: 4rem;
   padding: 1rem;
@@ -154,19 +154,6 @@ nav a {
   }
 }
 
-nav form {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-line-pack: center;
-      align-content: center;
-  width: 80%;
-}
-
-nav form * {
-  display: inline;
-}
-
 nav img {
   height: 2.8rem;
   -ms-flex-item-align: center;
@@ -183,6 +170,9 @@ nav img {
 nav .authentication-links {
   margin-left: auto;
   margin-block: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 nav .authentication-links .middle-bar {
@@ -201,17 +191,9 @@ nav .authentication-links .middle-bar {
 
 nav .authentication-links .log-btn {
   padding: 0.6rem;
-  font-size: 1rem;
-}
-
-@media screen and (max-width: 700px) {
-  nav .authentication-links .log-btn {
-    font-size: 0.8rem;
-    padding: 0.4rem;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
-  }
+  font-size: 0.8rem;
+  height: 80%;
+  margin-block: auto;
 }
 
 @media screen and (max-width: 700px) {

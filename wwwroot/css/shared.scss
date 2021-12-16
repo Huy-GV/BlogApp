@@ -12,7 +12,7 @@ body {
 .log-in-form {
     background-color: white;
     border: 2.5px solid $primary-purple;
-    width: 50%;
+    width: 40%;
     margin: auto;
     margin-top: 4rem;
     padding: 1rem;
@@ -80,16 +80,6 @@ nav {
         }
     }
 
-    form {
-        display: flex;
-        align-content: center;
-        width: 80%;
-
-        * {
-            display: inline;
-        }     
-    }
-    
     img {
         height: 2.8rem;
         align-self: center;
@@ -101,6 +91,7 @@ nav {
     .authentication-links {
         margin-left: auto;
         margin-block: auto;
+        display: flex;
 
         .middle-bar {
             border-right: 2px solid black;
@@ -115,13 +106,9 @@ nav {
         
         .log-btn {
             padding: 0.6rem;
-            font-size: 1rem;
-
-            @media screen and (max-width: $small-screen-width) {
-                font-size: 0.8rem;
-                padding: 0.4rem;
-                width: fit-content;
-            }
+            font-size: 0.8rem;
+            height: 80%;
+            margin-block: auto;
 
             @media screen and (max-width: $small-screen-width) {
                 font-size: 0.8rem;
