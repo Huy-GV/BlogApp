@@ -24,8 +24,7 @@
             <div class="authentication-links">
                 <p>@user.UserName</p>
                 <p class="middle-bar"></p>
-                <a asp-area="Identity" class="secondary-button log-btn" asp-page="/Account/Logout" >Log Out</a>
-                @*<input type="submit" class="secondary-button log-btn" value="Log Out"/>*@
+                <a class="secondary-button log-btn" asp-page="/Authentication/Logout" >Log Out</a>
             </div>
 
     }
@@ -33,12 +32,10 @@
     {
         <div class="authentication-links">
             <a class="secondary-button log-btn" 
-                asp-area="Identity" 
-                asp-page="/Account/Login">Log In</a>
+                asp-page="/Authentication/Login">Log In</a>
             <p class="middle-bar"></p>
             <a class="log-btn primary-button" 
-                asp-area="Identity" 
-                asp-page="/Account/Register">Sign Up</a>
+                asp-page="/Authentication/Register">Sign Up</a>
         </div>
     }
 </nav>

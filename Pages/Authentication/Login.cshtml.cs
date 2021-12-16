@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using BlogApp.Models;
 using BlogApp.Data.ViewModel;
 
-namespace BlogApp.Areas.Identity.Pages.Account
+namespace BlogApp.Pages.Authentication
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
@@ -34,9 +34,6 @@ namespace BlogApp.Areas.Identity.Pages.Account
 
         [BindProperty]
         public LogInViewModel LogIn { get; set; }
-
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
         public string ReturnUrl { get; set; }
 
         [TempData]
@@ -49,11 +46,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
             }
 
             returnUrl ??= Url.Content("~/");
-
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
             ReturnUrl = returnUrl;
         }
@@ -62,8 +55,7 @@ namespace BlogApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             Console.WriteLine("Return URL from log in model: " + returnUrl);
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout

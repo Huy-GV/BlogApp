@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using BlogApp.Models;
 
-namespace BlogApp.Areas.Identity.Pages.Account
+namespace BlogApp.Pages.Authentication
 {
     [AllowAnonymous]
     public class LogoutModel : PageModel
@@ -17,7 +17,9 @@ namespace BlogApp.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
-        public LogoutModel(SignInManager<ApplicationUser> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(
+            SignInManager<ApplicationUser> signInManager, 
+            ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

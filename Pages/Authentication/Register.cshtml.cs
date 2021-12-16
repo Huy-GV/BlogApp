@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Hosting;
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
 
-namespace BlogApp.Areas.Identity.Pages.Account
+namespace BlogApp.Pages.Authentication
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel

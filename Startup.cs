@@ -57,6 +57,13 @@ namespace BlogApp
             services.AddAuthorization();
 
             //TODO: configure cookie options
+            services.ConfigureApplicationCookie(options => 
+            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.LoginPath = "/Authentication/Login";
+                options.LogoutPath = "/Authentication/Logout";
+            });
 
             //transient because service is stateless and lightweight
             services.AddTransient<ImageFileService>(); 
