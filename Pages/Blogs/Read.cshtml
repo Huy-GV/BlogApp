@@ -100,7 +100,9 @@
     </form>
 }
 
-<section class="comment-container">
+
+<section class="comment-section">
+    <div class="comment-container">
     <p><strong>Comments</strong></p>
     @foreach (var comment in Model.Blog.Comments)
     {
@@ -179,6 +181,8 @@
             <p class="comment-text @postClass">@commentContent</p>
         </article>
     }
+
+    </div>
 
 </section>
 

@@ -216,6 +216,7 @@ main .stats {
   margin: auto;
   margin-top: 2rem;
   border-radius: 10px;
+  margin-bottom: 3rem;
 }
 
 @media screen and (max-width: 1000px) {

@@ -41,7 +41,7 @@
   color: white;
 }
 
-.card, .comment-container .comment, .author-info {
+.card, .comment-section .comment-container .comment, .author-info {
   -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
@@ -143,7 +143,13 @@
   font-weight: bold;
 }
 
-.comment-container {
+.comment-section {
+  width: 100%;
+  background-color: whitesmoke;
+  padding-bottom: 3rem;
+}
+
+.comment-section .comment-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -158,23 +164,23 @@
 }
 
 @media screen and (max-width: 1000px) {
-  .comment-container {
+  .comment-section .comment-container {
     width: 60%;
   }
 }
 
-.comment-container .comment {
+.comment-section .comment-container .comment {
   padding: 1rem;
   background-color: white;
   margin: 0.3rem;
   font-size: 0.8rem;
 }
 
-.comment-container .comment .comment-author {
+.comment-section .comment-container .comment .comment-author {
   color: #630094;
 }
 
-.comment-container .comment p {
+.comment-section .comment-container .comment p {
   margin-top: 0.8rem;
   font-size: 1rem;
 }
@@ -269,6 +275,7 @@
 
 .save-btn {
   font-size: 0.6rem;
+  padding: 0.5rem;
 }
 
 .link, .submit-comment, .save-btn, .delete-post, .edit-post, .delete-comment, .edit-comment {

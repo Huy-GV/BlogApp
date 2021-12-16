@@ -70,33 +70,39 @@
     font-weight: bold;
 }
 
-.comment-container {
-    display: flex;
-    flex-direction: column;
-    padding: 0.1rem;
-    margin: auto;
-    width: 40%;
-    border-radius: 3px;
+.comment-section {
+    width: 100%;
+    background-color: whitesmoke;
+    padding-bottom: 3rem;
 
-    @media screen and (max-width: $medium-screen-width) {
-        width: 60%;
+    .comment-container {
+        display: flex;
+        flex-direction: column;
+        padding: 0.1rem;
+        margin: auto;
+        width: 40%;
+        border-radius: 3px;
+    
+        @media screen and (max-width: $medium-screen-width) {
+            width: 60%;
+        }
+    
+        .comment {
+            padding: 1rem;
+            background-color: white;
+            margin: 0.3rem;
+            font-size: 0.8rem;
+            @extend .card;
+            .comment-author {
+                color: $primary-purple;
+            }
+    
+            p {
+                margin-top: 0.8rem;
+                font-size: 1rem;
+            }
+        }  
     }
-
-    .comment {
-        padding: 1rem;
-        background-color: white;
-        margin: 0.3rem;
-        font-size: 0.8rem;
-        @extend .card;
-        .comment-author {
-            color: $primary-purple;
-        }
-
-        p {
-            margin-top: 0.8rem;
-            font-size: 1rem;
-        }
-    }  
 }
 
 .author-info {
@@ -176,6 +182,7 @@
     @extend .link;
     @extend .primary-button;
     font-size: 0.6rem;
+    padding: 0.5rem;
 }
 
 .link {
