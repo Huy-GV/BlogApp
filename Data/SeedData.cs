@@ -27,18 +27,19 @@ namespace BlogApp.Data
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
             var user = await userManager.FindByNameAsync(username);
 
-            if (user != null)
-                await userManager.DeleteAsync(user);
-
-            user = new ApplicationUser
+            if (user == null)
             {
-                UserName = username,
-                EmailConfirmed = true,
-                RegistrationDate = DateTime.UtcNow,
-                Country = "Australia",
-                ProfilePicture = "default.jpg"
-            };
-            await userManager.CreateAsync(user, "Admin123@@");
+                user = new ApplicationUser
+                {
+                    UserName = username,
+                    EmailConfirmed = true,
+                    RegistrationDate = DateTime.UtcNow,
+                    Country = "Australia",
+                    ProfilePicture = "default.jpg",
+                    Description = "Lorem ipsum dolor sed temda met sedim ips dolor sed temda met sedim ips dolor sed temda met sedim ips"
+                };
+                await userManager.CreateAsync(user, "Admin123@@");
+            }
 
             return user.Id;
         }

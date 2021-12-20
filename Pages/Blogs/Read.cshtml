@@ -84,7 +84,7 @@
         <span>@authorProfile.Username</span>
     </div>
 
-    <p>@authorProfile.Description adasdasdas asdas ads asdas dasd sda adasdasdas asdas ads asdas dasd sdas adasdasdas asdas ads asdas dasd sdass</p>
+    <p>@authorProfile.Description</p>
 </section>
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
@@ -158,7 +158,7 @@
                               method="post"
                               class="edit-comment-form">
                             <textarea rows="5" cols="50"
-                                name="EditComment.Content" 
+                                name="EditCommentVM.Content" 
                                 class="edit-comment-textarea hidden-element"
                                 required>@comment.Content</textarea>
                             <button class="edit-comment" 

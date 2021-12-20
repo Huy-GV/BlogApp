@@ -132,7 +132,6 @@ namespace BlogApp.Pages.Blogs
                 return Forbid();
 
             comment.Content = EditCommentVM.Content;
-            DbContext.Attach(comment).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
 
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
