@@ -59,7 +59,8 @@ namespace BlogApp.Pages.Blogs
                 ImagePath = await _imageFileService
                 .UploadBlogImageAsync(CreateBlogVM.CoverImage),
                 Date = DateTime.Now,
-                Author = user.UserName
+                Author = user.UserName,
+                AppUserID = user.Id
             });
 
             entry.CurrentValues.SetValues(CreateBlogVM);

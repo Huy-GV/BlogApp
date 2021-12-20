@@ -42,7 +42,7 @@ namespace BlogApp.Pages.Blogs
             Blog = await DbContext.Blog
                 .Include(blog => blog.Comments)
                 .AsNoTracking()
-                .FirstAsync(blog => blog.ID == id);
+                .SingleOrDefaultAsync(blog => blog.ID == id);
 
             if (Blog == null)
                 return NotFound();
@@ -106,7 +106,8 @@ namespace BlogApp.Pages.Blogs
             var entry = DbContext.Comment.Add(new Comment
             {
                 Author = user.UserName,
-                Date = DateTime.Now
+                Date = DateTime.Now,
+                AppUserID = user.Id
             });
 
             entry.CurrentValues.SetValues(CreateCommentVM);
@@ -153,10 +154,8 @@ namespace BlogApp.Pages.Blogs
                 return Forbid();
 
             if (blog == null)
-            {
-                Logger.LogInformation("Blog not found error");
                 return NotFound();
-            }
+
             blog.IsHidden = true;
             blog.SuspensionExplanation = Messages.InappropriateBlog;
             await DbContext.SaveChangesAsync();
@@ -177,10 +176,8 @@ namespace BlogApp.Pages.Blogs
             if (comment.Author == "admin")
                 return Forbid();
             if (comment == null)
-            {
-                Logger.LogInformation("Comment not found error");
                 return NotFound();
-            }
+
             comment.IsHidden = true;
             comment.SuspensionExplanation = Messages.InappropriateComment;
             await DbContext.SaveChangesAsync();

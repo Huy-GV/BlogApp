@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace BlogApp.Models
 {
@@ -16,6 +17,8 @@ namespace BlogApp.Models
         public string Occupation { get; set; }
         public string Description { get; set; }
         public string ProfilePicture { get; set; }
+        public ICollection<Blog> Blogs { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         [NotMapped]
         public override bool LockoutEnabled { get; set; }
         [NotMapped]

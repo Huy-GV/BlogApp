@@ -65,7 +65,7 @@ namespace BlogApp.Data
                 throw new Exception("The password was probably not strong enough!");
             }
 
-            if (!(await userManager.GetRolesAsync(user)).Contains(Constants.Roles.AdminRole))
+            if (!(await userManager.GetRolesAsync(user)).Contains(Roles.AdminRole))
             {
                 identityResult = await userManager.AddToRoleAsync(user, role);
             }

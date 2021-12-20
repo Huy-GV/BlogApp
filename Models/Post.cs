@@ -16,6 +16,8 @@ namespace BlogApp.Models
         [DataType(DataType.Date), Required]
         public DateTime Date { get; set; }
         public string Author { get; set; }
+        public string AppUserID { get; set; }
+        public ApplicationUser AppUser { get; set; }
         public bool IsHidden { get; set; } = false;
     }
 }
