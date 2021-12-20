@@ -23,6 +23,7 @@ namespace BlogApp
                 try
                 {
                     var context = services.GetRequiredService<RazorBlogDbContext>();
+                    context.Database.EnsureDeleted();
                     context.Database.Migrate();
                     SeedData.Initialize(services).Wait();
                 }
