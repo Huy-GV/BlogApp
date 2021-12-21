@@ -10,7 +10,7 @@
     ViewData["Shared"] = "/css/shared.css";
 
     var suspension = (Suspension)ViewData["Suspension"];
-    var userDTO = ViewData["UserDTO"] as UserDTO;
+    var userDTO = ViewData["UserDTO"] as PersonalProfileDTO;
     var suspendedBlogs = ViewData["HiddenBlogs"] as List<Blog>;
     var suspendedComments = ViewData["HiddenComments"] as List<Comment>;
 }

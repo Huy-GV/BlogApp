@@ -48,29 +48,16 @@ namespace BlogApp.Pages.Blogs
                 return NotFound();
 
             await IncrementViewCountAsync();
-
+            ViewData["IsSuspended"] = false;
             if (User.Identity.IsAuthenticated)
-            {
                 ViewData["IsSuspended"] = await _suspensionService.ExistsAsync(User.Identity.Name);
-            } else
-            {
-                ViewData["IsSuspended"] = false;
-            }
 
 
-            ViewData["AuthorProfile"] = await GetSimpleProfileDTOAsync();
+            ViewData["AuthorProfile"] = await BlogAuthorProfileDTO.From(
+                UserManager, 
+                Blog.Author);
 
             return Page();
-        }
-        private async Task<SimpleProfileDTO> GetSimpleProfileDTOAsync()
-        {
-            var user = await UserManager.FindByNameAsync(Blog.Author);
-            return new SimpleProfileDTO()
-            {
-                Username = Blog.Author,
-                Description = Blog.Description,
-                ProfilePath = user.ProfilePicture
-            };
         }
         private async Task IncrementViewCountAsync()
         {

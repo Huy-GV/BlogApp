@@ -49,8 +49,8 @@ namespace BlogApp.Pages.Admin
 
             return Page();
         }
-        private UserDTO GetUserDTO(string username) {
-            return new UserDTO()
+        private PersonalProfileDTO GetUserDTO(string username) {
+            return new PersonalProfileDTO()
             {
                 Username = username,
                 BlogCount = DbContext.Blog

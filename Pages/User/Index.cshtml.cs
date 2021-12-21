@@ -16,7 +16,7 @@ namespace BlogApp.Pages.User
     public class IndexModel : BaseModel<IndexModel>
     {
         [BindProperty]
-        public UserDTO UserDTO { get; set; }
+        public PersonalProfileDTO UserDTO { get; set; }
         public IndexModel(      
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -40,7 +40,7 @@ namespace BlogApp.Pages.User
                 .Where(blog => blog.Author == username)
                 .ToList();
 
-            UserDTO = new UserDTO()
+            UserDTO = new PersonalProfileDTO()
             {
                 Username = username,
                 BlogCount = blogs.Count,
