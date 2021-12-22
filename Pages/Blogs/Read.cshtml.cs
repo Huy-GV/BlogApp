@@ -146,7 +146,6 @@ namespace BlogApp.Pages.Blogs
             if (blog == null)
                 return NotFound();
 
-            blog.IsHidden = true;
             blog.SuspensionExplanation = Messages.InappropriateBlog;
             await DbContext.SaveChangesAsync();
             return RedirectToPage("/Blogs/Read", new { id = blogID });
@@ -168,7 +167,6 @@ namespace BlogApp.Pages.Blogs
             if (comment == null)
                 return NotFound();
 
-            comment.IsHidden = true;
             comment.SuspensionExplanation = Messages.InappropriateComment;
             await DbContext.SaveChangesAsync();
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });

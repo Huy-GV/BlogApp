@@ -66,15 +66,19 @@ namespace BlogApp.Pages.Admin
 
         private async Task<List<Blog>> GetHiddenBlogs(string username)
         {
-            return await DbContext.Blog
-                   .Where(blog => blog.Author == username && blog.IsHidden)
-                   .ToListAsync();
+            return (await DbContext.Blog
+                   .Where(blog => blog.Author == username)
+                   .ToListAsync())
+                   .Where(blog => blog.IsHidden)
+                   .ToList();
         }
         private async Task<List<Comment>> GetHiddenComments(string username)
         {
-            return await DbContext.Comment
-                .Where(comment => comment.Author == username && comment.IsHidden)
-                .ToListAsync();
+            return (await DbContext.Comment
+                .Where(comment => comment.Author == username)
+                .ToListAsync())
+                .Where(comment => comment.IsHidden)
+                .ToList();
         }
         public async Task<IActionResult> OnPostSuspendUserAsync() 
         {
@@ -106,7 +110,7 @@ namespace BlogApp.Pages.Admin
                 Logger.LogError("blog not found");
                 return NotFound();
             }
-            blog.IsHidden = false;
+
             blog.SuspensionExplanation = string.Empty;
             DbContext.Attach(blog).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
@@ -122,7 +126,6 @@ namespace BlogApp.Pages.Admin
                 return NotFound();
             }
 
-            comment.IsHidden = false;
             comment.SuspensionExplanation = string.Empty;
             DbContext.Attach(comment).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
