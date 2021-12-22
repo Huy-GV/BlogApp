@@ -24,7 +24,6 @@
         <div class="comment-option-container">
             @if (user != null)
             {
-                //TODO: shorten
                 var userRoles = await UserManager.GetRolesAsync(user);
                 if ((user.UserName == Model.DetailedBlogDTO.AuthorName))
                 {

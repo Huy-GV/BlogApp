@@ -126,6 +126,8 @@
 
 .details-btn {
   padding: 1rem;
+  color: blue;
+  font-weight: 700;
 }
 
 .user-container form {
