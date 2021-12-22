@@ -34,7 +34,7 @@ namespace BlogApp.Services
         }
         public void DeleteImage(string fileName)
         {
-            if (fileName != "default" && fileName != string.Empty)
+            if (fileName != "default.jpg" && fileName != string.Empty)
             {
                 string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
                 string filePath = Path.Combine(directoryPath, fileName);
