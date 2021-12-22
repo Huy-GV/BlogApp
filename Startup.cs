@@ -68,7 +68,7 @@ namespace BlogApp
             //transient because service is stateless and lightweight
             services.AddTransient<ImageFileService>(); 
 
-            services.AddScoped<UserSuspensionService>();
+            services.AddScoped<UserModerationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

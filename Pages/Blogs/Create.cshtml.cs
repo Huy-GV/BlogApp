@@ -17,14 +17,14 @@ namespace BlogApp.Pages.Blogs
     {
         [BindProperty]
         public CreateBlogViewModel CreateBlogVM { get; set; }
-        private readonly UserSuspensionService _suspensionService;
+        private readonly UserModerationService _suspensionService;
         private readonly ImageFileService _imageFileService;
         public CreateModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
             ImageFileService imageFileService,
-            UserSuspensionService suspensionService) : base(
+            UserModerationService suspensionService) : base(
                 context, userManager, logger)
         {
             _imageFileService = imageFileService;

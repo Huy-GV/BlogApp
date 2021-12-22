@@ -21,17 +21,17 @@ namespace BlogApp.Pages.Blogs
         public CreateCommentViewModel CreateCommentVM { get; set; }
         [BindProperty]
         public EditCommentViewModel EditCommentVM { get; set; }
-        private readonly UserSuspensionService _suspensionService;
+        private readonly UserModerationService _moderationService;
         public Blog Blog { get; set; }
         public DetailedBlogDTO DetailedBlogDTO { get; set; }
         public ReadModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<ReadModel> logger,
-            UserSuspensionService suspensionService) : base(
+            UserModerationService moderationService) : base(
                 context, userManager, logger)
         {
-            _suspensionService = suspensionService;
+            _moderationService = moderationService;
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -53,7 +53,7 @@ namespace BlogApp.Pages.Blogs
             await IncrementViewCountAsync(id.Value);
             ViewData["IsSuspended"] = false;
             if (User.Identity.IsAuthenticated)
-                ViewData["IsSuspended"] = await _suspensionService
+                ViewData["IsSuspended"] = await _moderationService
                     .ExistsAsync(User.Identity.Name);
 
             DetailedBlogDTO = DetailedBlogDTO.From(Blog);
@@ -91,7 +91,7 @@ namespace BlogApp.Pages.Blogs
             //     BlogID = CreateCommentVM.BlogID
             // };
 
-            if (await _suspensionService.ExistsAsync(username))
+            if (await _moderationService.ExistsAsync(username))
                 return RedirectToPage("/Blogs/Read", new { id = CreateCommentVM.BlogID });
 
             var entry = DbContext.Comment.Add(new Comment
@@ -140,14 +140,17 @@ namespace BlogApp.Pages.Blogs
                 return Forbid();
 
             var blog = await DbContext.Blog.FindAsync(blogID);
+            if (blog == null)
+                return NotFound();
+            
             if (blog.Author == "admin")
                 return Forbid();
 
-            if (blog == null)
-                return NotFound();
 
-            blog.SuspensionExplanation = Messages.InappropriateBlog;
-            await DbContext.SaveChangesAsync();
+            // blog.SuspensionExplanation = Messages.InappropriateBlog;
+            // await DbContext.SaveChangesAsync();
+
+            await _moderationService.HideBlogAsync(blogID);
             return RedirectToPage("/Blogs/Read", new { id = blogID });
         }
         public async Task<IActionResult> OnPostHideCommentAsync(int commentID)
@@ -162,13 +165,17 @@ namespace BlogApp.Pages.Blogs
                 return Forbid();
 
             var comment = await DbContext.Comment.FindAsync(commentID);
-            if (comment.Author == "admin")
-                return Forbid();
             if (comment == null)
                 return NotFound();
+            
+            if (comment.Author == "admin")
+                return Forbid();
 
-            comment.SuspensionExplanation = Messages.InappropriateComment;
-            await DbContext.SaveChangesAsync();
+
+            // comment.SuspensionExplanation = Messages.InappropriateComment;
+            // await DbContext.SaveChangesAsync();
+
+            await _moderationService.HideCommentAsync(commentID);
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
@@ -191,10 +198,9 @@ namespace BlogApp.Pages.Blogs
             if (!User.Identity.IsAuthenticated)
                 return Challenge();
             
-            var user = await UserManager.GetUserAsync(User);
             var comment = await DbContext.Comment.FindAsync(commentID);
 
-            if (user.UserName != comment.Author && !User.IsInRole(Roles.AdminRole))
+            if (User.Identity.Name != comment.Author && !User.IsInRole(Roles.AdminRole))
                 return Forbid();
 
             DbContext.Comment.Remove(comment);

@@ -18,13 +18,13 @@ namespace BlogApp.Pages.Admin
     [Authorize(Roles = "admin")]
     public class DetailsModel : BaseModel<DetailsModel>
     {
-        private readonly UserSuspensionService _suspensionService;
+        private readonly UserModerationService _suspensionService;
         [BindProperty]
         public Suspension SuspensionTicket { get; set; }
         public DetailsModel(RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<DetailsModel> logger,
-            UserSuspensionService userSuspensionService
+            UserModerationService userSuspensionService
             ) : base(context, userManager, logger)
         {
             _suspensionService = userSuspensionService;
