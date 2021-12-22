@@ -30,4 +30,5 @@ A Blog application where users can write blogs or comment on others. All blogs c
 
 ## Start the application
 
-- In the project's directory, type `dotnet run` 
+- To download dependencies, type `dotnet restore` 
+- To build and run the app, type `dotnet run` 
