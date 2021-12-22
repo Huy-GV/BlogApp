@@ -92,10 +92,10 @@
 }
 
 .un-hide-post {
+    @extend .button;
     margin-top: 0.2rem;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
-    background-color: orange;
-    border: 1px solid orange;
+    background-color: green;
+    border: 1px solid green;
     width: 100%;
     color: white;
     font-size: 1.2rem;
@@ -104,10 +104,13 @@
 }
 
 .delete-post {
+    @extend .button;
     margin-top: 0.2rem;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
     background-color: red;
     border: 1px solid red;
     width: 100%;
     color: white;
+    font-size: 1.2rem;
+    padding: 1rem;
+    font-weight: 700;
 }
