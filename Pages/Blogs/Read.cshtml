@@ -10,31 +10,31 @@
     ViewData["Script"] = "/js/blog.js";
     ApplicationUser user = await UserManager.GetUserAsync(User);
     var isSuspended = (bool)ViewData["IsSuspended"];
-    var authorProfile = (BlogAuthorProfileDTO) ViewData["AuthorProfile"];
 }
 
 <main class="blog-container">
     <article class="blog">
         <div class="blog-info-container">
-            <span class="blog-author">@Model.Blog.Author,</span>
-            <span class="blog-info"> @Model.Blog.Date.ToString("dd MMMM yyyy")</span>
+            <span class="blog-author">@Model.DetailedBlogDTO.AuthorName,</span>
+            <span class="blog-info"> @Model.DetailedBlogDTO.Date.ToString("dd MMMM yyyy")</span>
         </div>
 
-        <p class="title">@Model.Blog.Title</p>
+        <p class="title">@Model.DetailedBlogDTO.Title</p>
         <hr>
         <div class="comment-option-container">
             @if (user != null)
             {
+                //TODO: shorten
                 var userRoles = await UserManager.GetRolesAsync(user);
-                if ((user.UserName == Model.Blog.Author))
+                if ((user.UserName == Model.DetailedBlogDTO.AuthorName))
                 {
                     <form asp-page-handler="DeleteBlog" 
-                    asp-route-blogID="@Model.Blog.ID" 
+                    asp-route-blogID="@Model.DetailedBlogDTO.ID" 
                     method="post">
                         <input class="delete-post" type="submit" value="Delete">
                     </form>
                 } 
-                if (user.UserName == Model.Blog.Author) 
+                if (user.UserName == Model.DetailedBlogDTO.AuthorName) 
                 {
                     <a class="edit-post"
                         asp-page="/Blogs/Edit" 
@@ -42,12 +42,12 @@
                         asp-route-blogID="@Model.Blog.ID">Edit</a>
                 }
                 if (userRoles.Contains(Roles.ModeratorRole)
-                    && Model.Blog.Author != "admin"
-                    && user.UserName != Model.Blog.Author
-                    && !Model.Blog.IsHidden)
+                    && Model.DetailedBlogDTO.AuthorName != "admin"
+                    && user.UserName != Model.DetailedBlogDTO.AuthorName
+                    && !Model.DetailedBlogDTO.IsHidden)
                 {
                     <form asp-page-handler="HideBlog"
-                          asp-route-blogID="@Model.Blog.ID"
+                          asp-route-blogID="@Model.DetailedBlogDTO.ID"
                           method="post">
                         <button class="delete-comment">Hide</button>
                     </form>
@@ -58,16 +58,14 @@
         </div>
         @{
             string blogContentClass = "";
-            string blogContent = Model.Blog.Content;
-            if (Model.Blog.IsHidden) 
+            if (Model.DetailedBlogDTO.IsHidden) 
             {
                 blogContentClass = "suspended-post";
-                blogContent = Model.Blog.SuspensionExplanation;
             }
         }
         <p class="blog-description">@Model.Blog.Description</p>
         <img src="/images/blogs/@Model.Blog.ImagePath">
-        <p class="blog-content @blogContentClass">@blogContent</p>
+        <p class="blog-content @blogContentClass">@Model.DetailedBlogDTO.Content</p>
 
 
     </article>
@@ -80,11 +78,11 @@
 }
 <section class="author-info">
     <div class="profile-header">
-        <img src="/images/profiles/@authorProfile.ProfilePath">
-        <span>@authorProfile.Username</span>
+        <img src="/images/profiles/@Model.DetailedBlogDTO.AuthorProfilePicture">
+        <span>@Model.DetailedBlogDTO.AuthorName</span>
     </div>
 
-    <p>@authorProfile.Description</p>
+    <p>@Model.DetailedBlogDTO.Description</p>
 </section>
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
@@ -104,12 +102,12 @@
 <section class="comment-section">
     <div class="comment-container">
     <p><strong>Comments</strong></p>
-    @foreach (var comment in Model.Blog.Comments)
+    @foreach (var comment in Model.DetailedBlogDTO.CommentDTOs)
     {
         <article class="comment" data-id="@comment.ID">
             @{
                 string authorClass;
-                if (comment.Author == Model.Blog.Author)
+                if (comment.AuthorName == Model.DetailedBlogDTO.AuthorName)
                 {
                     authorClass = "blog-author";
                 }
@@ -120,8 +118,8 @@
 
                 
                 <div class="author-container">
-                    <img src="">
-                    <span class="@authorClass">@comment.Author</span>
+                    <img src="/images/profiles/@comment.AuthorProfilePicture">
+                    <span class="@authorClass">@comment.AuthorName</span>
                 </div>
             }
 
@@ -129,7 +127,7 @@
                 @if (user != null)
                 {
                     var userRoles = await UserManager.GetRolesAsync(user);
-                    if (comment.Author == user.UserName)
+                    if (comment.AuthorName == user.UserName)
                     {
                         <form asp-page-handler="DeleteComment"
                               asp-route-commentID="@comment.ID"
@@ -139,8 +137,8 @@
                     }
                     
                     if (userRoles.Contains(Roles.ModeratorRole)
-                        && comment.Author != "admin"
-                        && user.UserName != comment.Author
+                        && comment.AuthorName != "admin"
+                        && user.UserName != comment.AuthorName
                         && !comment.IsHidden)
                     {
                         <form asp-page-handler="HideComment"
@@ -149,7 +147,7 @@
                             <button class="delete-comment">Hide</button>
                         </form>
                     }
-                    if (comment.Author == user.UserName)
+                    if (comment.AuthorName == user.UserName)
                     {
                         
                         <form asp-page-handler="EditComment"
@@ -171,14 +169,12 @@
             </div>
             @{
                 string postClass = "";
-                string commentContent = comment.Content;
                 if (comment.IsHidden)
                 {
                     postClass = "suspended-post";
-                    commentContent = comment.SuspensionExplanation;
                 }
             }
-            <p class="comment-text @postClass">@commentContent</p>
+            <p class="comment-text @postClass">@comment.Content</p>
         </article>
     }
 

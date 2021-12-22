@@ -176,6 +176,29 @@
   font-size: 0.8rem;
 }
 
+.comment-section .comment-container .comment .author-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 1%;
+}
+
+.comment-section .comment-container .comment .author-container img {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.comment-section .comment-container .comment .author-container span {
+  display: inline-block;
+  padding: 0.2rem;
+}
+
 .comment-section .comment-container .comment .comment-author {
   color: #630094;
 }

@@ -10,9 +10,11 @@ namespace BlogApp.Data.DTOs
         public string Title { get; set; }
         public string AuthorName { get; set; }
         public string AuthorProfilePicture { get; set; }
+        public string AuthorDescription { get; set; }
         public string Description { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
+        public bool IsHidden { get; set; }
         public ICollection<CommentDTO> CommentDTOs { get; set; }
         public static DetailedBlogDTO From(Blog blog)
         {
@@ -24,8 +26,9 @@ namespace BlogApp.Data.DTOs
                     ID = comment.ID,
                     Date = comment.Date,
                     AuthorName = comment.Author,
+                    IsHidden = comment.IsHidden,
                     Content = comment.IsHidden ? comment.SuspensionExplanation : comment.Content,
-                    AuthorProfilePicture = comment.AppUser?.ProfilePicture ?? "default"
+                    AuthorProfilePicture = comment.AppUser?.ProfilePicture ?? "default.jpg"
                 });
             }
 
@@ -34,8 +37,10 @@ namespace BlogApp.Data.DTOs
                 ID = blog.ID,
                 Title = blog.Title,
                 AuthorName = blog.Author,
-                AuthorProfilePicture= blog.AppUser?.ProfilePicture ?? "default",
+                AuthorDescription = blog.AppUser?.Description ?? string.Empty,
+                AuthorProfilePicture = blog.AppUser?.ProfilePicture ?? "default.jpg",
                 Description = blog.Description,
+                IsHidden = blog.IsHidden,
                 Content = blog.IsHidden ? blog.SuspensionExplanation : blog.Content,
                 Date = blog.Date,
                 CommentDTOs = commentDTOs

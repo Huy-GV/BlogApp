@@ -93,6 +93,26 @@
             margin: 0.3rem;
             font-size: 0.8rem;
             @extend .card;
+
+            .author-container {
+                display: flex;
+                align-items: center;
+                gap: 1%;
+
+                img {
+                    height: 2.5rem;   
+                    width: 2.5rem; 
+                    border-radius: 100%;
+                    object-fit: cover;
+                }
+                
+                span {
+                    display: inline-block;
+                    padding: 0.2rem;
+                }
+            }
+
+
             .comment-author {
                 color: $primary-purple;
             }

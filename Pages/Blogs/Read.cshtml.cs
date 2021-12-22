@@ -23,6 +23,7 @@ namespace BlogApp.Pages.Blogs
         public EditCommentViewModel EditCommentVM { get; set; }
         private readonly UserSuspensionService _suspensionService;
         public Blog Blog { get; set; }
+        public DetailedBlogDTO DetailedBlogDTO { get; set; }
         public ReadModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -40,29 +41,31 @@ namespace BlogApp.Pages.Blogs
             }
 
             Blog = await DbContext.Blog
+                .Include(blog => blog.AppUser)
                 .Include(blog => blog.Comments)
+                    .ThenInclude(comment => comment.AppUser)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(blog => blog.ID == id);
 
             if (Blog == null)
                 return NotFound();
 
-            await IncrementViewCountAsync();
+            await IncrementViewCountAsync(id.Value);
             ViewData["IsSuspended"] = false;
             if (User.Identity.IsAuthenticated)
-                ViewData["IsSuspended"] = await _suspensionService.ExistsAsync(User.Identity.Name);
+                ViewData["IsSuspended"] = await _suspensionService
+                    .ExistsAsync(User.Identity.Name);
 
-
-            ViewData["AuthorProfile"] = await BlogAuthorProfileDTO.From(
-                UserManager, 
-                Blog.Author);
+            DetailedBlogDTO = DetailedBlogDTO.From(Blog);
 
             return Page();
         }
-        private async Task IncrementViewCountAsync()
+        private async Task IncrementViewCountAsync(int id)
         {
-            Blog.ViewCount++;
-            DbContext.Attach(Blog).State = EntityState.Modified;
+            //get blog again to avoid tracking errors
+            var blog = await DbContext.Blog.FindAsync(id);
+            blog.ViewCount++;
+            DbContext.Blog.Update(blog);
             await DbContext.SaveChangesAsync();
         }
         public async Task<IActionResult> OnPostCreateCommentAsync()
@@ -73,6 +76,7 @@ namespace BlogApp.Pages.Blogs
             if (!ModelState.IsValid)
             {
                 Logger.LogError("Model state invalid when submitting comments");
+                //TODO: return an appropriate response
                 return NotFound();
             }
 

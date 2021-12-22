@@ -9,5 +9,6 @@ namespace BlogApp.Data.DTOs
         public string Content { get; set; }
         public string AuthorName { get; set; }
         public string AuthorProfilePicture { get; set; }
+        public bool IsHidden { get; set; }
     }
 }
