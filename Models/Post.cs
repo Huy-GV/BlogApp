@@ -10,6 +10,7 @@ namespace BlogApp.Models
     {
         [Required, MaxLength(2500)]
         public virtual string Content { get; set; }
+        //TODO: rename to something else
         [MaxLength(255)]
         public string SuspensionExplanation { get; set; } = "";
         [MaxLength(255)]
@@ -18,6 +19,7 @@ namespace BlogApp.Models
         public string Author { get; set; }
         public string AppUserID { get; set; }
         public ApplicationUser AppUser { get; set; }
+        //TODO change into a boolean getter based on suspension explanation
         public bool IsHidden { get; set; } = false;
     }
 }
