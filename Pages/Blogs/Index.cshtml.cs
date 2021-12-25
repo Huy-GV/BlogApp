@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace BlogApp.Pages.Blogs
 {
     [AllowAnonymous]
-    public class IndexModel : BaseModel<IndexModel>
+    public class IndexModel : BasePageModel<IndexModel>
     {
         public IEnumerable<Blog> Blogs { get; set; }
         [BindProperty(SupportsGet = true)]

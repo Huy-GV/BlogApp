@@ -67,7 +67,7 @@ namespace BlogApp
             });
 
             //transient because service is stateless and lightweight
-            services.AddTransient<IImageService, DefaultImageService>(); 
+            services.AddTransient<IImageService, ImageService>(); 
 
             services.AddScoped<UserModerationService>();
         }

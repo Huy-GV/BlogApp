@@ -16,7 +16,7 @@ using BlogApp.Services;
 namespace BlogApp.Pages.Admin
 {
     [Authorize(Roles = "admin")]
-    public class DetailsModel : BaseModel<DetailsModel>
+    public class DetailsModel : BasePageModel<DetailsModel>
     {
         private readonly UserModerationService _suspensionService;
         [BindProperty]

@@ -12,15 +12,15 @@ using Microsoft.Extensions.Logging;
 
 namespace BlogApp.Pages
 {
-    public class BaseModel<ModelType> : PageModel where ModelType : PageModel
+    public class BasePageModel<TPageModel> : PageModel where TPageModel : PageModel
     {
         protected RazorBlogDbContext DbContext { get; }
         protected UserManager<ApplicationUser> UserManager { get; }
-        protected ILogger<ModelType> Logger { get;  }
-        public BaseModel(
+        protected ILogger<TPageModel> Logger { get;  }
+        public BasePageModel(
             RazorBlogDbContext context, 
             UserManager<ApplicationUser> userManager,
-            ILogger<ModelType> logger)
+            ILogger<TPageModel> logger)
         {
             DbContext = context;
             UserManager = userManager;

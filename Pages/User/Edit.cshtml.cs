@@ -21,7 +21,7 @@ using BlogApp.Interfaces;
 namespace BlogApp.Pages.User
 {
     [Authorize]
-    public class EditModel : BaseModel<EditModel>
+    public class EditModel : BasePageModel<EditModel>
     {
         [BindProperty]
         public EditUserViewModel EditUserVM { get; set; }

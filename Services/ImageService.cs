@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using BlogApp.Interfaces;
 namespace BlogApp.Services
 {
-    public class DefaultImageService : IImageService
+    public class ImageService : IImageService
     {
         private readonly IWebHostEnvironment _webHostEnv;
-        private readonly ILogger<DefaultImageService> _logger; 
-        public DefaultImageService(
+        private readonly ILogger<ImageService> _logger; 
+        public ImageService(
             IWebHostEnvironment webHostEnv, 
-            ILogger<DefaultImageService> logger)
+            ILogger<ImageService> logger)
         {
             _webHostEnv = webHostEnv;
             _logger = logger;

@@ -15,7 +15,7 @@ using BlogApp.Interfaces;
 namespace BlogApp.Pages.Blogs
 {
     [Authorize]
-    public class CreateModel : BaseModel<CreateModel>
+    public class CreateModel : BasePageModel<CreateModel>
     {
         [BindProperty]
         public CreateBlogViewModel CreateBlogVM { get; set; }

@@ -15,7 +15,7 @@ namespace BlogApp.Pages.Blogs
 {
 
     [AllowAnonymous]
-    public class ReadModel : BaseModel<ReadModel>
+    public class ReadModel : BasePageModel<ReadModel>
     {
         [BindProperty]
         public CreateCommentViewModel CreateCommentVM { get; set; }

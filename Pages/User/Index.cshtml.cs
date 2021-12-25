@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace BlogApp.Pages.User
 {
     [Authorize]
-    public class IndexModel : BaseModel<IndexModel>
+    public class IndexModel : BasePageModel<IndexModel>
     {
         [BindProperty]
         public PersonalProfileDTO UserDTO { get; set; }

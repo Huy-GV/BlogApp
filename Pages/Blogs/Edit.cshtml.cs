@@ -17,7 +17,7 @@ namespace BlogApp.Pages.Blogs
 {
 
     [Authorize]
-    public class EditModel : BaseModel<EditModel>
+    public class EditModel : BasePageModel<EditModel>
     {
         [BindProperty]
         public EditBlogViewModel EditBlogVM { get; set; }

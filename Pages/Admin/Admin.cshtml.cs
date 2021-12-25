@@ -16,7 +16,7 @@ namespace BlogApp.Pages.Admin
 {
     //PASSWORD: Admin123@@
     [Authorize(Roles = "admin")]
-    public class AdminModel : BaseModel<AdminModel>
+    public class AdminModel : BasePageModel<AdminModel>
     {
         public AdminModel(RazorBlogDbContext context,
                           UserManager<ApplicationUser> userManager,

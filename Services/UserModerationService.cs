@@ -15,11 +15,11 @@ namespace BlogApp.Services
     {
         private readonly string _inappropriateBlog = "The blog has been hidden due to inappropriate content. The admin will decide whether it gets removed or not";
         private readonly string _inappropriateComment = "The comment has been hidden due to inappropriate content. The admin will decide whether it gets removed or not";
-        private readonly ILogger<DefaultImageService> _logger; 
+        private readonly ILogger<ImageService> _logger; 
         private readonly RazorBlogDbContext _dbContext;
         public UserModerationService(
             RazorBlogDbContext dbContext, 
-            ILogger<DefaultImageService> logger)
+            ILogger<ImageService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
