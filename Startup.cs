@@ -1,4 +1,5 @@
 ﻿using BlogApp.Data;
+using BlogApp.Interfaces;
 using BlogApp.Models;
 using BlogApp.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -66,7 +67,7 @@ namespace BlogApp
             });
 
             //transient because service is stateless and lightweight
-            services.AddTransient<ImageFileService>(); 
+            services.AddTransient<IImageService, DefaultImageService>(); 
 
             services.AddScoped<UserModerationService>();
         }

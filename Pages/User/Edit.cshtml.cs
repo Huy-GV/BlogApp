@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
+using BlogApp.Interfaces;
 
 namespace BlogApp.Pages.User
 {
@@ -25,12 +26,12 @@ namespace BlogApp.Pages.User
         [BindProperty]
         public EditUserViewModel EditUserVM { get; set; }
         private readonly ILogger<EditModel> _logger;
-        private readonly ImageFileService _imageFileService;
+        private readonly IImageService _imageFileService;
         public EditModel(      
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            ImageFileService imageFileService) : base(context, userManager, logger)
+            IImageService imageFileService) : base(context, userManager, logger)
         {
             _logger = logger;
             _imageFileService = imageFileService;
@@ -93,10 +94,11 @@ namespace BlogApp.Pages.User
         }
         private async Task<string> GetProfilePicturePath(EditUserViewModel editUser) 
         {
-            string fileName = "";
+            string fileName = string.Empty;
             try
             {
-                fileName = await _imageFileService.UploadProfileImageAsync(EditUserVM.NewProfilePicture);
+                fileName = _imageFileService.BuildFileName(editUser.NewProfilePicture.FileName);
+                await _imageFileService.UploadProfileImageAsync(EditUserVM.NewProfilePicture, fileName);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");

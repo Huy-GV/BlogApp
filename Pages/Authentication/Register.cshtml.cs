@@ -19,6 +19,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
+using BlogApp.Interfaces;
 
 namespace BlogApp.Pages.Authentication
 {
@@ -28,12 +29,12 @@ namespace BlogApp.Pages.Authentication
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly ImageFileService _imageFileService;
+        private readonly IImageService _imageFileService;
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            ImageFileService imageFileService)
+            IImageService imageFileService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -71,7 +72,7 @@ namespace BlogApp.Pages.Authentication
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.Now,
                     ProfilePicture = profilePath,
-                    Country = "Australia"
+                    Country = CreateUser.Country
                 };
                 var result = await _userManager.CreateAsync(user, CreateUser.Password);
                 if (result.Succeeded)
@@ -86,15 +87,18 @@ namespace BlogApp.Pages.Authentication
         }
         private async Task<string> GetProfilePicturePath(CreateUserViewModel createUser) 
         {
-            string fileName = "";
             try
             {
-                fileName = await _imageFileService.UploadProfileImageAsync(createUser.ProfilePicture);
+                var imageFile = createUser.ProfilePicture;
+                var fileName = _imageFileService.BuildFileName(imageFile.FileName);
+                await _imageFileService.UploadProfileImageAsync(imageFile, fileName);
+                return fileName;
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
+                return "default.jpg";
             }
-            return fileName;
+            
         }
     }
 }

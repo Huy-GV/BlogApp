@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
+using BlogApp.Interfaces;
+
 namespace BlogApp.Pages.Blogs
 {
 
@@ -19,12 +21,12 @@ namespace BlogApp.Pages.Blogs
     {
         [BindProperty]
         public EditBlogViewModel EditBlogVM { get; set; }
-        private readonly ImageFileService _imageFileService;
+        private readonly IImageService _imageFileService;
         public EditModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            ImageFileService imageFileService) : base(context, userManager, logger)
+            IImageService imageFileService) : base(context, userManager, logger)
         {
             _imageFileService = imageFileService;
         }
@@ -72,14 +74,24 @@ namespace BlogApp.Pages.Blogs
 
             if (EditBlogVM.CoverImage != null)
             {
-                _imageFileService.DeleteImage(blog.ImagePath);
-                blog.ImagePath = await _imageFileService
-                .UploadBlogImageAsync(EditBlogVM.CoverImage);
+                try
+                {
+                    _imageFileService.DeleteImage(blog.ImagePath);
+                    var imageFile = EditBlogVM.CoverImage;
+                    var imageName = _imageFileService.BuildFileName(imageFile.FileName);
+                    blog.ImagePath = imageName;
+
+                    await _imageFileService.UploadBlogImageAsync(imageFile, imageName);
+                    
+                } catch (Exception ex)
+                {
+                    Logger.LogError("Failed to update blog image");
+                    Logger.LogError(ex.Message);
+                }
             }
 
             DbContext.Attach(blog).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
-
             return RedirectToPage("/Blogs/Read", new { id = blog.ID });
         }
     }

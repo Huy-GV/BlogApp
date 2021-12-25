@@ -15,11 +15,11 @@ namespace BlogApp.Services
     {
         private readonly string _inappropriateBlog = "The blog has been hidden due to inappropriate content. The admin will decide whether it gets removed or not";
         private readonly string _inappropriateComment = "The comment has been hidden due to inappropriate content. The admin will decide whether it gets removed or not";
-        private readonly ILogger<ImageFileService> _logger; 
+        private readonly ILogger<DefaultImageService> _logger; 
         private readonly RazorBlogDbContext _dbContext;
         public UserModerationService(
             RazorBlogDbContext dbContext, 
-            ILogger<ImageFileService> logger)
+            ILogger<DefaultImageService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -71,6 +71,7 @@ namespace BlogApp.Services
         }
         public async Task RemoveAsync(Suspension suspension)
         {
+            //TODO: missing .Suspension
             _dbContext.Remove(suspension);
             await _dbContext.SaveChangesAsync();
         }

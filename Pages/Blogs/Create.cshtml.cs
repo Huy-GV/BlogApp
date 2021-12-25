@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging; 
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
+using BlogApp.Interfaces;
+
 namespace BlogApp.Pages.Blogs
 {
     [Authorize]
@@ -18,12 +20,12 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public CreateBlogViewModel CreateBlogVM { get; set; }
         private readonly UserModerationService _suspensionService;
-        private readonly ImageFileService _imageFileService;
+        private readonly IImageService _imageFileService;
         public CreateModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
-            ImageFileService imageFileService,
+            IImageService imageFileService,
             UserModerationService suspensionService) : base(
                 context, userManager, logger)
         {
@@ -53,20 +55,29 @@ namespace BlogApp.Pages.Blogs
                 Logger.LogError("Invalid model state when submitting new post");
                 return Page();
             }
-
-            var entry = DbContext.Blog.Add(new Blog()
+            try
             {
-                ImagePath = await _imageFileService
-                .UploadBlogImageAsync(CreateBlogVM.CoverImage),
-                Date = DateTime.Now,
-                Author = user.UserName,
-                AppUserID = user.Id
-            });
+                var coverImage = CreateBlogVM.CoverImage;
+                var imageName = _imageFileService.BuildFileName(coverImage.FileName);
+                await _imageFileService.UploadBlogImageAsync(coverImage, imageName);
+                DbContext.Blog.Add(new Blog()
+                    {
+                        ImagePath = imageName,
+                        Date = DateTime.Now,
+                        Author = user.UserName,
+                        AppUserID = user.Id 
+                    })
+                    .CurrentValues.SetValues(CreateBlogVM);
+                await DbContext.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            } catch (Exception ex)
+            {
+                Logger.LogError("Failed to create blog");
+                Logger.LogError(ex.Message);
+                return Page();
+            }
 
-            entry.CurrentValues.SetValues(CreateBlogVM);
-            await DbContext.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            
         }
     }
 
