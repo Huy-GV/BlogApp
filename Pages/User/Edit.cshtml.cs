@@ -26,15 +26,15 @@ namespace BlogApp.Pages.User
         [BindProperty]
         public EditUserViewModel EditUserVM { get; set; }
         private readonly ILogger<EditModel> _logger;
-        private readonly IImageService _imageFileService;
+        private readonly IImageService _imageService;
         public EditModel(      
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            IImageService imageFileService) : base(context, userManager, logger)
+            IImageService imageService) : base(context, userManager, logger)
         {
             _logger = logger;
-            _imageFileService = imageFileService;
+            _imageService = imageService;
         }
         public async Task<IActionResult> OnGetAsync(string? username)
         {
@@ -82,7 +82,7 @@ namespace BlogApp.Pages.User
 
             if (EditUserVM.NewProfilePicture != null) 
             {
-                _imageFileService.DeleteImage(applicationUser.ProfilePicture);
+                _imageService.DeleteImage(applicationUser.ProfilePicture);
                 applicationUser.ProfilePicture = await 
                     GetProfilePicturePath(EditUserVM);
             }
@@ -97,8 +97,8 @@ namespace BlogApp.Pages.User
             string fileName = string.Empty;
             try
             {
-                fileName = _imageFileService.BuildFileName(editUser.NewProfilePicture.FileName);
-                await _imageFileService.UploadProfileImageAsync(EditUserVM.NewProfilePicture, fileName);
+                fileName = _imageService.BuildFileName(editUser.NewProfilePicture.FileName);
+                await _imageService.UploadProfileImageAsync(EditUserVM.NewProfilePicture, fileName);
             } catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");

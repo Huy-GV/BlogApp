@@ -21,14 +21,14 @@ namespace BlogApp.Pages.Blogs
     {
         [BindProperty]
         public EditBlogViewModel EditBlogVM { get; set; }
-        private readonly IImageService _imageFileService;
+        private readonly IImageService _imageService;
         public EditModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
             IImageService imageFileService) : base(context, userManager, logger)
         {
-            _imageFileService = imageFileService;
+            _imageService = imageFileService;
         }
         public async Task<IActionResult> OnGetAsync(int? blogID, string? username)
         {
@@ -76,12 +76,12 @@ namespace BlogApp.Pages.Blogs
             {
                 try
                 {
-                    _imageFileService.DeleteImage(blog.ImagePath);
+                    _imageService.DeleteImage(blog.ImagePath);
                     var imageFile = EditBlogVM.CoverImage;
-                    var imageName = _imageFileService.BuildFileName(imageFile.FileName);
+                    var imageName = _imageService.BuildFileName(imageFile.FileName);
                     blog.ImagePath = imageName;
 
-                    await _imageFileService.UploadBlogImageAsync(imageFile, imageName);
+                    await _imageService.UploadBlogImageAsync(imageFile, imageName);
                     
                 } catch (Exception ex)
                 {

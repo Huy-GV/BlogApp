@@ -29,17 +29,17 @@ namespace BlogApp.Pages.Authentication
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IImageService _imageFileService;
+        private readonly IImageService _imageService;
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IImageService imageFileService)
+            IImageService imageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _imageFileService = imageFileService;
+            _imageService = imageService;
         }
 
         [BindProperty]
@@ -90,8 +90,8 @@ namespace BlogApp.Pages.Authentication
             try
             {
                 var imageFile = createUser.ProfilePicture;
-                var fileName = _imageFileService.BuildFileName(imageFile.FileName);
-                await _imageFileService.UploadProfileImageAsync(imageFile, fileName);
+                var fileName = _imageService.BuildFileName(imageFile.FileName);
+                await _imageService.UploadProfileImageAsync(imageFile, fileName);
                 return fileName;
             } catch (Exception ex)
             {

@@ -20,8 +20,7 @@ namespace BlogApp.Pages.User
         public IndexModel(      
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<IndexModel> logger) : base(
-                context, userManager, logger)
+            ILogger<IndexModel> logger) : base(context, userManager, logger)
         {
 
         }

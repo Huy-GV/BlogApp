@@ -20,16 +20,16 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public CreateBlogViewModel CreateBlogVM { get; set; }
         private readonly UserModerationService _suspensionService;
-        private readonly IImageService _imageFileService;
+        private readonly IImageService _imageService;
         public CreateModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
-            IImageService imageFileService,
+            IImageService imageService,
             UserModerationService suspensionService) : base(
                 context, userManager, logger)
         {
-            _imageFileService = imageFileService;
+            _imageService = imageService;
             _suspensionService = suspensionService;
         }
         public async Task<IActionResult> OnGetAsync()
@@ -58,8 +58,8 @@ namespace BlogApp.Pages.Blogs
             try
             {
                 var coverImage = CreateBlogVM.CoverImage;
-                var imageName = _imageFileService.BuildFileName(coverImage.FileName);
-                await _imageFileService.UploadBlogImageAsync(coverImage, imageName);
+                var imageName = _imageService.BuildFileName(coverImage.FileName);
+                await _imageService.UploadBlogImageAsync(coverImage, imageName);
                 DbContext.Blog.Add(new Blog()
                     {
                         ImagePath = imageName,
