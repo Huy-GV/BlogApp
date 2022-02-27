@@ -15,25 +15,25 @@
 <main class="blog-container">
     <article class="blog">
         <div class="blog-info-container">
-            <span class="blog-author">@Model.DetailedBlogDTO.AuthorName,</span>
-            <span class="blog-info"> @Model.DetailedBlogDTO.Date.ToString("dd MMMM yyyy")</span>
+            <span class="blog-author">@Model.DetailedBlogDto.AuthorName,</span>
+            <span class="blog-info"> @Model.DetailedBlogDto.Date.ToString("dd MMMM yyyy")</span>
         </div>
 
-        <p class="title">@Model.DetailedBlogDTO.Title</p>
+        <p class="title">@Model.DetailedBlogDto.Title</p>
         <hr>
         <div class="comment-option-container">
             @if (user != null)
             {
                 var userRoles = await UserManager.GetRolesAsync(user);
-                if ((user.UserName == Model.DetailedBlogDTO.AuthorName))
+                if ((user.UserName == Model.DetailedBlogDto.AuthorName))
                 {
                     <form asp-page-handler="DeleteBlog" 
-                    asp-route-blogID="@Model.DetailedBlogDTO.ID" 
+                    asp-route-blogID="@Model.DetailedBlogDto.Id" 
                     method="post">
                         <input class="delete-post" type="submit" value="Delete">
                     </form>
                 } 
-                if (user.UserName == Model.DetailedBlogDTO.AuthorName) 
+                if (user.UserName == Model.DetailedBlogDto.AuthorName) 
                 {
                     <a class="edit-post"
                         asp-page="/Blogs/Edit" 
@@ -41,12 +41,12 @@
                         asp-route-blogID="@Model.Blog.ID">Edit</a>
                 }
                 if (userRoles.Contains(Roles.ModeratorRole)
-                    && Model.DetailedBlogDTO.AuthorName != "admin"
-                    && user.UserName != Model.DetailedBlogDTO.AuthorName
-                    && !Model.DetailedBlogDTO.IsHidden)
+                    && Model.DetailedBlogDto.AuthorName != "admin"
+                    && user.UserName != Model.DetailedBlogDto.AuthorName
+                    && !Model.DetailedBlogDto.IsHidden)
                 {
                     <form asp-page-handler="HideBlog"
-                          asp-route-blogID="@Model.DetailedBlogDTO.ID"
+                          asp-route-blogID="@Model.DetailedBlogDto.Id"
                           method="post">
                         <button class="delete-comment">Hide</button>
                     </form>
@@ -57,14 +57,14 @@
         </div>
         @{
             string blogContentClass = "";
-            if (Model.DetailedBlogDTO.IsHidden) 
+            if (Model.DetailedBlogDto.IsHidden) 
             {
                 blogContentClass = "suspended-post";
             }
         }
         <p class="blog-description">@Model.Blog.Description</p>
         <img src="/images/blogs/@Model.Blog.ImagePath">
-        <p class="blog-content @blogContentClass">@Model.DetailedBlogDTO.Content</p>
+        <p class="blog-content @blogContentClass">@Model.DetailedBlogDto.Content</p>
 
 
     </article>
@@ -77,20 +77,20 @@
 }
 <section class="author-info">
     <div class="profile-header">
-        <img src="/images/profiles/@Model.DetailedBlogDTO.AuthorProfilePicture">
-        <span>@Model.DetailedBlogDTO.AuthorName</span>
+        <img src="/images/profiles/@Model.DetailedBlogDto.AuthorProfilePicture">
+        <span>@Model.DetailedBlogDto.AuthorName</span>
     </div>
 
-    <p>@Model.DetailedBlogDTO.Description</p>
+    <p>@Model.DetailedBlogDto.Description</p>
 </section>
 
 @if (!isSuspended && User.Identity.IsAuthenticated) 
 {
     <form method="post" class="comment-form" asp-page-handler="CreateComment">
-        <input asp-for="CreateCommentVM.BlogID" value="@Model.Blog.ID" type="hidden" />
+        <input asp-for="CreateCommentViewModel.BlogId" value="@Model.Blog.ID" type="hidden" />
         <p>
             <textarea rows="5" cols="50"
-                      asp-for="CreateCommentVM.Content"
+                      asp-for="CreateCommentViewModel.Content"
                       placeholder="Add a comment" required></textarea>
         </p>
         <input type="submit" value="POST" class="submit-comment" />
@@ -101,12 +101,12 @@
 <section class="comment-section">
     <div class="comment-container">
     <p><strong>Comments</strong></p>
-    @foreach (var comment in Model.DetailedBlogDTO.CommentDTOs)
+    @foreach (var comment in Model.DetailedBlogDto.CommentDtos)
     {
-        <article class="comment" data-id="@comment.ID">
+        <article class="comment" data-id="@comment.Id">
             @{
                 string authorClass;
-                if (comment.AuthorName == Model.DetailedBlogDTO.AuthorName)
+                if (comment.AuthorName == Model.DetailedBlogDto.AuthorName)
                 {
                     authorClass = "blog-author";
                 }
@@ -117,7 +117,7 @@
 
                 
                 <div class="author-container">
-                    <img src="/images/profiles/@comment.AuthorProfilePicture">
+                    <img src="/images/profiles/@comment.AuthorProfilePicturePath">
                     <span class="@authorClass">@comment.AuthorName</span>
                 </div>
             }
@@ -129,7 +129,7 @@
                     if (comment.AuthorName == user.UserName)
                     {
                         <form asp-page-handler="DeleteComment"
-                              asp-route-commentID="@comment.ID"
+                              asp-route-commentID="@comment.Id"
                               method="post">
                             <button class="delete-comment">Delete</button>
                         </form>
@@ -141,7 +141,7 @@
                         && !comment.IsHidden)
                     {
                         <form asp-page-handler="HideComment"
-                              asp-route-commentID="@comment.ID"
+                              asp-route-commentID="@comment.Id"
                               method="post">
                             <button class="delete-comment">Hide</button>
                         </form>
@@ -150,8 +150,8 @@
                     {
                         
                         <form asp-page-handler="EditComment"
-                              asp-route-commentID="@comment.ID"
-                              data-id="@comment.ID"
+                              asp-route-commentID="@comment.Id"
+                              data-id="@comment.Id"
                               method="post"
                               class="edit-comment-form">
                             <textarea rows="5" cols="50"
@@ -159,7 +159,7 @@
                                 class="edit-comment-textarea hidden-element"
                                 required>@comment.Content</textarea>
                             <button class="edit-comment" 
-                                    data-id="@comment.ID" 
+                                    data-id="@comment.Id" 
                                     type="button">Edit</button>
                             <input type="submit" value="Save" class="save-btn hidden-element" />
                         </form>

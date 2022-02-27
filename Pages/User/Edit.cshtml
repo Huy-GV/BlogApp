@@ -11,24 +11,24 @@
 <main>
     <form class="edit-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
         <div>
-            <label asp-for="EditUserVM.Country"><strong>Country</strong></label>
+            <label asp-for="EditUserViewModel.Country"><strong>Country</strong></label>
             <input type="text" 
             name="EditUserVM.Country"
-            asp-for="EditUserVM.Country" 
+            asp-for="EditUserViewModel.Country" 
             required 
-            value="@Model.EditUserVM.Country">
+            value="@Model.EditUserViewModel.Country">
 
-            <label asp-for="EditUserVM.Description"><strong>Description</strong></label>
+            <label asp-for="EditUserViewModel.Description"><strong>Description</strong></label>
             <textarea rows="8" cols="50"
                     name="EditUserVM.Description"
-                    asp-for="EditUserVM.Description"
-                    required>@Model.EditUserVM.Description</textarea>
+                    asp-for="EditUserViewModel.Description"
+                    required>@Model.EditUserViewModel.Description</textarea>
 
-            <label asp-for="EditUserVM.NewProfilePicture"><strong>Profile picture</strong></label>
-            <input type="file" asp-for="EditUserVM.NewProfilePicture" accept=".png,.jpg,.jpeg" multiple>
+            <label asp-for="EditUserViewModel.NewProfilePicture"><strong>Profile picture</strong></label>
+            <input type="file" asp-for="EditUserViewModel.NewProfilePicture" accept=".png,.jpg,.jpeg" multiple>
         </div>
         <br>
-        <input type="hidden" value="@Model.EditUserVM.UserName" asp-for="EditUserVM.UserName"/>
+        <input type="hidden" value="@Model.EditUserViewModel.UserName" asp-for="EditUserViewModel.UserName"/>
         <input type="submit" value="Save changes" class="submit-changes" />
     </form>
 </main>

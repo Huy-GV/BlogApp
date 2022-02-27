@@ -9,15 +9,15 @@
 <p class="page-title">Profile</p>
 <main>
     <div class="basic-info">
-        <img src="/images/profiles/@Model.UserDTO.ProfilePath">
+        <img src="/images/profiles/@Model.UserDto.ProfilePicturePath">
         <div class="info">
-            <p>Name: @Model.UserDTO.Username</p>
-            <p>Country: @Model.UserDTO.Country</p>
-            <p>Joined on: @Model.UserDTO.RegistrationDate</p>
+            <p>Name: @Model.UserDto.UserName</p>
+            <p>Country: @Model.UserDto.Country</p>
+            <p>Joined on: @Model.UserDto.RegistrationDate</p>
             <div class="button-container">
                 <a class="edit-profile" 
                 asp-page="/User/Edit" 
-                asp-route-username="@Model.UserDTO.Username">Update Profile</a>
+                asp-route-username="@Model.UserDto.UserName">Update Profile</a>
                 <a class="change-password">Change Password</a>
             </div>
 
@@ -25,15 +25,15 @@
     </div>
     <div class="description">
         <p class="card-title">Description</p>
-        <p>@Model.UserDTO.Description</p>
+        <p>@Model.UserDto.Description</p>
     </div>
     <div class="stats">
         <p class="card-title">Statistics</p>
         <ul></ul>
-            <li>Total blogs: @Model.UserDTO.BlogCount</li>
-            <li>Total comments: @Model.UserDTO.CommentCount</li>
-            <li>Blogs in @DateTime.Now.Year: @Model.UserDTO.BlogCountCurrentYear</li>
-            <li>Total views in @DateTime.Now.Year: @Model.UserDTO.ViewCountCurrentYear</li>
+            <li>Total blogs: @Model.UserDto.BlogCount</li>
+            <li>Total comments: @Model.UserDto.CommentCount</li>
+            <li>Blogs in @DateTime.Now.Year: @Model.UserDto.BlogCountCurrentYear</li>
+            <li>Total views in @DateTime.Now.Year: @Model.UserDto.ViewCountCurrentYear</li>
         </ul>
     </div>
 </main>
@@ -44,7 +44,7 @@
         <p>Description</p>
     </a>*@
     <h1>History: </h1>
-    @foreach(var blog in Model.UserDTO.Blogs)
+    @foreach(var blog in Model.UserDto.Blogs)
     {
         <a class="blog" asp-page="/Blogs/Read" 
                         asp-route-id="@blog.ID">

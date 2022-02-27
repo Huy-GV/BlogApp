@@ -34,6 +34,7 @@ namespace BlogApp.Pages.Authentication
             string returnUrl = "/Blogs/Index";
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            
             return RedirectToPage(returnUrl);
         }
     }

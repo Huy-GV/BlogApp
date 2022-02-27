@@ -27,6 +27,7 @@ namespace BlogApp.Services
         public async Task<bool> ExistsAsync(string username)
         {
             await CheckExpiryAsync(username);
+
             return _dbContext.Suspension.Any(s => s.Username == username);
         }
         private async Task CheckExpiryAsync(string username)
@@ -52,6 +53,7 @@ namespace BlogApp.Services
                 _logger.LogError($"Blog with ID {commentID} not found");
                 return;
             }
+
             comment.SuspensionExplanation = _inappropriateComment;
             _dbContext.Comment.Update(comment);
             await _dbContext.SaveChangesAsync();

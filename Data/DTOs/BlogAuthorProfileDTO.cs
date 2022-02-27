@@ -7,29 +7,29 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Data.DTOs
 {
-    public class BlogAuthorProfileDTO : BaseProfileDTO
+    public class BlogAuthorProfileDto : BaseProfileDto
     {
         public string Country { get; set; } = "None";
         public string Description { get; set; } = "None";
-        public static async Task<BlogAuthorProfileDTO> From(
+        public static async Task<BlogAuthorProfileDto> From(
             UserManager<ApplicationUser> userManager,
             string userName)
         {
             var user = await userManager.FindByNameAsync(userName);
             if (user == null)
-                return new BlogAuthorProfileDTO()
+                return new BlogAuthorProfileDto()
                 {
                     Country = "Deleted",
                     Description = "Deleted",
-                    Username = userName
+                    UserName = userName
                 };
 
-            return new BlogAuthorProfileDTO()
+            return new BlogAuthorProfileDto()
             {
                 Country = user.Country,
                 Description = user.Description,
-                ProfilePath = user.ProfilePicture,
-                Username = user.UserName
+                ProfilePicturePath = user.ProfilePicture,
+                UserName = user.UserName
             };
 
         }

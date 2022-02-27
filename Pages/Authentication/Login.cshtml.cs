@@ -33,7 +33,7 @@ namespace BlogApp.Pages.Authentication
         }
 
         [BindProperty]
-        public LogInViewModel LogIn { get; set; }
+        public LogInViewModel LogInViewModel { get; set; }
         public string ReturnUrl { get; set; }
 
         [TempData]
@@ -61,9 +61,9 @@ namespace BlogApp.Pages.Authentication
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(
-                    LogIn.UserName, 
-                    LogIn.Password, 
-                    LogIn.RememberMe, 
+                    LogInViewModel.UserName, 
+                    LogInViewModel.Password, 
+                    LogInViewModel.RememberMe, 
                     lockoutOnFailure: false);
 
                 if (result.Succeeded)

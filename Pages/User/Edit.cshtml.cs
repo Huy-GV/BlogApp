@@ -24,7 +24,7 @@ namespace BlogApp.Pages.User
     public class EditModel : BasePageModel<EditModel>
     {
         [BindProperty]
-        public EditUserViewModel EditUserVM { get; set; }
+        public EditUserViewModel EditUserViewModel { get; set; }
         private readonly ILogger<EditModel> _logger;
         private readonly IImageService _imageService;
         public EditModel(      
@@ -39,16 +39,23 @@ namespace BlogApp.Pages.User
         public async Task<IActionResult> OnGetAsync(string? username)
         {
             if (username == null)
+            {
                 return NotFound();
+            }
 
             var user = await UserManager.FindByNameAsync(username);
             if (user == null)
+            {
                 return NotFound();
+            }
+
 
             if (user.UserName != User.Identity.Name)
+            {
                 return Forbid();
+            }
 
-            EditUserVM = new EditUserViewModel()
+            EditUserViewModel = new EditUserViewModel()
             {
                 UserName = username,
                 Country = user.Country,
@@ -59,11 +66,16 @@ namespace BlogApp.Pages.User
         }
         public async Task<IActionResult> OnPostAsync() 
         {   
-            var user = await UserManager.FindByNameAsync(EditUserVM.UserName);
+            var user = await UserManager.FindByNameAsync(EditUserViewModel.UserName);
             if (user == null)
+            {
                 return NotFound();
+            }
+
             if (user.UserName != User.Identity.Name)
+            {
                 return Forbid();
+            }
 
             if (!ModelState.IsValid)
             {
@@ -71,26 +83,28 @@ namespace BlogApp.Pages.User
                     .SelectMany( m => m.Errors)
                     .Select(e => e.ErrorMessage);
 
-                foreach (var error in errors) 
+                foreach (var error in errors)
+                {
                     _logger.LogError(error);
+                }
 
-                return RedirectToPage("/User/Edit", new { username = EditUserVM.UserName });
+                return RedirectToPage("/User/Edit", new { username = EditUserViewModel.UserName });
             }
 
             var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
-            DbContext.Attach(applicationUser).CurrentValues.SetValues(EditUserVM);
+            DbContext.Attach(applicationUser).CurrentValues.SetValues(EditUserViewModel);
 
-            if (EditUserVM.NewProfilePicture != null) 
+            if (EditUserViewModel.NewProfilePicture != null) 
             {
                 _imageService.DeleteImage(applicationUser.ProfilePicture);
                 applicationUser.ProfilePicture = await 
-                    GetProfilePicturePath(EditUserVM);
+                    GetProfilePicturePath(EditUserViewModel);
             }
 
             DbContext.Attach(applicationUser).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
 
-            return RedirectToPage("/User/Index", new { username = EditUserVM.UserName });
+            return RedirectToPage("/User/Index", new { username = EditUserViewModel.UserName });
         }
         private async Task<string> GetProfilePicturePath(EditUserViewModel editUser) 
         {
@@ -98,11 +112,13 @@ namespace BlogApp.Pages.User
             try
             {
                 fileName = _imageService.BuildFileName(editUser.NewProfilePicture.FileName);
-                await _imageService.UploadProfileImageAsync(EditUserVM.NewProfilePicture, fileName);
-            } catch (Exception ex)
+                await _imageService.UploadProfileImageAsync(EditUserViewModel.NewProfilePicture, fileName);
+            } 
+            catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
             }
+
             return fileName;
         }
     }

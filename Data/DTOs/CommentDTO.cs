@@ -2,13 +2,13 @@
 
 namespace BlogApp.Data.DTOs
 {
-    public class CommentDTO
+    public class CommentDto
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public string Content { get; set; }
         public string AuthorName { get; set; }
-        public string AuthorProfilePicture { get; set; }
+        public string AuthorProfilePicturePath { get; set; }
         public bool IsHidden { get; set; }
     }
 }

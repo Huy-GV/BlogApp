@@ -38,7 +38,9 @@ namespace BlogApp.Pages.Blogs
             var username = user.UserName;
 
             if (await _suspensionService.ExistsAsync(username))
+            {
                 return RedirectToPage("./Index");
+            }
 
             return Page();
         }
@@ -48,36 +50,41 @@ namespace BlogApp.Pages.Blogs
             var username = user.UserName;
 
             if (await _suspensionService.ExistsAsync(username))
+            {
                 return RedirectToPage("./Index");
+            }
 
             if (!ModelState.IsValid)
             {
                 Logger.LogError("Invalid model state when submitting new post");
                 return Page();
             }
+
             try
             {
                 var coverImage = CreateBlogVM.CoverImage;
                 var imageName = _imageService.BuildFileName(coverImage.FileName);
                 await _imageService.UploadBlogImageAsync(coverImage, imageName);
-                DbContext.Blog.Add(new Blog()
-                    {
-                        ImagePath = imageName,
-                        Date = DateTime.Now,
-                        Author = user.UserName,
-                        AppUserID = user.Id 
-                    })
-                    .CurrentValues.SetValues(CreateBlogVM);
+                var entry = DbContext.Blog.Add(new Blog()
+                {
+                    ImagePath = imageName,
+                    Date = DateTime.Now,
+                    Author = user.UserName,
+                    AppUserID = user.Id
+                });
+
+                entry.CurrentValues.SetValues(CreateBlogVM);
                 await DbContext.SaveChangesAsync();
+                
                 return RedirectToPage("./Index");
-            } catch (Exception ex)
+            } 
+            catch (Exception ex)
             {
                 Logger.LogError("Failed to create blog");
                 Logger.LogError(ex.Message);
+                
                 return Page();
             }
-
-            
         }
     }
 

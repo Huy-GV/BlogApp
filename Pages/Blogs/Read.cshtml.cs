@@ -18,12 +18,12 @@ namespace BlogApp.Pages.Blogs
     public class ReadModel : BasePageModel<ReadModel>
     {
         [BindProperty]
-        public CreateCommentViewModel CreateCommentVM { get; set; }
+        public CreateCommentViewModel CreateCommentViewModel { get; set; }
         [BindProperty]
-        public EditCommentViewModel EditCommentVM { get; set; }
+        public EditCommentViewModel EditCommentViewModel { get; set; }
         private readonly UserModerationService _moderationService;
         public Blog Blog { get; set; }
-        public DetailedBlogDTO DetailedBlogDTO { get; set; }
+        public DetailedBlogDto DetailedBlogDto { get; set; }
         public ReadModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -48,15 +48,18 @@ namespace BlogApp.Pages.Blogs
                 .SingleOrDefaultAsync(blog => blog.ID == id);
 
             if (Blog == null)
+            {
                 return NotFound();
+            }
 
             await IncrementViewCountAsync(id.Value);
             ViewData["IsSuspended"] = false;
             if (User.Identity.IsAuthenticated)
-                ViewData["IsSuspended"] = await _moderationService
-                    .ExistsAsync(User.Identity.Name);
+            {
+                ViewData["IsSuspended"] = await _moderationService.ExistsAsync(User.Identity.Name);
+            }
 
-            DetailedBlogDTO = DetailedBlogDTO.From(Blog);
+            DetailedBlogDto = DetailedBlogDto.From(Blog);
 
             return Page();
         }
@@ -92,7 +95,7 @@ namespace BlogApp.Pages.Blogs
             // };
 
             if (await _moderationService.ExistsAsync(username))
-                return RedirectToPage("/Blogs/Read", new { id = CreateCommentVM.BlogID });
+                return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
 
             var entry = DbContext.Comment.Add(new Comment
             {
@@ -101,10 +104,10 @@ namespace BlogApp.Pages.Blogs
                 AppUserID = user.Id
             });
 
-            entry.CurrentValues.SetValues(CreateCommentVM);
+            entry.CurrentValues.SetValues(CreateCommentViewModel);
             await DbContext.SaveChangesAsync();
 
-            return RedirectToPage("/Blogs/Read", new { id = CreateCommentVM.BlogID });
+            return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
         }
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
@@ -122,7 +125,7 @@ namespace BlogApp.Pages.Blogs
             if (user.UserName != comment.Author)
                 return Forbid();
 
-            comment.Content = EditCommentVM.Content;
+            comment.Content = EditCommentViewModel.Content;
             await DbContext.SaveChangesAsync();
 
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });

@@ -11,25 +11,25 @@
 <form enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="log-in-form">
     <h4>Create a new account.</h4>
     <hr />
-    <label asp-for="CreateUser.UserName">Username</label>
-    <input asp-for="CreateUser.UserName" class="text-input" autocomplete="off" />
-    <span asp-validation-for="CreateUser.UserName" class="error-message"></span>
+    <label asp-for="CreateUserViewModel.UserName">Username</label>
+    <input asp-for="CreateUserViewModel.UserName" class="text-input" autocomplete="off" />
+    <span asp-validation-for="CreateUserViewModel.UserName" class="error-message"></span>
 
-    <label asp-for="CreateUser.Password">Password</label>
-    <input asp-for="CreateUser.Password" class="text-input" autocomplete="off" />
-    <span asp-validation-for="CreateUser.Password" class="error-message"></span>
+    <label asp-for="CreateUserViewModel.Password">Password</label>
+    <input asp-for="CreateUserViewModel.Password" class="text-input" autocomplete="off" />
+    <span asp-validation-for="CreateUserViewModel.Password" class="error-message"></span>
 
-    <label asp-for="CreateUser.ConfirmPassword"></label>
-    <input asp-for="CreateUser.ConfirmPassword" class="text-input" />
-    <span asp-validation-for="CreateUser.ConfirmPassword" class="error-message"></span>
+    <label asp-for="CreateUserViewModel.ConfirmPassword"></label>
+    <input asp-for="CreateUserViewModel.ConfirmPassword" class="text-input" />
+    <span asp-validation-for="CreateUserViewModel.ConfirmPassword" class="error-message"></span>
 
-    <label asp-for="CreateUser.Country"></label>
-    <input asp-for="CreateUser.Country" class="text-input" />
-    <span asp-validation-for="CreateUser.Country" class="error-message"></span>
+    <label asp-for="CreateUserViewModel.Country"></label>
+    <input asp-for="CreateUserViewModel.Country" class="text-input" />
+    <span asp-validation-for="CreateUserViewModel.Country" class="error-message"></span>
 
-    <label asp-for="CreateUser.ProfilePicture"></label>
-    <input type="file" asp-for="CreateUser.ProfilePicture" accept=".png,.jpg,.jpeg" multiple>
-    <span asp-validation-for="CreateUser.ProfilePicture" class="error-message"></span>
+    <label asp-for="CreateUserViewModel.ProfilePicture"></label>
+    <input type="file" asp-for="CreateUserViewModel.ProfilePicture" accept=".png,.jpg,.jpeg" multiple>
+    <span asp-validation-for="CreateUserViewModel.ProfilePicture" class="error-message"></span>
 
     <button type="submit" class="primary-button log-in-btn">Register</button>
 </form>

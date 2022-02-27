@@ -44,7 +44,7 @@ namespace BlogApp.Pages.Blogs
             
             EditBlogVM = new EditBlogViewModel
             { 
-                ID = blog.ID,
+                Id = blog.ID,
                 Title = blog.Title,
                 Content = blog.Content,
                 Description = blog.Description
@@ -61,7 +61,7 @@ namespace BlogApp.Pages.Blogs
             }
 
             var user = await UserManager.GetUserAsync(User);
-            var blog = await DbContext.Blog.FindAsync(EditBlogVM.ID);
+            var blog = await DbContext.Blog.FindAsync(EditBlogVM.Id);
 
             if (blog == null)
                 return NotFound();

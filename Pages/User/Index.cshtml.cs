@@ -16,7 +16,7 @@ namespace BlogApp.Pages.User
     public class IndexModel : BasePageModel<IndexModel>
     {
         [BindProperty]
-        public PersonalProfileDTO UserDTO { get; set; }
+        public PersonalProfileDto UserDto { get; set; }
         public IndexModel(      
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -27,23 +27,31 @@ namespace BlogApp.Pages.User
         public async Task<IActionResult> OnGetAsync(string? username)
         {
             if (username == null)
+            {
                 return NotFound();
+            }
+
             var user = await UserManager.FindByNameAsync(username);
             if (user == null)
+            {
                 return NotFound();
+            }
+
             if (user.UserName != User.Identity.Name)
+            {
                 return Forbid();
+            }
 
             var blogs = DbContext.Blog
                 .AsNoTracking()
                 .Where(blog => blog.Author == username)
                 .ToList();
 
-            UserDTO = new PersonalProfileDTO()
+            UserDto = new PersonalProfileDto()
             {
-                Username = username,
+                UserName = username,
                 BlogCount = blogs.Count,
-                ProfilePath = user.ProfilePicture,
+                ProfilePicturePath = user.ProfilePicture,
                 Blogs = blogs,
                 Description = user.Description,
                 CommentCount = DbContext.Comment

@@ -4,9 +4,9 @@ using BlogApp.Models;
 
 namespace BlogApp.Data.DTOs
 {
-    public class DetailedBlogDTO
+    public class DetailedBlogDto
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string AuthorName { get; set; }
         public string AuthorProfilePicture { get; set; }
@@ -15,26 +15,26 @@ namespace BlogApp.Data.DTOs
         public string Content { get; set; }
         public DateTime Date { get; set; }
         public bool IsHidden { get; set; }
-        public ICollection<CommentDTO> CommentDTOs { get; set; }
-        public static DetailedBlogDTO From(Blog blog)
+        public ICollection<CommentDto> CommentDtos { get; set; }
+        public static DetailedBlogDto From(Blog blog)
         {
-            List<CommentDTO> commentDTOs = new();
+            List<CommentDto> commentDtos = new();
             foreach (var comment in blog.Comments)
             {
-                commentDTOs.Add(new CommentDTO()
+                commentDtos.Add(new CommentDto()
                 {
-                    ID = comment.ID,
+                    Id = comment.ID,
                     Date = comment.Date,
                     AuthorName = comment.Author,
                     IsHidden = comment.IsHidden,
                     Content = comment.IsHidden ? comment.SuspensionExplanation : comment.Content,
-                    AuthorProfilePicture = comment.AppUser?.ProfilePicture ?? "default.jpg"
+                    AuthorProfilePicturePath = comment.AppUser?.ProfilePicture ?? "default.jpg"
                 });
             }
 
-            return new DetailedBlogDTO()
+            return new DetailedBlogDto()
             {
-                ID = blog.ID,
+                Id = blog.ID,
                 Title = blog.Title,
                 AuthorName = blog.Author,
                 AuthorDescription = blog.AppUser?.Description ?? string.Empty,
@@ -43,7 +43,7 @@ namespace BlogApp.Data.DTOs
                 IsHidden = blog.IsHidden,
                 Content = blog.IsHidden ? blog.SuspensionExplanation : blog.Content,
                 Date = blog.Date,
-                CommentDTOs = commentDTOs
+                CommentDtos = commentDtos
             };
         }
     }

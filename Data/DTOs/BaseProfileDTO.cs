@@ -1,8 +1,8 @@
 ﻿namespace BlogApp.Data.DTOs
 {
-    public class BaseProfileDTO
+    public class BaseProfileDto
     {
-        public string Username { get; set; }
-        public string ProfilePath { get; set; } = "default";
+        public string UserName { get; set; }
+        public string ProfilePicturePath { get; set; } = "default";
     }
 }

@@ -40,6 +40,7 @@ namespace BlogApp.Pages.Blogs
                         || blog.Author.ToLower().Contains(SearchString)
                         select blog;
             }
+
             Blogs = await blogs.ToListAsync();
         }
     }

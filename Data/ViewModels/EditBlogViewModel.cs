@@ -5,7 +5,7 @@ namespace BlogApp.Data.ViewModel
 {
     public class EditBlogViewModel : CreateBlogViewModel
     {
-        public int ID { get; set;}
+        public int Id { get; set;}
         [Display(Name = "Change cover image")]
         public new IFormFile CoverImage { get; set; }
     }

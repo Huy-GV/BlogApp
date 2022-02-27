@@ -49,10 +49,10 @@ namespace BlogApp.Pages.Admin
 
             return Page();
         }
-        private PersonalProfileDTO GetUserDTO(string username) {
-            return new PersonalProfileDTO()
+        private PersonalProfileDto GetUserDTO(string username) {
+            return new PersonalProfileDto()
             {
-                Username = username,
+                UserName = username,
                 BlogCount = DbContext.Blog
                     .Where(blog => blog.Author == username)
                     .ToList()

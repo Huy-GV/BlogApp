@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlogApp.Data.DTOs
 {
-    public class PersonalProfileDTO : BaseProfileDTO
+    public class PersonalProfileDto : BaseProfileDto
     {
         public string Country { get; set; } 
         public string Description { get; set; } = "None";

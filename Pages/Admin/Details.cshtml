@@ -10,7 +10,7 @@
     ViewData["Shared"] = "/css/shared.css";
 
     var suspension = (Suspension)ViewData["Suspension"];
-    var userDTO = ViewData["UserDTO"] as PersonalProfileDTO;
+    var userDTO = ViewData["UserDTO"] as PersonalProfileDto;
     var suspendedBlogs = ViewData["HiddenBlogs"] as List<Blog>;
     var suspendedComments = ViewData["HiddenComments"] as List<Comment>;
 }
@@ -20,7 +20,7 @@
 
     <div class="profile-container">
         <div class="profile">
-            <p>Username: @userDTO.Username</p>
+            <p>Username: @userDTO.UserName</p>
             <p>Blog count: @userDTO.BlogCount</p>
             <p>Comments: @userDTO.CommentCount</p>
             <hr>
@@ -101,7 +101,7 @@
                 <p>Expiry date: @suspension.Expiry</p>
                 <form method="post" 
                       asp-page-handler="LiftSuspension" 
-                      asp-route-username="@userDTO.Username">
+                      asp-route-username="@userDTO.UserName">
                     <button class="lift-ban-btn">Lift ban</button>
                 </form>     
             } else {
@@ -114,7 +114,7 @@
     <form class="suspend-form" method="post" asp-page-handler="SuspendUser">
         <h4>Suspend</h4>
         <input type="date" asp-for="SuspensionTicket.Expiry"/>
-        <input type="hidden" asp-for="SuspensionTicket.Username" value="@userDTO.Username"/>
+        <input type="hidden" asp-for="SuspensionTicket.Username" value="@userDTO.UserName"/>
         <button class='ban-btn' type="button">Ban</button>
         <button class='cancel-btn hidden-element' type="button">Cancel</button>
         <button class='confirm-ban-btn hidden-element'>Confirm </button>

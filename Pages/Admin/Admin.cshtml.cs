@@ -33,7 +33,7 @@ namespace BlogApp.Pages.Admin
                 .ToList()
                 .Where(user => user.UserName != "admin");
             
-            List<PersonalProfileDTO> userDTOs = new();
+            List<PersonalProfileDto> userDTOs = new();
             foreach( var user in users)
             {   
                 userDTOs.Add(await CreateUserDTOAsync(user));
@@ -48,11 +48,11 @@ namespace BlogApp.Pages.Admin
             var roles = await UserManager.GetRolesAsync(user);
             return roles.Contains(Roles.ModeratorRole);
         }
-        private async Task<PersonalProfileDTO> CreateUserDTOAsync(ApplicationUser user)
+        private async Task<PersonalProfileDto> CreateUserDTOAsync(ApplicationUser user)
         {
-            return new PersonalProfileDTO
+            return new PersonalProfileDto
             {
-                Username = user.UserName,
+                UserName = user.UserName,
                 IsModerator = await IsModeratorRole(user),
                 BlogCount = DbContext.Blog
                 .Where(blog => blog.Author == user.UserName)

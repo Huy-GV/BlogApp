@@ -7,7 +7,7 @@
     ViewData["CSSLink"] = "/css/admin/admin.css";
     ViewData["Script"] = "#";
     ViewData["Shared"] = "/css/shared.css";
-    var users = ViewData["UserDTOs"] as List<PersonalProfileDTO>;
+    var users = ViewData["UserDTOs"] as List<PersonalProfileDto>;
 }
 
 <main class="user-container">
@@ -23,13 +23,13 @@
         
         <div class="user-card">
             
-            <p>@user.Username</p>
+            <p>@user.UserName</p>
             <p>Posts: @user.BlogCount</p>
 
             @if (user.IsModerator)
             {
                 <form asp-page-handler="RemoveModeratorRole"
-                      asp-route-username="@user.Username"
+                      asp-route-username="@user.UserName"
                       method="post">
                     <button class="button remove-role">Remove moderator role</button>
                 </form>
@@ -37,12 +37,12 @@
             else
             {
                 <form asp-page-handler="AssignModeratorRole"
-                      asp-route-username="@user.Username"
+                      asp-route-username="@user.UserName"
                       method="post">
                     <button class="button assign-role">Assign moderator role</button>
                 </form>
             }
-            <a class="details-btn" asp-route-username="@user.Username" asp-page="Details">Details</a>
+            <a class="details-btn" asp-route-username="@user.UserName" asp-page="Details">Details</a>
         </div>
     }
 </main>

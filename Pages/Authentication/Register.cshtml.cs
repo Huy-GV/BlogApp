@@ -43,7 +43,7 @@ namespace BlogApp.Pages.Authentication
         }
 
         [BindProperty]
-        public CreateUserViewModel CreateUser { get; set; }
+        public CreateUserViewModel CreateUserViewModel { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -58,27 +58,28 @@ namespace BlogApp.Pages.Authentication
         {
             returnUrl ??= Url.Content("~/");
             string profilePath = "default";
-
-
             if (ModelState.IsValid)
             {
-                if (CreateUser.ProfilePicture != null) 
+                if (CreateUserViewModel.ProfilePicture != null) 
                 {
-                    profilePath = await GetProfilePicturePath(CreateUser);
-                } 
+                    profilePath = await GetProfilePicturePath(CreateUserViewModel);
+                }
+
                 var user = new ApplicationUser
                 {
-                    UserName = CreateUser.UserName,
+                    UserName = CreateUserViewModel.UserName,
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.Now,
                     ProfilePicture = profilePath,
-                    Country = CreateUser.Country
+                    Country = CreateUserViewModel.Country
                 };
-                var result = await _userManager.CreateAsync(user, CreateUser.Password);
+
+                var result = await _userManager.CreateAsync(user, CreateUserViewModel.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    
                     return LocalRedirect(returnUrl);
                 }
             }
@@ -93,12 +94,12 @@ namespace BlogApp.Pages.Authentication
                 var fileName = _imageService.BuildFileName(imageFile.FileName);
                 await _imageService.UploadProfileImageAsync(imageFile, fileName);
                 return fileName;
-            } catch (Exception ex)
+            } 
+            catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
                 return "default.jpg";
             }
-            
         }
     }
 }
