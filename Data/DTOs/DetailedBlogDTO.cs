@@ -28,7 +28,7 @@ namespace BlogApp.Data.DTOs
                     AuthorName = comment.Author,
                     IsHidden = comment.IsHidden,
                     Content = comment.IsHidden ? comment.SuspensionExplanation : comment.Content,
-                    AuthorProfilePicturePath = comment.AppUser?.ProfilePicture ?? "default.jpg"
+                    AuthorProfilePicturePath = comment.AppUser?.ProfilePicturePath ?? "default.jpg"
                 });
             }
 
@@ -38,7 +38,7 @@ namespace BlogApp.Data.DTOs
                 Title = blog.Title,
                 AuthorName = blog.Author,
                 AuthorDescription = blog.AppUser?.Description ?? string.Empty,
-                AuthorProfilePicture = blog.AppUser?.ProfilePicture ?? "default.jpg",
+                AuthorProfilePicture = blog.AppUser?.ProfilePicturePath ?? "default.jpg",
                 Description = blog.Description,
                 IsHidden = blog.IsHidden,
                 Content = blog.IsHidden ? blog.SuspensionExplanation : blog.Content,

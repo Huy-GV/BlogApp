@@ -14,9 +14,8 @@ namespace BlogApp.Models
         public int BanCount { get; set; } = 0;
         [Required]
         public string Country { get; set; }
-        public string Occupation { get; set; }
         public string Description { get; set; }
-        public string ProfilePicture { get; set; }
+        public string ProfilePicturePath { get; set; }
         public ICollection<Blog> Blogs { get; set; }
         public ICollection<Comment> Comments { get; set; }
         [NotMapped]

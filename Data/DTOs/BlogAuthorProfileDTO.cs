@@ -17,18 +17,20 @@ namespace BlogApp.Data.DTOs
         {
             var user = await userManager.FindByNameAsync(userName);
             if (user == null)
+            {
                 return new BlogAuthorProfileDto()
                 {
                     Country = "Deleted",
                     Description = "Deleted",
                     UserName = userName
                 };
+            }
 
             return new BlogAuthorProfileDto()
             {
                 Country = user.Country,
                 Description = user.Description,
-                ProfilePicturePath = user.ProfilePicture,
+                ProfilePicturePath = user.ProfilePicturePath,
                 UserName = user.UserName
             };
 

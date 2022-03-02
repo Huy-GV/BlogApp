@@ -14,13 +14,10 @@ namespace BlogApp.Data
     {
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
-
-            using (var context = new RazorBlogDbContext(serviceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>()))
-            {
-                var adminID = await EnsureAdmin(serviceProvider, "admin");
-                await AssignAdminRole(adminID, Roles.AdminRole, serviceProvider);
-                await CreateModeratorRole(serviceProvider);
-            }
+            using (var context = new RazorBlogDbContext(serviceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>())) ;
+            var adminID = await EnsureAdmin(serviceProvider, "admin");
+            await AssignAdminRole(adminID, Roles.AdminRole, serviceProvider);
+            await CreateModeratorRole(serviceProvider);
         }
         private static async Task<string> EnsureAdmin(IServiceProvider serviceProvider, string username)
         {
@@ -35,7 +32,7 @@ namespace BlogApp.Data
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.UtcNow,
                     Country = "Australia",
-                    ProfilePicture = "default.jpg",
+                    ProfilePicturePath = "default.jpg",
                     Description = "Lorem ipsum dolor sed temda met sedim ips dolor sed temda met sedim ips dolor sed temda met sedim ips"
                 };
                 await userManager.CreateAsync(user, "Admin123@@");

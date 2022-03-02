@@ -96,8 +96,8 @@ namespace BlogApp.Pages.User
 
             if (EditUserViewModel.NewProfilePicture != null) 
             {
-                _imageService.DeleteImage(applicationUser.ProfilePicture);
-                applicationUser.ProfilePicture = await 
+                _imageService.DeleteImage(applicationUser.ProfilePicturePath);
+                applicationUser.ProfilePicturePath = await 
                     GetProfilePicturePath(EditUserViewModel);
             }
 

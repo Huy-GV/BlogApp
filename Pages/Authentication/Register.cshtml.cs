@@ -70,7 +70,7 @@ namespace BlogApp.Pages.Authentication
                     UserName = CreateUserViewModel.UserName,
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.Now,
-                    ProfilePicture = profilePath,
+                    ProfilePicturePath = profilePath,
                     Country = CreateUserViewModel.Country
                 };
 

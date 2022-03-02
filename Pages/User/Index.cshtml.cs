@@ -51,7 +51,7 @@ namespace BlogApp.Pages.User
             {
                 UserName = username,
                 BlogCount = blogs.Count,
-                ProfilePicturePath = user.ProfilePicture,
+                ProfilePicturePath = user.ProfilePicturePath,
                 Blogs = blogs,
                 Description = user.Description,
                 CommentCount = DbContext.Comment

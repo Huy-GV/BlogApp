@@ -31,18 +31,23 @@ namespace BlogApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<RazorBlogDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services
+                .AddDbContext<RazorBlogDbContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<RazorBlogDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddRazorPages();
-            services.AddMvc().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AddPageRoute("/Blogs/Index", "");
-            });
+            services
+                .AddMvc()
+                .AddRazorPagesOptions(
+                options =>
+                {
+                    options.Conventions.AddPageRoute("/Blogs/Index", "");
+                });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -55,6 +60,7 @@ namespace BlogApp
                 options.User.RequireUniqueEmail = false;
                 options.SignIn.RequireConfirmedEmail = false;
             });
+
             services.AddAuthorization();
 
             //TODO: configure cookie options
