@@ -30,6 +30,7 @@ namespace BlogApp.Pages.Authentication
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IImageService _imageService;
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -60,7 +61,7 @@ namespace BlogApp.Pages.Authentication
             string profilePath = "default";
             if (ModelState.IsValid)
             {
-                if (CreateUserViewModel.ProfilePicture != null) 
+                if (CreateUserViewModel.ProfilePicture != null)
                 {
                     profilePath = await GetProfilePicturePath(CreateUserViewModel);
                 }
@@ -70,8 +71,7 @@ namespace BlogApp.Pages.Authentication
                     UserName = CreateUserViewModel.UserName,
                     EmailConfirmed = true,
                     RegistrationDate = DateTime.Now,
-                    ProfilePicturePath = profilePath,
-                    Country = CreateUserViewModel.Country
+                    ProfileImageUri = profilePath,
                 };
 
                 var result = await _userManager.CreateAsync(user, CreateUserViewModel.Password);
@@ -79,14 +79,15 @@ namespace BlogApp.Pages.Authentication
                 {
                     _logger.LogInformation("User created a new account with password.");
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    
+
                     return LocalRedirect(returnUrl);
                 }
             }
 
             return Page();
         }
-        private async Task<string> GetProfilePicturePath(CreateUserViewModel createUser) 
+
+        private async Task<string> GetProfilePicturePath(CreateUserViewModel createUser)
         {
             try
             {
@@ -94,7 +95,7 @@ namespace BlogApp.Pages.Authentication
                 var fileName = _imageService.BuildFileName(imageFile.FileName);
                 await _imageService.UploadProfileImageAsync(imageFile, fileName);
                 return fileName;
-            } 
+            }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to upload new profile picture: {ex}");

@@ -5,29 +5,35 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Threading.Tasks;
 using BlogApp.Interfaces;
+
 namespace BlogApp.Services
 {
-    public class ImageService : IImageService
+    [Obsolete]
+    public class LegacyImageStorage : IImageService
     {
         private readonly IWebHostEnvironment _webHostEnv;
-        private readonly ILogger<ImageService> _logger; 
-        public ImageService(
-            IWebHostEnvironment webHostEnv, 
-            ILogger<ImageService> logger)
+        private readonly ILogger<LegacyImageStorage> _logger;
+
+        public LegacyImageStorage(
+            IWebHostEnvironment webHostEnv,
+            ILogger<LegacyImageStorage> logger)
         {
             _webHostEnv = webHostEnv;
             _logger = logger;
         }
+
         public async Task UploadProfileImageAsync(IFormFile imageFile, string fileName)
         {
             string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "profiles");
             await UploadImageAsync(directoryPath, imageFile, fileName);
         }
+
         public async Task UploadBlogImageAsync(IFormFile imageFile, string fileName)
         {
             string directoryPath = Path.Combine(_webHostEnv.WebRootPath, "images", "blogs");
             await UploadImageAsync(directoryPath, imageFile, fileName);
         }
+
         public void DeleteImage(string fileName)
         {
             if (fileName != "default.jpg" && fileName != string.Empty)
@@ -47,20 +53,22 @@ namespace BlogApp.Services
                 }
             }
         }
+
         public string BuildFileName(string originalName)
         {
-            return  string.Join
+            return string.Join
             (
-                "_", 
-                new string[] 
+                "_",
+                new string[]
                 {
                     DateTime.Now.Ticks.ToString(),
                     originalName
                 }
             );
         }
+
         private async Task UploadImageAsync(
-            string directoryPath, 
+            string directoryPath,
             IFormFile imageFile,
             string formattedFileName)
         {

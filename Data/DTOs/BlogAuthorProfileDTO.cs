@@ -11,6 +11,7 @@ namespace BlogApp.Data.DTOs
     {
         public string Country { get; set; } = "None";
         public string Description { get; set; } = "None";
+
         public static async Task<BlogAuthorProfileDto> From(
             UserManager<ApplicationUser> userManager,
             string userName)
@@ -20,7 +21,6 @@ namespace BlogApp.Data.DTOs
             {
                 return new BlogAuthorProfileDto()
                 {
-                    Country = "Deleted",
                     Description = "Deleted",
                     UserName = userName
                 };
@@ -28,12 +28,10 @@ namespace BlogApp.Data.DTOs
 
             return new BlogAuthorProfileDto()
             {
-                Country = user.Country,
                 Description = user.Description,
-                ProfilePicturePath = user.ProfilePicturePath,
+                ProfilePicturePath = user.ProfileImageUri,
                 UserName = user.UserName
             };
-
         }
     }
 }

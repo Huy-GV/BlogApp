@@ -13,14 +13,17 @@ using BlogApp.Data.DTOs;
 using BlogApp.Models;
 using Microsoft.EntityFrameworkCore;
 using BlogApp.Services;
+
 namespace BlogApp.Pages.Admin
 {
     [Authorize(Roles = "admin")]
     public class DetailsModel : BasePageModel<DetailsModel>
     {
         private readonly UserModerationService _suspensionService;
+
         [BindProperty]
-        public Suspension SuspensionTicket { get; set; }
+        public BanTicket SuspensionTicket { get; set; }
+
         public DetailsModel(RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<DetailsModel> logger,
@@ -41,7 +44,7 @@ namespace BlogApp.Pages.Admin
                 Logger.LogInformation("User not found");
                 return NotFound();
             }
-            
+
             ViewData["UserDTO"] = GetUserDTO(username);
             ViewData["HiddenBlogs"] = await GetHiddenBlogs(username);
             ViewData["HiddenComments"] = await GetHiddenComments(username);
@@ -49,16 +52,20 @@ namespace BlogApp.Pages.Admin
 
             return Page();
         }
-        private PersonalProfileDto GetUserDTO(string username) {
+
+        private PersonalProfileDto GetUserDTO(string username)
+        {
             return new PersonalProfileDto()
             {
                 UserName = username,
-                BlogCount = DbContext.Blog
-                    .Where(blog => blog.Author == username)
+                BlogCount = (uint)DbContext.Blog
+                    .Include(b => b.AppUser)
+                    .Where(blog => blog.AppUser.UserName == username)
                     .ToList()
                     .Count,
-                CommentCount = DbContext.Comment
-                    .Where(comment => comment.Author == username)
+                CommentCount = (uint)DbContext.Comment
+                    .Include(c => c.AppUser)
+                    .Where(c => c.AppUser.UserName == username)
                     .ToList()
                     .Count
             };
@@ -66,42 +73,53 @@ namespace BlogApp.Pages.Admin
 
         private async Task<List<Blog>> GetHiddenBlogs(string username)
         {
-            return (await DbContext.Blog
-                   .Where(blog => blog.Author == username)
-                   .ToListAsync())
-                   .Where(blog => blog.IsHidden)
-                   .ToList();
+            // todo: get dto here
+            return await DbContext.Blog
+                   .Include(b => b.AppUser)
+                   .Where(b => b.AppUser.UserName == username && b.IsHidden)
+                   .ToListAsync();
         }
+
         private async Task<List<Comment>> GetHiddenComments(string username)
         {
-            return (await DbContext.Comment
-                .Where(comment => comment.Author == username)
-                .ToListAsync())
-                .Where(comment => comment.IsHidden)
-                .ToList();
+            // todo: get dto here
+            return await DbContext.Comment
+                   .Include(c => c.AppUser)
+                   .Where(c => c.AppUser.UserName == username && c.IsHidden)
+                   .ToListAsync();
         }
-        public async Task<IActionResult> OnPostSuspendUserAsync() 
+
+        public async Task<IActionResult> OnPostSuspendUserAsync()
         {
-            if (!(await _suspensionService.ExistsAsync(SuspensionTicket.Username))) {
-                DbContext.Suspension.Add(SuspensionTicket);
+            if (!(await _suspensionService.BanTicketExistsAsync(SuspensionTicket.UserName)))
+            {
+                DbContext.BanTicket.Add(SuspensionTicket);
                 await DbContext.SaveChangesAsync();
-            } else {
+            }
+            else
+            {
                 Logger.LogInformation("User has already been suspended");
             }
-            return RedirectToPage("Details", new { username = SuspensionTicket.Username });
+            return RedirectToPage("Details", new { username = SuspensionTicket.UserName });
         }
-        public async Task<IActionResult> OnPostLiftSuspensionAsync(string username) 
+
+        // todo: rename and use moderation service
+        public async Task<IActionResult> OnPostLiftSuspensionAsync(string username)
         {
-            if (await _suspensionService.ExistsAsync(username)) {
-                var suspension = await DbContext.Suspension
-                    .SingleOrDefaultAsync(s => s.Username == username);
+            if (await _suspensionService.BanTicketExistsAsync(username))
+            {
+                var suspension = await DbContext.BanTicket
+                    .SingleOrDefaultAsync(s => s.UserName == username);
                 await _suspensionService.RemoveAsync(suspension);
-            } else {
+            }
+            else
+            {
                 Logger.LogInformation("User has no suspensions");
             }
 
             return RedirectToPage("Details", new { username });
         }
+
         public async Task<IActionResult> OnPostUnhideBlogAsync(int blogID)
         {
             var blog = await DbContext.Blog.FindAsync(blogID);
@@ -117,6 +135,7 @@ namespace BlogApp.Pages.Admin
 
             return RedirectToPage("Details", new { username = blog.Author });
         }
+
         public async Task<IActionResult> OnPostUnhideCommentAsync(int commentID)
         {
             var comment = await DbContext.Comment.FindAsync(commentID);
@@ -126,12 +145,14 @@ namespace BlogApp.Pages.Admin
                 return NotFound();
             }
 
+            // todo: add content moderation service?
             comment.SuspensionExplanation = string.Empty;
             DbContext.Attach(comment).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
 
             return RedirectToPage("Details", new { username = comment.Author });
         }
+
         public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
         {
             var comment = await DbContext.Comment.FindAsync(commentID);
@@ -144,6 +165,7 @@ namespace BlogApp.Pages.Admin
             await DbContext.SaveChangesAsync();
             return RedirectToPage("Details", new { username = comment.Author });
         }
+
         public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
         {
             var blog = await DbContext.Blog.FindAsync(blogID);

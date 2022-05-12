@@ -10,22 +10,22 @@
     
     @if (SignInManager.IsSignedIn(User))
     {
-        var user = (await UserManager.GetUserAsync(User));
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a asp-page="/User/Index" asp-route-username="@User.Identity.Name">Profile</a>
-            }
+        var user = await UserManager.GetUserAsync(User);
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-page="/User/Index" asp-route-username="@User.Identity.Name">Profile</a>
+        }
 
-            @if (User.IsInRole(Roles.AdminRole))
-            {
-                <a asp-page="/Admin/Admin" >Users</a>
-            }
-            <a  asp-page="/Blogs/Create">Write</a>
-            <div class="authentication-links">
-                <p>@user.UserName</p>
-                <p class="middle-bar"></p>
-                <a class="secondary-button log-btn" asp-page="/Authentication/Logout" >Log Out</a>
-            </div>
+        @if (User.IsInRole(Roles.AdminRole))
+        {
+            <a asp-page="/Admin/Admin" >Users</a>
+        }
+        <a  asp-page="/Blogs/Create">Write</a>
+        <div class="authentication-links">
+            <p>@user.UserName</p>
+            <p class="middle-bar"></p>
+            <a class="secondary-button log-btn" asp-page="/Authentication/Logout" >Log Out</a>
+        </div>
 
     }
     else

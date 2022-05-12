@@ -15,43 +15,53 @@ using BlogApp.Interfaces;
 
 namespace BlogApp.Pages.Blogs
 {
-
     [Authorize]
     public class EditModel : BasePageModel<EditModel>
     {
         [BindProperty]
-        public EditBlogViewModel EditBlogVM { get; set; }
-        private readonly IImageService _imageService;
+        public EditBlogViewModel EditBlogViewModel { get; set; }
+
+        private readonly IImageStorage _imageStorage;
+
         public EditModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<EditModel> logger,
-            IImageService imageFileService) : base(context, userManager, logger)
+            IImageStorage imageStorage) : base(context, userManager, logger)
         {
-            _imageService = imageFileService;
+            _imageStorage = imageStorage;
         }
+
         public async Task<IActionResult> OnGetAsync(int? blogID, string? username)
         {
             if (blogID == null || username == null)
+            {
                 return NotFound();
+            }
 
             if (User.Identity.Name != username)
             {
-                return Unauthorized();
+                return Forbid();
             }
 
             var blog = await DbContext.Blog.FindAsync(blogID);
-            
-            EditBlogVM = new EditBlogViewModel
-            { 
-                Id = blog.ID,
+
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
+            EditBlogViewModel = new EditBlogViewModel
+            {
+                Id = blog.Id,
                 Title = blog.Title,
                 Content = blog.Content,
-                Description = blog.Description
+                Description = blog.Introduction
             };
 
             return Page();
         }
+
         public async Task<IActionResult> OnPostEditBlogAsync()
         {
             if (!ModelState.IsValid)
@@ -61,39 +71,42 @@ namespace BlogApp.Pages.Blogs
             }
 
             var user = await UserManager.GetUserAsync(User);
-            var blog = await DbContext.Blog.FindAsync(EditBlogVM.Id);
+            var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
 
             if (blog == null)
+            {
                 return NotFound();
-            if (EditBlogVM.Content == "")
-                return RedirectToPage("/Blogs/Read", new { id = blog.ID });
-            if (user.UserName != blog.Author)
+            }
+
+            if (string.IsNullOrEmpty(EditBlogViewModel.Content))
+            {
+                return RedirectToPage("/Blogs/Read", new { id = blog.Id });
+            }
+
+            if (user.UserName != blog.AppUser.UserName)
+            {
                 return Forbid();
+            }
 
-            DbContext.Blog.Attach(blog).CurrentValues.SetValues(EditBlogVM);
+            DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);
 
-            if (EditBlogVM.CoverImage != null)
+            if (EditBlogViewModel.CoverImage != null)
             {
                 try
                 {
-                    _imageService.DeleteImage(blog.ImagePath);
-                    var imageFile = EditBlogVM.CoverImage;
-                    var imageName = _imageService.BuildFileName(imageFile.FileName);
-                    blog.ImagePath = imageName;
-
-                    await _imageService.UploadBlogImageAsync(imageFile, imageName);
-                    
-                } catch (Exception ex)
+                    await _imageStorage.DeleteImage(blog.CoverImageUri);
+                    var imageName = await _imageStorage.UploadBlogCoverImageAsync(EditBlogViewModel.CoverImage);
+                    blog.CoverImageUri = imageName;
+                }
+                catch (Exception ex)
                 {
                     Logger.LogError("Failed to update blog image");
                     Logger.LogError(ex.Message);
                 }
             }
 
-            DbContext.Attach(blog).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
-            return RedirectToPage("/Blogs/Read", new { id = blog.ID });
+            return RedirectToPage("/Blogs/Read", new { id = blog.Id });
         }
     }
 }
-

@@ -11,19 +11,24 @@ using BlogApp.Data.DTOs;
 using BlogApp.Data.Constants;
 using BlogApp.Data.ViewModel;
 using BlogApp.Services;
+using System.Linq;
+using BlogApp.Data.ViewModels;
+
 namespace BlogApp.Pages.Blogs
 {
-
     [AllowAnonymous]
     public class ReadModel : BasePageModel<ReadModel>
     {
         [BindProperty]
-        public CreateCommentViewModel CreateCommentViewModel { get; set; }
+        public CommentViewModel CreateCommentViewModel { get; set; }
+
         [BindProperty]
-        public EditCommentViewModel EditCommentViewModel { get; set; }
+        public CommentViewModel EditCommentViewModel { get; set; }
+
         private readonly UserModerationService _moderationService;
         public Blog Blog { get; set; }
         public DetailedBlogDto DetailedBlogDto { get; set; }
+
         public ReadModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -36,49 +41,78 @@ namespace BlogApp.Pages.Blogs
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null) {
-                return NotFound();
-            }
-
-            Blog = await DbContext.Blog
-                .Include(blog => blog.AppUser)
-                .Include(blog => blog.Comments)
-                    .ThenInclude(comment => comment.AppUser)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(blog => blog.ID == id);
-
-            if (Blog == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            await IncrementViewCountAsync(id.Value);
+            var blog = await DbContext.Blog
+                .Include(blog => blog.AppUser)
+                .Include(blog => blog.Comments)
+                .ThenInclude(comment => comment.AppUser)
+                .SingleOrDefaultAsync(blog => blog.Id == id);
+
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
+            var blogAuthor = new
+            {
+                UserName = blog.AppUser?.UserName ?? "Deleted User",
+                // todo: un-hardcode default profile pic
+                ProfileImageUri = blog.AppUser?.ProfileImageUri ?? "default.jpg",
+                Description = blog.AppUser?.Description ?? "Deleted User"
+            };
+
+            DbContext.Blog.Update(blog);
+            blog.ViewCount++;
+            await DbContext.SaveChangesAsync();
+
+            // todo: refactor this
             ViewData["IsSuspended"] = false;
             if (User.Identity.IsAuthenticated)
             {
-                ViewData["IsSuspended"] = await _moderationService.ExistsAsync(User.Identity.Name);
+                ViewData["IsSuspended"] = await _moderationService.BanTicketExistsAsync(User.Identity.Name);
             }
 
-            DetailedBlogDto = DetailedBlogDto.From(Blog);
+            DetailedBlogDto = new DetailedBlogDto
+            {
+                Id = blog.Id,
+                Introduction = blog.Introduction,
+                Content = blog.Content,
+                CoverImageUri = blog.CoverImageUri,
+                Date = blog.Date,
+                IsHidden = blog.IsHidden,
+                AuthorDescription = blogAuthor.Description,
+                AuthorName = blogAuthor.UserName,
+                AuthorProfileImageUri = blogAuthor.ProfileImageUri,
+                CommentDtos = blog.Comments
+                    .Select(c => new CommentDto
+                    {
+                        Id = c.Id,
+                        Date = c.Date,
+                        Content = c.Content,
+                        AuthorName = c.AppUser?.UserName ?? "Deleted User",
+                        AuthorProfileImageUri = c.AppUser?.ProfileImageUri ?? "default.jpg",
+                        IsHidden = c.IsHidden,
+                    })
+                    .ToList()
+            };
 
             return Page();
         }
-        private async Task IncrementViewCountAsync(int id)
-        {
-            //get blog again to avoid tracking errors
-            var blog = await DbContext.Blog.FindAsync(id);
-            blog.ViewCount++;
-            DbContext.Blog.Update(blog);
-            await DbContext.SaveChangesAsync();
-        }
-        public async Task<IActionResult> OnPostCreateCommentAsync()
+
+        public async Task<IActionResult> OnPostCreateCommentAsync(int blogId)
         {
             if (!User.Identity.IsAuthenticated)
+            {
                 return Challenge();
+            }
 
             if (!ModelState.IsValid)
             {
-                Logger.LogError("Model state invalid when submitting comments");
+                Logger.LogError("Model state invalid when submitting new comment.");
                 //TODO: return an appropriate response
                 return NotFound();
             }
@@ -94,61 +128,78 @@ namespace BlogApp.Pages.Blogs
             //     BlogID = CreateCommentVM.BlogID
             // };
 
-            if (await _moderationService.ExistsAsync(username))
-                return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
+            if (await _moderationService.BanTicketExistsAsync(username))
+                return RedirectToPage("/Blogs/Read", new { id = blogId });
 
             var entry = DbContext.Comment.Add(new Comment
             {
-                Author = user.UserName,
                 Date = DateTime.Now,
-                AppUserID = user.Id
+                AppUserId = user.Id
             });
 
             entry.CurrentValues.SetValues(CreateCommentViewModel);
             await DbContext.SaveChangesAsync();
 
-            return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
+            return RedirectToPage("/Blogs/Read", new { id = blogId });
         }
+
         public async Task<IActionResult> OnPostEditCommentAsync(int commentID)
         {
             if (!User.Identity.IsAuthenticated)
+            {
                 return Challenge();
+            }
 
             if (!ModelState.IsValid)
             {
-                Logger.LogError("Model state invalid when editting comments");
+                Logger.LogError("Invalid model state when editting comments");
                 return NotFound();
             }
 
             var user = await UserManager.GetUserAsync(User);
-            var comment = await DbContext.Comment.FindAsync(commentID);
-            if (user.UserName != comment.Author)
-                return Forbid();
+            var comment = await DbContext.Comment
+                .Include(x => x.AppUser)
+                .SingleOrDefaultAsync(x => x.Id == commentID);
 
-            comment.Content = EditCommentViewModel.Content;
+            if (user.UserName != comment.AppUser.UserName)
+            {
+                return Forbid();
+            }
+
+            DbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
             await DbContext.SaveChangesAsync();
 
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
+
         public async Task<IActionResult> OnPostHideBlogAsync(int blogID)
         {
             if (!User.Identity.IsAuthenticated)
+            {
                 return Challenge();
+            }
 
             var user = await UserManager.GetUserAsync(User);
             var roles = await UserManager.GetRolesAsync(user);
-            
-            if (!(roles.Contains(Roles.AdminRole) || 
-                roles.Contains(Roles.ModeratorRole))) 
-                return Forbid();
 
-            var blog = await DbContext.Blog.FindAsync(blogID);
+            if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
+            {
+                return Forbid();
+            }
+
+            var blog = await DbContext.Blog
+                .Include(x => x.AppUser)
+                .SingleOrDefaultAsync(x => x.Id == blogID);
+
             if (blog == null)
+            {
                 return NotFound();
-            
-            if (blog.Author == "admin")
-                return Forbid();
+            }
 
+            if (await UserManager.IsInRoleAsync(blog.AppUser, Roles.AdminRole))
+            {
+                return Forbid();
+            }
 
             // blog.SuspensionExplanation = Messages.InappropriateBlog;
             // await DbContext.SaveChangesAsync();
@@ -156,24 +207,34 @@ namespace BlogApp.Pages.Blogs
             await _moderationService.HideBlogAsync(blogID);
             return RedirectToPage("/Blogs/Read", new { id = blogID });
         }
+
         public async Task<IActionResult> OnPostHideCommentAsync(int commentID)
         {
             if (!User.Identity.IsAuthenticated)
+            {
                 return Challenge();
+            }
 
             var user = await UserManager.GetUserAsync(User);
             var roles = await UserManager.GetRolesAsync(user);
-            if (!(roles.Contains(Roles.AdminRole) 
-                || roles.Contains(Roles.ModeratorRole))) 
+            if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
+            {
                 return Forbid();
+            }
 
-            var comment = await DbContext.Comment.FindAsync(commentID);
+            var comment = await DbContext.Comment
+                .Include(x => x.AppUser)
+                .SingleOrDefaultAsync(x => x.Id == commentID);
+
             if (comment == null)
+            {
                 return NotFound();
-            
-            if (comment.Author == "admin")
-                return Forbid();
+            }
 
+            if (await UserManager.IsInRoleAsync(comment.AppUser, Roles.AdminRole))
+            {
+                return Forbid();
+            }
 
             // comment.SuspensionExplanation = Messages.InappropriateComment;
             // await DbContext.SaveChangesAsync();
@@ -181,30 +242,55 @@ namespace BlogApp.Pages.Blogs
             await _moderationService.HideCommentAsync(commentID);
             return RedirectToPage("/Blogs/Read", new { id = comment.BlogID });
         }
-        public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
+
+        public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
         {
             if (!User.Identity.IsAuthenticated)
+            {
                 return Challenge();
+            }
 
-            var blog = await DbContext.Blog.FindAsync(blogID);
+            var blog = await DbContext.Blog
+                .Include(x => x.AppUser)
+                .SingleOrDefaultAsync(x => x.Id == blogId);
 
-            if (User.Identity.Name != blog.Author && !User.IsInRole(Roles.AdminRole))
+            // todo: check identity name and user.UserName
+            if (User.Identity.Name != blog.AppUser.UserName)
+            {
                 return Forbid();
+            }
+
+            if (blog == null)
+            {
+                return NotFound();
+            }
 
             DbContext.Blog.Remove(blog);
             await DbContext.SaveChangesAsync();
 
             return RedirectToPage("/Blogs/Index");
         }
-        public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
+
+        public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
         {
             if (!User.Identity.IsAuthenticated)
+            {
                 return Challenge();
-            
-            var comment = await DbContext.Comment.FindAsync(commentID);
+            }
 
-            if (User.Identity.Name != comment.Author && !User.IsInRole(Roles.AdminRole))
+            var comment = await DbContext.Comment
+                .Include(x => x.AppUser)
+                .SingleOrDefaultAsync(x => x.Id == commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            if (User.Identity.Name != comment.AppUser.UserName)
+            {
                 return Forbid();
+            }
 
             DbContext.Comment.Remove(comment);
             await DbContext.SaveChangesAsync();

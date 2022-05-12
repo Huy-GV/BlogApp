@@ -9,7 +9,7 @@
     ViewData["Script"] = "/js/admindetails.js";
     ViewData["Shared"] = "/css/shared.css";
 
-    var suspension = (Suspension)ViewData["Suspension"];
+    var suspension = (BanTicket)ViewData["Suspension"];
     var userDTO = ViewData["UserDTO"] as PersonalProfileDto;
     var suspendedBlogs = ViewData["HiddenBlogs"] as List<Blog>;
     var suspendedComments = ViewData["HiddenComments"] as List<Comment>;
@@ -47,12 +47,12 @@
                 <p>@blog.Content</p>
                 <form method="post"
                       asp-page-handler="UnhideBlog"
-                      asp-route-blogID="@blog.ID"
+                      asp-route-blogID="@blog.Id"
                       asp-route-type="blog">
                     <button class="un-hide-post">Unhide blog</button>
                 </form>
                 <form asp-page-handler="DeleteBlog"
-                      asp-route-blogID="@blog.ID"
+                      asp-route-blogID="@blog.Id"
                       asp-route-type="blog"
                       method="post">
                     <button class="delete-post">Delete blog</button>
@@ -76,11 +76,11 @@
                 <p>@comment.Content</p>
                 <form method="post"
                       asp-page-handler="UnhideComment"
-                      asp-route-commentID="@comment.ID">
+                      asp-route-commentID="@comment.Id">
                     <button class="un-hide-post">Unhide comment</button>
                 </form>
                 <form asp-page-handler="DeleteComment"
-                      asp-route-commentID="@comment.ID"
+                      asp-route-commentID="@comment.Id"
                       method="post">
                     <button class="delete-post">Delete comment</button>
                 </form>
@@ -114,7 +114,7 @@
     <form class="suspend-form" method="post" asp-page-handler="SuspendUser">
         <h4>Suspend</h4>
         <input type="date" asp-for="SuspensionTicket.Expiry"/>
-        <input type="hidden" asp-for="SuspensionTicket.Username" value="@userDTO.UserName"/>
+        <input type="hidden" asp-for="SuspensionTicket.UserName" value="@userDTO.UserName"/>
         <button class='ban-btn' type="button">Ban</button>
         <button class='cancel-btn hidden-element' type="button">Cancel</button>
         <button class='confirm-ban-btn hidden-element'>Confirm </button>

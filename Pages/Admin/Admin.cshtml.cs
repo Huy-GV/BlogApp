@@ -22,9 +22,8 @@ namespace BlogApp.Pages.Admin
                           UserManager<ApplicationUser> userManager,
                           ILogger<AdminModel> logger) : base(context, userManager, logger)
         {
-            
         }
-        
+
         //TODO: add a filter that shows moderators only
         public async Task<IActionResult> OnGetAsync()
         {
@@ -32,10 +31,10 @@ namespace BlogApp.Pages.Admin
                 .AsNoTracking()
                 .ToList()
                 .Where(user => user.UserName != "admin");
-            
+
             List<PersonalProfileDto> userDTOs = new();
-            foreach( var user in users)
-            {   
+            foreach (var user in users)
+            {
                 userDTOs.Add(await CreateUserDTOAsync(user));
             }
 
@@ -43,21 +42,24 @@ namespace BlogApp.Pages.Admin
 
             return Page();
         }
+
         private async Task<bool> IsModeratorRole(ApplicationUser user)
         {
             var roles = await UserManager.GetRolesAsync(user);
             return roles.Contains(Roles.ModeratorRole);
         }
+
         private async Task<PersonalProfileDto> CreateUserDTOAsync(ApplicationUser user)
         {
             return new PersonalProfileDto
             {
                 UserName = user.UserName,
                 IsModerator = await IsModeratorRole(user),
-                BlogCount = DbContext.Blog
-                .Where(blog => blog.Author == user.UserName)
-                .ToList()
-                .Count
+                BlogCount = (uint)DbContext.Blog
+                    .Include(b => b.AppUser)
+                    .Where(blog => blog.AppUser.UserName == user.UserName)
+                    .ToList()
+                    .Count()
             };
         }
 
@@ -73,6 +75,7 @@ namespace BlogApp.Pages.Admin
 
             return RedirectToPage("Admin");
         }
+
         public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
         {
             var user = await DbContext.Users
@@ -86,6 +89,5 @@ namespace BlogApp.Pages.Admin
             await UserManager.AddToRoleAsync(user, Roles.ModeratorRole);
             return RedirectToPage("Admin");
         }
-
     }
 }

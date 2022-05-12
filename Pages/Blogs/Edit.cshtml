@@ -10,26 +10,26 @@
 
 <form class="add-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
     <div>
-        <label asp-for="EditBlogVM.Title">Title</label>
-        <input type="text" name="EditBlogVM.Title" required value="@Model.EditBlogVM.Title">
-        <span asp-validation-for="EditBlogVM.Title" class="error-message"></span>
+        <label asp-for="EditBlogViewModel.Title">Title</label>
+        <input type="text" name="EditBlogVM.Title" required value="@Model.EditBlogViewModel.Title">
+        <span asp-validation-for="EditBlogViewModel.Title" class="error-message"></span>
 
-        <label asp-for="EditBlogVM.Description">Description</label>
+        <label asp-for="EditBlogViewModel.Description">Description</label>
         <textarea rows="8" cols="50"
                 name="EditBlogVM.Description"
-                required>@Model.EditBlogVM.Description</textarea>
-        <span asp-validation-for="EditBlogVM.Description" class="error-message"></span>
+                required>@Model.EditBlogViewModel.Description</textarea>
+        <span asp-validation-for="EditBlogViewModel.Description" class="error-message"></span>
 
-        <label asp-for="EditBlogVM.CoverImage"></label>
-        <input type="file" asp-for="EditBlogVM.CoverImage" accept=".png,.jpg,.jpeg" multiple>
-        <span asp-validation-for="EditBlogVM.CoverImage" class="error-message"></span>
+        <label asp-for="EditBlogViewModel.CoverImage"></label>
+        <input type="file" asp-for="EditBlogViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>
+        <span asp-validation-for="EditBlogViewModel.CoverImage" class="error-message"></span>
         
     </div>
     <br>
     <textarea rows="18" cols="50"
             name="EditBlogVM.Content"
-            required>@Model.EditBlogVM.Content</textarea>
-    <span asp-validation-for="EditBlogVM.Content" class="error-message"></span>
-    <input type="hidden" value="@Model.EditBlogVM.Id" asp-for="EditBlogVM.Id" />
+            required>@Model.EditBlogViewModel.Content</textarea>
+    <span asp-validation-for="EditBlogViewModel.Content" class="error-message"></span>
+    <input type="hidden" value="@Model.EditBlogViewModel.Id" asp-for="EditBlogViewModel.Id" />
     <input type="submit" value="Save changes" class="submit-post" />
 </form>

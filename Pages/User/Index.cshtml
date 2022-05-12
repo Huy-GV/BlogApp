@@ -29,7 +29,7 @@
     </div>
     <div class="stats">
         <p class="card-title">Statistics</p>
-        <ul></ul>
+        <ul>
             <li>Total blogs: @Model.UserDto.BlogCount</li>
             <li>Total comments: @Model.UserDto.CommentCount</li>
             <li>Blogs in @DateTime.Now.Year: @Model.UserDto.BlogCountCurrentYear</li>
@@ -47,10 +47,10 @@
     @foreach(var blog in Model.UserDto.Blogs)
     {
         <a class="blog" asp-page="/Blogs/Read" 
-                        asp-route-id="@blog.ID">
+                        asp-route-id="@blog.Id">
             <p class="title">@blog.Title</p> 
             <p>@blog.Date</p>
-            <p>@blog.Description</p>
+            <p>@blog.Introduction</p>
            
         </a>
     }

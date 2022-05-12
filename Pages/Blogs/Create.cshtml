@@ -10,27 +10,27 @@
 
 <form class="add-form" method="post" enctype="multipart/form-data">
     <div>
-        <label asp-for="CreateBlogVM.Title">Title</label>
-        <input asp-for="CreateBlogVM.Title" type="text" required>
-        <span asp-validation-for="CreateBlogVM.Title" class="error-message"></span>
-        <label asp-for="CreateBlogVM.Description">Description</label>
+        <label asp-for="CreateBlogViewModel.Title">Title</label>
+        <input asp-for="CreateBlogViewModel.Title" type="text" required>
+        <span asp-validation-for="CreateBlogViewModel.Title" class="error-message"></span>
+        <label asp-for="CreateBlogViewModel.Introduction">Introduction</label>
         <textarea rows="8" cols="50" 
-            asp-for="CreateBlogVM.Description" 
+            asp-for="CreateBlogViewModel.Introduction" 
             required
             type="text"
             placeholder="Description">
         </textarea>
-        <span asp-validation-for="CreateBlogVM.Description" class="error-message"></span>
-        <label asp-for="CreateBlogVM.CoverImage"></label>
-        <input type="file" asp-for="CreateBlogVM.CoverImage" accept=".png,.jpg,.jpeg" multiple>
-        <span asp-validation-for="CreateBlogVM.CoverImage" class="error-message"></span>
-        <label asp-for="CreateBlogVM.Content">Content</label>
+        <span asp-validation-for="CreateBlogViewModel.Introduction" class="error-message"></span>
+        <label asp-for="CreateBlogViewModel.CoverImage"></label>
+        <input type="file" asp-for="CreateBlogViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>
+        <span asp-validation-for="CreateBlogViewModel.CoverImage" class="error-message"></span>
+        <label asp-for="CreateBlogViewModel.Content">Content</label>
         <textarea rows="18" cols="50" 
-            asp-for="CreateBlogVM.Content" 
+            asp-for="CreateBlogViewModel.Content" 
             required
             placeholder="What do you want to share?" 
             type="text"></textarea><br>
-        <span asp-validation-for="CreateBlogVM.Content" class="error-message"></span>
+        <span asp-validation-for="CreateBlogViewModel.Content" class="error-message"></span>
     </div>
 
     <input type="submit" value="Add blog" class="submit-post" />

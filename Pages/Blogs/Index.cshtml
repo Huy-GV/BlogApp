@@ -21,13 +21,13 @@
     @foreach (var blog in Model.Blogs)
     {
         <a class="blog" asp-page="/Blogs/Read" 
-                        asp-route-id="@blog.ID">
-            <img src="/images/blogs/@blog.ImagePath">
+                        asp-route-id="@blog.Id">
+            <img src="/images/@blog.CoverImageUri">
             <div class="blog-info">
-                <span class="info">@blog.Author on @blog.Date.ToString("dd MMM yyyy")</span>
+                <span class="info">@blog.AuthorName on @blog.Date.ToString("dd MMM yyyy")</span>
                 <span class="info">&#128065; @blog.ViewCount</span>
                 <p class="title">@blog.Title</p>
-                <p class="description">@blog.Description</p>
+                <p class="description">@blog.Introduction</p>
             </div>
         </a>
     }

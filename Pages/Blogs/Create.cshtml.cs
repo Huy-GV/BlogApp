@@ -7,10 +7,9 @@ using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging; 
+using Microsoft.Extensions.Logging;
 using BlogApp.Services;
-using BlogApp.Data.ViewModel;
-using BlogApp.Interfaces;
+using BlogApp.Data.DTOs;
 
 namespace BlogApp.Pages.Blogs
 {
@@ -18,75 +17,72 @@ namespace BlogApp.Pages.Blogs
     public class CreateModel : BasePageModel<CreateModel>
     {
         [BindProperty]
-        public CreateBlogViewModel CreateBlogVM { get; set; }
+        public BlogViewModel CreateBlogViewModel { get; set; }
+
         private readonly UserModerationService _suspensionService;
-        private readonly IImageService _imageService;
+        private readonly IImageStorage _imageStorage;
+
         public CreateModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
-            IImageService imageService,
+            IImageStorage imageService,
             UserModerationService suspensionService) : base(
                 context, userManager, logger)
         {
-            _imageService = imageService;
+            _imageStorage = imageService;
             _suspensionService = suspensionService;
         }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await UserManager.GetUserAsync(User);
             var username = user.UserName;
 
-            if (await _suspensionService.ExistsAsync(username))
+            if (await _suspensionService.BanTicketExistsAsync(username))
             {
                 return RedirectToPage("./Index");
             }
 
             return Page();
         }
+
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await UserManager.GetUserAsync(User);
-            var username = user.UserName;
-
-            if (await _suspensionService.ExistsAsync(username))
+            if (await _suspensionService.BanTicketExistsAsync(user.UserName))
             {
-                return RedirectToPage("./Index");
+                return Forbid();
             }
 
             if (!ModelState.IsValid)
             {
-                Logger.LogError("Invalid model state when submitting new post");
+                Logger.LogError("Invalid model state when submitting new blog.");
                 return Page();
             }
 
             try
             {
-                var coverImage = CreateBlogVM.CoverImage;
-                var imageName = _imageService.BuildFileName(coverImage.FileName);
-                await _imageService.UploadBlogImageAsync(coverImage, imageName);
+                var imageName = await _imageStorage.UploadBlogCoverImageAsync(CreateBlogViewModel.CoverImage);
                 var entry = DbContext.Blog.Add(new Blog()
                 {
-                    ImagePath = imageName,
+                    CoverImageUri = imageName,
                     Date = DateTime.Now,
-                    Author = user.UserName,
-                    AppUserID = user.Id
+                    AppUserId = user.Id
                 });
 
-                entry.CurrentValues.SetValues(CreateBlogVM);
+                entry.CurrentValues.SetValues(CreateBlogViewModel);
                 await DbContext.SaveChangesAsync();
-                
+
                 return RedirectToPage("./Index");
-            } 
+            }
             catch (Exception ex)
             {
                 Logger.LogError("Failed to create blog");
                 Logger.LogError(ex.Message);
-                
+
                 return Page();
             }
         }
     }
-
 }
-

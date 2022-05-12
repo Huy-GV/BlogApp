@@ -10,38 +10,52 @@ using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using BlogApp.Pages;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Data.DTOs;
 
 namespace BlogApp.Pages.Blogs
 {
     [AllowAnonymous]
     public class IndexModel : BasePageModel<IndexModel>
     {
-        public IEnumerable<Blog> Blogs { get; set; }
+        public IEnumerable<BlogDto> Blogs { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public string SearchString { get; set; }
+
         public IndexModel(
             RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<IndexModel> logger) : base(
                 context, userManager, logger)
         {
-
         }
+
         public async Task OnGetAsync()
         {
-            IQueryable<Blog> blogs = from blog in DbContext.Blog
-                    select blog;
-
-            if (!string.IsNullOrEmpty(SearchString)) 
-            {
-                SearchString = SearchString.ToLower().Trim();
-                blogs = from blog in blogs.AsNoTracking()
-                        where blog.Title.ToLower().Contains(SearchString) 
-                        || blog.Author.ToLower().Contains(SearchString)
-                        select blog;
-            }
-
-            Blogs = await blogs.ToListAsync();
+            SearchString = SearchString?.Trim().Trim(' ') ?? string.Empty;
+            Blogs = await DbContext.Blog
+                .Include(b => b.AppUser)
+                .Include(b => b.Comments)
+                .ThenInclude(c => c.AppUser)
+                .Select(b => new BlogDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    AuthorName = b.AppUser == null
+                        ? "Deleted User"
+                        : b.AppUser.UserName,
+                    CreatedDate = b.Date,
+                    ViewCount = b.ViewCount,
+                    Date = b.Date,
+                    CoverImageUri = b.CoverImageUri,
+                    Introduction = b.Introduction,
+                })
+                .Where(b => SearchString == null ||
+                        SearchString == string.Empty ||
+                        b.Title.Contains(SearchString) ||
+                        b.AuthorName.Contains(SearchString))
+                .Take(10)
+                .ToListAsync();
         }
     }
 }

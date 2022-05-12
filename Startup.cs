@@ -64,7 +64,7 @@ namespace BlogApp
             services.AddAuthorization();
 
             //TODO: configure cookie options
-            services.ConfigureApplicationCookie(options => 
+            services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
@@ -73,7 +73,8 @@ namespace BlogApp
             });
 
             //transient because service is stateless and lightweight
-            services.AddTransient<IImageService, ImageService>(); 
+            services.AddTransient<IImageService, LegacyImageStorage>();
+            services.AddScoped<IImageStorage, ImageLocalFileStorage>();
 
             services.AddScoped<UserModerationService>();
         }

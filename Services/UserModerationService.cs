@@ -11,41 +11,46 @@ using BlogApp.Models;
 
 namespace BlogApp.Services
 {
+    // todo: remove ban with a background service
     public class UserModerationService
     {
         private readonly string _inappropriateBlog = "The blog has been hidden due to inappropriate content. The admin will decide whether it gets removed or not";
         private readonly string _inappropriateComment = "The comment has been hidden due to inappropriate content. The admin will decide whether it gets removed or not";
-        private readonly ILogger<ImageService> _logger; 
+        private readonly ILogger<UserModerationService> _logger;
         private readonly RazorBlogDbContext _dbContext;
+
         public UserModerationService(
-            RazorBlogDbContext dbContext, 
-            ILogger<ImageService> logger)
+            RazorBlogDbContext dbContext,
+            ILogger<UserModerationService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
-        public async Task<bool> ExistsAsync(string username)
+
+        public async Task<bool> BanTicketExistsAsync(string username)
         {
             await CheckExpiryAsync(username);
 
-            return _dbContext.Suspension.Any(s => s.Username == username);
+            return _dbContext.BanTicket.Any(s => s.UserName == username);
         }
+
         private async Task CheckExpiryAsync(string username)
         {
             var suspension = await FindAsync(username);
-            if (suspension != null && DateTime.Compare(DateTime.Now, suspension.Expiry) > 0)
+            if (suspension != null)
             {
                 await RemoveAsync(suspension);
             }
         }
 
-        public async Task<Suspension> FindAsync(string username) 
+        public async Task<BanTicket> FindAsync(string username)
         {
             return await _dbContext
-            .Suspension
-            .FirstOrDefaultAsync(s => s.Username == username);
-        } 
-        public async Task HideCommentAsync(int commentID) 
+                .BanTicket
+                .SingleOrDefaultAsync(s => s.UserName == username);
+        }
+
+        public async Task HideCommentAsync(int commentID)
         {
             var comment = await _dbContext.Comment.FindAsync(commentID);
             if (comment == null)
@@ -58,7 +63,8 @@ namespace BlogApp.Services
             _dbContext.Comment.Update(comment);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task HideBlogAsync(int blogID) 
+
+        public async Task HideBlogAsync(int blogID)
         {
             var blog = await _dbContext.Blog.FindAsync(blogID);
             if (blog == null)
@@ -71,10 +77,11 @@ namespace BlogApp.Services
             _dbContext.Blog.Update(blog);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task RemoveAsync(Suspension suspension)
+
+        public async Task RemoveAsync(BanTicket ticket)
         {
             //TODO: missing .Suspension
-            _dbContext.Remove(suspension);
+            _dbContext.BanTicket.Remove(ticket);
             await _dbContext.SaveChangesAsync();
         }
     }
