@@ -40,11 +40,6 @@ namespace BlogApp.Pages.Authentication
         public string ErrorMessage { get; set; }
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!string.IsNullOrEmpty(ErrorMessage))
-            {
-                ModelState.AddModelError(string.Empty, ErrorMessage);
-            }
-
             returnUrl ??= Url.Content("~/");
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
@@ -56,35 +51,35 @@ namespace BlogApp.Pages.Authentication
             returnUrl ??= Url.Content("~/");
             Console.WriteLine("Return URL from log in model: " + returnUrl);
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(
-                    LogInViewModel.UserName, 
-                    LogInViewModel.Password, 
-                    LogInViewModel.RememberMe, 
-                    lockoutOnFailure: false);
+                return Page();
+            }
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+            var result = await _signInManager.PasswordSignInAsync(
+                LogInViewModel.UserName, 
+                LogInViewModel.Password, 
+                LogInViewModel.RememberMe, 
+                lockoutOnFailure: false);
 
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return Page();
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+                return LocalRedirect(returnUrl);
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return Page();
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
             }
 
             // If we got this far, something failed, redisplay form
-            return Page();
         }
     }
 }

@@ -14,6 +14,6 @@ namespace BlogApp.Models
         public override string Content { get; set; }
 
         [Required]
-        public int BlogID { get; set; }
+        public int BlogId { get; set; }
     }
 }

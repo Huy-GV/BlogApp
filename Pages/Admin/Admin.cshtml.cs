@@ -27,17 +27,19 @@ namespace BlogApp.Pages.Admin
         //TODO: add a filter that shows moderators only
         public async Task<IActionResult> OnGetAsync()
         {
+            var adminUser = await GetUserAsync();
             var users = UserManager.Users
                 .AsNoTracking()
-                .ToList()
-                .Where(user => user.UserName != "admin");
+                .Where(user => user.UserName != adminUser.UserName)
+                .ToList();
 
-            List<PersonalProfileDto> userDTOs = new();
+            var userDTOs = new List<PersonalProfileDto>();
             foreach (var user in users)
             {
                 userDTOs.Add(await CreateUserDTOAsync(user));
             }
 
+            // todo: use a property for this
             ViewData["UserDTOs"] = userDTOs;
 
             return Page();

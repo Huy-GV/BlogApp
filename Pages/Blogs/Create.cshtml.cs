@@ -19,7 +19,7 @@ namespace BlogApp.Pages.Blogs
         [BindProperty]
         public BlogViewModel CreateBlogViewModel { get; set; }
 
-        private readonly UserModerationService _suspensionService;
+        private readonly IUserModerationService _userModerationService;
         private readonly IImageStorage _imageStorage;
 
         public CreateModel(
@@ -27,19 +27,19 @@ namespace BlogApp.Pages.Blogs
             UserManager<ApplicationUser> userManager,
             ILogger<CreateModel> logger,
             IImageStorage imageService,
-            UserModerationService suspensionService) : base(
+            IUserModerationService userModerationService) : base(
                 context, userManager, logger)
         {
             _imageStorage = imageService;
-            _suspensionService = suspensionService;
+            _userModerationService = userModerationService;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await UserManager.GetUserAsync(User);
+            var user = await GetUserAsync();
             var username = user.UserName;
 
-            if (await _suspensionService.BanTicketExistsAsync(username))
+            if (await _userModerationService.BanTicketExistsAsync(username))
             {
                 return RedirectToPage("./Index");
             }
@@ -49,8 +49,8 @@ namespace BlogApp.Pages.Blogs
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await UserManager.GetUserAsync(User);
-            if (await _suspensionService.BanTicketExistsAsync(user.UserName))
+            var user = await GetUserAsync();
+            if (await _userModerationService.BanTicketExistsAsync(user.UserName))
             {
                 return Forbid();
             }
@@ -64,16 +64,17 @@ namespace BlogApp.Pages.Blogs
             try
             {
                 var imageName = await _imageStorage.UploadBlogCoverImageAsync(CreateBlogViewModel.CoverImage);
-                var entry = DbContext.Blog.Add(new Blog()
+                var newBlog = new Blog()
                 {
                     CoverImageUri = imageName,
                     Date = DateTime.Now,
                     AppUserId = user.Id
-                });
-
-                entry.CurrentValues.SetValues(CreateBlogViewModel);
+                };
+                
+                DbContext.Blog.Add(newBlog).CurrentValues.SetValues(CreateBlogViewModel);
                 await DbContext.SaveChangesAsync();
-
+                
+                // todo: redirect to blog page
                 return RedirectToPage("./Index");
             }
             catch (Exception ex)

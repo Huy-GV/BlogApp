@@ -1,7 +1,5 @@
-﻿@page 
+﻿@page
 @model BlogApp.Pages.Blogs.IndexModel
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Index";
@@ -20,12 +18,11 @@
 <main class="blog-container">
     @foreach (var blog in Model.Blogs)
     {
-        <a class="blog" asp-page="/Blogs/Read" 
-                        asp-route-id="@blog.Id">
-            <img src="/images/@blog.CoverImageUri">
+        <a class="blog" asp-page="/Blogs/Read" asp-route-id="@blog.Id">
+            <img alt="Blog Image" src="~/images/@blog.CoverImageUri" asp-append-version="true">
             <div class="blog-info">
                 <span class="info">@blog.AuthorName on @blog.Date.ToString("dd MMM yyyy")</span>
-                <span class="info">&#128065; @blog.ViewCount</span>
+                <span class="info">&#128065; @blog.ViewCount.ToString()</span>
                 <p class="title">@blog.Title</p>
                 <p class="description">@blog.Introduction</p>
             </div>

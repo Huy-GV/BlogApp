@@ -19,7 +19,7 @@ namespace BlogApp.Pages.Admin
     [Authorize(Roles = "admin")]
     public class DetailsModel : BasePageModel<DetailsModel>
     {
-        private readonly UserModerationService _suspensionService;
+        private readonly IUserModerationService _userModerationService;
 
         [BindProperty]
         public BanTicket SuspensionTicket { get; set; }
@@ -27,10 +27,9 @@ namespace BlogApp.Pages.Admin
         public DetailsModel(RazorBlogDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<DetailsModel> logger,
-            UserModerationService userSuspensionService
-            ) : base(context, userManager, logger)
+            IUserModerationService userUserModerationService) : base(context, userManager, logger)
         {
-            _suspensionService = userSuspensionService;
+            _userModerationService = userUserModerationService;
         }
 
         public async Task<IActionResult> OnGetAsync(string? username)
@@ -48,7 +47,7 @@ namespace BlogApp.Pages.Admin
             ViewData["UserDTO"] = GetUserDTO(username);
             ViewData["HiddenBlogs"] = await GetHiddenBlogs(username);
             ViewData["HiddenComments"] = await GetHiddenComments(username);
-            ViewData["Suspension"] = await _suspensionService.FindAsync(username);
+            ViewData["Suspension"] = await _userModerationService.FindAsync(username);
 
             return Page();
         }
@@ -91,7 +90,7 @@ namespace BlogApp.Pages.Admin
 
         public async Task<IActionResult> OnPostSuspendUserAsync()
         {
-            if (!(await _suspensionService.BanTicketExistsAsync(SuspensionTicket.UserName)))
+            if (!(await _userModerationService.BanTicketExistsAsync(SuspensionTicket.UserName)))
             {
                 DbContext.BanTicket.Add(SuspensionTicket);
                 await DbContext.SaveChangesAsync();
@@ -106,11 +105,11 @@ namespace BlogApp.Pages.Admin
         // todo: rename and use moderation service
         public async Task<IActionResult> OnPostLiftSuspensionAsync(string username)
         {
-            if (await _suspensionService.BanTicketExistsAsync(username))
+            if (await _userModerationService.BanTicketExistsAsync(username))
             {
                 var suspension = await DbContext.BanTicket
                     .SingleOrDefaultAsync(s => s.UserName == username);
-                await _suspensionService.RemoveAsync(suspension);
+                await _userModerationService.RemoveAsync(suspension);
             }
             else
             {
@@ -129,7 +128,6 @@ namespace BlogApp.Pages.Admin
                 return NotFound();
             }
 
-            blog.SuspensionExplanation = string.Empty;
             DbContext.Attach(blog).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
 
@@ -146,7 +144,6 @@ namespace BlogApp.Pages.Admin
             }
 
             // todo: add content moderation service?
-            comment.SuspensionExplanation = string.Empty;
             DbContext.Attach(comment).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
 
@@ -174,6 +171,7 @@ namespace BlogApp.Pages.Admin
                 Logger.LogError("blog not found");
                 return NotFound();
             }
+            
             DbContext.Blog.Remove(blog);
             await DbContext.SaveChangesAsync();
             return RedirectToPage("Details", new { username = blog.Author });

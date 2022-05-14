@@ -11,7 +11,7 @@ namespace BlogApp.Services
     public enum ImageType
     {
         BlogCover,
-        ProfilePicture
+        ProfileImage
     }
 
     public class ImageLocalFileStorage : IImageStorage
@@ -61,7 +61,7 @@ namespace BlogApp.Services
 
         public async Task<string> UploadProfileImageAsync(IFormFile imageFile)
         {
-            var type = nameof(ImageType.ProfilePicture);
+            var type = nameof(ImageType.ProfileImage);
             return await UploadImageAsync(imageFile, type);
         }
 

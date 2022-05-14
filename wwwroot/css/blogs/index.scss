@@ -1,6 +1,5 @@
 @import "../base.scss";
 
-
 .info-text {
     font-size: 0.7rem;
     
@@ -93,7 +92,6 @@
             }
 
             .description {
-                font-family: "Open Sans",Helvetica,arial,sans-serif;
                 @extend .content-info;
                 font-size: 0.7rem;
                 color: #606060;
@@ -113,7 +111,6 @@
         margin-inline: auto;
         font-size: 1.5rem;
     }
-
 }
 
 

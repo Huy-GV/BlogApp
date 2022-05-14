@@ -26,5 +26,7 @@ namespace BlogApp.Pages
             UserManager = userManager;
             Logger = logger;
         }
+
+        protected async Task<ApplicationUser> GetUserAsync() => await UserManager.GetUserAsync(User);
     }
 }

@@ -9,31 +9,31 @@ using BlogApp.Data;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using BlogApp.Pages;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data.DTOs;
 
 namespace BlogApp.Pages.Blogs
 {
     [AllowAnonymous]
-    public class IndexModel : BasePageModel<IndexModel>
+    public class IndexModel : PageModel
     {
+        private readonly RazorBlogDbContext _context;
+        [BindProperty]
         public IEnumerable<BlogDto> Blogs { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string SearchString { get; set; }
 
-        public IndexModel(
-            RazorBlogDbContext context,
-            UserManager<ApplicationUser> userManager,
-            ILogger<IndexModel> logger) : base(
-                context, userManager, logger)
+        public IndexModel(RazorBlogDbContext context)
         {
+            _context = context;
         }
 
         public async Task OnGetAsync()
         {
             SearchString = SearchString?.Trim().Trim(' ') ?? string.Empty;
-            Blogs = await DbContext.Blog
+            Blogs = await _context.Blog
                 .Include(b => b.AppUser)
                 .Include(b => b.Comments)
                 .ThenInclude(c => c.AppUser)

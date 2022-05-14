@@ -19,7 +19,6 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
-using BlogApp.Interfaces;
 
 namespace BlogApp.Pages.Authentication
 {
@@ -29,18 +28,18 @@ namespace BlogApp.Pages.Authentication
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IImageService _imageService;
+        private readonly IImageStorage _imageStorage;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IImageService imageService)
+            IImageStorage imageStorage)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _imageService = imageService;
+            _imageStorage = imageStorage;
         }
 
         [BindProperty]
@@ -58,49 +57,47 @@ namespace BlogApp.Pages.Authentication
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            string profilePath = "default";
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (CreateUserViewModel.ProfilePicture != null)
-                {
-                    profilePath = await GetProfilePicturePath(CreateUserViewModel);
-                }
-
-                var user = new ApplicationUser
-                {
-                    UserName = CreateUserViewModel.UserName,
-                    EmailConfirmed = true,
-                    RegistrationDate = DateTime.Now,
-                    ProfileImageUri = profilePath,
-                };
-
-                var result = await _userManager.CreateAsync(user, CreateUserViewModel.Password);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    return LocalRedirect(returnUrl);
-                }
+                return Page();
             }
+            
+            var user = new ApplicationUser()
+            {
+                UserName = CreateUserViewModel.UserName,
+                EmailConfirmed = true,
+                RegistrationDate = DateTime.Now,
+                ProfileImageUri = CreateUserViewModel.ProfilePicture == null
+                    ? GetDefaultProfileImageUri()
+                    : await UploadProfileImage(CreateUserViewModel.ProfilePicture),
+            };
 
-            return Page();
+            var result = await _userManager.CreateAsync(user, CreateUserViewModel.Password);
+            if (!result.Succeeded)
+            {
+                return Page();
+            }
+            
+            _logger.LogInformation($"User created a new account with username {CreateUserViewModel.UserName}.");
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            return LocalRedirect(returnUrl);
         }
 
-        private async Task<string> GetProfilePicturePath(CreateUserViewModel createUser)
+        private async Task<string> UploadProfileImage(IFormFile image)
         {
             try
             {
-                var imageFile = createUser.ProfilePicture;
-                var fileName = _imageService.BuildFileName(imageFile.FileName);
-                await _imageService.UploadProfileImageAsync(imageFile, fileName);
-                return fileName;
+                return await _imageStorage.UploadProfileImageAsync(image);
             }
             catch (Exception ex)
             {
+                // todo: un-hardcode the default image path
                 _logger.LogError($"Failed to upload new profile picture: {ex}");
-                return "default.jpg";
+                return GetDefaultProfileImageUri();
             }
         }
+        
+        private string GetDefaultProfileImageUri() => Path.Combine("ProfileImage", "default.jpg");
     }
 }

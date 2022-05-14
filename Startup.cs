@@ -1,5 +1,4 @@
 ﻿using BlogApp.Data;
-using BlogApp.Interfaces;
 using BlogApp.Models;
 using BlogApp.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -72,11 +71,8 @@ namespace BlogApp
                 options.LogoutPath = "/Authentication/Logout";
             });
 
-            //transient because service is stateless and lightweight
-            services.AddTransient<IImageService, LegacyImageStorage>();
             services.AddScoped<IImageStorage, ImageLocalFileStorage>();
-
-            services.AddScoped<UserModerationService>();
+            services.AddScoped<IUserModerationService, UserModerationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

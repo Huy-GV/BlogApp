@@ -38,7 +38,7 @@ namespace BlogApp.Pages.User
                 return NotFound();
             }
 
-            if (user.UserName != User.Identity.Name)
+            if (user.UserName != User.Identity?.Name)
             {
                 return Forbid();
             }

@@ -42,7 +42,7 @@ namespace BlogApp.Data
             {
                 UserName = userName,
                 EmailConfirmed = true,
-                ProfileImageUri = @"ProfileImage/default.jpg",
+                ProfileImageUri = @"/ProfileImage/default.jpg",
                 Description = "Lorem ipsum dolor sed temda met sedim ips dolor sed temda met sedim ips dolor sed temda met sedim ips"
             };
 

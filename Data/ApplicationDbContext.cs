@@ -19,8 +19,6 @@ namespace BlogApp.Data
         public DbSet<BanTicket> BanTicket { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
-        // todo: specify db here
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

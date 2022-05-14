@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BlogApp.Services;
 using BlogApp.Data.ViewModel;
-using BlogApp.Interfaces;
 
 namespace BlogApp.Pages.Blogs
 {
@@ -32,19 +31,19 @@ namespace BlogApp.Pages.Blogs
             _imageStorage = imageStorage;
         }
 
-        public async Task<IActionResult> OnGetAsync(int? blogID, string? username)
+        public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
         {
-            if (blogID == null || username == null)
+            if (blogId == null || username == null)
             {
                 return NotFound();
             }
 
-            if (User.Identity.Name != username)
+            if (User.Identity?.Name != username)
             {
                 return Forbid();
             }
 
-            var blog = await DbContext.Blog.FindAsync(blogID);
+            var blog = await DbContext.Blog.FindAsync(blogId);
 
             if (blog == null)
             {
@@ -70,7 +69,7 @@ namespace BlogApp.Pages.Blogs
                 return Page();
             }
 
-            var user = await UserManager.GetUserAsync(User);
+            var user = await GetUserAsync();
             var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
 
             if (blog == null)

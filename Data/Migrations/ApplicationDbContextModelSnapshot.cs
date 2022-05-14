@@ -123,9 +123,8 @@ namespace BlogApp.Data.Migrations
                     b.Property<string>("Introduction")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SuspensionExplanation")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -166,9 +165,8 @@ namespace BlogApp.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SuspensionExplanation")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
