@@ -1,89 +1,80 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using BlogApp.Data;
-using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BlogApp.Services;
-using BlogApp.Data.DTOs;
+using RazorBlog.Data;
+using RazorBlog.Data.ViewModels;
+using RazorBlog.Models;
+using RazorBlog.Services;
 
-namespace BlogApp.Pages.Blogs
+namespace RazorBlog.Pages.Blogs;
+
+[Authorize]
+public class CreateModel : BasePageModel<CreateModel>
 {
-    [Authorize]
-    public class CreateModel : BasePageModel<CreateModel>
+    private readonly IImageStorage _imageStorage;
+
+    private readonly IUserModerationService _userModerationService;
+
+    public CreateModel(
+        RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<CreateModel> logger,
+        IImageStorage imageService,
+        IUserModerationService userModerationService) : base(
+    context, userManager, logger)
     {
-        [BindProperty]
-        public BlogViewModel CreateBlogViewModel { get; set; }
+        _imageStorage = imageService;
+        _userModerationService = userModerationService;
+    }
 
-        private readonly IUserModerationService _userModerationService;
-        private readonly IImageStorage _imageStorage;
+    [BindProperty] public BlogViewModel CreateBlogViewModel { get; set; }
 
-        public CreateModel(
-            RazorBlogDbContext context,
-            UserManager<ApplicationUser> userManager,
-            ILogger<CreateModel> logger,
-            IImageStorage imageService,
-            IUserModerationService userModerationService) : base(
-                context, userManager, logger)
+    public async Task<IActionResult> OnGetAsync()
+    {
+        var user = await GetUserAsync();
+        var username = user.UserName;
+
+        if (await _userModerationService.BanTicketExistsAsync(username)) return RedirectToPage("./Index");
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        var user = await GetUserAsync();
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName)) return Forbid();
+
+        if (!ModelState.IsValid)
         {
-            _imageStorage = imageService;
-            _userModerationService = userModerationService;
-        }
-
-        public async Task<IActionResult> OnGetAsync()
-        {
-            var user = await GetUserAsync();
-            var username = user.UserName;
-
-            if (await _userModerationService.BanTicketExistsAsync(username))
-            {
-                return RedirectToPage("./Index");
-            }
-
+            Logger.LogError("Invalid model state when submitting new blog.");
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        try
         {
-            var user = await GetUserAsync();
-            if (await _userModerationService.BanTicketExistsAsync(user.UserName))
+            var imageName = await _imageStorage.UploadBlogCoverImageAsync(CreateBlogViewModel.CoverImage);
+            var newBlog = new Blog
             {
-                return Forbid();
-            }
+                CoverImageUri = imageName,
+                Date = DateTime.Now,
+                AppUserId = user.Id
+            };
 
-            if (!ModelState.IsValid)
-            {
-                Logger.LogError("Invalid model state when submitting new blog.");
-                return Page();
-            }
+            DbContext.Blog.Add(newBlog).CurrentValues.SetValues(CreateBlogViewModel);
+            await DbContext.SaveChangesAsync();
 
-            try
-            {
-                var imageName = await _imageStorage.UploadBlogCoverImageAsync(CreateBlogViewModel.CoverImage);
-                var newBlog = new Blog()
-                {
-                    CoverImageUri = imageName,
-                    Date = DateTime.Now,
-                    AppUserId = user.Id
-                };
-                
-                DbContext.Blog.Add(newBlog).CurrentValues.SetValues(CreateBlogViewModel);
-                await DbContext.SaveChangesAsync();
-                
-                // todo: redirect to blog page
-                return RedirectToPage("./Index");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("Failed to create blog");
-                Logger.LogError(ex.Message);
+            // todo: redirect to blog page
+            return RedirectToPage("./Index");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Failed to create blog");
+            Logger.LogError(ex.Message);
 
-                return Page();
-            }
+            return Page();
         }
     }
 }

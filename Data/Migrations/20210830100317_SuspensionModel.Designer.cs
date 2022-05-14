@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RazorBlog.Data;
 
 namespace BlogApp.Data.Migrations
 {
@@ -21,7 +22,7 @@ namespace BlogApp.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BlogApp.Models.Blog", b =>
+            modelBuilder.Entity("RazorBlog.Models.Blog", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -59,7 +60,7 @@ namespace BlogApp.Data.Migrations
                     b.ToTable("Blog");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Comment", b =>
+            modelBuilder.Entity("RazorBlog.Models.Comment", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -298,9 +299,9 @@ namespace BlogApp.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Comment", b =>
+            modelBuilder.Entity("RazorBlog.Models.Comment", b =>
                 {
-                    b.HasOne("BlogApp.Models.Blog", null)
+                    b.HasOne("RazorBlog.Models.Blog", null)
                         .WithMany("Comments")
                         .HasForeignKey("BlogID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -358,7 +359,7 @@ namespace BlogApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Blog", b =>
+            modelBuilder.Entity("RazorBlog.Models.Blog", b =>
                 {
                     b.Navigation("Comments");
                 });

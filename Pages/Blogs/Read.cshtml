@@ -1,5 +1,8 @@
 ﻿@page
-@model BlogApp.Pages.Blogs.ReadModel
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using RazorBlog.Models
+@model ReadModel
 @inject SignInManager<ApplicationUser> SignInManager
 
 @{
@@ -20,33 +23,35 @@
         <p class="title">@Model.DetailedBlogDto.Title</p>
         <hr>
         <div class="comment-option-container">
-        @{
-            if (userInfo.AllowedToModifyOrDeleteBlog)
-            {
-                <form asp-page-handler="DeleteBlog" 
-                    asp-route-blogID="@Model.DetailedBlogDto.Id" 
-                    method="post">
-                    <input class="delete-post" type="submit" value="Delete">
-                </form>
-            } 
-            
-            if (userInfo.AllowedToModifyOrDeleteBlog) 
-            {
-                <a class="edit-post"
-                    asp-page="/Blogs/Edit" 
-                    asp-route-username="@userInfo.UserName"
-                    asp-route-blogID="@Model.DetailedBlogDto.Id">Edit</a>
+            @{
+                if (userInfo.AllowedToModifyOrDeleteBlog)
+                {
+                    <form asp-page-handler="DeleteBlog"
+                          asp-route-blogID="@Model.DetailedBlogDto.Id"
+                          method="post">
+                        <input class="delete-post" type="submit" value="Delete">
+                    </form>
+                }
+
+                if (userInfo.AllowedToModifyOrDeleteBlog)
+                {
+                    <a class="edit-post"
+                       asp-page="/Blogs/Edit"
+                       asp-route-username="@userInfo.UserName"
+                       asp-route-blogID="@Model.DetailedBlogDto.Id">
+                        Edit
+                    </a>
+                }
+
+                if (userInfo.AllowedToHideBlogOrComment && !Model.DetailedBlogDto.IsHidden)
+                {
+                    <form asp-page-handler="HideBlog"
+                          asp-route-blogID="@Model.DetailedBlogDto.Id"
+                          method="post">
+                        <button class="delete-comment">Hide</button>
+                    </form>
+                }
             }
-            
-            if (userInfo.AllowedToHideBlogOrComment && !Model.DetailedBlogDto.IsHidden)
-            {
-                <form asp-page-handler="HideBlog"
-                      asp-route-blogID="@Model.DetailedBlogDto.Id"
-                      method="post">
-                    <button class="delete-comment">Hide</button>
-                </form>
-            }
-        }
         </div>
         @{
             var (blogContentClass, blogContent) = Model.DetailedBlogDto.IsHidden
@@ -62,91 +67,92 @@
 
 <section class="author-info">
     <div class="profile-header">
-        <img  alt="Author's Profile Image" src="/images/@Model.DetailedBlogDto.AuthorProfileImageUri">
+        <img alt="Author's Profile Image" src="/images/@Model.DetailedBlogDto.AuthorProfileImageUri">
         <span>@Model.DetailedBlogDto.AuthorName</span>
     </div>
 
     <p>@Model.DetailedBlogDto.Introduction</p>
 </section>
 
-@if (!userInfo.IsBanned && SignInManager.IsSignedIn(User)) 
+@if (!userInfo.IsBanned && SignInManager.IsSignedIn(User))
 {
     <form method="post" class="comment-form" asp-page-handler="CreateComment">
-        <input asp-for="CreateCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden" />
+        <input asp-for="CreateCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden"/>
         <textarea rows="5" cols="50" required
             name="CreateCommentViewModel.Content"
             placeholder="Add a comment"></textarea>
-        <input type="submit" value="POST" class="submit-comment" />
+        <input type="submit" value="POST" class="submit-comment"/>
     </form>
 }
 
 <section class="comment-section">
     <div class="comment-container">
-    <p><strong>Comments</strong></p>
-    @foreach (var comment in Model.DetailedBlogDto.CommentDtos)
-    {
-        <article class="comment" data-id="@comment.Id">
-            @{
-                var authorClass = comment.AuthorName == Model.DetailedBlogDto.AuthorName
-                    ? "blog-author"
-                    : "comment-author";
-                
-                <div class="author-container">
-                    <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
-                    <span class="@authorClass">@comment.AuthorName</span>
-                </div>
-            }
-
-            <div class="comment-option-container">
-                @* if (user != null) *@
+        <p>
+            <strong>Comments</strong>
+        </p>
+        @foreach (var comment in Model.DetailedBlogDto.CommentDtos)
+        {
+            <article class="comment" data-id="@comment.Id">
                 @{
-                    var isUserCommentAuthor = comment.AuthorName == userInfo.UserName;
-                    if (isUserCommentAuthor)
-                    {
-                        <form asp-page-handler="DeleteComment"
-                              asp-route-commentID="@comment.Id"
-                              method="post">
-                            <button class="delete-comment">Delete</button>
-                        </form>
-                    }
-                    
-                    if (userInfo.AllowedToHideBlogOrComment && !comment.IsHidden)
-                    {
-                        <form asp-page-handler="HideComment"
-                              asp-route-commentID="@comment.Id"
-                              method="post">
-                            <button class="delete-comment">Hide</button>
-                        </form>
-                    }
+                    var authorClass = comment.AuthorName == Model.DetailedBlogDto.AuthorName
+                        ? "blog-author"
+                        : "comment-author";
 
-                    if (isUserCommentAuthor)
-                    {
-                        <form asp-page-handler="EditComment" 
-                                asp-route-commentID="@comment.Id" 
-                                data-id="@comment.Id" 
-                                method="post" #1#
-                                class="edit-comment-form"> 
-                             <textarea rows="5" cols="50" required 
+                    <div class="author-container">
+                        <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
+                        <span class="@authorClass">@comment.AuthorName</span>
+                    </div>
+                }
+
+                <div class="comment-option-container">
+                    @* if (user != null) *@
+                    @{
+                        var isUserCommentAuthor = comment.AuthorName == userInfo.UserName;
+                        if (isUserCommentAuthor)
+                        {
+                            <form asp-page-handler="DeleteComment"
+                                  asp-route-commentID="@comment.Id"
+                                  method="post">
+                                <button class="delete-comment">Delete</button>
+                            </form>
+                        }
+
+                        if (userInfo.AllowedToHideBlogOrComment && !comment.IsHidden)
+                        {
+                            <form asp-page-handler="HideComment"
+                                  asp-route-commentID="@comment.Id"
+                                  method="post">
+                                <button class="delete-comment">Hide</button>
+                            </form>
+                        }
+
+                        if (isUserCommentAuthor)
+                        {
+                            <form asp-page-handler="EditComment"
+                                  asp-route-commentID="@comment.Id"
+                                  data-id="@comment.Id"
+                                  method="post" #1#
+                                  class="edit-comment-form">
+                                <textarea rows="5" cols="50" required 
                                 name="EditCommentViewModel.Content"  
                                 asp-for="EditCommentViewModel.BlogId" 
-                                class="edit-comment-textarea hidden-element">@comment.Content</textarea> 
-                             <input asp-for="EditCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden" /> 
-                            <button class="edit-comment" data-id="@comment.Id" type="button">Edit</button> 
-                            <input type="submit" value="Save" class="save-btn hidden-element" /> 
-                        </form>
+                                class="edit-comment-textarea hidden-element">@comment.Content</textarea>
+                                <input asp-for="EditCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden"/>
+                                <button class="edit-comment" data-id="@comment.Id" type="button">Edit</button>
+                                <input type="submit" value="Save" class="save-btn hidden-element"/>
+                            </form>
+                        }
                     }
+                </div>
+                @{
+                    var postClass = comment.IsHidden
+                        ? "suspended-post"
+                        : string.Empty;
                 }
-            </div>
-            @{
-                var postClass = comment.IsHidden 
-                    ? "suspended-post"
-                    : string.Empty;
-            }
-            <p class="comment-text @postClass">@comment.Content</p>
-        </article>
-    }
+                <p class="comment-text @postClass">@comment.Content</p>
+            </article>
+        }
 
     </div>
 
 </section>
-

@@ -1,5 +1,5 @@
 ﻿@page
-@model BlogApp.Pages.User.IndexModel
+@model IndexModel
 @{
     ViewData["Title"] = "Profile";
     ViewData["CSSLink"] = "/css/user/user.css";
@@ -15,9 +15,11 @@
             <p>Country: @Model.UserDto.Country</p>
             <p>Joined on: @Model.UserDto.RegistrationDate</p>
             <div class="button-container">
-                <a class="edit-profile" 
-                asp-page="/User/Edit" 
-                asp-route-username="@Model.UserDto.UserName">Update Profile</a>
+                <a class="edit-profile"
+                   asp-page="/User/Edit"
+                   asp-route-username="@Model.UserDto.UserName">
+                    Update Profile
+                </a>
                 <a class="change-password">Change Password</a>
             </div>
 
@@ -38,20 +40,20 @@
     </div>
 </main>
 <section class="blog-container">
-@*    <a class="blog">
+    @*    <a class="blog">
         <p>Title</p> 
         <p>Date</p>
         <p>Description</p>
     </a>*@
     <h1>History: </h1>
-    @foreach(var blog in Model.UserDto.Blogs)
+    @foreach (var blog in Model.UserDto.Blogs)
     {
-        <a class="blog" asp-page="/Blogs/Read" 
-                        asp-route-id="@blog.Id">
-            <p class="title">@blog.Title</p> 
+        <a class="blog" asp-page="/Blogs/Read"
+           asp-route-id="@blog.Id">
+            <p class="title">@blog.Title</p>
             <p>@blog.Date</p>
             <p>@blog.Introduction</p>
-           
+
         </a>
     }
 </section>

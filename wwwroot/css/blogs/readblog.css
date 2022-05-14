@@ -84,7 +84,6 @@
 
 .blog-container .blog .title {
   font-weight: 700;
-  font-size: 2rem;
   text-align: center;
   font-family: Garamond, serif;
   font-size: 3rem;
@@ -104,7 +103,7 @@
 }
 
 .blog-container .blog .blog-description {
-  font-family: "Open Sans",Helvetica,arial,sans-serif;
+  font-family: "Open Sans", Helvetica, arial, sans-serif;
   line-height: 1.4rem;
   white-space: pre-line;
   color: #606060;
@@ -119,7 +118,7 @@
 }
 
 .blog-container .blog .blog-content {
-  font-family: "Open Sans",Helvetica,arial,sans-serif;
+  font-family: "Open Sans", Helvetica, arial, sans-serif;
   line-height: 1.8rem;
   white-space: pre-line;
   font-size: 1.3rem;

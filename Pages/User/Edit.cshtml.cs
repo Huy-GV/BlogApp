@@ -1,119 +1,100 @@
-using BlogApp.Data;
-using BlogApp.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using System;
-using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using BlogApp.Services;
-using BlogApp.Data.ViewModel;
+using RazorBlog.Data;
+using RazorBlog.Data.ViewModels;
+using RazorBlog.Models;
+using RazorBlog.Services;
 
-namespace BlogApp.Pages.User
+namespace RazorBlog.Pages.User;
+
+[Authorize]
+public class EditModel : BasePageModel<EditModel>
 {
-    [Authorize]
-    public class EditModel : BasePageModel<EditModel>
+    private readonly IImageStorage _imageStorage;
+
+    private readonly ILogger<EditModel> _logger;
+
+    public EditModel(
+        RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<EditModel> logger,
+        IImageStorage imageStorage) : base(context, userManager, logger)
     {
-        [BindProperty]
-        public EditUserViewModel EditUserViewModel { get; set; }
+        _logger = logger;
+        _imageStorage = imageStorage;
+    }
 
-        private readonly ILogger<EditModel> _logger;
-        private readonly IImageStorage _imageStorage;
+    [BindProperty] public EditUserViewModel EditUserViewModel { get; set; }
 
-        public EditModel(
-            RazorBlogDbContext context,
-            UserManager<ApplicationUser> userManager,
-            ILogger<EditModel> logger,
-            IImageStorage imageStorage) : base(context, userManager, logger)
+    public async Task<IActionResult> OnGetAsync(string? username)
+    {
+        if (username == null) return NotFound();
+
+        var user = await UserManager.FindByNameAsync(username);
+        if (user == null) return NotFound();
+
+        if (user.UserName != User.Identity?.Name) return Forbid();
+
+        EditUserViewModel = new EditUserViewModel
         {
-            _logger = logger;
-            _imageStorage = imageStorage;
+            UserName = username,
+            Description = user.Description
+        };
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        var user = await UserManager.FindByNameAsync(EditUserViewModel.UserName);
+        if (user == null) return NotFound();
+
+        if (user.UserName != User.Identity?.Name) return Forbid();
+
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(m => m.Errors)
+                .Select(e => e.ErrorMessage);
+
+            foreach (var error in errors) _logger.LogError(error);
+
+            return RedirectToPage("/User/Edit", new { username = EditUserViewModel.UserName });
         }
 
-        public async Task<IActionResult> OnGetAsync(string? username)
+        var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
+        DbContext.Attach(applicationUser).CurrentValues.SetValues(EditUserViewModel);
+
+        if (EditUserViewModel.NewProfilePicture != null)
         {
-            if (username == null)
-            {
-                return NotFound();
-            }
-
-            var user = await UserManager.FindByNameAsync(username);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (user.UserName != User.Identity?.Name)
-            {
-                return Forbid();
-            }
-
-            EditUserViewModel = new EditUserViewModel()
-            {
-                UserName = username,
-                Description = user.Description
-            };
-
-            return Page();
+            await _imageStorage.DeleteImage(applicationUser.ProfileImageUri);
+            applicationUser.ProfileImageUri = await UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        DbContext.Attach(applicationUser).State = EntityState.Modified;
+        await DbContext.SaveChangesAsync();
+
+        return RedirectToPage("/User/Index", new { username = EditUserViewModel.UserName });
+    }
+
+    private async Task<string> UploadProfileImageAsync(IFormFile image)
+    {
+        try
         {
-            var user = await UserManager.FindByNameAsync(EditUserViewModel.UserName);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (user.UserName != User.Identity?.Name)
-            {
-                return Forbid();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values
-                    .SelectMany(m => m.Errors)
-                    .Select(e => e.ErrorMessage);
-
-                foreach (var error in errors)
-                {
-                    _logger.LogError(error);
-                }
-
-                return RedirectToPage("/User/Edit", new { username = EditUserViewModel.UserName });
-            }
-
-            var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
-            DbContext.Attach(applicationUser).CurrentValues.SetValues(EditUserViewModel);
-
-            if (EditUserViewModel.NewProfilePicture != null)
-            {
-                await _imageStorage.DeleteImage(applicationUser.ProfileImageUri);
-                applicationUser.ProfileImageUri = await UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
-            }
-
-            DbContext.Attach(applicationUser).State = EntityState.Modified;
-            await DbContext.SaveChangesAsync();
-
-            return RedirectToPage("/User/Index", new { username = EditUserViewModel.UserName });
+            return await _imageStorage.UploadProfileImageAsync(image);
         }
-
-        private async Task<string> UploadProfileImageAsync(IFormFile image)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _imageStorage.UploadProfileImageAsync(image);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to upload new profile picture: {ex}");
-                return Path.Combine("ProfileImage", "default.jpg");
-            }
+            _logger.LogError($"Failed to upload new profile picture: {ex}");
+            return Path.Combine("ProfileImage", "default.jpg");
         }
     }
 }

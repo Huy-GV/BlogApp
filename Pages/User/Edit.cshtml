@@ -1,5 +1,5 @@
 @page
-@model BlogApp.Pages.User.EditModel
+@model EditModel
 @{
     ViewData["Title"] = "Edit Profile";
     ViewData["CSSLink"] = "/css/user/edituser.css";
@@ -11,24 +11,30 @@
 <main>
     <form class="edit-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
         <div>
-            <label asp-for="EditUserViewModel.Country"><strong>Country</strong></label>
-            <input type="text" 
-            name="EditUserVM.Country"
-            asp-for="EditUserViewModel.Country" 
-            required 
-            value="@Model.EditUserViewModel.Country">
+            <label asp-for="EditUserViewModel.Country">
+                <strong>Country</strong>
+            </label>
+            <input type="text"
+                   name="EditUserVM.Country"
+                   asp-for="EditUserViewModel.Country"
+                   required
+                   value="@Model.EditUserViewModel.Country">
 
-            <label asp-for="EditUserViewModel.Description"><strong>Description</strong></label>
+            <label asp-for="EditUserViewModel.Description">
+                <strong>Description</strong>
+            </label>
             <textarea rows="8" cols="50"
                     name="EditUserVM.Description"
                     asp-for="EditUserViewModel.Description"
                     required>@Model.EditUserViewModel.Description</textarea>
 
-            <label asp-for="EditUserViewModel.NewProfilePicture"><strong>Profile picture</strong></label>
+            <label asp-for="EditUserViewModel.NewProfilePicture">
+                <strong>Profile picture</strong>
+            </label>
             <input type="file" asp-for="EditUserViewModel.NewProfilePicture" accept=".png,.jpg,.jpeg" multiple>
         </div>
         <br>
         <input type="hidden" value="@Model.EditUserViewModel.UserName" asp-for="EditUserViewModel.UserName"/>
-        <input type="submit" value="Save changes" class="submit-changes" />
+        <input type="submit" value="Save changes" class="submit-changes"/>
     </form>
 </main>

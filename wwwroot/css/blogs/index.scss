@@ -1,116 +1,116 @@
 @import "../base.scss";
 
 .info-text {
-    font-size: 0.7rem;
-    
-    &:hover {
-        cursor: pointer;
-        transition: 100ms ease-out;
-    }
+  font-size: 0.7rem;
+
+  &:hover {
+    cursor: pointer;
+    transition: 100ms ease-out;
+  }
 }
 
 .content-info {
-    margin-bottom: 0;
-    overflow: hidden;
+  margin-bottom: 0;
+  overflow: hidden;
 }
 
 .search-form {
-    margin: 0 0 1rem 10rem;
-    width: 50%;
+  margin: 0 0 1rem 10rem;
+  width: 50%;
+
+  @media screen and (max-width: $medium-screen-width) {
+    width: 70%;
+    margin-inline: auto;
+  }
+
+  input[type="submit"] {
+    border: none;
+    border-radius: 5px;
+    padding: 0.7rem;
+    font-size: 1rem;
+    @extend .primary-button;
 
     @media screen and (max-width: $medium-screen-width) {
-        width: 70%;
-        margin-inline: auto;
+      width: 20%;
     }
+  }
 
-    input[type="submit"] {
-        border: none;
-        border-radius: 5px;
-        padding: 0.7rem;
-        font-size: 1rem;
-        @extend .primary-button;
-
-        @media screen and (max-width: $medium-screen-width) {
-            width: 20%;
-        }
-    }
-
-    input[type="text"] {
-        padding: 0.6rem;
-        font-size: 1rem;
-        border-radius: 2px;
-        border: 1px solid $primary-purple;
-        width: 70%;
-    }
+  input[type="text"] {
+    padding: 0.6rem;
+    font-size: 1rem;
+    border-radius: 2px;
+    border: 1px solid $primary-purple;
+    width: 70%;
+  }
 }
 
 .blog-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
-    width: #{"min(800rem, 90%);"} ;
-    margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  width: #{"min(800rem, 90%);"};
+  margin: auto;
 
-    .blog {
-        @extend .clickable-card;
-        
-        margin: 0.5rem;
-        height: 13rem;
-        display: flex; 
-        background: white;
-        text-decoration: none;
-        color: black;
+  .blog {
+    @extend .clickable-card;
 
-        img {
-            width: 40%;
-            border-radius: 5px 0 0 5px;
-            object-fit: cover;
-        }
-        
-        .blog-info {
-            padding: 1rem;
-            display: flex;
-            align-content: flex-start;
-            flex-direction: column;
-            width: 60%;
-            margin-left: 1rem;
+    margin: 0.5rem;
+    height: 13rem;
+    display: flex;
+    background: white;
+    text-decoration: none;
+    color: black;
 
-            .info {
-                @extend .info-text;
-                font-weight: 600;
-                color: #2a2aa5;
-            }
-
-            .title {
-                @extend .content-info;
-                font-family: Garamond, serif;
-                height: 30%;
-                font-weight: 800;
-                font-size: 1.1rem;
-            }
-
-            .description {
-                @extend .content-info;
-                font-size: 0.7rem;
-                color: #606060;
-            }
-        }
+    img {
+      width: 40%;
+      border-radius: 5px 0 0 5px;
+      object-fit: cover;
     }
+
+    .blog-info {
+      padding: 1rem;
+      display: flex;
+      align-content: flex-start;
+      flex-direction: column;
+      width: 60%;
+      margin-left: 1rem;
+
+      .info {
+        @extend .info-text;
+        font-weight: 600;
+        color: #2a2aa5;
+      }
+
+      .title {
+        @extend .content-info;
+        font-family: Garamond, serif;
+        height: 30%;
+        font-weight: 800;
+        font-size: 1.1rem;
+      }
+
+      .description {
+        @extend .content-info;
+        font-size: 0.7rem;
+        color: #606060;
+      }
+    }
+  }
 }
 
 .today {
-    margin-inline: 10rem;
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: 'Times New Roman', serif;
-    width: fit-content;
-    
-    @media screen and (max-width: $medium-screen-width) {
-        margin-inline: auto;
-        font-size: 1.5rem;
-    }
+  margin-inline: 10rem;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Times New Roman', serif;
+  width: fit-content;
+
+  @media screen and (max-width: $medium-screen-width) {
+    margin-inline: auto;
+    font-size: 1.5rem;
+  }
 }
 
 

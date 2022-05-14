@@ -1,38 +1,42 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using BlogApp.Models
-
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using RazorBlog.Data.Constants
+@using RazorBlog.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 <nav>
     <img src="/readonly/logo.svg" alt="logo">
     <a asp-page="/Blogs/Index" class="home-link">Home</a>
-    
+
     @if (SignInManager.IsSignedIn(User))
     {
         <a asp-page="/User/Index" asp-route-username="@User.Identity!.Name">Profile</a>
 
         @if (User.IsInRole(Roles.AdminRole))
         {
-            <a asp-page="/Admin/Admin" >Users</a>
+            <a asp-page="/Admin/Admin">Users</a>
         }
-        
-        <a  asp-page="/Blogs/Create">Write</a>
+
+        <a asp-page="/Blogs/Create">Write</a>
         <div class="authentication-links">
             <p>@User.Identity!.Name</p>
             <p class="middle-bar"></p>
-            <a class="secondary-button log-btn" asp-page="/Authentication/Logout" >Log Out</a>
+            <a class="secondary-button log-btn" asp-page="/Authentication/Logout">Log Out</a>
         </div>
-
     }
     else
     {
         <div class="authentication-links">
-            <a class="secondary-button log-btn" 
-                asp-page="/Authentication/Login">Log In</a>
+            <a class="secondary-button log-btn"
+               asp-page="/Authentication/Login">
+                Log In
+            </a>
             <p class="middle-bar"></p>
-            <a class="log-btn primary-button" 
-                asp-page="/Authentication/Register">Sign Up</a>
+            <a class="log-btn primary-button"
+               asp-page="/Authentication/Register">
+                Sign Up
+            </a>
         </div>
     }
 </nav>

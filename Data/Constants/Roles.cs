@@ -1,9 +1,7 @@
-﻿namespace BlogApp.Data.Constants
+﻿namespace RazorBlog.Data.Constants;
+
+public static class Roles
 {
-    public class Roles
-    {
-        public static readonly string AdminRole = "admin";
-        public static readonly string ModeratorRole = "moderator";
-        public static readonly string UserRole = "user";
-    }
+    public const string AdminRole = "admin";
+    public const string ModeratorRole = "moderator";
 }

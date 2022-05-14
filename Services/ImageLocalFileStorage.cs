@@ -1,98 +1,84 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using RazorBlog.Data.Constants;
 
-namespace BlogApp.Services
+namespace RazorBlog.Services;
+
+public class ImageLocalFileStorage : IImageStorage
 {
-    //todo: move to enum
-    public enum ImageType
+    private readonly ILogger<ImageLocalFileStorage> _logger;
+    private readonly IWebHostEnvironment _webHostEnv;
+    private const string DefaultProfilePictureName = "default.jpg";
+    private const string ImageDirectoryName = "images";
+
+    public ImageLocalFileStorage(
+        ILogger<ImageLocalFileStorage> logger,
+        IWebHostEnvironment webHostEnv)
     {
-        BlogCover,
-        ProfileImage
+        _logger = logger;
+        _webHostEnv = webHostEnv;
     }
 
-    public class ImageLocalFileStorage : IImageStorage
+    private string AbsoluteImageDirPath => Path.Combine(_webHostEnv.WebRootPath, ImageDirectoryName);
+
+    public Task DeleteImage(string uri)
     {
-        private readonly string imageDirectoryName = "images";
-        private readonly string defaultProfilePictureName = "default.jpg";
-        private readonly ILogger<ImageLocalFileStorage> _logger;
-        private readonly IWebHostEnvironment _webHostEnv;
-
-        public ImageLocalFileStorage(
-            ILogger<ImageLocalFileStorage> logger,
-            IWebHostEnvironment webHostEnv)
+        if (uri == DefaultProfilePictureName)
         {
-            _logger = logger;
-            _webHostEnv = webHostEnv;
+            _logger.LogError("Attempt to remove default profile picture failed.");
+            return Task.CompletedTask;
         }
 
-        private string AbsoluteImageDirPath => Path.Combine(_webHostEnv.WebRootPath, imageDirectoryName);
-
-        public Task DeleteImage(string uri)
+        try
         {
-            if (uri == defaultProfilePictureName)
-            {
-                _logger.LogError($"Attempt to remove default profile picture failed.");
-                return Task.CompletedTask;
-            }
-
-            try
-            {
-                File.Delete(uri);
-                _logger.LogDebug($"Deleted image of type and path {uri}.");
-                return Task.CompletedTask; ;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                _logger.LogError($"Failed to remove image with file path: ${uri}");
-                return Task.CompletedTask; ;
-            }
+            File.Delete(uri);
+            _logger.LogDebug($"Deleted image of type and path {uri}.");
+            return Task.CompletedTask;
         }
-
-        public async Task<string> UploadBlogCoverImageAsync(IFormFile imageFile)
+        catch (Exception ex)
         {
-            var type = nameof(ImageType.BlogCover);
-            return await UploadImageAsync(imageFile, type);
-        }
+            _logger.LogError($"Failed to remove image with file path: ${uri}");
+            _logger.LogError(ex.Message);
 
-        public async Task<string> UploadProfileImageAsync(IFormFile imageFile)
-        {
-            var type = nameof(ImageType.ProfileImage);
-            return await UploadImageAsync(imageFile, type);
+            return Task.CompletedTask;
         }
+    }
 
-        private string BuildFileName(string originalName, string type)
-        {
-            return string.Join
-            (
-                "_",
-                new string[]
-                {
-                DateTimeOffset.Now.ToUnixTimeSeconds().ToString(),
-                type,
-                originalName.Trim('.','_','@', ' ', '#', '/', '\\', '!', '^', '&', '*'),
-                }
-            );
-        }
+    public async Task<string> UploadBlogCoverImageAsync(IFormFile imageFile)
+    {
+        return await UploadImageAsync(imageFile, ImageType.BlogCover);
+    }
 
-        private async Task<string> UploadImageAsync(
-            IFormFile imageFile,
-            string type)
-        {
-            var pathRelativeToImageDir = Path.Combine(type);
-            var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
-            var formattedName = BuildFileName(imageFile.FileName, type);
-            Directory.CreateDirectory(directoryPath);
-            var filePath = Path.Combine(directoryPath, formattedName);
-            using var stream = File.Create(filePath);
-            await imageFile.CopyToAsync(stream);
-            _logger.LogInformation($"File path of uploaded image is {filePath}.");
+    public async Task<string> UploadProfileImageAsync(IFormFile imageFile)
+    {
+        return await UploadImageAsync(imageFile, ImageType.ProfileImage);
+    }
 
-            return Path.Combine(pathRelativeToImageDir, formattedName);
-        }
+    private string BuildFileName(string originalName, string type)
+    {
+        return string.Join
+        (
+        "_", DateTimeOffset.Now.ToUnixTimeSeconds().ToString(), type,
+        originalName.Trim('.', '_', '@', ' ', '#', '/', '\\', '!', '^', '&', '*'));
+    }
+
+    private async Task<string> UploadImageAsync(
+        IFormFile imageFile,
+        ImageType type)
+    {
+        var pathRelativeToImageDir = Path.Combine(nameof(type));
+        var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
+        var formattedName = BuildFileName(imageFile.FileName, nameof(type));
+        Directory.CreateDirectory(directoryPath);
+        var filePath = Path.Combine(directoryPath, formattedName);
+        await using var stream = File.Create(filePath);
+        await imageFile.CopyToAsync(stream);
+        _logger.LogInformation($"File path of uploaded image is {filePath}.");
+
+        return Path.Combine(pathRelativeToImageDir, formattedName);
     }
 }

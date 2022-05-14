@@ -1,111 +1,86 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using BlogApp.Data;
-using BlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using BlogApp.Services;
-using BlogApp.Data.ViewModel;
+using RazorBlog.Data;
+using RazorBlog.Data.ViewModels;
+using RazorBlog.Models;
+using RazorBlog.Services;
 
-namespace BlogApp.Pages.Blogs
+namespace RazorBlog.Pages.Blogs;
+
+[Authorize]
+public class EditModel : BasePageModel<EditModel>
 {
-    [Authorize]
-    public class EditModel : BasePageModel<EditModel>
+    private readonly IImageStorage _imageStorage;
+
+    public EditModel(
+        RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<EditModel> logger,
+        IImageStorage imageStorage) : base(context, userManager, logger)
     {
-        [BindProperty]
-        public EditBlogViewModel EditBlogViewModel { get; set; }
+        _imageStorage = imageStorage;
+    }
 
-        private readonly IImageStorage _imageStorage;
+    [BindProperty] public EditBlogViewModel EditBlogViewModel { get; set; }
 
-        public EditModel(
-            RazorBlogDbContext context,
-            UserManager<ApplicationUser> userManager,
-            ILogger<EditModel> logger,
-            IImageStorage imageStorage) : base(context, userManager, logger)
+    public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
+    {
+        if (blogId == null || username == null) return NotFound();
+
+        if (User.Identity?.Name != username) return Forbid();
+
+        var blog = await DbContext.Blog.FindAsync(blogId);
+
+        if (blog == null) return NotFound();
+
+        EditBlogViewModel = new EditBlogViewModel
         {
-            _imageStorage = imageStorage;
-        }
+            Id = blog.Id,
+            Title = blog.Title,
+            Content = blog.Content,
+            Description = blog.Introduction
+        };
 
-        public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostEditBlogAsync()
+    {
+        if (!ModelState.IsValid)
         {
-            if (blogId == null || username == null)
-            {
-                return NotFound();
-            }
-
-            if (User.Identity?.Name != username)
-            {
-                return Forbid();
-            }
-
-            var blog = await DbContext.Blog.FindAsync(blogId);
-
-            if (blog == null)
-            {
-                return NotFound();
-            }
-
-            EditBlogViewModel = new EditBlogViewModel
-            {
-                Id = blog.Id,
-                Title = blog.Title,
-                Content = blog.Content,
-                Description = blog.Introduction
-            };
-
+            Logger.LogError("Invalid model state when editing blog");
             return Page();
         }
 
-        public async Task<IActionResult> OnPostEditBlogAsync()
-        {
-            if (!ModelState.IsValid)
+        var user = await GetUserAsync();
+        var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
+
+        if (blog == null) return NotFound();
+
+        if (string.IsNullOrEmpty(EditBlogViewModel.Content)) return RedirectToPage("/Blogs/Read", new { id = blog.Id });
+
+        if (user.UserName != blog.AppUser.UserName) return Forbid();
+
+        DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);
+
+        if (EditBlogViewModel.CoverImage != null)
+            try
             {
-                Logger.LogError("Invalid model state when editing blog");
-                return Page();
+                await _imageStorage.DeleteImage(blog.CoverImageUri);
+                var imageName = await _imageStorage.UploadBlogCoverImageAsync(EditBlogViewModel.CoverImage);
+                blog.CoverImageUri = imageName;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Failed to update blog image");
+                Logger.LogError(ex.Message);
             }
 
-            var user = await GetUserAsync();
-            var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
-
-            if (blog == null)
-            {
-                return NotFound();
-            }
-
-            if (string.IsNullOrEmpty(EditBlogViewModel.Content))
-            {
-                return RedirectToPage("/Blogs/Read", new { id = blog.Id });
-            }
-
-            if (user.UserName != blog.AppUser.UserName)
-            {
-                return Forbid();
-            }
-
-            DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);
-
-            if (EditBlogViewModel.CoverImage != null)
-            {
-                try
-                {
-                    await _imageStorage.DeleteImage(blog.CoverImageUri);
-                    var imageName = await _imageStorage.UploadBlogCoverImageAsync(EditBlogViewModel.CoverImage);
-                    blog.CoverImageUri = imageName;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError("Failed to update blog image");
-                    Logger.LogError(ex.Message);
-                }
-            }
-
-            await DbContext.SaveChangesAsync();
-            return RedirectToPage("/Blogs/Read", new { id = blog.Id });
-        }
+        await DbContext.SaveChangesAsync();
+        return RedirectToPage("/Blogs/Read", new { id = blog.Id });
     }
 }

@@ -1,5 +1,5 @@
 ﻿@page
-@model BlogApp.Pages.Blogs.EditModel
+@model EditModel
 
 @{
     ViewData["Title"] = "Edit Blog";
@@ -23,14 +23,14 @@
         <label asp-for="EditBlogViewModel.CoverImage"></label>
         <input type="file" asp-for="EditBlogViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>
         <span asp-validation-for="EditBlogViewModel.CoverImage" class="error-message"></span>
-        
+
     </div>
     <br>
-    
+
     <textarea rows="18" cols="50"
             name="EditBlogViewModel.Content"
             required>@Model.EditBlogViewModel.Content</textarea>
     <span asp-validation-for="EditBlogViewModel.Content" class="error-message"></span>
-    <input type="hidden" value="@Model.EditBlogViewModel.Id" asp-for="EditBlogViewModel.Id" />
-    <input type="submit" value="Save changes" class="submit-post" />
+    <input type="hidden" value="@Model.EditBlogViewModel.Id" asp-for="EditBlogViewModel.Id"/>
+    <input type="submit" value="Save changes" class="submit-post"/>
 </form>

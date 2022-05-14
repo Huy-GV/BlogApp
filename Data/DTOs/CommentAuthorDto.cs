@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace BlogApp.Data.DTOs
+namespace RazorBlog.Data.DTOs;
+
+public class CommentAuthorDto : BaseProfileDto
 {
-    public class CommentAuthorDto : BaseProfileDto
-    {
-        public int CommentId { get; set; }
-        public string Content { get; set; }
-        public DateTime Date { get; set; }
-    }
+    public int CommentId { get; set; }
+    public string Content { get; set; }
+    public DateTime Date { get; set; }
 }

@@ -1,238 +1,238 @@
 @import "../base.scss";
 
 .blog-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    .blog {
-        padding: 0.6rem;
-        width: 50%;
+  .blog {
+    padding: 0.6rem;
+    width: 50%;
 
-        @media screen and (max-width: $medium-screen-width) {
-            width: 80%;
-        }
-
-        .title {
-            font-weight: 700;
-            text-align: center;
-            font-family: Garamond, serif;
-            font-size: 3rem;
-            margin-top: 0.1rem;
-
-            
-            @media screen and (max-width: $medium-screen-width) {
-                font-size: 2rem;
-            }
-
-            @media screen and (max-width: $medium-screen-width) {
-                font-size: 1.8rem;
-            }
-        }
-
-        .blog-description {
-            font-family: "Open Sans",Helvetica,arial,sans-serif;
-            line-height: 1.4rem;
-            white-space: pre-line;
-            color: #606060;;
-        }
-
-        img {
-            border-radius: 10px;
-            object-fit: cover;
-            width: 100%;
-            max-height: 25rem;
-        }
-
-        .blog-content {
-            font-family: "Open Sans",Helvetica,arial,sans-serif;
-            line-height: 1.8rem;
-            white-space: pre-line;
-            font-size: 1.3rem;
-        
-        }
+    @media screen and (max-width: $medium-screen-width) {
+      width: 80%;
     }
+
+    .title {
+      font-weight: 700;
+      text-align: center;
+      font-family: Garamond, serif;
+      font-size: 3rem;
+      margin-top: 0.1rem;
+
+
+      @media screen and (max-width: $medium-screen-width) {
+        font-size: 2rem;
+      }
+
+      @media screen and (max-width: $medium-screen-width) {
+        font-size: 1.8rem;
+      }
+    }
+
+    .blog-description {
+      font-family: "Open Sans", Helvetica, arial, sans-serif;
+      line-height: 1.4rem;
+      white-space: pre-line;
+      color: #606060;;
+    }
+
+    img {
+      border-radius: 10px;
+      object-fit: cover;
+      width: 100%;
+      max-height: 25rem;
+    }
+
+    .blog-content {
+      font-family: "Open Sans", Helvetica, arial, sans-serif;
+      line-height: 1.8rem;
+      white-space: pre-line;
+      font-size: 1.3rem;
+
+    }
+  }
 }
 
 .blog-info-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 
-    .blog-info {
-        margin-left: 0.1rem;
-    }
+  .blog-info {
+    margin-left: 0.1rem;
+  }
 }
 
 .blog-author {
-    @extend .blog-info;
-    color: green;
-    font-weight: bold;
+  @extend .blog-info;
+  color: green;
+  font-weight: bold;
 }
 
 .comment-section {
-    width: 100%;
-    background-color: whitesmoke;
-    padding-bottom: 3rem;
+  width: 100%;
+  background-color: whitesmoke;
+  padding-bottom: 3rem;
 
-    .comment-container {
-        display: flex;
-        flex-direction: column;
-        padding: 0.1rem;
-        margin: auto;
-        width: 40%;
-        border-radius: 3px;
-    
-        @media screen and (max-width: $medium-screen-width) {
-            width: 60%;
-        }
-    
-        .comment {
-            padding: 1rem;
-            background-color: white;
-            margin: 0.3rem;
-            font-size: 0.8rem;
-            @extend .card;
+  .comment-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.1rem;
+    margin: auto;
+    width: 40%;
+    border-radius: 3px;
 
-            .author-container {
-                display: flex;
-                align-items: center;
-                gap: 1%;
-
-                img {
-                    height: 2.5rem;   
-                    width: 2.5rem; 
-                    border-radius: 100%;
-                    object-fit: cover;
-                }
-                
-                span {
-                    display: inline-block;
-                    padding: 0.2rem;
-                }
-            }
-
-
-            .comment-author {
-                color: $primary-purple;
-            }
-    
-            p {
-                margin-top: 0.8rem;
-                font-size: 1rem;
-            }
-        }  
+    @media screen and (max-width: $medium-screen-width) {
+      width: 60%;
     }
+
+    .comment {
+      padding: 1rem;
+      background-color: white;
+      margin: 0.3rem;
+      font-size: 0.8rem;
+      @extend .card;
+
+      .author-container {
+        display: flex;
+        align-items: center;
+        gap: 1%;
+
+        img {
+          height: 2.5rem;
+          width: 2.5rem;
+          border-radius: 100%;
+          object-fit: cover;
+        }
+
+        span {
+          display: inline-block;
+          padding: 0.2rem;
+        }
+      }
+
+
+      .comment-author {
+        color: $primary-purple;
+      }
+
+      p {
+        margin-top: 0.8rem;
+        font-size: 1rem;
+      }
+    }
+  }
 }
 
 .author-info {
-    padding: 1rem;
-    margin-inline: auto;
-    margin-block: 2rem;
-    width: 40%;
-    @extend .card;
+  padding: 1rem;
+  margin-inline: auto;
+  margin-block: 2rem;
+  width: 40%;
+  @extend .card;
 
-    @media screen and (max-width: $medium-screen-width) {
-        width: 60%;
+  @media screen and (max-width: $medium-screen-width) {
+    width: 60%;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 1rem;
+      font-weight: 600;
     }
 
-    .profile-header {
-        display: flex;
-        align-items: center;
-
-        span {
-            margin-left: 1rem;
-            font-weight: 600;
-        }
-
-        img {
-            height: 3rem;
-            width: 3rem;
-            border-radius: 100%;
-            object-fit: cover;
-        }
+    img {
+      height: 3rem;
+      width: 3rem;
+      border-radius: 100%;
+      object-fit: cover;
     }
+  }
 
 }
 
 .comment-option-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
-.text-input-field{
-    border-radius: 6px;
-    border: 2px solid lightgray;
-    padding: 0.5rem;
+.text-input-field {
+  border-radius: 6px;
+  border: 2px solid lightgray;
+  padding: 0.5rem;
 }
 
 .comment-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.2rem;
 
-    textarea {
-        @extend .text-input-field;
-        font-size: 0.8rem;
-        width: 20rem;
-        height: 50px;
-    }
+  textarea {
+    @extend .text-input-field;
+    font-size: 0.8rem;
+    width: 20rem;
+    height: 50px;
+  }
 }
 
 .edit-comment-form {
-    textarea {
-        @extend .text-input-field;
-        width: 100%;
-        box-sizing: border-box;
-    }
+  textarea {
+    @extend .text-input-field;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .submit-comment {
-    @extend .link;
-    @extend .primary-button;
-    width: fit-content;
-    margin: 0.2rem;
-    padding: 0.7rem;
-    font-size: 0.8rem;
+  @extend .link;
+  @extend .primary-button;
+  width: fit-content;
+  margin: 0.2rem;
+  padding: 0.7rem;
+  font-size: 0.8rem;
 }
 
 .save-btn {
-    @extend .link;
-    @extend .primary-button;
-    font-size: 0.6rem;
-    padding: 0.5rem;
+  @extend .link;
+  @extend .primary-button;
+  font-size: 0.6rem;
+  padding: 0.5rem;
 }
 
 .link {
-    @extend .smooth-transition;
-    margin: 0.1rem;
-    text-decoration: none;
+  @extend .smooth-transition;
+  margin: 0.1rem;
+  text-decoration: none;
 
-    &:hover {
-        cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .delete-post, .edit-post, .delete-comment, .edit-comment {
-    @extend .link;
-    color: grey;
-    border: none;
-    background: white;
-    font-weight: bold;
-    font-size: 0.7rem;
-    padding: 0.3rem;
+  @extend .link;
+  color: grey;
+  border: none;
+  background: white;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 0.3rem;
 
 }
 
 .delete-post, .delete-comment {
-    &:hover {
-        color: red;
-    }
+  &:hover {
+    color: red;
+  }
 }
 
 .edit-post, .edit-comment {
-    &:hover {
-        color: $primary-purple;
-    }
+  &:hover {
+    color: $primary-purple;
+  }
 }

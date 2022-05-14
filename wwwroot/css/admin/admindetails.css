@@ -1,20 +1,20 @@
-.smooth-transition, .button, .primary-button, .secondary-button, .clickable-card {
+.smooth-transition, .button, .primary-button, .secondary-button, .un-hide-post, .delete-post, .clickable-card {
   -webkit-transition: 180ms ease-in;
   transition: 180ms ease-in;
 }
 
-.smooth-transition:hover, .button:hover, .primary-button:hover, .secondary-button:hover, .clickable-card:hover {
+.smooth-transition:hover, .button:hover, .primary-button:hover, .secondary-button:hover, .un-hide-post:hover, .delete-post:hover, .clickable-card:hover {
   -webkit-transition: 180ms ease-in;
   transition: 180ms ease-in;
 }
 
-.button, .primary-button, .secondary-button {
+.button, .primary-button, .secondary-button, .un-hide-post, .delete-post {
   -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
           box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
 
-.button:hover, .primary-button:hover, .secondary-button:hover {
+.button:hover, .primary-button:hover, .secondary-button:hover, .un-hide-post:hover, .delete-post:hover {
   cursor: pointer;
 }
 
@@ -169,10 +169,8 @@
 
 .un-hide-post {
   margin-top: 0.2rem;
-  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-  background-color: orange;
-  border: 1px solid orange;
+  background-color: green;
+  border: 1px solid green;
   width: 100%;
   color: white;
   font-size: 1.2rem;
@@ -182,11 +180,12 @@
 
 .delete-post {
   margin-top: 0.2rem;
-  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   background-color: red;
   border: 1px solid red;
   width: 100%;
   color: white;
+  font-size: 1.2rem;
+  padding: 1rem;
+  font-weight: 700;
 }
 /*# sourceMappingURL=admindetails.css.map */

@@ -1,7 +1,7 @@
 ﻿@page
-@using BlogApp.Data.DTOs
-@using BlogApp.Models
-@model BlogApp.Pages.Admin.DetailsModel
+@using RazorBlog.Data.DTOs
+@using RazorBlog.Models
+@model DetailsModel
 
 @{
     ViewData["Title"] = "User Details";
@@ -34,13 +34,14 @@
         <p>Mod: at Suspend date</p>
     </div> *@
     @{
-        if (suspendedBlogs.Count == 0) {
+        if (suspendedBlogs.Count == 0)
+        {
             <div class="suspended-blog">
                 <p>None</p>
                 <hr>
             </div>
         }
-        foreach(var blog in suspendedBlogs) 
+        foreach (var blog in suspendedBlogs)
         {
             <div class="suspended-blog">
                 <h5>Original content</h5>
@@ -63,13 +64,14 @@
     }
     <h2>Reported comments</h2>
     @{
-        if (suspendedComments.Count == 0) {
+        if (suspendedComments.Count == 0)
+        {
             <div class="suspended-comment">
                 <p>None</p>
                 <hr>
             </div>
         }
-        foreach(var comment in suspendedComments) 
+        foreach (var comment in suspendedComments)
         {
             <div class="suspended-comment">
                 <h5>Original content</h5>
@@ -97,28 +99,29 @@
     @* TODO: ADD LOGIC TO SHOW EXISTING SUSPENSIONS *@
     <div class="current-suspension">
         @{
-            if (suspension != null) {
+            if (suspension != null)
+            {
                 <p>Expiry date: @suspension.Expiry</p>
-                <form method="post" 
-                      asp-page-handler="LiftSuspension" 
+                <form method="post"
+                      asp-page-handler="LiftSuspension"
                       asp-route-username="@userDTO.UserName">
                     <button class="lift-ban-btn">Lift ban</button>
-                </form>     
-            } else {
+                </form>
+            }
+            else
+            {
                 <p>No suspension exists</p>
             }
         }
         <hr>
     </div>
-    
+
     <form class="suspend-form" method="post" asp-page-handler="SuspendUser">
         <h4>Suspend</h4>
         <input type="date" asp-for="SuspensionTicket.Expiry"/>
         <input type="hidden" asp-for="SuspensionTicket.UserName" value="@userDTO.UserName"/>
-        <button class='ban-btn' type="button">Ban</button>
-        <button class='cancel-btn hidden-element' type="button">Cancel</button>
-        <button class='confirm-ban-btn hidden-element'>Confirm </button>
+        <button class="ban-btn" type="button">Ban</button>
+        <button class="cancel-btn hidden-element" type="button">Cancel</button>
+        <button class="confirm-ban-btn hidden-element">Confirm </button>
     </form>
 </section>
-
-

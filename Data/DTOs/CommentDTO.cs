@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace BlogApp.Data.DTOs
+namespace RazorBlog.Data.DTOs;
+
+public class CommentDto
 {
-    public class CommentDto
-    {
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public string Content { get; set; }
-        public string AuthorName { get; set; }
-        public string AuthorProfileImageUri { get; set; }
-        public bool IsHidden { get; set; }
-    }
+    public int Id { get; set; }
+    public DateTime Date { get; set; }
+    public string Content { get; set; }
+    public string AuthorName { get; set; }
+    public string AuthorProfileImageUri { get; set; }
+    public bool IsHidden { get; set; }
 }

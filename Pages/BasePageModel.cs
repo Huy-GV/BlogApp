@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using BlogApp.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BlogApp.Models;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Data;
+using RazorBlog.Models;
 
-namespace BlogApp.Pages
+namespace RazorBlog.Pages;
+
+public class BasePageModel<TPageModel> : PageModel where TPageModel : PageModel
 {
-    public class BasePageModel<TPageModel> : PageModel where TPageModel : PageModel
+    public BasePageModel(
+        RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<TPageModel> logger)
     {
-        protected RazorBlogDbContext DbContext { get; }
-        protected UserManager<ApplicationUser> UserManager { get; }
-        protected ILogger<TPageModel> Logger { get;  }
-        public BasePageModel(
-            RazorBlogDbContext context, 
-            UserManager<ApplicationUser> userManager,
-            ILogger<TPageModel> logger)
-        {
-            DbContext = context;
-            UserManager = userManager;
-            Logger = logger;
-        }
+        DbContext = context;
+        UserManager = userManager;
+        Logger = logger;
+    }
 
-        protected async Task<ApplicationUser> GetUserAsync() => await UserManager.GetUserAsync(User);
+    protected RazorBlogDbContext DbContext { get; }
+    protected UserManager<ApplicationUser> UserManager { get; }
+    protected ILogger<TPageModel> Logger { get; }
+
+    protected async Task<ApplicationUser> GetUserAsync()
+    {
+        return await UserManager.GetUserAsync(User);
     }
 }

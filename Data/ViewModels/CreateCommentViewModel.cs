@@ -1,7 +1,6 @@
-namespace BlogApp.Data.ViewModel
+namespace RazorBlog.Data.ViewModels;
+
+public class CreateCommentViewModel : EditCommentViewModel
 {
-    public class CreateCommentViewModel : EditCommentViewModel
-    {
-        public int BlogId { get; set; }
-    }
+    public int BlogId { get; set; }
 }

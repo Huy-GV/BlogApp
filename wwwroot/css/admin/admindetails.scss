@@ -1,116 +1,116 @@
 @import "../base.scss";
 
 :root {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .profile-container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 20%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20%;
 }
 
 .suspended-blog-container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 20%;
-    background-color: white;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  margin-left: 20%;
+  background-color: white;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .suspended-blog {
-    padding: 0.2rem;
+  padding: 0.2rem;
 }
 
 .ban-details-container {
-    margin-left: 20%;
-    margin-top: 2rem;
-    background-color: white;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  margin-left: 20%;
+  margin-top: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .profile-container, .suspended-blog-container, .ban-details-container {
-    padding: 1rem;
-    width: 60%;
-    margin-inline: auto;
-    border-radius: 3px;
-    background-color: white;
+  padding: 1rem;
+  width: 60%;
+  margin-inline: auto;
+  border-radius: 3px;
+  background-color: white;
 
-    @media screen and (max-width: $medium-screen-width) {
-        width: 80%;
-    } 
+  @media screen and (max-width: $medium-screen-width) {
+    width: 80%;
+  }
 }
 
 .suspend-form {
-    background-color: rgb(238, 63, 63);
-    padding: 0.2rem;
-    border-radius: 3px;
-    color: white;
-    margin-top: 0.2rem;
+  background-color: rgb(238, 63, 63);
+  padding: 0.2rem;
+  border-radius: 3px;
+  color: white;
+  margin-top: 0.2rem;
 }
 
 .confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {
-    padding: 0.3rem;
-    border-radius: 2px;
-    font-size: medium;
+  padding: 0.3rem;
+  border-radius: 2px;
+  font-size: medium;
 }
 
-.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover, 
-.cancel-btn:hover, .un-hide-post:hover, .delete-post:hover{
-    cursor: pointer;
-    filter: brightness(0.6);
+.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover,
+.cancel-btn:hover, .un-hide-post:hover, .delete-post:hover {
+  cursor: pointer;
+  filter: brightness(0.6);
 }
 
 .lift-ban-btn {
-    background-color: rgb(42, 214, 42);
-    border: 1px solid rgb(42, 214, 42);
-    width: 100%;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
-    color:white;
+  background-color: rgb(42, 214, 42);
+  border: 1px solid rgb(42, 214, 42);
+  width: 100%;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  color: white;
 }
 
 .ban-btn {
-    background-color: rgb(237, 250, 50);
-    border: 2px solid rgb(237, 250, 50);
+  background-color: rgb(237, 250, 50);
+  border: 2px solid rgb(237, 250, 50);
 }
 
 .confirm-ban-btn {
-    background-color: rgb(112, 26, 26);
-    border: 2px solid rgb(112, 26, 26);
-    color: white;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+  background-color: rgb(112, 26, 26);
+  border: 2px solid rgb(112, 26, 26);
+  color: white;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
 }
 
 .cancel-btn {
-    background-color: orange;
-    color: white;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+  background-color: orange;
+  color: white;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
 }
 
 .un-hide-post {
-    @extend .button;
-    margin-top: 0.2rem;
-    background-color: green;
-    border: 1px solid green;
-    width: 100%;
-    color: white;
-    font-size: 1.2rem;
-    padding: 1rem;
-    font-weight: 700;
+  @extend .button;
+  margin-top: 0.2rem;
+  background-color: green;
+  border: 1px solid green;
+  width: 100%;
+  color: white;
+  font-size: 1.2rem;
+  padding: 1rem;
+  font-weight: 700;
 }
 
 .delete-post {
-    @extend .button;
-    margin-top: 0.2rem;
-    background-color: red;
-    border: 1px solid red;
-    width: 100%;
-    color: white;
-    font-size: 1.2rem;
-    padding: 1rem;
-    font-weight: 700;
+  @extend .button;
+  margin-top: 0.2rem;
+  background-color: red;
+  border: 1px solid red;
+  width: 100%;
+  color: white;
+  font-size: 1.2rem;
+  padding: 1rem;
+  font-weight: 700;
 }

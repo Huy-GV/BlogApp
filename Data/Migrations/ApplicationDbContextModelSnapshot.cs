@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RazorBlog.Data;
 
 namespace BlogApp.Data.Migrations
 {
@@ -19,7 +20,7 @@ namespace BlogApp.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BlogApp.Models.ApplicationUser", b =>
+            modelBuilder.Entity("RazorBlog.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -72,7 +73,7 @@ namespace BlogApp.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.BanTicket", b =>
+            modelBuilder.Entity("RazorBlog.Models.BanTicket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,7 +95,7 @@ namespace BlogApp.Data.Migrations
                     b.ToTable("BanTicket");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Blog", b =>
+            modelBuilder.Entity("RazorBlog.Models.Blog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,7 +141,7 @@ namespace BlogApp.Data.Migrations
                     b.ToTable("Blog");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Comment", b =>
+            modelBuilder.Entity("RazorBlog.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -308,9 +309,9 @@ namespace BlogApp.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.BanTicket", b =>
+            modelBuilder.Entity("RazorBlog.Models.BanTicket", b =>
                 {
-                    b.HasOne("BlogApp.Models.ApplicationUser", "AppUser")
+                    b.HasOne("RazorBlog.Models.ApplicationUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("UserName")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -319,22 +320,22 @@ namespace BlogApp.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Blog", b =>
+            modelBuilder.Entity("RazorBlog.Models.Blog", b =>
                 {
-                    b.HasOne("BlogApp.Models.ApplicationUser", "AppUser")
+                    b.HasOne("RazorBlog.Models.ApplicationUser", "AppUser")
                         .WithMany("Blogs")
                         .HasForeignKey("AppUserId");
 
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Comment", b =>
+            modelBuilder.Entity("RazorBlog.Models.Comment", b =>
                 {
-                    b.HasOne("BlogApp.Models.ApplicationUser", "AppUser")
+                    b.HasOne("RazorBlog.Models.ApplicationUser", "AppUser")
                         .WithMany("Comments")
                         .HasForeignKey("AppUserId");
 
-                    b.HasOne("BlogApp.Models.Blog", null)
+                    b.HasOne("RazorBlog.Models.Blog", null)
                         .WithMany("Comments")
                         .HasForeignKey("BlogID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -354,7 +355,7 @@ namespace BlogApp.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BlogApp.Models.ApplicationUser", null)
+                    b.HasOne("RazorBlog.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -363,7 +364,7 @@ namespace BlogApp.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BlogApp.Models.ApplicationUser", null)
+                    b.HasOne("RazorBlog.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -378,7 +379,7 @@ namespace BlogApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlogApp.Models.ApplicationUser", null)
+                    b.HasOne("RazorBlog.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -387,21 +388,21 @@ namespace BlogApp.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BlogApp.Models.ApplicationUser", null)
+                    b.HasOne("RazorBlog.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BlogApp.Models.ApplicationUser", b =>
+            modelBuilder.Entity("RazorBlog.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Blogs");
 
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("BlogApp.Models.Blog", b =>
+            modelBuilder.Entity("RazorBlog.Models.Blog", b =>
                 {
                     b.Navigation("Comments");
                 });

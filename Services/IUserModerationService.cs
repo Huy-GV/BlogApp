@@ -1,14 +1,28 @@
 ﻿using System.Threading.Tasks;
-using BlogApp.Models;
+using RazorBlog.Models;
 
-namespace BlogApp.Services
+namespace RazorBlog.Services;
+
+public interface IUserModerationService
 {
-    public interface IUserModerationService
-    {
-        Task<bool> BanTicketExistsAsync(string userName);
-        Task<BanTicket> FindAsync(string userName);
-        Task HideCommentAsync(int commentId);
-        Task HideBlogAsync(int blogId);
-        Task RemoveAsync(BanTicket ticket);
-    }
+    /// <summary>
+    ///     Checks if a user is banned.
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    Task<bool> BanTicketExistsAsync(string userName);
+    Task<BanTicket> FindAsync(string userName);
+    /// <summary>
+    ///     Marks the comment as [removed] until it is unhidden or deleted.
+    /// </summary>
+    /// <param name="commentId"></param>
+    /// <returns></returns>
+    Task HideCommentAsync(int commentId);
+    /// <summary>
+    ///     Marks the blog as [removed] until it is unhidden or deleted.
+    /// </summary>
+    /// <param name="blogId"></param>
+    /// <returns></returns>
+    Task HideBlogAsync(int blogId);
+    Task RemoveBanTicketAsync(BanTicket ticket);
 }

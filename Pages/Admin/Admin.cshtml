@@ -1,7 +1,6 @@
 ﻿@page
-
-@using BlogApp.Data.DTOs
-@model BlogApp.Pages.Admin.AdminModel
+@using RazorBlog.Data.DTOs
+@model AdminModel
 @{
     ViewData["Title"] = "Management";
     ViewData["CSSLink"] = "/css/admin/admin.css";
@@ -17,12 +16,11 @@
         <p>Posts</p>
         <button class="assign-role">Assign moderator role</button>
     </div>*@
-    
+
     @foreach (var user in users)
     {
-        
         <div class="user-card">
-            
+
             <p>@user.UserName</p>
             <p>Posts: @user.BlogCount</p>
 
@@ -46,4 +44,3 @@
         </div>
     }
 </main>
-

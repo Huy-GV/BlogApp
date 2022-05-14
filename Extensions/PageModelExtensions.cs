@@ -1,11 +1,11 @@
-﻿using BlogApp.Models;
-using BlogApp.Pages;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BlogApp.Extensions
+namespace RazorBlog.Extensions;
+
+public static class PageModelExtensions
 {
-    public static class PageModelExtensions
+    public static bool IsUserAuthenticated(this PageModel pageModel)
     {
-        public static bool IsUserAuthenticated(this PageModel pageModel) => pageModel.User.Identity?.IsAuthenticated ?? false;
+        return pageModel.User.Identity?.IsAuthenticated ?? false;
     }
 }

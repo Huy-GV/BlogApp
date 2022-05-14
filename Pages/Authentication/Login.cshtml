@@ -11,29 +11,31 @@
 <form id="account" method="post" class="log-in-form">
 
     <h1>Log in</h1>
-    <hr />
+    <hr/>
     <div asp-validation-summary="All"></div>
     <label asp-for="LogInViewModel.UserName"></label>
-    <input asp-for="LogInViewModel.UserName" class="text-input" />
+    <input asp-for="LogInViewModel.UserName" class="text-input"/>
     <span asp-validation-for="LogInViewModel.UserName" class="error-message"></span>
-    
+
     <label asp-for="LogInViewModel.Password"></label>
-    <input asp-for="LogInViewModel.Password" class="text-input" />
+    <input asp-for="LogInViewModel.Password" class="text-input"/>
     <span asp-validation-for="LogInViewModel.Password" class="error-message"></span>
 
     <div>
         <label asp-for="LogInViewModel.RememberMe">
-            <input asp-for="LogInViewModel.RememberMe" />
+            <input asp-for="LogInViewModel.RememberMe"/>
             @Html.DisplayNameFor(m => m.LogInViewModel.RememberMe)
         </label>
     </div>
 
-    <hr />
+    <hr/>
     <div class="button-container">
         <button type="submit" class="log-in-btn primary-button">Log in</button>
-        <a asp-page="./Register" 
-            asp-route-returnUrl="@Model.ReturnUrl"  
-            class="log-in-btn secondary-button">Sign up</a>
+        <a asp-page="./Register"
+           asp-route-returnUrl="@Model.ReturnUrl"
+           class="log-in-btn secondary-button">
+            Sign up
+        </a>
     </div>
 
 
