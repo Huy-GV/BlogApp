@@ -71,7 +71,8 @@ public class EditModel : BasePageModel<EditModel>
         }
 
         var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
-        DbContext.Attach(applicationUser).CurrentValues.SetValues(EditUserViewModel);
+        DbContext.Users.Update(applicationUser);
+        applicationUser.Description = EditUserViewModel.Description;
 
         if (EditUserViewModel.NewProfilePicture != null)
         {
@@ -79,7 +80,6 @@ public class EditModel : BasePageModel<EditModel>
             applicationUser.ProfileImageUri = await UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
         }
 
-        DbContext.Attach(applicationUser).State = EntityState.Modified;
         await DbContext.SaveChangesAsync();
 
         return RedirectToPage("/User/Index", new { username = EditUserViewModel.UserName });

@@ -115,8 +115,7 @@ public class ReadModel : BasePageModel<ReadModel>
         if (!ModelState.IsValid)
         {
             Logger.LogError("Model state invalid when submitting new comment.");
-            //TODO: return an appropriate response
-            return NotFound();
+            return BadRequest();
         }
 
         var user = await GetUserAsync();

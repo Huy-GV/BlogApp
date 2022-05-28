@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -39,13 +40,30 @@ public class IndexModel : BasePageModel<IndexModel>
             .Where(blog => blog.AppUser.UserName == username)
             .ToList();
 
+        var groups = blogs.GroupBy(b => b.Date.Year).OrderByDescending(g => g.Key);
+        var blogsGroupedByYear = new Dictionary<uint, List<MinimalBlogDto>>();
+        foreach (var group in groups)
+        {
+            blogsGroupedByYear.Add(
+                (uint)group.Key,
+                group.Select(b => new MinimalBlogDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    ViewCount = b.ViewCount,
+                    Date = b.Date,
+                }).ToList());
+        }
+
         UserDto = new PersonalProfileDto
         {
             UserName = username,
             BlogCount = (uint)blogs.Count,
-            ProfilePicturePath = user.ProfileImageUri,
-            Blogs = blogs,
-            Description = user.Description,
+            ProfileImageUri = user.ProfileImageUri,
+            BlogsGroupedByYear = blogsGroupedByYear,
+            Description = string.IsNullOrEmpty(user.Description)
+                ? "None"
+                : user.Description,
             CommentCount = (uint)DbContext.Comment
                 .Include(c => c.AppUser)
                 .Where(c => c.AppUser.UserName == username)
@@ -60,7 +78,9 @@ public class IndexModel : BasePageModel<IndexModel>
                 .Where(blog => blog.AppUser.UserName == username &&
                                blog.Date.Year == DateTime.Now.Year)
                 .Sum(blogs => blogs.ViewCount),
-            RegistrationDate = user.RegistrationDate,
+            RegistrationDate = user.RegistrationDate == null
+                    ? "a long time ago"
+                    : user.RegistrationDate.Value.ToString(@"d/M/yyy"),
         };
 
         return Page();

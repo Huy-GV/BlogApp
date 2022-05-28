@@ -11,22 +11,11 @@
 <main>
     <form class="edit-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
         <div>
-            <label asp-for="EditUserViewModel.Country">
-                <strong>Country</strong>
-            </label>
-            <input type="text"
-                   name="EditUserVM.Country"
-                   asp-for="EditUserViewModel.Country"
-                   required
-                   value="@Model.EditUserViewModel.Country">
-
             <label asp-for="EditUserViewModel.Description">
                 <strong>Description</strong>
             </label>
             <textarea rows="8" cols="50"
-                    name="EditUserVM.Description"
-                    asp-for="EditUserViewModel.Description"
-                    required>@Model.EditUserViewModel.Description</textarea>
+                    asp-for="EditUserViewModel.Description">@Model.EditUserViewModel.Description</textarea>
 
             <label asp-for="EditUserViewModel.NewProfilePicture">
                 <strong>Profile picture</strong>

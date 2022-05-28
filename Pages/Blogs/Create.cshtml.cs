@@ -66,8 +66,7 @@ public class CreateModel : BasePageModel<CreateModel>
             DbContext.Blog.Add(newBlog).CurrentValues.SetValues(CreateBlogViewModel);
             await DbContext.SaveChangesAsync();
 
-            // todo: redirect to blog page
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Blogs/Read", new { id = newBlog.Id });
         }
         catch (Exception ex)
         {
