@@ -23,47 +23,38 @@ public class AdminModel : BasePageModel<AdminModel>
     {
     }
 
-    //TODO: add a filter that shows moderators only
+    [BindProperty]
+    public List<UserProfileDto> Moderators { get; set; }
+
+    [BindProperty]
+    public List<UserProfileDto> NormalUsers { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
-        var adminUser = await GetUserAsync();
-        var users = UserManager.Users
+        var users = await UserManager.Users
             .AsNoTracking()
-            .Where(user => user.UserName != adminUser.UserName)
-            .ToList();
+            .Select(x => new UserProfileDto
+            {
+                UserName = x.UserName,
+                RegistrationDate = x.RegistrationDate == null
+                    ? "a long time ago"
+                    : x.RegistrationDate.Value.ToString(@"d/M/yyy"),
+            })
+            .ToListAsync();
 
-        var userDTOs = new List<PersonalProfileDto>();
-        foreach (var user in users) userDTOs.Add(await CreateUserDTOAsync(user));
+        var moderators = await UserManager.GetUsersInRoleAsync(Roles.AdminRole);
+        var moderatorUserNames = moderators.Select(x => x.UserName).ToHashSet();
+        var normalUsers = users.Where(x => !moderatorUserNames.Contains(x.UserName));
 
-        // todo: use a property for this
-        ViewData["UserDTOs"] = userDTOs;
+        NormalUsers = new List<UserProfileDto>(normalUsers);
+        Moderators = new List<UserProfileDto>(users.Where(x => moderatorUserNames.Contains(x.UserName)));
 
         return Page();
     }
 
-    private async Task<bool> IsModeratorRole(ApplicationUser user)
-    {
-        var roles = await UserManager.GetRolesAsync(user);
-        return roles.Contains(Roles.ModeratorRole);
-    }
-
-    private async Task<PersonalProfileDto> CreateUserDTOAsync(ApplicationUser user)
-    {
-        return new PersonalProfileDto
-        {
-            UserName = user.UserName,
-            IsModerator = await IsModeratorRole(user),
-            BlogCount = (uint)DbContext.Blog
-                .Include(b => b.AppUser)
-                .Where(blog => blog.AppUser.UserName == user.UserName)
-                .ToList()
-                .Count()
-        };
-    }
-
     public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string username)
     {
-        var user = DbContext.Users.FirstOrDefault(user => user.UserName == username);
+        var user = await DbContext.Users.SingleOrDefaultAsync(user => user.UserName == username);
         if (user == null)
         {
             Logger.LogError($"No user with ID {username} was found");
@@ -77,8 +68,7 @@ public class AdminModel : BasePageModel<AdminModel>
 
     public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
     {
-        var user = await DbContext.Users
-            .SingleOrDefaultAsync(user => user.UserName == username);
+        var user = await DbContext.Users.SingleOrDefaultAsync(user => user.UserName == username);
         if (user == null)
         {
             Logger.LogError($"No user with ID {username} was found");

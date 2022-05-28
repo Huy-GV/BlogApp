@@ -22,7 +22,7 @@
         <div class="authentication-links">
             <p>@User.Identity!.Name</p>
             <p class="middle-bar"></p>
-            <a class="secondary-button log-btn" asp-page="/Authentication/Logout">Log Out</a>
+            <a class="secondary-button log-btn" asp-page="/Authentication/Logout">Sign out</a>
         </div>
     }
     else
@@ -30,12 +30,12 @@
         <div class="authentication-links">
             <a class="secondary-button log-btn"
                asp-page="/Authentication/Login">
-                Log In
+                Sign in
             </a>
             <p class="middle-bar"></p>
             <a class="log-btn primary-button"
                asp-page="/Authentication/Register">
-                Sign Up
+                Register
             </a>
         </div>
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RazorBlog.Data.DTOs;
 
-public class DetailedBlogDto
+public record DetailedBlogDto
 {
     public int Id { get; set; }
     public string Title { get; set; }

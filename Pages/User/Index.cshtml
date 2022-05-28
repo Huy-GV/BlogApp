@@ -9,11 +9,10 @@
 <p class="page-title">Profile</p>
 <main>
     <div class="basic-info">
-        <img src="/images/profiles/@Model.UserDto.ProfilePicturePath">
+        <img src="/images/@Model.UserDto.ProfilePicturePath">
         <div class="info">
             <p>Name: @Model.UserDto.UserName</p>
-            <p>Country: @Model.UserDto.Country</p>
-            <p>Joined on: @Model.UserDto.RegistrationDate</p>
+            <p>Joined on: @Model.UserDto.RegistrationDate?.ToString("dd MM yyyy") ?? ""</p>
             <div class="button-container">
                 <a class="edit-profile"
                    asp-page="/User/Edit"

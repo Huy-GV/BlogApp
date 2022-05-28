@@ -39,7 +39,8 @@ public class Startup
             .AddRazorPagesOptions(
             options => { options.Conventions.AddPageRoute("/Blogs/Index", ""); });
 
-        services.Configure<IdentityOptions>(options => {
+        services.Configure<IdentityOptions>(options =>
+        {
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
@@ -51,9 +52,8 @@ public class Startup
         });
 
         services.AddAuthorization();
-
-        //TODO: configure cookie options
-        services.ConfigureApplicationCookie(options => {
+        services.ConfigureApplicationCookie(options =>
+        {
             options.Cookie.HttpOnly = true;
             options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
             options.LoginPath = "/Authentication/Login";

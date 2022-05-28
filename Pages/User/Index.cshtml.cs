@@ -60,7 +60,7 @@ public class IndexModel : BasePageModel<IndexModel>
                 .Where(blog => blog.AppUser.UserName == username &&
                                blog.Date.Year == DateTime.Now.Year)
                 .Sum(blogs => blogs.ViewCount),
-            RegistrationDate = user.RegistrationDate?.ToString("dd MM yyyy") ?? ""
+            RegistrationDate = user.RegistrationDate,
         };
 
         return Page();

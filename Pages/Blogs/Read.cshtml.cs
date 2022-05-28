@@ -176,7 +176,7 @@ public class ReadModel : BasePageModel<ReadModel>
         if (blog == null) return NotFound();
 
         if (await UserManager.IsInRoleAsync(blog.AppUser, Roles.AdminRole)) return Forbid();
-        
+
         await _moderationService.HideBlogAsync(blogId);
         return RedirectToPage("/Blogs/Read", new { id = blogId });
     }
@@ -212,7 +212,6 @@ public class ReadModel : BasePageModel<ReadModel>
             .Include(x => x.AppUser)
             .SingleOrDefaultAsync(x => x.Id == blogId);
 
-        // todo: check identity name and user.UserName
         if (User.Identity?.Name != blog.AppUser.UserName) return Forbid();
 
         if (blog == null) return NotFound();

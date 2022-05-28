@@ -2,7 +2,7 @@
 
 namespace RazorBlog.Data.DTOs;
 
-public class CommentDto
+public record CommentDto
 {
     public int Id { get; set; }
     public DateTime Date { get; set; }

@@ -8,6 +8,10 @@
   transition: 180ms ease-in;
 }
 
+html * {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .button, .primary-button, .secondary-button, .un-hide-post, .delete-post {
   -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
           box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
@@ -62,21 +66,17 @@
   font-size: 20px;
 }
 
-.profile-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  margin-left: 20%;
+h1 {
+  width: 60%;
+  margin: auto;
+  font-size: 2rem;
 }
 
 .suspended-blog-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  margin-block: 2rem;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -119,10 +119,24 @@
 
 .suspend-form {
   background-color: #ee3f3f;
-  padding: 0.2rem;
+  padding: 1rem;
   border-radius: 3px;
   color: white;
   margin-top: 0.2rem;
+}
+
+.suspend-form h4 {
+  font-size: 1.2rem;
+}
+
+.suspend-form input[type="date"] {
+  padding: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.suspend-form label {
+  font-size: 1rem;
+  margin: 0;
 }
 
 .confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {

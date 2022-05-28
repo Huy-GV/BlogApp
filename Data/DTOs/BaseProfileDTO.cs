@@ -1,5 +1,8 @@
-﻿namespace RazorBlog.Data.DTOs;
+﻿using System;
 
+namespace RazorBlog.Data.DTOs;
+
+[Obsolete]
 public class BaseProfileDto
 {
     public string UserName { get; set; }

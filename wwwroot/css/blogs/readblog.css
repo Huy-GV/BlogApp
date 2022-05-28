@@ -8,6 +8,10 @@
   transition: 180ms ease-in;
 }
 
+html * {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .button, .primary-button, .submit-comment, .save-btn, .secondary-button {
   -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
           box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
@@ -103,8 +107,7 @@
 }
 
 .blog-container .blog .blog-description {
-  font-family: "Open Sans", Helvetica, arial, sans-serif;
-  line-height: 1.4rem;
+  line-height: 1.5rem;
   white-space: pre-line;
   color: #606060;
 }

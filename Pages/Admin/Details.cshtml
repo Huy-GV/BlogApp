@@ -8,40 +8,21 @@
     ViewData["CSSLink"] = "/css/admin/admindetails.css";
     ViewData["Script"] = "/js/admindetails.js";
     ViewData["Shared"] = "/css/shared.css";
-
-    var suspension = (BanTicket)ViewData["Suspension"];
-    var userDTO = ViewData["UserDTO"] as PersonalProfileDto;
-    var suspendedBlogs = ViewData["HiddenBlogs"] as List<Blog>;
-    var suspendedComments = ViewData["HiddenComments"] as List<Comment>;
 }
 
-
+<h1>Details of @Model.UserName</h1>
 <main class="suspended-blog-container">
-
-    <div class="profile-container">
-        <div class="profile">
-            <p>Username: @userDTO.UserName</p>
-            <p>Blog count: @userDTO.BlogCount</p>
-            <p>Comments: @userDTO.CommentCount</p>
-            <hr>
-        </div>
-    </div>
-
+    
     <h2>Reported blogs</h2>
-    @* <div class="suspended-post">
-        <p>Original content</p>
-        <p>jfsdfjdsafasdfadsjfadsjfadsfasdfjfsdfjdsafasdfaasdfadsjfadsjfadsfasdf</p>
-        <p>Mod: at Suspend date</p>
-    </div> *@
     @{
-        if (suspendedBlogs.Count == 0)
+        if (Model.HiddenBlogs.Count == 0)
         {
             <div class="suspended-blog">
                 <p>None</p>
                 <hr>
             </div>
         }
-        foreach (var blog in suspendedBlogs)
+        foreach (var blog in Model.HiddenBlogs)
         {
             <div class="suspended-blog">
                 <h5>Original content</h5>
@@ -64,14 +45,13 @@
     }
     <h2>Reported comments</h2>
     @{
-        if (suspendedComments.Count == 0)
+        if (Model.HiddenComments.Count == 0)
         {
             <div class="suspended-comment">
                 <p>None</p>
-                <hr>
             </div>
         }
-        foreach (var comment in suspendedComments)
+        foreach (var comment in Model.HiddenComments)
         {
             <div class="suspended-comment">
                 <h5>Original content</h5>
@@ -96,32 +76,34 @@
 
 <section class="ban-details-container">
     <h2>Suspension details</h2>
-    @* TODO: ADD LOGIC TO SHOW EXISTING SUSPENSIONS *@
-    <div class="current-suspension">
-        @{
-            if (suspension != null)
-            {
-                <p>Expiry date: @suspension.Expiry</p>
+    @{
+        if (Model.BanTicket != null)
+        {
+            <div class="current-suspension">
+                <p>Expiry date: @Model.BanTicket.Expiry</p>
                 <form method="post"
-                      asp-page-handler="LiftSuspension"
-                      asp-route-username="@userDTO.UserName">
+                        asp-page-handler="LiftBan"
+                        asp-route-username="@Model.UserName">
                     <button class="lift-ban-btn">Lift ban</button>
                 </form>
-            }
-            else
-            {
-                <p>No suspension exists</p>
-            }
+       
+            </div>
         }
-        <hr>
-    </div>
+        else
+        {
+            <p>No ban ticket exists</p>
+            <form class="suspend-form" method="post" asp-page-handler="BanUser">
+                <h4>Create ban ticket</h4>
+                <label asp-for="BanTicket.Expiry">Expiry date (leave empty to permanently ban the user)</label>
+                <input type="date" asp-for="BanTicket.Expiry"/>
+                <input type="hidden" asp-for="BanTicket.UserName" value="@Model.UserName"/>
+                <button class="ban-btn" type="button">Ban</button>
+                <button class="cancel-btn hidden-element" type="button">Cancel</button>
+                <button class="confirm-ban-btn hidden-element">Confirm </button>
+            </form>
+        }
+    }
 
-    <form class="suspend-form" method="post" asp-page-handler="SuspendUser">
-        <h4>Suspend</h4>
-        <input type="date" asp-for="SuspensionTicket.Expiry"/>
-        <input type="hidden" asp-for="SuspensionTicket.UserName" value="@userDTO.UserName"/>
-        <button class="ban-btn" type="button">Ban</button>
-        <button class="cancel-btn hidden-element" type="button">Cancel</button>
-        <button class="confirm-ban-btn hidden-element">Confirm </button>
-    </form>
+
+
 </section>

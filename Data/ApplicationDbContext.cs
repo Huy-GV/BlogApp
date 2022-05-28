@@ -27,6 +27,7 @@ public class RazorBlogDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(b => b.AppUser)
             .WithMany()
             .HasForeignKey(b => b.UserName)
+            .HasPrincipalKey(u => u.UserName)
             .IsRequired();
 
         builder.Entity<BanTicket>()

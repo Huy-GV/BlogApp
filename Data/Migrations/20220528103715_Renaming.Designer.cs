@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RazorBlog.Data;
 
 namespace BlogApp.Data.Migrations
 {
     [DbContext(typeof(RazorBlogDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220528103715_Renaming")]
+    partial class Renaming
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,7 +189,6 @@ namespace BlogApp.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -216,7 +217,7 @@ namespace BlogApp.Data.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -359,7 +360,6 @@ namespace BlogApp.Data.Migrations
                     b.HasOne("RazorBlog.Models.ApplicationUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("UserName")
-                        .HasPrincipalKey("UserName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

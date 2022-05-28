@@ -4,14 +4,15 @@
   font-size: 20px;
 }
 
-.profile-container {
-  display: flex;
-  flex-direction: column;
-  margin-left: 20%;
+h1 {
+  width: 60%;
+  margin: auto;
+  font-size: 2rem;
 }
 
 .suspended-blog-container {
   display: flex;
+  margin-block: 2rem;
   flex-direction: column;
   margin-left: 20%;
   background-color: white;
@@ -47,10 +48,25 @@
 
 .suspend-form {
   background-color: rgb(238, 63, 63);
-  padding: 0.2rem;
+  padding: 1rem;
   border-radius: 3px;
   color: white;
   margin-top: 0.2rem;
+
+  h4 {
+    font-size: 1.2rem;
+  }
+
+  input[type="date"] {
+    padding: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  label {
+    font-size: 1rem;
+    margin: 0;
+  }
+
 }
 
 .confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {

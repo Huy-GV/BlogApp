@@ -24,7 +24,7 @@ public class UserModerationService : IUserModerationService
 
     public async Task<bool> BanTicketExistsAsync(string username)
     {
-        await CheckExpiryAsync(username);
+        // await CheckExpiryAsync(username);
 
         return _dbContext.BanTicket.Any(s => s.UserName == username);
     }

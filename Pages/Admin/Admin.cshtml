@@ -6,7 +6,6 @@
     ViewData["CSSLink"] = "/css/admin/admin.css";
     ViewData["Script"] = "#";
     ViewData["Shared"] = "/css/shared.css";
-    var users = ViewData["UserDTOs"] as List<PersonalProfileDto>;
 }
 
 <main class="user-container">
@@ -17,29 +16,36 @@
         <button class="assign-role">Assign moderator role</button>
     </div>*@
 
-    @foreach (var user in users)
+    @foreach(var moderator in Model.Moderators)
+    {
+        <div class="user-card">
+            
+            <p>@moderator.UserName (joined @moderator.RegistrationDate)</p>
+
+            <form asp-page-handler="RemoveModeratorRole"
+                    asp-route-username="@moderator.UserName"
+                    method="post">
+                <button class="button remove-role">Remove moderator role</button>
+            </form>
+
+            <a class="details-btn" asp-route-username="@moderator.UserName" asp-page="Details">Details</a>
+        </div>
+    }
+
+    <hr />
+
+    @foreach (var user in Model.NormalUsers)
     {
         <div class="user-card">
 
-            <p>@user.UserName</p>
-            <p>Posts: @user.BlogCount</p>
+            <p>@user.UserName (joined @user.RegistrationDate)</p>
 
-            @if (user.IsModerator)
-            {
-                <form asp-page-handler="RemoveModeratorRole"
-                      asp-route-username="@user.UserName"
-                      method="post">
-                    <button class="button remove-role">Remove moderator role</button>
-                </form>
-            }
-            else
-            {
-                <form asp-page-handler="AssignModeratorRole"
-                      asp-route-username="@user.UserName"
-                      method="post">
-                    <button class="button assign-role">Assign moderator role</button>
-                </form>
-            }
+            <form asp-page-handler="AssignModeratorRole"
+                    asp-route-username="@user.UserName"
+                    method="post">
+                <button class="button assign-role">Assign as moderator</button>
+            </form>
+            
             <a class="details-btn" asp-route-username="@user.UserName" asp-page="Details">Details</a>
         </div>
     }
