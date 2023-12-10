@@ -34,7 +34,9 @@ public class DetailsModel : BasePageModel<DetailsModel>
     public async Task<IActionResult> OnGetAsync(string? userName)
     {
         if (userName == null)
+        {
             return NotFound();
+        }
 
         var user = await UserManager.FindByNameAsync(userName);
         if (user == null)

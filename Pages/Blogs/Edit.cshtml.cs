@@ -29,13 +29,22 @@ public class EditModel : BasePageModel<EditModel>
 
     public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
     {
-        if (blogId == null || username == null) return NotFound();
+        if (blogId == null || username == null)
+        {
+            return NotFound();
+        }
 
-        if (User.Identity?.Name != username) return Forbid();
+        if (User.Identity?.Name != username)
+        {
+            return Forbid();
+        }
 
         var blog = await DbContext.Blog.FindAsync(blogId);
 
-        if (blog == null) return NotFound();
+        if (blog == null)
+        {
+            return NotFound();
+        }
 
         EditBlogViewModel = new EditBlogViewModel
         {
@@ -59,15 +68,25 @@ public class EditModel : BasePageModel<EditModel>
         var user = await GetUserAsync();
         var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
 
-        if (blog == null) return NotFound();
+        if (blog == null)
+        {
+            return NotFound();
+        }
 
-        if (string.IsNullOrEmpty(EditBlogViewModel.Content)) return RedirectToPage("/Blogs/Read", new { id = blog.Id });
+        if (string.IsNullOrEmpty(EditBlogViewModel.Content))
+        {
+            return RedirectToPage("/Blogs/Read", new { id = blog.Id });
+        }
 
-        if (user.UserName != blog.AppUser.UserName) return Forbid();
+        if (user.UserName != blog.AppUser.UserName)
+        {
+            return Forbid();
+        }
 
         DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);
 
         if (EditBlogViewModel.CoverImage != null)
+        {
             try
             {
                 await _imageStorage.DeleteImage(blog.CoverImageUri);
@@ -79,6 +98,7 @@ public class EditModel : BasePageModel<EditModel>
                 Logger.LogError("Failed to update blog image");
                 Logger.LogError(ex.Message);
             }
+        }
 
         await DbContext.SaveChangesAsync();
         return RedirectToPage("/Blogs/Read", new { id = blog.Id });

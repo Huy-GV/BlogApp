@@ -31,8 +31,6 @@ public class LoginModel : PageModel
 
     public string ReturnUrl { get; set; }
 
-    [TempData] public string ErrorMessage { get; set; }
-
     public async Task OnGetAsync(string returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
@@ -46,14 +44,16 @@ public class LoginModel : PageModel
         returnUrl ??= Url.Content("~/");
         Console.WriteLine("Return URL from log in model: " + returnUrl);
 
-        if (!ModelState.IsValid) return Page();
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
         var result = await _signInManager.PasswordSignInAsync(
-        LogInViewModel.UserName,
-        LogInViewModel.Password,
-        LogInViewModel.RememberMe,
-        false);
+            LogInViewModel.UserName,
+            LogInViewModel.Password,
+            LogInViewModel.RememberMe,
+            false);
 
         if (result.Succeeded)
         {
@@ -67,9 +67,7 @@ public class LoginModel : PageModel
             return Page();
         }
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        ModelState.AddModelError(string.Empty, "Incorrect username or password.");
         return Page();
-
-        // If we got this far, something failed, redisplay form
     }
 }

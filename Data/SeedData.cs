@@ -30,7 +30,9 @@ public class SeedData
         if (user != null)
         {
             if (!await userManager.IsInRoleAsync(user, Roles.AdminRole))
+            {
                 await userManager.AddToRoleAsync(user, Roles.AdminRole);
+            }
 
             return;
         }

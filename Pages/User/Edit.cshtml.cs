@@ -35,12 +35,21 @@ public class EditModel : BasePageModel<EditModel>
 
     public async Task<IActionResult> OnGetAsync(string? username)
     {
-        if (username == null) return NotFound();
+        if (username == null)
+        {
+            return NotFound();
+        }
 
         var user = await UserManager.FindByNameAsync(username);
-        if (user == null) return NotFound();
+        if (user == null)
+        {
+            return NotFound();
+        }
 
-        if (user.UserName != User.Identity?.Name) return Forbid();
+        if (user.UserName != User.Identity?.Name)
+        {
+            return Forbid();
+        }
 
         EditUserViewModel = new EditUserViewModel
         {
@@ -54,9 +63,15 @@ public class EditModel : BasePageModel<EditModel>
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await UserManager.FindByNameAsync(EditUserViewModel.UserName);
-        if (user == null) return NotFound();
+        if (user == null)
+        {
+            return NotFound();
+        }
 
-        if (user.UserName != User.Identity?.Name) return Forbid();
+        if (user.UserName != User.Identity?.Name)
+        {
+            return Forbid();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -64,7 +79,10 @@ public class EditModel : BasePageModel<EditModel>
                 .SelectMany(m => m.Errors)
                 .Select(e => e.ErrorMessage);
 
-            foreach (var error in errors) _logger.LogError(error);
+            foreach (var error in errors)
+            {
+                _logger.LogError(error);
+            }
 
             return RedirectToPage("/User/Edit", new { username = EditUserViewModel.UserName });
         }

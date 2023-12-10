@@ -72,6 +72,9 @@ public class UserModerationService : IUserModerationService
     private async Task CheckExpiryAsync(string username)
     {
         var suspension = await FindAsync(username);
-        if (suspension != null) await RemoveBanTicketAsync(suspension);
+        if (suspension != null)
+        {
+            await RemoveBanTicketAsync(suspension);
+        }
     }
 }

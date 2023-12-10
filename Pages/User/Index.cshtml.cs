@@ -27,12 +27,21 @@ public class IndexModel : BasePageModel<IndexModel>
 
     public async Task<IActionResult> OnGetAsync(string? username)
     {
-        if (username == null) return NotFound();
+        if (username == null)
+        {
+            return NotFound();
+        }
 
         var user = await UserManager.FindByNameAsync(username);
-        if (user == null) return NotFound();
+        if (user == null)
+        {
+            return NotFound();
+        }
 
-        if (user.UserName != User.Identity?.Name) return Forbid();
+        if (user.UserName != User.Identity?.Name)
+        {
+            return Forbid();
+        }
 
         var blogs = DbContext.Blog
             .Include(b => b.AppUser)
@@ -80,7 +89,7 @@ public class IndexModel : BasePageModel<IndexModel>
                 .Sum(blogs => blogs.ViewCount),
             RegistrationDate = user.RegistrationDate == null
                     ? "a long time ago"
-                    : user.RegistrationDate.Value.ToString(@"d/M/yyy"),
+                    : user.RegistrationDate.Value.ToString("dd/MMMM/yyyy"),
         };
 
         return Page();

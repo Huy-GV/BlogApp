@@ -42,7 +42,10 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        if (id == null) return NotFound();
+        if (id == null)
+        {
+            return NotFound();
+        }
 
         var blog = await DbContext.Blog
             .Include(blog => blog.AppUser)
@@ -50,7 +53,10 @@ public class ReadModel : BasePageModel<ReadModel>
             .ThenInclude(comment => comment.AppUser)
             .SingleOrDefaultAsync(blog => blog.Id == id);
 
-        if (blog == null) return NotFound();
+        if (blog == null)
+        {
+            return NotFound();
+        }
 
         var blogAuthor = new
         {
@@ -110,7 +116,10 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnPostCreateCommentAsync()
     {
-        if (!this.IsUserAuthenticated()) return Challenge();
+        if (!this.IsUserAuthenticated())
+        {
+            return Challenge();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -121,7 +130,10 @@ public class ReadModel : BasePageModel<ReadModel>
         var user = await GetUserAsync();
         var userName = user.UserName;
 
-        if (await _moderationService.BanTicketExistsAsync(userName)) return Forbid();
+        if (await _moderationService.BanTicketExistsAsync(userName))
+        {
+            return Forbid();
+        }
 
         DbContext.Comment.Add(new Comment
         {
@@ -138,7 +150,10 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnPostEditCommentAsync(int commentId)
     {
-        if (!this.IsUserAuthenticated()) return Challenge();
+        if (!this.IsUserAuthenticated())
+        {
+            return Challenge();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -151,7 +166,10 @@ public class ReadModel : BasePageModel<ReadModel>
             .Include(x => x.AppUser)
             .SingleOrDefaultAsync(x => x.Id == commentId);
 
-        if (user.UserName != comment.AppUser.UserName) return Forbid();
+        if (user.UserName != comment.AppUser.UserName)
+        {
+            return Forbid();
+        }
 
         DbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
         await DbContext.SaveChangesAsync();
@@ -161,20 +179,32 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnPostHideBlogAsync(int blogId)
     {
-        if (!this.IsUserAuthenticated()) return Challenge();
+        if (!this.IsUserAuthenticated())
+        {
+            return Challenge();
+        }
 
         var user = await GetUserAsync();
         var roles = await UserManager.GetRolesAsync(user);
 
-        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole)) return Forbid();
+        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
+        {
+            return Forbid();
+        }
 
         var blog = await DbContext.Blog
             .Include(x => x.AppUser)
             .SingleOrDefaultAsync(x => x.Id == blogId);
 
-        if (blog == null) return NotFound();
+        if (blog == null)
+        {
+            return NotFound();
+        }
 
-        if (await UserManager.IsInRoleAsync(blog.AppUser, Roles.AdminRole)) return Forbid();
+        if (await UserManager.IsInRoleAsync(blog.AppUser, Roles.AdminRole))
+        {
+            return Forbid();
+        }
 
         await _moderationService.HideBlogAsync(blogId);
         return RedirectToPage("/Blogs/Read", new { id = blogId });
@@ -182,19 +212,31 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnPostHideCommentAsync(int commentId)
     {
-        if (!this.IsUserAuthenticated()) return Challenge();
+        if (!this.IsUserAuthenticated())
+        {
+            return Challenge();
+        }
 
         var user = await GetUserAsync();
         var roles = await UserManager.GetRolesAsync(user);
-        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole)) return Forbid();
+        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
+        {
+            return Forbid();
+        }
 
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
             .SingleOrDefaultAsync(x => x.Id == commentId);
 
-        if (comment == null) return NotFound();
+        if (comment == null)
+        {
+            return NotFound();
+        }
 
-        if (await UserManager.IsInRoleAsync(comment.AppUser, Roles.AdminRole)) return Forbid();
+        if (await UserManager.IsInRoleAsync(comment.AppUser, Roles.AdminRole))
+        {
+            return Forbid();
+        }
 
         // comment.SuspensionExplanation = Messages.InappropriateComment;
         // await DbContext.SaveChangesAsync();
@@ -205,15 +247,24 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
     {
-        if (!this.IsUserAuthenticated()) return Challenge();
+        if (!this.IsUserAuthenticated())
+        {
+            return Challenge();
+        }
 
         var blog = await DbContext.Blog
             .Include(x => x.AppUser)
             .SingleOrDefaultAsync(x => x.Id == blogId);
 
-        if (User.Identity?.Name != blog.AppUser.UserName) return Forbid();
+        if (User.Identity?.Name != blog.AppUser.UserName)
+        {
+            return Forbid();
+        }
 
-        if (blog == null) return NotFound();
+        if (blog == null)
+        {
+            return NotFound();
+        }
 
         DbContext.Blog.Remove(blog);
         await DbContext.SaveChangesAsync();
@@ -223,15 +274,24 @@ public class ReadModel : BasePageModel<ReadModel>
 
     public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
     {
-        if (!this.IsUserAuthenticated()) return Challenge();
+        if (!this.IsUserAuthenticated())
+        {
+            return Challenge();
+        }
 
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
             .SingleOrDefaultAsync(x => x.Id == commentId);
 
-        if (comment == null) return NotFound();
+        if (comment == null)
+        {
+            return NotFound();
+        }
 
-        if (User.Identity?.Name != comment.AppUser.UserName) return Forbid();
+        if (User.Identity?.Name != comment.AppUser.UserName)
+        {
+            return Forbid();
+        }
 
         DbContext.Comment.Remove(comment);
         await DbContext.SaveChangesAsync();

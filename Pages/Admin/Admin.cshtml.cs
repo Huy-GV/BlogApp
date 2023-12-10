@@ -42,9 +42,14 @@ public class AdminModel : BasePageModel<AdminModel>
             })
             .ToListAsync();
 
-        var moderators = await UserManager.GetUsersInRoleAsync(Roles.AdminRole);
+        // TODO: improve efficiency here
+        var moderators = await UserManager.GetUsersInRoleAsync(Roles.ModeratorRole);
         var moderatorUserNames = moderators.Select(x => x.UserName).ToHashSet();
-        var normalUsers = users.Where(x => !moderatorUserNames.Contains(x.UserName));
+
+        var admins = await UserManager.GetUsersInRoleAsync(Roles.AdminRole);
+        var adminUserNames = admins.Select(x => x.UserName).ToHashSet();
+
+        var normalUsers = users.Where(x => !moderatorUserNames.Contains(x.UserName) && !adminUserNames.Contains(x.UserName));
 
         NormalUsers = new List<UserProfileDto>(normalUsers);
         Moderators = new List<UserProfileDto>(users.Where(x => moderatorUserNames.Contains(x.UserName)));

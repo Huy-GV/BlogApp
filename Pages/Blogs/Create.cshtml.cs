@@ -37,7 +37,10 @@ public class CreateModel : BasePageModel<CreateModel>
         var user = await GetUserAsync();
         var username = user.UserName;
 
-        if (await _userModerationService.BanTicketExistsAsync(username)) return RedirectToPage("./Index");
+        if (await _userModerationService.BanTicketExistsAsync(username))
+        {
+            return RedirectToPage("./Index");
+        }
 
         return Page();
     }
@@ -45,7 +48,10 @@ public class CreateModel : BasePageModel<CreateModel>
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await GetUserAsync();
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName)) return Forbid();
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName))
+        {
+            return Forbid();
+        }
 
         if (!ModelState.IsValid)
         {

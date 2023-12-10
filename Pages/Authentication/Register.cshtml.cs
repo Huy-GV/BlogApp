@@ -39,8 +39,6 @@ public class RegisterModel : PageModel
 
     public string ReturnUrl { get; set; }
 
-    public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
     public void OnGet(string returnUrl = null)
     {
         ReturnUrl = returnUrl;
@@ -48,7 +46,7 @@ public class RegisterModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string returnUrl = null)
     {
-        // returnUrl ??= Url.Content("~/");
+        var homeUrl = returnUrl ?? Url.Content("~/");
         if (!ModelState.IsValid)
         {
             return Page();
@@ -65,12 +63,20 @@ public class RegisterModel : PageModel
         };
 
         var result = await _userManager.CreateAsync(user, CreateUserViewModel.Password);
-        if (!result.Succeeded) return Page();
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            
+            return Page();
+        }
 
         _logger.LogInformation($"User created a new account with username {CreateUserViewModel.UserName}.");
         await _signInManager.SignInAsync(user, false);
 
-        return LocalRedirect(returnUrl);
+        return LocalRedirect(homeUrl);
     }
 
     private async Task<string> UploadProfileImage(IFormFile image)
@@ -87,7 +93,7 @@ public class RegisterModel : PageModel
         }
     }
 
-    private string GetDefaultProfileImageUri()
+    private static string GetDefaultProfileImageUri()
     {
         return Path.Combine("ProfileImage", "default.jpg");
     }

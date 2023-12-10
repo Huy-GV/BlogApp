@@ -27,7 +27,7 @@ namespace RazorBlog.Data.Validation
             }
 
             allowedFileTypes = allowedTypes
-                .Select(x => x.TrimStart('.', ' '))
+                .Select(x => x.TrimStart('.', ' ').ToLowerInvariant())
                 .ToArray();
         }
     }
