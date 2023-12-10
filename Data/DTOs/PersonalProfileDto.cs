@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using RazorBlog.Models;
+﻿using System.Collections.Generic;
 
-namespace RazorBlog.Data.DTOs;
+namespace RazorBlog.Data.Dtos;
 
 public record PersonalProfileDto
 {

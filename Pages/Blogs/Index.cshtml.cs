@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RazorBlog.Data;
-using RazorBlog.Data.DTOs;
+using RazorBlog.Data.Dtos;
 
 namespace RazorBlog.Pages.Blogs;
 

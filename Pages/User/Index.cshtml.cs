@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
-using RazorBlog.Data.DTOs;
+using RazorBlog.Data.Dtos;
 using RazorBlog.Models;
 
 namespace RazorBlog.Pages.User;

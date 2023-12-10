@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RazorBlog.Data.DTOs;
+﻿namespace RazorBlog.Data.Dtos;
 
 public class UserProfileDto
 {

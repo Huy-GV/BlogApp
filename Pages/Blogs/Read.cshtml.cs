@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
-using RazorBlog.Data.DTOs;
+using RazorBlog.Data.Dtos;
 using RazorBlog.Data.ViewModels;
 using RazorBlog.Extensions;
 using RazorBlog.Models;
