@@ -58,7 +58,7 @@ public class ImageLocalFileStorage : IImageStorage
         return await UploadImageAsync(imageFile, ImageType.ProfileImage);
     }
 
-    private string BuildFileName(string originalName, string type)
+    private static string BuildFileName(string originalName, string type)
     {
         return string.Join
         (
@@ -70,7 +70,7 @@ public class ImageLocalFileStorage : IImageStorage
         IFormFile imageFile,
         ImageType type)
     {
-        var pathRelativeToImageDir = Path.Combine(nameof(type));
+        var pathRelativeToImageDir = Path.Combine(Enum.GetName(type));
         var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
         var formattedName = BuildFileName(imageFile.FileName, nameof(type));
         Directory.CreateDirectory(directoryPath);

@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RazorBlog.Data;
+using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
+using RazorBlog.Models;
 
 namespace RazorBlog.Pages.Blogs;
 
@@ -34,7 +36,7 @@ public class IndexModel : PageModel
             .Select(b => new BlogDto
             {
                 Id = b.Id,
-                Title = b.Title,
+                Title = b.IsHidden ? RemovedContent.ReplacementText : b.Title,
                 AuthorName = b.AppUser == null
                     ? "Deleted User"
                     : b.AppUser.UserName,
@@ -42,7 +44,7 @@ public class IndexModel : PageModel
                 ViewCount = b.ViewCount,
                 Date = b.Date,
                 CoverImageUri = b.CoverImageUri,
-                Introduction = b.Introduction
+                Introduction = b.IsHidden ? RemovedContent.ReplacementText : b.Introduction
             })
             .Where(b => SearchString == null ||
                         SearchString == string.Empty ||

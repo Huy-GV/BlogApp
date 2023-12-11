@@ -33,7 +33,7 @@ public class UserModerationService : IUserModerationService
     {
         return await _dbContext
             .BanTicket
-            .SingleOrDefaultAsync(s => s.UserName == username);
+            .FirstOrDefaultAsync(s => s.UserName == username);
     }
 
     public async Task HideCommentAsync(int commentId)
@@ -45,6 +45,7 @@ public class UserModerationService : IUserModerationService
             return;
         }
 
+        comment.IsHidden = true;
         _dbContext.Comment.Update(comment);
         await _dbContext.SaveChangesAsync();
     }
@@ -58,6 +59,7 @@ public class UserModerationService : IUserModerationService
             return;
         }
 
+        blog.IsHidden = true;
         _dbContext.Blog.Update(blog);
         await _dbContext.SaveChangesAsync();
     }

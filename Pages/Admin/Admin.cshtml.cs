@@ -13,7 +13,6 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Pages.Admin;
 
-//PASSWORD: Admin123@@
 [Authorize(Roles = "admin")]
 public class AdminModel : BasePageModel<AdminModel>
 {
@@ -59,7 +58,7 @@ public class AdminModel : BasePageModel<AdminModel>
 
     public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string username)
     {
-        var user = await DbContext.Users.SingleOrDefaultAsync(user => user.UserName == username);
+        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == username);
         if (user == null)
         {
             Logger.LogError($"No user with ID {username} was found");
@@ -73,7 +72,7 @@ public class AdminModel : BasePageModel<AdminModel>
 
     public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
     {
-        var user = await DbContext.Users.SingleOrDefaultAsync(user => user.UserName == username);
+        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == username);
         if (user == null)
         {
             Logger.LogError($"No user with ID {username} was found");

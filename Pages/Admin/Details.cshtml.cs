@@ -110,18 +110,17 @@ public class DetailsModel : BasePageModel<DetailsModel>
             return BadRequest();
         }
 
-        var banTicket = await DbContext.BanTicket
-            .SingleOrDefaultAsync(s => s.UserName == username);
+        var banTicket = await DbContext.BanTicket.FirstAsync(s => s.UserName == username);
         await _userModerationService.RemoveBanTicketAsync(banTicket);
 
         return RedirectToPage("Details", new { username });
     }
 
-    public async Task<IActionResult> OnPostUnhideBlogAsync(int blogID)
+    public async Task<IActionResult> OnPostUnhideBlogAsync(int blogId)
     {
         var blog = await DbContext.Blog
             .Include(b => b.AppUser)
-            .SingleOrDefaultAsync(b => b.Id == blogID);
+            .FirstOrDefaultAsync(b => b.Id == blogId);
 
         if (blog == null)
         {
@@ -136,11 +135,11 @@ public class DetailsModel : BasePageModel<DetailsModel>
         return RedirectToPage("Details", new { username = blog.AppUser.UserName });
     }
 
-    public async Task<IActionResult> OnPostUnhideCommentAsync(int commentID)
+    public async Task<IActionResult> OnPostUnhideCommentAsync(int commentId)
     {
         var comment = await DbContext.Comment
             .Include(c => c.AppUser)
-            .SingleOrDefaultAsync(c => c.Id == commentID);
+            .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (comment == null)
         {
@@ -155,11 +154,11 @@ public class DetailsModel : BasePageModel<DetailsModel>
         return RedirectToPage("Details", new { username = comment.AppUser.UserName });
     }
 
-    public async Task<IActionResult> OnPostDeleteCommentAsync(int commentID)
+    public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
     {
         var comment = await DbContext.Comment
             .Include(c => c.AppUser)
-            .SingleOrDefaultAsync(c => c.Id == commentID);
+            .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (comment == null)
         {
@@ -174,11 +173,11 @@ public class DetailsModel : BasePageModel<DetailsModel>
         return RedirectToPage("Details", new { username = comment.AppUser.UserName });
     }
 
-    public async Task<IActionResult> OnPostDeleteBlogAsync(int blogID)
+    public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
     {
         var blog = await DbContext.Blog
             .Include(b => b.AppUser)
-            .SingleOrDefaultAsync(b => b.Id == blogID);
+            .FirstOrDefaultAsync(b => b.Id == blogId);
 
         if (blog == null)
         {

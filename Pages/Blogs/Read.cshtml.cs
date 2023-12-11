@@ -51,7 +51,7 @@ public class ReadModel : BasePageModel<ReadModel>
             .Include(blog => blog.AppUser)
             .Include(blog => blog.Comments)
             .ThenInclude(comment => comment.AppUser)
-            .SingleOrDefaultAsync(blog => blog.Id == id);
+            .FirstOrDefaultAsync(blog => blog.Id == id);
 
         if (blog == null)
         {
@@ -72,9 +72,9 @@ public class ReadModel : BasePageModel<ReadModel>
         DetailedBlogDto = new DetailedBlogDto
         {
             Id = blog.Id,
-            Introduction = blog.Introduction,
-            Title = blog.Title,
-            Content = blog.Content,
+            Introduction = blog.IsHidden ? RemovedContent.ReplacementText : blog.Introduction,
+            Title = blog.IsHidden ? RemovedContent.ReplacementText : blog.Title,
+            Content = blog.IsHidden ? RemovedContent.ReplacementText : blog.Content,
             CoverImageUri = blog.CoverImageUri,
             Date = blog.Date,
             IsHidden = blog.IsHidden,
@@ -104,8 +104,9 @@ public class ReadModel : BasePageModel<ReadModel>
         {
             UserName = currentUserName,
             AllowedToHideBlogOrComment = currentUser != null &&
-                                         currentUserRoles.Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
-                                             .Any(),
+                                         currentUserRoles
+                                            .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
+                                            .Any(),
             AllowedToModifyOrDeleteBlog = currentUserName == DetailedBlogDto.AuthorName,
             IsBanned = currentUser != null && await _moderationService.BanTicketExistsAsync(currentUserName),
             IsAuthenticated = this.IsUserAuthenticated()
@@ -164,9 +165,9 @@ public class ReadModel : BasePageModel<ReadModel>
         var user = await GetUserAsync();
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
-            .SingleOrDefaultAsync(x => x.Id == commentId);
+            .FirstOrDefaultAsync(x => x.Id == commentId);
 
-        if (user.UserName != comment.AppUser.UserName)
+        if (user.UserName != comment?.AppUser.UserName)
         {
             return Forbid();
         }
@@ -194,7 +195,7 @@ public class ReadModel : BasePageModel<ReadModel>
 
         var blog = await DbContext.Blog
             .Include(x => x.AppUser)
-            .SingleOrDefaultAsync(x => x.Id == blogId);
+            .FirstOrDefaultAsync(x => x.Id == blogId);
 
         if (blog == null)
         {
@@ -226,7 +227,7 @@ public class ReadModel : BasePageModel<ReadModel>
 
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
-            .SingleOrDefaultAsync(x => x.Id == commentId);
+            .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
         {
@@ -237,9 +238,6 @@ public class ReadModel : BasePageModel<ReadModel>
         {
             return Forbid();
         }
-
-        // comment.SuspensionExplanation = Messages.InappropriateComment;
-        // await DbContext.SaveChangesAsync();
 
         await _moderationService.HideCommentAsync(commentId);
         return RedirectToPage("/Blogs/Read", new { id = comment.BlogId });
@@ -254,7 +252,7 @@ public class ReadModel : BasePageModel<ReadModel>
 
         var blog = await DbContext.Blog
             .Include(x => x.AppUser)
-            .SingleOrDefaultAsync(x => x.Id == blogId);
+            .FirstOrDefaultAsync(x => x.Id == blogId);
 
         if (User.Identity?.Name != blog.AppUser.UserName)
         {
@@ -281,7 +279,7 @@ public class ReadModel : BasePageModel<ReadModel>
 
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
-            .SingleOrDefaultAsync(x => x.Id == commentId);
+            .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
         {
