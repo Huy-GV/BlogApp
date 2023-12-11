@@ -18,19 +18,14 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Blogs;
 
 [AllowAnonymous]
-public class ReadModel : BasePageModel<ReadModel>
+public class ReadModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<ReadModel> logger,
+    IUserModerationService moderationService) : BasePageModel<ReadModel>(
+context, userManager, logger)
 {
-    private readonly IUserModerationService _moderationService;
-
-    public ReadModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<ReadModel> logger,
-        IUserModerationService moderationService) : base(
-    context, userManager, logger)
-    {
-        _moderationService = moderationService;
-    }
+    private readonly IUserModerationService _moderationService = moderationService;
 
     [BindProperty]
     public CommentViewModel CreateCommentViewModel { get; set; } = null!;
@@ -39,10 +34,10 @@ public class ReadModel : BasePageModel<ReadModel>
     public CommentViewModel EditCommentViewModel { get; set; } = null!;
 
     [BindProperty(SupportsGet = true)] 
-    public CurrentUserInfo CurrentUserInfo { get; set; }
+    public CurrentUserInfo CurrentUserInfo { get; set; } = null!;
 
     [BindProperty(SupportsGet = true)] 
-    public DetailedBlogDto DetailedBlogDto { get; set; }
+    public DetailedBlogDto DetailedBlogDto { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
@@ -100,7 +95,7 @@ public class ReadModel : BasePageModel<ReadModel>
                 .ToList()
         };
 
-        var currentUser = await GetUserAsync();
+        var currentUser = await GetUserOrDefaultAsync();
         var currentUserName = currentUser?.UserName ?? string.Empty;
         var currentUserRoles = currentUser != null
             ? await UserManager.GetRolesAsync(currentUser)
@@ -139,8 +134,13 @@ public class ReadModel : BasePageModel<ReadModel>
             return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
         }
 
-        var user = await GetUserAsync();
-        var userName = user.UserName;
+        var user = await GetUserOrDefaultAsync();
+        if (user == null)
+        {
+            return Forbid();
+        }
+
+        var userName = user.UserName ?? string.Empty;
 
         if (await _moderationService.BanTicketExistsAsync(userName))
         {
@@ -176,7 +176,12 @@ public class ReadModel : BasePageModel<ReadModel>
             return BadRequest();
         }
 
-        var user = await GetUserAsync();
+        var user = await GetUserOrDefaultAsync();
+        if (user == null)
+        {
+            return Forbid();
+        }
+
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
@@ -200,7 +205,12 @@ public class ReadModel : BasePageModel<ReadModel>
             return Challenge();
         }
 
-        var user = await GetUserAsync();
+        var user = await GetUserOrDefaultAsync();
+        if (user == null)
+        {
+            return Forbid();
+        }
+
         var roles = await UserManager.GetRolesAsync(user);
 
         if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
@@ -233,7 +243,12 @@ public class ReadModel : BasePageModel<ReadModel>
             return Challenge();
         }
 
-        var user = await GetUserAsync();
+        var user = await GetUserOrDefaultAsync();
+        if (user == null)
+        {
+            return Forbid();
+        }
+
         var roles = await UserManager.GetRolesAsync(user);
         if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
         {

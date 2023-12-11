@@ -9,18 +9,12 @@ using RazorBlog.Models;
 namespace RazorBlog.Services;
 
 // todo: remove ban with a background service
-public class UserModerationService : IUserModerationService
+public class UserModerationService(
+    RazorBlogDbContext dbContext,
+    ILogger<UserModerationService> logger) : IUserModerationService
 {
-    private readonly RazorBlogDbContext _dbContext;
-    private readonly ILogger<UserModerationService> _logger;
-
-    public UserModerationService(
-        RazorBlogDbContext dbContext,
-        ILogger<UserModerationService> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
+    private readonly RazorBlogDbContext _dbContext = dbContext;
+    private readonly ILogger<UserModerationService> _logger = logger;
 
     public async Task<bool> BanTicketExistsAsync(string username)
     {

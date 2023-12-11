@@ -16,23 +16,18 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Admin;
 
 [Authorize(Roles = Roles.AdminRole)]
-public class DetailsModel : BasePageModel<DetailsModel>
+public class DetailsModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<DetailsModel> logger,
+    IUserModerationService userUserModerationService) : BasePageModel<DetailsModel>(context, userManager, logger)
 {
-    private readonly IUserModerationService _userModerationService;
+    private readonly IUserModerationService _userModerationService = userUserModerationService;
 
-    public DetailsModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<DetailsModel> logger,
-        IUserModerationService userUserModerationService) : base(context, userManager, logger)
-    {
-        _userModerationService = userUserModerationService;
-    }
-
-    [BindProperty] public BanTicket? BanTicket { get; set; }
-    [BindProperty] public string UserName { get; set; }
-    [BindProperty] public List<HiddenCommentDto> HiddenComments { get; set; }
-    [BindProperty] public List<HiddenBlogDto> HiddenBlogs { get; set; }
+    [BindProperty] public BanTicket? BanTicket { get; set; } = null!;
+    [BindProperty] public string UserName { get; set; } = null!;
+    [BindProperty] public List<HiddenCommentDto> HiddenComments { get; set; } = null!;
+    [BindProperty] public List<HiddenBlogDto> HiddenBlogs { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(string? userName)
     {
@@ -67,7 +62,7 @@ public class DetailsModel : BasePageModel<DetailsModel>
                 Title = b.Title,
                 Introduction = b.Introduction,
                 Content = b.Content,
-                CreatedDate = b.CreationTime,
+                CreationTime = b.CreationTime,
             })
             .ToListAsync();
     }
@@ -81,14 +76,14 @@ public class DetailsModel : BasePageModel<DetailsModel>
             {
                 Id = c.Id,
                 Content = c.Content,
-                CreatedDate = c.CreationTime,
+                CreationTime = c.CreationTime,
             })
             .ToListAsync();
     }
 
     public async Task<IActionResult> OnPostBanUserAsync()
     {
-        if (await UserManager.FindByNameAsync(BanTicket.UserName) == null)
+        if (BanTicket?.UserName == null || await UserManager.FindByNameAsync(BanTicket.UserName) == null)
         {
             return BadRequest("User not found");
         }

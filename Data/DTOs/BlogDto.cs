@@ -4,13 +4,13 @@ namespace RazorBlog.Data.Dtos;
 
 public record BlogDto
 {
-    public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public DateTime CreationTime { get; set; }
-    public DateTime LastUpdateTime { get; set; }
+    public required int Id { get; set; }
+    public required string Title { get; set; }
+    public required DateTime CreationTime { get; set; }
+    public required DateTime LastUpdateTime { get; set; }
     public bool IsModified => CreationTime != LastUpdateTime;
-    public string AuthorName { get; set; } = string.Empty;
-    public uint ViewCount { get; set; }
-    public string Introduction { get; set; } = string.Empty;
-    public string CoverImageUri { get; set; } = string.Empty;
+    public required string AuthorName { get; set; }
+    public required uint ViewCount { get; set; }
+    public required string Introduction { get; set; }
+    public required string CoverImageUri { get; set; }
 }

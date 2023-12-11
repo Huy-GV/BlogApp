@@ -2,8 +2,8 @@
 
 public record MinimalBlogDto
 {
-    public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public System.DateTime Date { get; set; }
-    public uint ViewCount { get; set; }
+    public required int Id { get; set; }
+    public required string Title { get; set; }
+    public System.DateTime CreationTime { get; set; }
+    public required uint ViewCount { get; set; }
 }

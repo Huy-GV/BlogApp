@@ -14,11 +14,11 @@
         <input type="text" name="EditBlogViewModel.Title" required value="@Model.EditBlogViewModel.Title">
         <span asp-validation-for="EditBlogViewModel.Title" class="error-message"></span>
 
-        <label asp-for="EditBlogViewModel.Description">Description</label>
+        <label asp-for="EditBlogViewModel.Introduction">Description</label>
         <textarea rows="8" cols="50"
-                name="EditBlogViewModel.Description"
-                required>@Model.EditBlogViewModel.Description</textarea>
-        <span asp-validation-for="EditBlogViewModel.Description" class="error-message"></span>
+                  name="EditBlogViewModel.Introduction"
+                required>@Model.EditBlogViewModel.Introduction</textarea>
+        <span asp-validation-for="EditBlogViewModel.Introduction" class="error-message"></span>
 
         <label asp-for="EditBlogViewModel.CoverImage"></label>
         <input type="file" asp-for="EditBlogViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>

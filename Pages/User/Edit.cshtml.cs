@@ -15,23 +15,17 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.User;
 
 [Authorize]
-public class EditModel : BasePageModel<EditModel>
+public class EditModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<EditModel> logger,
+    IImageStorage imageStorage) : BasePageModel<EditModel>(context, userManager, logger)
 {
-    private readonly IImageStorage _imageStorage;
+    private readonly IImageStorage _imageStorage = imageStorage;
 
-    private readonly ILogger<EditModel> _logger;
+    private readonly ILogger<EditModel> _logger = logger;
 
-    public EditModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<EditModel> logger,
-        IImageStorage imageStorage) : base(context, userManager, logger)
-    {
-        _logger = logger;
-        _imageStorage = imageStorage;
-    }
-
-    [BindProperty] public EditUserViewModel EditUserViewModel { get; set; }
+    [BindProperty] public EditUserViewModel EditUserViewModel { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(string? username)
     {

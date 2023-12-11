@@ -4,17 +4,12 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Data;
 
-public class RazorBlogDbContext : IdentityDbContext<ApplicationUser>
+public class RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
-    public RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options)
-        : base(options)
-    {
-    }
-
-    public DbSet<Blog> Blog { get; set; }
-    public DbSet<Comment> Comment { get; set; }
-    public DbSet<BanTicket> BanTicket { get; set; }
-    public DbSet<ApplicationUser> ApplicationUser { get; set; }
+    public DbSet<Blog> Blog { get; set; } = null!;
+    public DbSet<Comment> Comment { get; set; } = null!;
+    public DbSet<BanTicket> BanTicket { get; set; } = null!;
+    public DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

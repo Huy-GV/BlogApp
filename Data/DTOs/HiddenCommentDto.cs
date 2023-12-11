@@ -2,7 +2,7 @@
 
 public class HiddenCommentDto
 {
-    public int Id { get; init; }
-    public string Content { get; init; } = string.Empty;
-    public System.DateTime CreatedDate { get; init; }
+    public required int Id { get; init; }
+    public required string Content { get; init; }
+    public required System.DateTime CreationTime { get; init; }
 }

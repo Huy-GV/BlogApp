@@ -2,6 +2,6 @@
 
 public class UserProfileDto
 {
-    public string UserName { get; init; } = string.Empty;
-    public string RegistrationDate { get; init; } = string.Empty;
+    public required string UserName { get; init; }
+    public required string RegistrationDate { get; init; }
 }

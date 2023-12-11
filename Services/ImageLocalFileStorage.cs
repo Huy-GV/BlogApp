@@ -8,20 +8,14 @@ using RazorBlog.Data.Constants;
 
 namespace RazorBlog.Services;
 
-public class ImageLocalFileStorage : IImageStorage
+public class ImageLocalFileStorage(
+    ILogger<ImageLocalFileStorage> logger,
+    IWebHostEnvironment webHostEnv) : IImageStorage
 {
-    private readonly ILogger<ImageLocalFileStorage> _logger;
-    private readonly IWebHostEnvironment _webHostEnv;
+    private readonly ILogger<ImageLocalFileStorage> _logger = logger;
+    private readonly IWebHostEnvironment _webHostEnv = webHostEnv;
     private const string DefaultProfilePictureName = "default.jpg";
     private const string ImageDirectoryName = "images";
-
-    public ImageLocalFileStorage(
-        ILogger<ImageLocalFileStorage> logger,
-        IWebHostEnvironment webHostEnv)
-    {
-        _logger = logger;
-        _webHostEnv = webHostEnv;
-    }
 
     private string AbsoluteImageDirPath => Path.Combine(_webHostEnv.WebRootPath, ImageDirectoryName);
 
@@ -70,7 +64,7 @@ public class ImageLocalFileStorage : IImageStorage
         IFormFile imageFile,
         ImageType type)
     {
-        var pathRelativeToImageDir = Path.Combine(Enum.GetName(type));
+        var pathRelativeToImageDir = Path.Combine(Enum.GetName(type)!);
         var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
         var formattedName = BuildFileName(imageFile.FileName, nameof(type));
         Directory.CreateDirectory(directoryPath);

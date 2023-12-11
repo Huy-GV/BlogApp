@@ -14,16 +14,12 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.User;
 
 [Authorize]
-public class IndexModel : BasePageModel<IndexModel>
+public class IndexModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<IndexModel> logger) : BasePageModel<IndexModel>(context, userManager, logger)
 {
-    public IndexModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<IndexModel> logger) : base(context, userManager, logger)
-    {
-    }
-
-    [BindProperty] public PersonalProfileDto UserDto { get; set; }
+    [BindProperty] public PersonalProfileDto UserDto { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(string? username)
     {
@@ -60,7 +56,7 @@ public class IndexModel : BasePageModel<IndexModel>
                     Id = b.Id,
                     Title = b.Title,
                     ViewCount = b.ViewCount,
-                    Date = b.CreationTime,
+                    CreationTime = b.CreationTime,
                 }).ToList());
         }
 

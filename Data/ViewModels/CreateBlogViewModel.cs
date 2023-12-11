@@ -15,7 +15,7 @@ public class CreateBlogViewModel
 
     [Required]
     [StringLength(200, MinimumLength = 10)]
-    public string Description { get; set; } = string.Empty;
+    public string Introduction { get; set; } = string.Empty;
 
     [Display(Name = "Cover image")]
     [Required]

@@ -14,15 +14,11 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Blogs;
 
 [AllowAnonymous]
-public class IndexModel : BasePageModel<IndexModel>
+public class IndexModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<IndexModel> logger) : BasePageModel<IndexModel>(context, userManager, logger)
 {
-    public IndexModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<IndexModel> logger) : base(context, userManager, logger)
-    {
-    }
-
     [BindProperty] 
     public IEnumerable<BlogDto> Blogs { get; set; } = Enumerable.Empty<BlogDto>();
 
@@ -43,7 +39,7 @@ public class IndexModel : BasePageModel<IndexModel>
                 Title = b.IsHidden ? ReplacementText.HiddenContent : b.Title,
                 AuthorName = b.AppUser == null
                     ? ReplacementText.DeletedUser
-                    : b.AppUser.UserName,
+                    : b.AppUser.UserName!,
                 CreationTime = b.CreationTime,
                 LastUpdateTime = b.LastUpdateTime,
                 ViewCount = b.ViewCount,

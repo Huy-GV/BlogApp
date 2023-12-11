@@ -12,33 +12,30 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Blogs;
 
 [Authorize]
-public class CreateModel : BasePageModel<CreateModel>
+public class CreateModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<CreateModel> logger,
+    IImageStorage imageService,
+    IUserModerationService userModerationService) : BasePageModel<CreateModel>(
+context, userManager, logger)
 {
-    private readonly IImageStorage _imageStorage;
+    private readonly IImageStorage _imageStorage = imageService;
 
-    private readonly IUserModerationService _userModerationService;
-
-    public CreateModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<CreateModel> logger,
-        IImageStorage imageService,
-        IUserModerationService userModerationService) : base(
-    context, userManager, logger)
-    {
-        _imageStorage = imageService;
-        _userModerationService = userModerationService;
-    }
+    private readonly IUserModerationService _userModerationService = userModerationService;
 
     [BindProperty]
     public BlogViewModel CreateBlogViewModel { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var user = await GetUserAsync();
-        var username = user.UserName;
+        var user = await GetUserOrDefaultAsync();
+        if (user?.UserName == null)
+        {
+            return Page();
+        }
 
-        if (await _userModerationService.BanTicketExistsAsync(username))
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName))
         {
             return RedirectToPage("./Index");
         }
@@ -48,7 +45,12 @@ public class CreateModel : BasePageModel<CreateModel>
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var user = await GetUserAsync();
+        var user = await GetUserOrDefaultAsync();
+        if (user?.UserName == null)
+        {
+            return Page();
+        }
+
         if (await _userModerationService.BanTicketExistsAsync(user.UserName))
         {
             return Forbid();

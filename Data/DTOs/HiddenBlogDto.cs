@@ -2,9 +2,9 @@
 
 public class HiddenBlogDto
 {
-    public int Id { get; init; }
-    public string Introduction { get; init; } = string.Empty;
-    public string Content { get; init; } = string.Empty;
-    public string Title { get; init; } = string.Empty;
-    public System.DateTime CreatedDate { get; init; }
+    public required int Id { get; init; }
+    public required string Introduction { get; init; } = string.Empty;
+    public required string Content { get; init; } = string.Empty;
+    public required string Title { get; init; } = string.Empty;
+    public required System.DateTime CreationTime { get; init; }
 }

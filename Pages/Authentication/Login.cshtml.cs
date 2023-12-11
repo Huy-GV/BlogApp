@@ -12,24 +12,15 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Authentication;
 
 [AllowAnonymous]
-public class LoginModel : PageModel
+public class LoginModel(
+    SignInManager<ApplicationUser> signInManager,
+    ILogger<LoginModel> logger) : PageModel
 {
-    private readonly ILogger<LoginModel> _logger;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public LoginModel(
-        SignInManager<ApplicationUser> signInManager,
-        ILogger<LoginModel> logger,
-        UserManager<ApplicationUser> userManager)
-    {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _logger = logger;
-    }
+    private readonly ILogger<LoginModel> _logger = logger;
+    private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
 
     [BindProperty] 
-    public LogInViewModel LogInViewModel { get; set; }
+    public LogInViewModel LogInViewModel { get; set; } = null!;
 
     public string? ReturnUrl { get; set; }
 

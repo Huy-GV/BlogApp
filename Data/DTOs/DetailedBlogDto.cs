@@ -5,18 +5,17 @@ namespace RazorBlog.Data.Dtos;
 
 public record DetailedBlogDto
 {
-    public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-
-    public string AuthorName { get; set; } = string.Empty;
-    public string AuthorProfileImageUri { get; set; } = string.Empty;
-    public string AuthorDescription { get; set; } = string.Empty;
-    public string Introduction { get; set; } = string.Empty;
-    public DateTime CreationTime { get; set; }
-    public DateTime LastUpdateTime { get; set; }
+    public required int Id { get; set; }
+    public required string Title { get; set; }
+    public required string AuthorName { get; set; }
+    public required string AuthorProfileImageUri { get; set; }
+    public required string AuthorDescription { get; set; }
+    public required string Introduction { get; set; }
+    public required DateTime CreationTime { get; set; }
+    public required DateTime LastUpdateTime { get; set; }
     public bool IsModified => CreationTime != LastUpdateTime;
-    public string Content { get; set; } = string.Empty;
-    public string CoverImageUri { get; set; } = string.Empty;
+    public required string Content { get; set; }
+    public required string CoverImageUri { get; set; }
     public bool IsHidden { get; set; }
     public ICollection<CommentDto> CommentDtos { get; set; } = new List<CommentDto>();
 }

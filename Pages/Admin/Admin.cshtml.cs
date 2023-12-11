@@ -14,19 +14,15 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Admin;
 
 [Authorize(Roles = Roles.AdminRole)]
-public class AdminModel : BasePageModel<AdminModel>
+public class AdminModel(RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<AdminModel> logger) : BasePageModel<AdminModel>(context, userManager, logger)
 {
-    public AdminModel(RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<AdminModel> logger) : base(context, userManager, logger)
-    {
-    }
+    [BindProperty]
+    public List<UserProfileDto> Moderators { get; set; } = null!;
 
     [BindProperty]
-    public List<UserProfileDto> Moderators { get; set; }
-
-    [BindProperty]
-    public List<UserProfileDto> NormalUsers { get; set; }
+    public List<UserProfileDto> NormalUsers { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -34,7 +30,7 @@ public class AdminModel : BasePageModel<AdminModel>
             .AsNoTracking()
             .Select(x => new UserProfileDto
             {
-                UserName = x.UserName,
+                UserName = x.UserName!,
                 RegistrationDate = x.RegistrationDate == null
                     ? "a long time ago"
                     : x.RegistrationDate.Value.ToString(@"d/M/yyy"),

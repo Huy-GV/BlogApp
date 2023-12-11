@@ -12,18 +12,13 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Blogs;
 
 [Authorize]
-public class EditModel : BasePageModel<EditModel>
+public class EditModel(
+    RazorBlogDbContext context,
+    UserManager<ApplicationUser> userManager,
+    ILogger<EditModel> logger,
+    IImageStorage imageStorage) : BasePageModel<EditModel>(context, userManager, logger)
 {
-    private readonly IImageStorage _imageStorage;
-
-    public EditModel(
-        RazorBlogDbContext context,
-        UserManager<ApplicationUser> userManager,
-        ILogger<EditModel> logger,
-        IImageStorage imageStorage) : base(context, userManager, logger)
-    {
-        _imageStorage = imageStorage;
-    }
+    private readonly IImageStorage _imageStorage = imageStorage;
 
     [BindProperty]
     public EditBlogViewModel EditBlogViewModel { get; set; } = null!;
@@ -52,7 +47,7 @@ public class EditModel : BasePageModel<EditModel>
             Id = blog.Id,
             Title = blog.Title,
             Content = blog.Content,
-            Description = blog.Introduction
+            Introduction = blog.Introduction
         };
 
         return Page();
@@ -66,7 +61,12 @@ public class EditModel : BasePageModel<EditModel>
             return Page();
         }
 
-        var user = await GetUserAsync();
+        var user = await GetUserOrDefaultAsync();
+        if (user == null)
+        {
+            return Forbid();
+        }
+
         var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
 
         if (blog == null)
