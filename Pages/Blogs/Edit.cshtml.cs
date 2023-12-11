@@ -25,8 +25,8 @@ public class EditModel : BasePageModel<EditModel>
         _imageStorage = imageStorage;
     }
 
-    [BindProperty] 
-    public EditBlogViewModel EditBlogViewModel { get; set; }
+    [BindProperty]
+    public EditBlogViewModel EditBlogViewModel { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
     {

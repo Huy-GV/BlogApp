@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -33,11 +32,11 @@ public class ReadModel : BasePageModel<ReadModel>
         _moderationService = moderationService;
     }
 
-    [BindProperty] 
-    public CommentViewModel CreateCommentViewModel { get; set; }
+    [BindProperty]
+    public CommentViewModel CreateCommentViewModel { get; set; } = null!;
 
     [BindProperty]
-    public CommentViewModel EditCommentViewModel { get; set; }
+    public CommentViewModel EditCommentViewModel { get; set; } = null!;
 
     [BindProperty(SupportsGet = true)] 
     public CurrentUserInfo CurrentUserInfo { get; set; }
@@ -65,10 +64,10 @@ public class ReadModel : BasePageModel<ReadModel>
 
         var blogAuthor = new
         {
-            UserName = blog.AppUser?.UserName ?? RemovedContent.ReplacementUserName,
+            UserName = blog.AppUser?.UserName ?? ReplacementText.DeletedUser,
             // todo: un-hardcode default profile pic
             ProfileImageUri = blog.AppUser?.ProfileImageUri ?? "default.jpg",
-            Description = blog.AppUser?.Description ?? RemovedContent.ReplacementUserName
+            Description = blog.AppUser?.Description ?? ReplacementText.DeletedUser
         };
 
         DbContext.Blog.Update(blog);
@@ -77,9 +76,9 @@ public class ReadModel : BasePageModel<ReadModel>
         DetailedBlogDto = new DetailedBlogDto
         {
             Id = blog.Id,
-            Introduction = blog.IsHidden ? RemovedContent.ReplacementText : blog.Introduction,
-            Title = blog.IsHidden ? RemovedContent.ReplacementText : blog.Title,
-            Content = blog.IsHidden ? RemovedContent.ReplacementText : blog.Content,
+            Introduction = blog.IsHidden ? ReplacementText.HiddenContent : blog.Introduction,
+            Title = blog.IsHidden ? ReplacementText.HiddenContent : blog.Title,
+            Content = blog.IsHidden ? ReplacementText.HiddenContent : blog.Content,
             CoverImageUri = blog.CoverImageUri,
             CreationTime = blog.CreationTime,
             LastUpdateTime = blog.LastUpdateTime,
@@ -93,8 +92,8 @@ public class ReadModel : BasePageModel<ReadModel>
                     Id = c.Id,
                     CreationTime = c.CreationTime,
                     LastUpdateTime = c.LastUpdateTime,
-                    Content = c.Content,
-                    AuthorName = c.AppUser?.UserName ?? RemovedContent.ReplacementUserName,
+                    Content = c.IsHidden ? ReplacementText.HiddenContent : c.Content,
+                    AuthorName = c.AppUser?.UserName ?? ReplacementText.DeletedUser,
                     AuthorProfileImageUri = c.AppUser?.ProfileImageUri ?? "default.jpg",
                     IsHidden = c.IsHidden
                 })
@@ -137,7 +136,7 @@ public class ReadModel : BasePageModel<ReadModel>
         if (errorKeys.Any(e => e.Contains(nameof(CreateCommentViewModel))))
         {
             Logger.LogError("Model state invalid when submitting new comment.");
-            return BadRequest();
+            return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
         }
 
         var user = await GetUserAsync();
@@ -174,7 +173,6 @@ public class ReadModel : BasePageModel<ReadModel>
 
         if (errorKeys.Any(e => e.Contains(nameof(EditCommentViewModel))))
         {
-            Logger.LogError("Model state invalid when editing comment.");
             return BadRequest();
         }
 

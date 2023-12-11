@@ -19,5 +19,5 @@ public class CreateBlogViewModel
 
     [Display(Name = "Cover image")]
     [Required]
-    public IFormFile? CoverImage { get; set; }
+    public IFormFile CoverImage { get; set; } = null!;
 }

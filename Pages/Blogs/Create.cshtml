@@ -9,7 +9,7 @@
 }
 
 <form class="add-form" method="post" enctype="multipart/form-data">
-    <div>
+    <div class="form-inputs">
         <label asp-for="CreateBlogViewModel.Title">Title</label>
         <input asp-for="CreateBlogViewModel.Title" type="text" required>
         <span asp-validation-for="CreateBlogViewModel.Title" class="error-message"></span>
@@ -33,5 +33,5 @@
         <span asp-validation-for="CreateBlogViewModel.Content" class="error-message"></span>
     </div>
 
-    <input type="submit" value="Add blog" class="submit-post"/>
+    <input type="submit" value="Submit Post" class="submit-post"/>
 </form>

@@ -26,10 +26,10 @@ public class UserModerationService : IUserModerationService
     {
         // await CheckExpiryAsync(username);
 
-        return _dbContext.BanTicket.Any(s => s.UserName == username);
+        return await _dbContext.BanTicket.AnyAsync(s => s.UserName == username);
     }
 
-    public async Task<BanTicket> FindAsync(string username)
+    public async Task<BanTicket?> FindAsync(string username)
     {
         return await _dbContext
             .BanTicket

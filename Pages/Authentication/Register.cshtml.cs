@@ -33,18 +33,15 @@ public class RegisterModel : PageModel
         _imageStorage = imageStorage;
     }
 
-    [BindProperty] public CreateUserViewModel CreateUserViewModel { get; set; }
+    [BindProperty] 
+    public CreateUserViewModel CreateUserViewModel { get; set; }
 
-    public string ReturnUrl { get; set; }
-
-    public void OnGet(string returnUrl = null)
+    public void OnGet()
     {
-        ReturnUrl = returnUrl;
     }
 
-    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    public async Task<IActionResult> OnPostAsync()
     {
-        var homeUrl = returnUrl ?? Url.Content("~/");
         if (!ModelState.IsValid)
         {
             return Page();
@@ -74,7 +71,7 @@ public class RegisterModel : PageModel
         _logger.LogInformation($"User created a new account with username {CreateUserViewModel.UserName}.");
         await _signInManager.SignInAsync(user, false);
 
-        return LocalRedirect(homeUrl);
+        return LocalRedirect(Url.Content("~/"));
     }
 
     private async Task<string> UploadProfileImage(IFormFile image)

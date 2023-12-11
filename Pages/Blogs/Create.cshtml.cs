@@ -30,7 +30,8 @@ public class CreateModel : BasePageModel<CreateModel>
         _userModerationService = userModerationService;
     }
 
-    [BindProperty] public BlogViewModel CreateBlogViewModel { get; set; }
+    [BindProperty]
+    public BlogViewModel CreateBlogViewModel { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -62,12 +63,13 @@ public class CreateModel : BasePageModel<CreateModel>
         try
         {
             var imageName = await _imageStorage.UploadBlogCoverImageAsync(CreateBlogViewModel.CoverImage);
+            var utcNow = DateTime.UtcNow;
             var newBlog = new Blog
             {
                 CoverImageUri = imageName,
                 AppUserId = user.Id,
-                CreationTime = DateTime.UtcNow,
-                LastUpdateTime = DateTime.UtcNow,
+                CreationTime = utcNow,
+                LastUpdateTime = utcNow,
             };
 
             DbContext.Blog.Add(newBlog).CurrentValues.SetValues(CreateBlogViewModel);

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -170,7 +171,8 @@ public class DetailsModel : BasePageModel<DetailsModel>
 
         DbContext.Comment.Update(comment);
         comment.IsHidden = false;
-        comment.Content = "[Removed]";
+        comment.Content = ReplacementText.RemovedContent;
+        comment.ToBeDeleted = true;
         await DbContext.SaveChangesAsync();
         return RedirectToPage("Details", new { username = comment.AppUser.UserName });
     }
@@ -183,13 +185,14 @@ public class DetailsModel : BasePageModel<DetailsModel>
 
         if (blog == null)
         {
-            Logger.LogError("blog not found");
+            Logger.LogError("Blog not found");
             return NotFound();
         }
 
         DbContext.Blog.Update(blog);
         blog.IsHidden = false;
-        blog.Content = "[Removed]";
+        blog.ToBeDeleted = true;
+        blog.Content = ReplacementText.RemovedContent;
         await DbContext.SaveChangesAsync();
         return RedirectToPage("Details", new { username = blog.AppUser.UserName });
     }

@@ -31,6 +31,5 @@ commentContainer.addEventListener('click', (e) => {
 
         let deleteCommentBtn = comment.querySelector(".delete-comment");
         deleteCommentBtn.classList.toggle("hidden-element");
-
     }
 })

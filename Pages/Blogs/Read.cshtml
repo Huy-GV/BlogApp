@@ -15,6 +15,11 @@
 
 <main class="blog-container">
     <article class="blog">
+        @{
+            var blogContentClass = Model.DetailedBlogDto.IsHidden
+            ? "suspended-post"
+            : string.Empty;
+        }
         <div class="blog-info-container">
             <span class="blog-author">@Model.DetailedBlogDto.AuthorName</span>
             <span class="blog-info">, @Model.DetailedBlogDto.CreationTime.ToString("dd MMMM yyyy")</span>
@@ -26,7 +31,7 @@
             }
         </div>
 
-        <p class="title">@Model.DetailedBlogDto.Title</p>
+        <p class="title @blogContentClass">@Model.DetailedBlogDto.Title</p>
         <hr>
         <div class="comment-option-container">
             @{
@@ -59,14 +64,10 @@
                 }
             }
         </div>
-        @{
-            var (blogContentClass, blogContent) = Model.DetailedBlogDto.IsHidden
-                ? ("suspended-post", "[removed]")
-                : (string.Empty, Model.DetailedBlogDto.Content);
-        }
-        <p class="blog-description">@Model.DetailedBlogDto.Introduction</p>
+
+        <p class="blog-description @blogContentClass">@Model.DetailedBlogDto.Introduction</p>
         <img alt="Blog Cover Image" src="~/images/@Model.DetailedBlogDto.CoverImageUri" asp-append-version="true">
-        <p class="blog-content @blogContentClass">@blogContent</p>
+        <p class="blog-content @blogContentClass">@Model.DetailedBlogDto.Content</p>
     </article>
 </main>
 
@@ -77,7 +78,7 @@
         <span>@Model.DetailedBlogDto.AuthorName</span>
     </div>
 
-    <p>@Model.DetailedBlogDto.Introduction</p>
+    <p class="@blogContentClass">@Model.DetailedBlogDto.Introduction</p>
 </section>
 
 @if (!userInfo.IsBanned && SignInManager.IsSignedIn(User))
@@ -86,7 +87,7 @@
         <input asp-for="CreateCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden"/>
         <textarea rows="5" cols="50" required
                   name="CreateCommentViewModel.Content"
-            placeholder="Add a comment"></textarea>
+            placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
         <input type="submit" value="POST" class="submit-comment"/>
     </form>
 }

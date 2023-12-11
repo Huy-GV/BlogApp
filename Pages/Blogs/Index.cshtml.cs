@@ -23,9 +23,11 @@ public class IndexModel : BasePageModel<IndexModel>
     {
     }
 
-    [BindProperty] public IEnumerable<BlogDto> Blogs { get; set; }
+    [BindProperty] 
+    public IEnumerable<BlogDto> Blogs { get; set; } = Enumerable.Empty<BlogDto>();
 
-    [BindProperty(SupportsGet = true)] public string SearchString { get; set; }
+    [BindProperty(SupportsGet = true)]
+    public string SearchString { get; set; } = string.Empty;
 
     public async Task OnGetAsync()
     {
@@ -34,18 +36,19 @@ public class IndexModel : BasePageModel<IndexModel>
             .Include(b => b.AppUser)
             .Include(b => b.Comments)
             .ThenInclude(c => c.AppUser)
+            .Where(x => !x.IsHidden)
             .Select(b => new BlogDto
             {
                 Id = b.Id,
-                Title = b.IsHidden ? RemovedContent.ReplacementText : b.Title,
+                Title = b.IsHidden ? ReplacementText.HiddenContent : b.Title,
                 AuthorName = b.AppUser == null
-                    ? RemovedContent.ReplacementUserName
+                    ? ReplacementText.DeletedUser
                     : b.AppUser.UserName,
                 CreationTime = b.CreationTime,
                 LastUpdateTime = b.LastUpdateTime,
                 ViewCount = b.ViewCount,
                 CoverImageUri = b.CoverImageUri,
-                Introduction = b.IsHidden ? RemovedContent.ReplacementText : b.Introduction
+                Introduction = b.IsHidden ? ReplacementText.HiddenContent : b.Introduction
             })
             .Where(b => SearchString == null ||
                         SearchString == string.Empty ||
