@@ -6,7 +6,9 @@ public class Comment : Post
 {
     public int Id { get; set; }
 
-    [Required] [MaxLength(250)] public override string Content { get; set; }
+    [Required] 
+    [MaxLength(250)] 
+    public override string Content { get; set; } = string.Empty;
 
-    [Required] public int BlogId { get; set; }
+    public int? BlogId { get; set; }
 }

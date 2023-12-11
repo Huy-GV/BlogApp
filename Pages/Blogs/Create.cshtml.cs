@@ -65,8 +65,9 @@ public class CreateModel : BasePageModel<CreateModel>
             var newBlog = new Blog
             {
                 CoverImageUri = imageName,
-                Date = DateTime.Now,
-                AppUserId = user.Id
+                AppUserId = user.Id,
+                CreationTime = DateTime.UtcNow,
+                LastUpdateTime = DateTime.UtcNow,
             };
 
             DbContext.Blog.Add(newBlog).CurrentValues.SetValues(CreateBlogViewModel);

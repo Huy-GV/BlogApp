@@ -7,18 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
+using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
 namespace RazorBlog.Pages.Admin;
 
-[Authorize(Roles = "admin")]
+[Authorize(Roles = Roles.AdminRole)]
 public class DetailsModel : BasePageModel<DetailsModel>
 {
     private readonly IUserModerationService _userModerationService;
 
-    public DetailsModel(RazorBlogDbContext context,
+    public DetailsModel(
+        RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<DetailsModel> logger,
         IUserModerationService userUserModerationService) : base(context, userManager, logger)
@@ -64,7 +66,7 @@ public class DetailsModel : BasePageModel<DetailsModel>
                 Title = b.Title,
                 Introduction = b.Introduction,
                 Content = b.Content,
-                CreatedDate = b.Date,
+                CreatedDate = b.CreationTime,
             })
             .ToListAsync();
     }
@@ -78,7 +80,7 @@ public class DetailsModel : BasePageModel<DetailsModel>
             {
                 Id = c.Id,
                 Content = c.Content,
-                CreatedDate = c.Date,
+                CreatedDate = c.CreationTime,
             })
             .ToListAsync();
     }

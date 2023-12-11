@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RazorBlog.Data;
 
 namespace BlogApp.Data.Migrations
 {
     [DbContext(typeof(RazorBlogDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231211015032_ModelDefaultValue")]
+    partial class ModelDefaultValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,8 +250,8 @@ namespace BlogApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreationTime")
-                        .ValueGeneratedOnAdd()
+                    b.Property<DateTime>("Date")
+                        .HasMaxLength(255)
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Introduction")
@@ -259,16 +261,9 @@ namespace BlogApp.Data.Migrations
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastUpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("ToBeDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<long>("ViewCount")
                         .HasColumnType("bigint");
@@ -299,18 +294,11 @@ namespace BlogApp.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<DateTime>("CreationTime")
-                        .ValueGeneratedOnAdd()
+                    b.Property<DateTime>("Date")
+                        .HasMaxLength(255)
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastUpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("ToBeDeleted")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");

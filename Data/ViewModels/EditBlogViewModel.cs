@@ -8,5 +8,5 @@ public class EditBlogViewModel : CreateBlogViewModel
     public int Id { get; set; }
 
     [Display(Name = "Change cover image")]
-    public new IFormFile CoverImage { get; set; } = null!;
+    public new IFormFile? CoverImage { get; set; }
 }

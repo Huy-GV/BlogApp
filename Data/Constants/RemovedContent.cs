@@ -2,5 +2,7 @@
 
 public class RemovedContent
 {
-    public const string ReplacementText = "[removed]";
+    public const string ReplacementText = "[Removed]";
+
+    public const string ReplacementUserName = "[Deleted User]";
 }

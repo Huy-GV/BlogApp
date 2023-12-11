@@ -49,7 +49,7 @@ public class IndexModel : BasePageModel<IndexModel>
             .Where(blog => blog.AppUser.UserName == username)
             .ToList();
 
-        var groups = blogs.GroupBy(b => b.Date.Year).OrderByDescending(g => g.Key);
+        var groups = blogs.GroupBy(b => b.CreationTime.Year).OrderByDescending(g => g.Key);
         var blogsGroupedByYear = new Dictionary<uint, List<MinimalBlogDto>>();
         foreach (var group in groups)
         {
@@ -60,7 +60,7 @@ public class IndexModel : BasePageModel<IndexModel>
                     Id = b.Id,
                     Title = b.Title,
                     ViewCount = b.ViewCount,
-                    Date = b.Date,
+                    Date = b.CreationTime,
                 }).ToList());
         }
 
@@ -80,12 +80,12 @@ public class IndexModel : BasePageModel<IndexModel>
                 .Count,
             BlogCountCurrentYear = (uint)blogs
                 .Where(blog => blog.AppUser.UserName == username &&
-                               blog.Date.Year == DateTime.Now.Year)
+                               blog.CreationTime.Year == DateTime.Now.Year)
                 .ToList()
                 .Count,
             ViewCountCurrentYear = (uint)blogs
                 .Where(blog => blog.AppUser.UserName == username &&
-                               blog.Date.Year == DateTime.Now.Year)
+                               blog.CreationTime.Year == DateTime.Now.Year)
                 .Sum(blogs => blogs.ViewCount),
             RegistrationDate = user.RegistrationDate == null
                     ? "a long time ago"

@@ -16,8 +16,14 @@
 <main class="blog-container">
     <article class="blog">
         <div class="blog-info-container">
-            <span class="blog-author">@Model.DetailedBlogDto.AuthorName,</span>
-            <span class="blog-info"> @Model.DetailedBlogDto.Date.ToString("dd MMMM yyyy")</span>
+            <span class="blog-author">@Model.DetailedBlogDto.AuthorName</span>
+            <span class="blog-info">, @Model.DetailedBlogDto.CreationTime.ToString("dd MMMM yyyy")</span>
+            @{
+                if (Model.DetailedBlogDto.IsModified)
+                {
+                    <span class="blog-info">, last updated @Model.DetailedBlogDto.LastUpdateTime.ToString("dd MMMM yyyy")</span>
+                }
+            }
         </div>
 
         <p class="title">@Model.DetailedBlogDto.Title</p>
@@ -79,7 +85,7 @@
     <form method="post" class="comment-form" asp-page-handler="CreateComment">
         <input asp-for="CreateCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden"/>
         <textarea rows="5" cols="50" required
-            name="CreateCommentViewModel.Content"
+                  name="CreateCommentViewModel.Content"
             placeholder="Add a comment"></textarea>
         <input type="submit" value="POST" class="submit-comment"/>
     </form>
@@ -101,11 +107,20 @@
                     <div class="author-container">
                         <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
                         <span class="@authorClass">@comment.AuthorName</span>
+                        @{
+                            if (comment.IsModified)
+                            {
+                                <span> Updated @comment.LastUpdateTime.ToShortDateString()</span>
+                            }
+                            else 
+                            {
+                                <span> On @comment.CreationTime.ToShortDateString()</span>
+                            }
+                        }
                     </div>
                 }
 
                 <div class="comment-option-container">
-                    @* if (user != null) *@
                     @{
                         var isUserCommentAuthor = comment.AuthorName == userInfo.UserName;
                         if (isUserCommentAuthor)
@@ -129,15 +144,14 @@
                         if (isUserCommentAuthor)
                         {
                             <form asp-page-handler="EditComment"
-                                  asp-route-commentID="@comment.Id"
+                                  asp-route-commentId="@comment.Id"
                                   data-id="@comment.Id"
                                   method="post" #1#
                                   class="edit-comment-form">
-                                <textarea rows="5" cols="50" required 
-                                name="EditCommentViewModel.Content"  
-                                asp-for="EditCommentViewModel.BlogId" 
-                                class="edit-comment-textarea hidden-element">@comment.Content</textarea>
-                                <input asp-for="EditCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden"/>
+                                <textarea rows="5" cols="50" required
+                                          name="EditCommentViewModel.Content"
+                                    class="edit-comment-textarea hidden-element">@comment.Content</textarea>
+                                <input asp-for="EditCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden" />
                                 <button class="edit-comment" data-id="@comment.Id" type="button">Edit</button>
                                 <input type="submit" value="Save" class="save-btn hidden-element"/>
                             </form>

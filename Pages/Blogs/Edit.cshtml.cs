@@ -25,7 +25,8 @@ public class EditModel : BasePageModel<EditModel>
         _imageStorage = imageStorage;
     }
 
-    [BindProperty] public EditBlogViewModel EditBlogViewModel { get; set; }
+    [BindProperty] 
+    public EditBlogViewModel EditBlogViewModel { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
     {
@@ -83,6 +84,8 @@ public class EditModel : BasePageModel<EditModel>
             return Forbid();
         }
 
+
+        blog.LastUpdateTime = DateTime.UtcNow;
         DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);
 
         if (EditBlogViewModel.CoverImage != null)

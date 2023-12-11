@@ -6,7 +6,7 @@
         <AssemblyName>RazorBlog</AssemblyName>
         <RootNamespace>RazorBlog</RootNamespace>
         <LangVersion>10</LangVersion>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

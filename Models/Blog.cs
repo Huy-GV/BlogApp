@@ -7,12 +7,14 @@ public class Blog : Post
 {
     public int Id { get; set; }
 
-    [Required] public string Title { get; set; }
+    [Required] 
+    public string Title { get; set; } = string.Empty;
 
     public string Introduction { get; set; } = string.Empty;
     public uint ViewCount { get; set; } = 0;
 
-    [Required] public string CoverImageUri { get; set; }
+    [Required] 
+    public string CoverImageUri { get; set; } = string.Empty;
 
-    public ICollection<Comment> Comments { get; set; }
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

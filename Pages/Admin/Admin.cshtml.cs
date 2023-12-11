@@ -13,7 +13,7 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Pages.Admin;
 
-[Authorize(Roles = "admin")]
+[Authorize(Roles = Roles.AdminRole)]
 public class AdminModel : BasePageModel<AdminModel>
 {
     public AdminModel(RazorBlogDbContext context,

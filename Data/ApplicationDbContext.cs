@@ -23,6 +23,9 @@ public class RazorBlogDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(b => b.Comments)
             .WithOne();
 
+        builder.Entity<Blog>()
+            .HasQueryFilter(blog => !blog.ToBeDeleted);
+
         builder.Entity<BanTicket>()
             .HasOne(b => b.AppUser)
             .WithMany()

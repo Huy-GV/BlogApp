@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
@@ -13,13 +14,13 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Blogs;
 
 [AllowAnonymous]
-public class IndexModel : PageModel
+public class IndexModel : BasePageModel<IndexModel>
 {
-    private readonly RazorBlogDbContext _context;
-
-    public IndexModel(RazorBlogDbContext context)
+    public IndexModel(
+        RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<IndexModel> logger) : base(context, userManager, logger)
     {
-        _context = context;
     }
 
     [BindProperty] public IEnumerable<BlogDto> Blogs { get; set; }
@@ -29,7 +30,7 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         SearchString = SearchString?.Trim().Trim(' ') ?? string.Empty;
-        Blogs = await _context.Blog
+        Blogs = await DbContext.Blog
             .Include(b => b.AppUser)
             .Include(b => b.Comments)
             .ThenInclude(c => c.AppUser)
@@ -38,11 +39,11 @@ public class IndexModel : PageModel
                 Id = b.Id,
                 Title = b.IsHidden ? RemovedContent.ReplacementText : b.Title,
                 AuthorName = b.AppUser == null
-                    ? "Deleted User"
+                    ? RemovedContent.ReplacementUserName
                     : b.AppUser.UserName,
-                CreatedDate = b.Date,
+                CreationTime = b.CreationTime,
+                LastUpdateTime = b.LastUpdateTime,
                 ViewCount = b.ViewCount,
-                Date = b.Date,
                 CoverImageUri = b.CoverImageUri,
                 Introduction = b.IsHidden ? RemovedContent.ReplacementText : b.Introduction
             })

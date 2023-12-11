@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,13 +33,17 @@ public class ReadModel : BasePageModel<ReadModel>
         _moderationService = moderationService;
     }
 
-    [BindProperty] public CommentViewModel CreateCommentViewModel { get; set; }
+    [BindProperty] 
+    public CommentViewModel CreateCommentViewModel { get; set; }
 
-    [BindProperty] public CommentViewModel EditCommentViewModel { get; set; }
+    [BindProperty]
+    public CommentViewModel EditCommentViewModel { get; set; }
 
-    [BindProperty(SupportsGet = true)] public CurrentUserInfo CurrentUserInfo { get; set; }
+    [BindProperty(SupportsGet = true)] 
+    public CurrentUserInfo CurrentUserInfo { get; set; }
 
-    [BindProperty(SupportsGet = true)] public DetailedBlogDto DetailedBlogDto { get; set; }
+    [BindProperty(SupportsGet = true)] 
+    public DetailedBlogDto DetailedBlogDto { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
@@ -60,10 +65,10 @@ public class ReadModel : BasePageModel<ReadModel>
 
         var blogAuthor = new
         {
-            UserName = blog.AppUser?.UserName ?? "Deleted User",
+            UserName = blog.AppUser?.UserName ?? RemovedContent.ReplacementUserName,
             // todo: un-hardcode default profile pic
             ProfileImageUri = blog.AppUser?.ProfileImageUri ?? "default.jpg",
-            Description = blog.AppUser?.Description ?? "Deleted User"
+            Description = blog.AppUser?.Description ?? RemovedContent.ReplacementUserName
         };
 
         DbContext.Blog.Update(blog);
@@ -76,7 +81,8 @@ public class ReadModel : BasePageModel<ReadModel>
             Title = blog.IsHidden ? RemovedContent.ReplacementText : blog.Title,
             Content = blog.IsHidden ? RemovedContent.ReplacementText : blog.Content,
             CoverImageUri = blog.CoverImageUri,
-            Date = blog.Date,
+            CreationTime = blog.CreationTime,
+            LastUpdateTime = blog.LastUpdateTime,
             IsHidden = blog.IsHidden,
             AuthorDescription = blogAuthor.Description,
             AuthorName = blogAuthor.UserName,
@@ -85,9 +91,10 @@ public class ReadModel : BasePageModel<ReadModel>
                 .Select(c => new CommentDto
                 {
                     Id = c.Id,
-                    Date = c.Date,
+                    CreationTime = c.CreationTime,
+                    LastUpdateTime = c.LastUpdateTime,
                     Content = c.Content,
-                    AuthorName = c.AppUser?.UserName ?? "Deleted User",
+                    AuthorName = c.AppUser?.UserName ?? RemovedContent.ReplacementUserName,
                     AuthorProfileImageUri = c.AppUser?.ProfileImageUri ?? "default.jpg",
                     IsHidden = c.IsHidden
                 })
@@ -122,7 +129,12 @@ public class ReadModel : BasePageModel<ReadModel>
             return Challenge();
         }
 
-        if (!ModelState.IsValid)
+        var errorKeys = ModelState
+            .Where(x => x.Value?.Errors.Any() ?? false)
+            .Select(x => x.Key)
+            .Distinct();
+
+        if (errorKeys.Any(e => e.Contains(nameof(CreateCommentViewModel))))
         {
             Logger.LogError("Model state invalid when submitting new comment.");
             return BadRequest();
@@ -138,7 +150,6 @@ public class ReadModel : BasePageModel<ReadModel>
 
         DbContext.Comment.Add(new Comment
         {
-            Date = DateTime.Now,
             AppUserId = user.Id,
             BlogId = CreateCommentViewModel.BlogId,
             Content = CreateCommentViewModel.Content
@@ -156,10 +167,15 @@ public class ReadModel : BasePageModel<ReadModel>
             return Challenge();
         }
 
-        if (!ModelState.IsValid)
+        var errorKeys = ModelState
+            .Where(x => x.Value?.Errors.Any() ?? false)
+            .Select(x => x.Key)
+            .Distinct();
+
+        if (errorKeys.Any(e => e.Contains(nameof(EditCommentViewModel))))
         {
-            Logger.LogError("Invalid model state when editting comments");
-            return NotFound();
+            Logger.LogError("Model state invalid when editing comment.");
+            return BadRequest();
         }
 
         var user = await GetUserAsync();
@@ -172,6 +188,7 @@ public class ReadModel : BasePageModel<ReadModel>
             return Forbid();
         }
 
+        comment.LastUpdateTime = DateTime.UtcNow;
         DbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
         await DbContext.SaveChangesAsync();
 

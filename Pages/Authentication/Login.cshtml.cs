@@ -18,7 +18,8 @@ public class LoginModel : PageModel
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public LoginModel(SignInManager<ApplicationUser> signInManager,
+    public LoginModel(
+        SignInManager<ApplicationUser> signInManager,
         ILogger<LoginModel> logger,
         UserManager<ApplicationUser> userManager)
     {
@@ -27,11 +28,12 @@ public class LoginModel : PageModel
         _logger = logger;
     }
 
-    [BindProperty] public LogInViewModel LogInViewModel { get; set; }
+    [BindProperty] 
+    public LogInViewModel LogInViewModel { get; set; }
 
-    public string ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
-    public async Task OnGetAsync(string returnUrl = null)
+    public async Task OnGetAsync(string? returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
         await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
@@ -39,7 +41,7 @@ public class LoginModel : PageModel
         ReturnUrl = returnUrl;
     }
 
-    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
         Console.WriteLine("Return URL from log in model: " + returnUrl);
