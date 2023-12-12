@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using RazorBlog.Models;
 
 namespace RazorBlog.Services;
@@ -22,21 +23,29 @@ public interface IUserModerationService
     /// <summary>
     ///     Marks the comment content as hidden until it is unhidden or deleted.
     /// </summary>
-    /// <param name="commentId"></param>
+    /// <param name="commentId">ID of comment to hide.</param>
     /// <returns></returns>
     Task HideCommentAsync(int commentId);
 
     /// <summary>
     ///     Marks the blog title, description, and content as hidden until it is unhidden or deleted.
     /// </summary>
-    /// <param name="blogId"></param>
+    /// <param name="blogId">ID of blog to hide.</param>
     /// <returns></returns>
     Task HideBlogAsync(int blogId);
 
     /// <summary>
     ///     Remove the ban ticket immediately.
     /// </summary>
-    /// <param name="ticket"></param>
+    /// <param name="userName">Name of user being banned.</param>
     /// <returns></returns>
-    Task RemoveBanTicketAsync(BanTicket ticket);
+    Task RemoveBanTicketAsync(string userName);
+
+    /// <summary>
+    ///     Create a ban ticket.
+    /// </summary>
+    /// <param name="userName">Name of user being banned.</param>
+    /// <param name="expiry">Expiry date of the ticket. Ban is permanent if null.</param>
+    /// <returns></returns>
+    Task BanUser(string userName, DateTime? expiry);
 }

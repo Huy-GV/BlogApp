@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,14 +20,16 @@ public class DetailsModel(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
     ILogger<DetailsModel> logger,
-    IUserModerationService userUserModerationService) : BasePageModel<DetailsModel>(context, userManager, logger)
+    IUserModerationService userUserModerationService,
+    IPostDeletionService postDeletionService) : BasePageModel<DetailsModel>(context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userUserModerationService;
+    private readonly IPostDeletionService _postDeletionService = postDeletionService;
 
-    [BindProperty] public BanTicket? BanTicket { get; set; } = null!;
-    [BindProperty] public string UserName { get; set; } = null!;
-    [BindProperty] public List<HiddenCommentDto> HiddenComments { get; set; } = null!;
-    [BindProperty] public List<HiddenBlogDto> HiddenBlogs { get; set; } = null!;
+    [BindProperty] public BanTicket? BanTicket { get; set; }
+    [BindProperty] public string UserName { get; set; } = string.Empty;
+    [BindProperty] public List<HiddenCommentDto> HiddenComments { get; set; } = [];
+    [BindProperty] public List<HiddenBlogDto> HiddenBlogs { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync(string? userName)
     {
@@ -88,30 +90,21 @@ public class DetailsModel(
             return BadRequest("User not found");
         }
 
-        if (!await _userModerationService.BanTicketExistsAsync(BanTicket.UserName))
-        {
-            DbContext.BanTicket.Add(BanTicket);
-            await DbContext.SaveChangesAsync();
-        }
-        else
-        {
-            Logger.LogInformation("User has already been suspended");
-        }
+        await _userModerationService.BanUser(BanTicket.UserName, BanTicket.Expiry);
 
         return RedirectToPage("Details", new { username = BanTicket.UserName });
     }
 
-    public async Task<IActionResult> OnPostLiftBanAsync(string username)
+    public async Task<IActionResult> OnPostLiftBanAsync(string userName)
     {
-        if (!await _userModerationService.BanTicketExistsAsync(username))
+        if (!await _userModerationService.BanTicketExistsAsync(userName))
         {
             return BadRequest();
         }
 
-        var banTicket = await DbContext.BanTicket.FirstAsync(s => s.UserName == username);
-        await _userModerationService.RemoveBanTicketAsync(banTicket);
+        await _userModerationService.RemoveBanTicketAsync(userName);
 
-        return RedirectToPage("Details", new { username });
+        return RedirectToPage("Details", new { userName });
     }
 
     public async Task<IActionResult> OnPostUnhideBlogAsync(int blogId)
@@ -169,6 +162,9 @@ public class DetailsModel(
         comment.Content = ReplacementText.RemovedContent;
         comment.ToBeDeleted = true;
         await DbContext.SaveChangesAsync();
+        var deleteTime = new DateTimeOffset(DateTime.UtcNow.AddDays(7));
+        _postDeletionService.ScheduleBlogDeletion(deleteTime, comment.Id);
+
         return RedirectToPage("Details", new { username = comment.AppUser.UserName });
     }
 
@@ -187,8 +183,13 @@ public class DetailsModel(
         DbContext.Blog.Update(blog);
         blog.IsHidden = false;
         blog.ToBeDeleted = true;
+        blog.Title = ReplacementText.RemovedContent;
+        blog.Introduction = ReplacementText.RemovedContent;
         blog.Content = ReplacementText.RemovedContent;
         await DbContext.SaveChangesAsync();
+
+        var deleteTime = new DateTimeOffset(DateTime.UtcNow.AddDays(14));
+        _postDeletionService.ScheduleBlogDeletion(deleteTime, blog.Id);
         return RedirectToPage("Details", new { username = blog.AppUser.UserName });
     }
 }

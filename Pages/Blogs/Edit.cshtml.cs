@@ -16,9 +16,11 @@ public class EditModel(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
     ILogger<EditModel> logger,
-    IImageStorage imageStorage) : BasePageModel<EditModel>(context, userManager, logger)
+    IImageStorage imageStorage,
+    IUserModerationService userModerationService) : BasePageModel<EditModel>(context, userManager, logger)
 {
     private readonly IImageStorage _imageStorage = imageStorage;
+    private readonly IUserModerationService _userModerationService = userModerationService;
 
     [BindProperty]
     public EditBlogViewModel EditBlogViewModel { get; set; } = null!;
@@ -30,7 +32,13 @@ public class EditModel(
             return NotFound();
         }
 
-        if (User.Identity?.Name != username)
+        var user = await GetUserOrDefaultAsync();
+        if (user?.UserName != username)
+        {
+            return Forbid();
+        }
+
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
         {
             return Forbid();
         }
@@ -67,8 +75,12 @@ public class EditModel(
             return Forbid();
         }
 
-        var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
+        {
+            return Forbid();
+        }
 
+        var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
         if (blog == null)
         {
             return NotFound();
@@ -83,7 +95,6 @@ public class EditModel(
         {
             return Forbid();
         }
-
 
         blog.LastUpdateTime = DateTime.UtcNow;
         DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);

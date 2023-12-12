@@ -18,6 +18,7 @@ Administrators.
 - Users can upload basic information and view basic usage stats on their profile page
 - Administrators can assign/ remove Moderator role to/ from any user
 - Moderators can hide posts/ comments and their status will be decided by Administrators
+- Administrators can create and lift bans on offending users.
 
 ## Images
 

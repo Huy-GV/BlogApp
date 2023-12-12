@@ -1,25 +1,30 @@
 using System;
+using System.Data;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using Hangfire;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
+using RazorBlog.Data.Constants;
 using RazorBlog.Models;
 
 namespace RazorBlog.Services;
 
-// todo: remove ban with a background service
 public class UserModerationService(
     RazorBlogDbContext dbContext,
-    ILogger<UserModerationService> logger) : IUserModerationService
+    ILogger<UserModerationService> logger,
+    UserManager<ApplicationUser> userManager) : IUserModerationService
 {
     private readonly RazorBlogDbContext _dbContext = dbContext;
     private readonly ILogger<UserModerationService> _logger = logger;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<bool> BanTicketExistsAsync(string username)
     {
-        // await CheckExpiryAsync(username);
-
         return await _dbContext.BanTicket.AnyAsync(s => s.UserName == username);
     }
 
@@ -58,19 +63,49 @@ public class UserModerationService(
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task RemoveBanTicketAsync(BanTicket ticket)
+    public async Task BanUser(string userName, DateTime? expiry)
     {
-        _dbContext.BanTicket.Remove(ticket);
+        if (await BanTicketExistsAsync(userName))
+        {
+            _logger.LogInformation($"User {userName} has already been banned");
+        }
+
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user == null)
+        {
+            _logger.LogError($"User {userName} not found");
+            return;
+        }
+
+        await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
+        _dbContext.BanTicket.Add(new BanTicket() { UserName = userName, Expiry = expiry });
         await _dbContext.SaveChangesAsync();
+
+        if (!expiry.HasValue)
+        {
+            return;
+        }
+
+        BackgroundJob.Schedule(() => RemoveBanTicketAsync(userName), new DateTimeOffset(expiry.Value));
     }
 
-    [Obsolete("To be replaced by background service.")]
-    private async Task CheckExpiryAsync(string username)
+    public async Task RemoveBanTicketAsync(string userName)
     {
-        var suspension = await FindAsync(username);
-        if (suspension != null)
+        var banTicket = await FindAsync(userName);
+        if (banTicket == null)
         {
-            await RemoveBanTicketAsync(suspension);
+            _logger.LogWarning($"Ban ticket for user {userName} already removed");
+            return;
+        }
+
+        try
+        {
+            _dbContext.BanTicket.Remove(banTicket);
+            await _dbContext.SaveChangesAsync();
+        } 
+        catch (DBConcurrencyException)
+        {
+            _logger.LogWarning($"Ban ticket for user {banTicket.UserName} already removed");
         }
     }
 }

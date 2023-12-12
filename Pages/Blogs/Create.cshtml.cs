@@ -21,7 +21,6 @@ public class CreateModel(
 context, userManager, logger)
 {
     private readonly IImageStorage _imageStorage = imageService;
-
     private readonly IUserModerationService _userModerationService = userModerationService;
 
     [BindProperty]
@@ -37,7 +36,7 @@ context, userManager, logger)
 
         if (await _userModerationService.BanTicketExistsAsync(user.UserName))
         {
-            return RedirectToPage("./Index");
+            return Forbid();
         }
 
         return Page();

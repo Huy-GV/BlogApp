@@ -25,7 +25,7 @@ public class ReadModel(
     IUserModerationService moderationService) : BasePageModel<ReadModel>(
 context, userManager, logger)
 {
-    private readonly IUserModerationService _moderationService = moderationService;
+    private readonly IUserModerationService _userModerationService = moderationService;
 
     [BindProperty]
     public CommentViewModel CreateCommentViewModel { get; set; } = null!;
@@ -47,6 +47,7 @@ context, userManager, logger)
         }
 
         var blog = await DbContext.Blog
+            .IgnoreQueryFilters()
             .Include(blog => blog.AppUser)
             .Include(blog => blog.Comments)
             .ThenInclude(comment => comment.AppUser)
@@ -109,7 +110,7 @@ context, userManager, logger)
                                             .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
                                             .Any(),
             AllowedToModifyOrDeleteBlog = currentUserName == DetailedBlogDto.AuthorName,
-            IsBanned = currentUser != null && await _moderationService.BanTicketExistsAsync(currentUserName),
+            IsBanned = currentUser != null && await _userModerationService.BanTicketExistsAsync(currentUserName),
             IsAuthenticated = this.IsUserAuthenticated()
         };
 
@@ -142,7 +143,7 @@ context, userManager, logger)
 
         var userName = user.UserName ?? string.Empty;
 
-        if (await _moderationService.BanTicketExistsAsync(userName))
+        if (await _userModerationService.BanTicketExistsAsync(userName))
         {
             return Forbid();
         }
@@ -182,9 +183,19 @@ context, userManager, logger)
             return Forbid();
         }
 
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
+        {
+            return Forbid();
+        }
+
         var comment = await DbContext.Comment
             .Include(x => x.AppUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
+
+        if (comment == null)
+        {
+            return NotFound();
+        }
 
         if (user.UserName != comment?.AppUser.UserName)
         {
@@ -212,7 +223,6 @@ context, userManager, logger)
         }
 
         var roles = await UserManager.GetRolesAsync(user);
-
         if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
         {
             return Forbid();
@@ -232,7 +242,7 @@ context, userManager, logger)
             return Forbid();
         }
 
-        await _moderationService.HideBlogAsync(blogId);
+        await _userModerationService.HideBlogAsync(blogId);
         return RedirectToPage("/Blogs/Read", new { id = blogId });
     }
 
@@ -269,7 +279,7 @@ context, userManager, logger)
             return Forbid();
         }
 
-        await _moderationService.HideCommentAsync(commentId);
+        await _userModerationService.HideCommentAsync(commentId);
         return RedirectToPage("/Blogs/Read", new { id = comment.BlogId });
     }
 
@@ -284,14 +294,19 @@ context, userManager, logger)
             .Include(x => x.AppUser)
             .FirstOrDefaultAsync(x => x.Id == blogId);
 
+        if (blog == null)
+        {
+            return NotFound();
+        }
+
         if (User.Identity?.Name != blog.AppUser.UserName)
         {
             return Forbid();
         }
 
-        if (blog == null)
+        if (await _userModerationService.BanTicketExistsAsync(User.Identity?.Name))
         {
-            return NotFound();
+            return Forbid();
         }
 
         DbContext.Blog.Remove(blog);
@@ -317,6 +332,11 @@ context, userManager, logger)
         }
 
         if (User.Identity?.Name != comment.AppUser.UserName)
+        {
+            return Forbid();
+        }
+
+        if (await _userModerationService.BanTicketExistsAsync(User.Identity?.Name))
         {
             return Forbid();
         }

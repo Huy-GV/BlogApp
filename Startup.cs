@@ -1,4 +1,5 @@
 ﻿using System;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -19,14 +20,25 @@ public class Startup(IConfiguration configuration)
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        var dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
         services
             .AddDbContext<RazorBlogDbContext>(
-            options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            options => options.UseSqlServer(dbConnectionString));
         services.AddDatabaseDeveloperPageExceptionFilter();
         services
             .AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<RazorBlogDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddHangfire(config =>
+        {
+            config.UseSqlServerStorage(dbConnectionString);
+        });
+
+        services.AddHangfireServer(options =>
+        {
+            options.SchedulePollingInterval = TimeSpan.FromMinutes(1);
+        });
 
         services.AddRazorPages();
         services
@@ -57,6 +69,7 @@ public class Startup(IConfiguration configuration)
 
         services.AddScoped<IImageStorage, ImageLocalFileStorage>();
         services.AddScoped<IUserModerationService, UserModerationService>();
+        services.AddScoped<IPostDeletionService, PostDeletionService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
