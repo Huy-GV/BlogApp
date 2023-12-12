@@ -178,12 +178,12 @@ context, userManager, logger)
         }
 
         var user = await GetUserOrDefaultAsync();
-        if (user == null)
+        if (user == null || user.UserName == null)
         {
             return Forbid();
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName))
         {
             return Forbid();
         }
@@ -299,12 +299,13 @@ context, userManager, logger)
             return NotFound();
         }
 
-        if (User.Identity?.Name != blog.AppUser.UserName)
+        var user = await GetUserOrDefaultAsync();
+        if (user == null || user.UserName == null || user.UserName != blog.AppUser.UserName)
         {
             return Forbid();
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(User.Identity?.Name))
+        if (await _userModerationService.BanTicketExistsAsync(user.UserName))
         {
             return Forbid();
         }
@@ -331,12 +332,8 @@ context, userManager, logger)
             return NotFound();
         }
 
-        if (User.Identity?.Name != comment.AppUser.UserName)
-        {
-            return Forbid();
-        }
-
-        if (await _userModerationService.BanTicketExistsAsync(User.Identity?.Name))
+        var user = await GetUserOrDefaultAsync();
+        if (user == null || user.UserName == null || user.UserName != comment.AppUser.UserName)
         {
             return Forbid();
         }

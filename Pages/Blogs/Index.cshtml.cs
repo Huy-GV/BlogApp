@@ -19,8 +19,8 @@ public class IndexModel(
     UserManager<ApplicationUser> userManager,
     ILogger<IndexModel> logger) : BasePageModel<IndexModel>(context, userManager, logger)
 {
-    [BindProperty] 
-    public IEnumerable<BlogDto> Blogs { get; set; } = Enumerable.Empty<BlogDto>();
+    [BindProperty]
+    public IEnumerable<IndexBlogDto> Blogs { get; set; } = Enumerable.Empty<IndexBlogDto>();
 
     [BindProperty(SupportsGet = true)]
     public string SearchString { get; set; } = string.Empty;
@@ -33,7 +33,7 @@ public class IndexModel(
             .Include(b => b.Comments)
             .ThenInclude(c => c.AppUser)
             .Where(x => !x.IsHidden)
-            .Select(b => new BlogDto
+            .Select(b => new IndexBlogDto
             {
                 Id = b.Id,
                 Title = b.IsHidden ? ReplacementText.HiddenContent : b.Title,

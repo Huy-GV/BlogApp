@@ -1,8 +1,7 @@
-﻿namespace RazorBlog.Data.Dtos;
+﻿using RazorBlog.Data.DTOs;
 
-public class HiddenCommentDto
+namespace RazorBlog.Data.Dtos;
+
+public record HiddenCommentDto : HiddenPostPto
 {
-    public required int Id { get; init; }
-    public required string Content { get; init; }
-    public required System.DateTime CreationTime { get; init; }
 }

@@ -21,20 +21,15 @@ public class IndexModel(
 {
     [BindProperty] public PersonalProfileDto UserDto { get; set; } = null!;
 
-    public async Task<IActionResult> OnGetAsync(string? username)
+    public async Task<IActionResult> OnGetAsync(string? userName)
     {
-        if (username == null)
+        if (userName == null)
         {
             return NotFound();
         }
 
-        var user = await UserManager.FindByNameAsync(username);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        if (user.UserName != User.Identity?.Name)
+        var user = await GetUserOrDefaultAsync();
+        if (user == null || user.UserName == null || user.UserName != User.Identity?.Name)
         {
             return Forbid();
         }
@@ -42,7 +37,7 @@ public class IndexModel(
         var blogs = DbContext.Blog
             .Include(b => b.AppUser)
             .AsNoTracking()
-            .Where(blog => blog.AppUser.UserName == username)
+            .Where(blog => blog.AppUser.UserName == userName)
             .ToList();
 
         var groups = blogs.GroupBy(b => b.CreationTime.Year).OrderByDescending(g => g.Key);
@@ -62,7 +57,7 @@ public class IndexModel(
 
         UserDto = new PersonalProfileDto
         {
-            UserName = username,
+            UserName = userName,
             BlogCount = (uint)blogs.Count,
             ProfileImageUri = user.ProfileImageUri,
             BlogsGroupedByYear = blogsGroupedByYear,
@@ -71,16 +66,16 @@ public class IndexModel(
                 : user.Description,
             CommentCount = (uint)DbContext.Comment
                 .Include(c => c.AppUser)
-                .Where(c => c.AppUser.UserName == username)
+                .Where(c => c.AppUser.UserName == userName)
                 .ToList()
                 .Count,
             BlogCountCurrentYear = (uint)blogs
-                .Where(blog => blog.AppUser.UserName == username &&
+                .Where(blog => blog.AppUser.UserName == userName &&
                                blog.CreationTime.Year == DateTime.Now.Year)
                 .ToList()
                 .Count,
             ViewCountCurrentYear = (uint)blogs
-                .Where(blog => blog.AppUser.UserName == username &&
+                .Where(blog => blog.AppUser.UserName == userName &&
                                blog.CreationTime.Year == DateTime.Now.Year)
                 .Sum(blogs => blogs.ViewCount),
             RegistrationDate = user.RegistrationDate == null

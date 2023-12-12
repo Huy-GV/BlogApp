@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,6 +22,15 @@ public class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         var dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
+        var dbLocation = Configuration.GetConnectionString("DefaultLocation") ?? string.Empty;
+        if (!string.IsNullOrEmpty(dbLocation))
+        {
+            var dbDirectory = Path.GetDirectoryName(dbLocation)
+                ?? throw new InvalidOperationException("Invalid DB directory name");
+            Directory.CreateDirectory(dbDirectory);
+            dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
+        }
+
         services
             .AddDbContext<RazorBlogDbContext>(
             options => options.UseSqlServer(dbConnectionString));

@@ -2,14 +2,15 @@
 
 ## Description
 
-A Blog application where users can write blogs or comment on others. All blogs can be monitored by Moderators and
-Administrators.
+A Blog application where users can write blogs or comment on others.
+All blogs can be monitored by Moderators and Administrators.
 
 ## Tools used
 
-- .NET 5 Razor Pages
+- .NET 8 Razor Pages
 - .NET Identity
-- EntityFramework Core
+- Entity Framework Core
+- Hangfire
 - SASS
 
 ## Features
@@ -32,5 +33,6 @@ Administrators.
 
 ## Start the application
 
-- To download dependencies, type `dotnet restore`
-- To build and run the app, type `dotnet run` 
+- To download dependencies, type `dotnet restore`.
+- To build and run the app, type `dotnet run`.
+- Change the `DefaultLocation` field to specify a different database location.

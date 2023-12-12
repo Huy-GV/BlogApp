@@ -56,13 +56,8 @@ public class EditModel(
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var user = await UserManager.FindByNameAsync(EditUserViewModel.UserName);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        if (user.UserName != User.Identity?.Name)
+        var user = await GetUserOrDefaultAsync();
+        if (user == null || user.UserName == null || user.UserName != EditUserViewModel.UserName)
         {
             return Forbid();
         }
@@ -82,6 +77,11 @@ public class EditModel(
         }
 
         var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
+        if (applicationUser == null)
+        {
+            return Forbid();
+        }
+
         DbContext.Users.Update(applicationUser);
         applicationUser.Description = EditUserViewModel.Description;
 

@@ -19,10 +19,10 @@ public class AdminModel(RazorBlogDbContext context,
     ILogger<AdminModel> logger) : BasePageModel<AdminModel>(context, userManager, logger)
 {
     [BindProperty]
-    public List<UserProfileDto> Moderators { get; set; } = null!;
+    public List<UserProfileDto> Moderators { get; set; } = [];
 
     [BindProperty]
-    public List<UserProfileDto> NormalUsers { get; set; } = null!;
+    public List<UserProfileDto> NormalUsers { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -37,17 +37,25 @@ public class AdminModel(RazorBlogDbContext context,
             })
             .ToListAsync();
 
-        // TODO: improve efficiency here
         var moderators = await UserManager.GetUsersInRoleAsync(Roles.ModeratorRole);
         var moderatorUserNames = moderators.Select(x => x.UserName).ToHashSet();
 
         var admins = await UserManager.GetUsersInRoleAsync(Roles.AdminRole);
         var adminUserNames = admins.Select(x => x.UserName).ToHashSet();
 
-        var normalUsers = users.Where(x => !moderatorUserNames.Contains(x.UserName) && !adminUserNames.Contains(x.UserName));
+        foreach (var user in users)
+        {
+            if (!moderatorUserNames.Contains(user.UserName) && !adminUserNames.Contains(user.UserName))
+            {
+                NormalUsers.Add(user);
+                continue;
+            }
 
-        NormalUsers = new List<UserProfileDto>(normalUsers);
-        Moderators = new List<UserProfileDto>(users.Where(x => moderatorUserNames.Contains(x.UserName)));
+            if (moderatorUserNames.Contains(user.UserName))
+            {
+                Moderators.Add(user);
+            }
+        }
 
         return Page();
     }
