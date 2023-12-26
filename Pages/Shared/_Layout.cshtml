@@ -7,10 +7,13 @@
     <link href="@ViewData["CSSLink"]" rel="stylesheet">
     <link href="@ViewData["Shared"]" rel="stylesheet">
     <script src="@ViewData["Script"]" defer></script>
+    <base href="~/" />
 </head>
 <body>
-<partial name="_NavBarPartial"/>
-@RenderBody()
-
+    <partial name="_NavBarPartial"/>
+    @RenderBody()
+    @RenderSection(SectionNames.Scripts, required: false)
 </body>
+
+<script src="~/_framework/blazor.server.js"></script>
 </html>

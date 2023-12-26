@@ -17,5 +17,4 @@ public record DetailedBlogDto
     public required string Content { get; set; }
     public required string CoverImageUri { get; set; }
     public bool IsHidden { get; set; }
-    public ICollection<CommentDto> CommentDtos { get; set; } = new List<CommentDto>();
 }

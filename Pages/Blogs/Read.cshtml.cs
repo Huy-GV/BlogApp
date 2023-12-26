@@ -49,8 +49,6 @@ context, userManager, logger)
         var blog = await DbContext.Blog
             .IgnoreQueryFilters()
             .Include(blog => blog.AppUser)
-            .Include(blog => blog.Comments)
-            .ThenInclude(comment => comment.AppUser)
             .FirstOrDefaultAsync(blog => blog.Id == id);
 
         if (blog == null)
@@ -82,18 +80,6 @@ context, userManager, logger)
             AuthorDescription = blogAuthor.Description,
             AuthorName = blogAuthor.UserName,
             AuthorProfileImageUri = blogAuthor.ProfileImageUri,
-            CommentDtos = blog.Comments
-                .Select(c => new CommentDto
-                {
-                    Id = c.Id,
-                    CreationTime = c.CreationTime,
-                    LastUpdateTime = c.LastUpdateTime,
-                    Content = c.IsHidden ? ReplacementText.HiddenContent : c.Content,
-                    AuthorName = c.AppUser?.UserName ?? ReplacementText.DeletedUser,
-                    AuthorProfileImageUri = c.AppUser?.ProfileImageUri ?? "default.jpg",
-                    IsHidden = c.IsHidden
-                })
-                .ToList()
         };
 
         var currentUser = await GetUserOrDefaultAsync();

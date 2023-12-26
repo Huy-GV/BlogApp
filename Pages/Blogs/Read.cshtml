@@ -1,8 +1,13 @@
 ﻿@page
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using RazorBlog.Components
 @using RazorBlog.Models
+@using RazorBlog.Pages.Shared
 @model ReadModel
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 
 @{
@@ -92,7 +97,14 @@
     </form>
 }
 
-<section class="comment-section">
+<component 
+    type="typeof(CommentsContainer)" 
+    render-mode="Server"
+    param-blogId="@Model.DetailedBlogDto.Id"
+    param-BlogAuthorName="@Model.DetailedBlogDto.AuthorName" 
+    param-CurrentUser="@Model.CurrentUserInfo" />
+
+@* <section class="comment-section">
     <div class="comment-container">
         <p>
             <strong>Comments</strong>
@@ -170,4 +182,4 @@
 
     </div>
 
-</section>
+</section> *@
