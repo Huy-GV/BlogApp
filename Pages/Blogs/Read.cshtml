@@ -86,7 +86,7 @@
     <p class="@blogContentClass">@Model.DetailedBlogDto.Introduction</p>
 </section>
 
-@if (!userInfo.IsBanned && SignInManager.IsSignedIn(User))
+@* @if (!userInfo.IsBanned && SignInManager.IsSignedIn(User))
 {
     <form method="post" class="comment-form" asp-page-handler="CreateComment">
         <input asp-for="CreateCommentViewModel.BlogId" value="@Model.DetailedBlogDto.Id" type="hidden"/>
@@ -95,7 +95,7 @@
             placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
         <input type="submit" value="POST" class="submit-comment"/>
     </form>
-}
+} *@
 
 <component 
     type="typeof(CommentsContainer)" 

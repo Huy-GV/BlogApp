@@ -2,14 +2,35 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Logging
 @using RazorBlog.Data
+@using RazorBlog.Data.Dtos
 @using RazorBlog.Models
 @using RazorBlog.Services
 
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject SignInManager<ApplicationUser> _signInManager
 @inject UserManager<ApplicationUser> _userManager
 @inject RazorBlogDbContext _dbContext
 @inject ILogger<CommentsContainer> _logger
 @inject IUserModerationService _userModerationService
+
+
+@if (!CurrentUser.IsBanned && _signInManager.IsSignedIn(_userClaimsPrincipal))
+{
+    <EditForm Model="CreateCommentViewModel"
+              class="comment-form"
+              OnValidSubmit="(async () => await CreateCommentAsync())">
+        <DataAnnotationsValidator />
+
+        <ValidationSummary />
+
+        <input type="hidden" @bind="CreateCommentViewModel.BlogId" />
+        <textarea rows="5" cols="50"
+                  @bind="CreateCommentViewModel.Content"
+                  name="CreateCommentViewModel.Content"
+                  placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
+        <input type="submit" value="POST" class="submit-comment" />
+    </EditForm>
+}
 
 <section class="comment-section">
     <div class="comment-container">
@@ -28,14 +49,10 @@
                         <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
                         <span class="@authorClass">@comment.AuthorName</span>
                         @{
-                            if (comment.IsModified)
-                            {
-                                <span> Updated @comment.LastUpdateTime.ToShortDateString()</span>
-                            }
-                            else
-                            {
-                                <span> On @comment.CreationTime.ToShortDateString()</span>
-                            }
+                            var timestampText = comment.IsModified 
+                                ? $"Updated {comment.LastUpdateTime.ToShortDateString()}"
+                                : $"On {@comment.CreationTime.ToShortDateString()}";
+                            <span>@timestampText</span>
                         }
                     </div>
                 }
@@ -43,7 +60,7 @@
                 <div class="comment-option-container">
                     @{
                         var isUserCommentAuthor = comment.AuthorName == CurrentUser.UserName;
-                        if (isUserCommentAuthor)
+                        if (isUserCommentAuthor && !IsCommentEditorDisplayed[comment.Id])
                         {
                             <form asp-page-handler="DeleteComment"
                                   asp-route-commentID="@comment.Id"
@@ -52,7 +69,7 @@
                             </form>
                         }
 
-                        if (CurrentUser.AllowedToHideBlogOrComment && !comment.IsHidden)
+                        if (CurrentUser.AllowedToHideBlogOrComment && !comment.IsHidden && !IsCommentEditorDisplayed[comment.Id])
                         {
                             <form asp-page-handler="HideComment"
                                   asp-route-commentID="@comment.Id"
@@ -63,18 +80,40 @@
 
                         if (isUserCommentAuthor)
                         {
-                            <form asp-page-handler="EditComment"
-                                  asp-route-commentId="@comment.Id"
-                                  data-id="@comment.Id"
-                                  method="post" #1#
-                                  class="edit-comment-form">
-                                <textarea rows="5" cols="50" required
-                                          name="EditCommentViewModel.Content"
-                                          class="edit-comment-textarea hidden-element">@comment.Content</textarea>
-                                <input asp-for="EditCommentViewModel.BlogId" value="@BlogId" type="hidden" />
-                                <button class="edit-comment" data-id="@comment.Id" type="button">Edit</button>
-                                <input type="submit" value="Save" class="save-btn hidden-element" />
-                            </form>
+
+                            <EditForm 
+                                Model="EditCommentViewModel" 
+                                class="edit-comment-form" 
+                                OnValidSubmit="(async () => await EditCommentAsync(comment.Id))">
+                                <DataAnnotationsValidator />
+
+                                <ValidationSummary />
+
+                                @{
+                                    if (IsCommentEditorDisplayed[comment.Id])
+                                    {
+                                        <textarea rows="5" cols="50" 
+                                                @bind="EditCommentViewModel.Content"
+                                                name="EditCommentViewModel.Content"
+                                                class="edit-comment-textarea">@comment.Content</textarea>
+                                        <input asp-for="EditCommentViewModel.BlogId" value="@BlogId" type="hidden" />
+                                    }
+                                }
+
+                                <input type="hidden" @bind="EditCommentViewModel.BlogId" />
+
+                                <button type="button" class="edit-comment" @onclick="(() => ToggleEditButton(comment))">
+                                    @{
+                                        var label = IsCommentEditorDisplayed[comment.Id] ? CancelText : EditText;
+                                        @label
+                                    }
+                                </button>
+
+                                @if (IsCommentEditorDisplayed[comment.Id])
+                                {
+                                    <button type="submit" class="save-btn">Save</button>
+                                }
+                            </EditForm>
                         }
                     }
                 </div>
@@ -83,10 +122,36 @@
                     ? "suspended-post"
                     : string.Empty;
                 }
-                <p class="comment-text @postClass">@comment.Content</p>
+
+                @if (!IsCommentEditorDisplayed[comment.Id])
+                {
+                    <p class="comment-text @postClass">@comment.Content</p>
+                }
             </article>
         }
 
     </div>
 
 </section>
+
+@code {
+    private const string EditText = "Edit";
+    private const string CancelText = "Cancel";
+    private const string SaveText = "Save";
+
+    public string EditCommentButtonLabel { get; set; } = EditText;
+
+    private void ToggleEditButton(CommentDto comment)
+    {
+        IsCommentEditorDisplayed[comment.Id] = !IsCommentEditorDisplayed[comment.Id];
+        if (IsCommentEditorDisplayed[comment.Id])
+        {
+            LoadEditCommentContext(comment);
+        }
+    }
+
+    private void LoadEditCommentContext(CommentDto comment)
+    {
+        EditCommentViewModel.Content = comment.Content;
+    }
+}
