@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Data.ViewModels;
 using RazorBlog.Models;
+using RazorBlog.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RazorBlog.Components;
-
-public partial class CommentsContainer : ComponentBase
+public partial class CommentsContainer : RichComponentBase
 {
     [Parameter]
     public string BlogAuthorName { get; set; } = string.Empty;
@@ -23,23 +27,28 @@ public partial class CommentsContainer : ComponentBase
     [Parameter]
     public CurrentUserInfo CurrentUser { get; set; } = null!;
 
-    public IReadOnlyCollection<CommentDto> CommentDtos { get; private set; } = [];
-
-    public IDictionary<int, bool> IsCommentEditorDisplayed { get; private set; } = new Dictionary<int, bool>();
-
     [SupplyParameterFromForm]
     public CommentViewModel CreateCommentViewModel { get; set; } = new();
 
     [SupplyParameterFromForm]
     public CommentViewModel EditCommentViewModel { get; set; } = new();
 
-    private ClaimsPrincipal _userClaimsPrincipal = new();
+    [Inject]
+    public RazorBlogDbContext DbContext { get; set; } = null!;
+
+    [Inject]
+    public ILogger<CommentsContainer> Logger { get; set; } = null!;
+
+    [Inject]
+    public IUserModerationService UserModerationService { get; set; } = null!;
+
+    public IReadOnlyCollection<CommentDto> CommentDtos { get; private set; } = [];
+
+    public IDictionary<int, bool> IsCommentEditorDisplayed { get; private set; } = new Dictionary<int, bool>();
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        _userClaimsPrincipal = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-
         await LoadCommentData();
 
         EditCommentViewModel.BlogId = BlogId;
@@ -50,13 +59,8 @@ public partial class CommentsContainer : ComponentBase
     {
         CommentDtos = await LoadComments();
         IsCommentEditorDisplayed = CommentDtos
-            .Where(x => x.AuthorName == _userClaimsPrincipal.Identity?.Name)
+            .Where(x => x.AuthorName == User?.Identity?.Name)
             .ToDictionary(x => x.Id, _ => false);
-    }
-
-    private bool IsUserAuthenticated()
-    {
-        return _userClaimsPrincipal?.Identity?.IsAuthenticated ?? false;
     }
 
     private async Task<List<CommentDto>> LoadComments()
@@ -82,19 +86,22 @@ public partial class CommentsContainer : ComponentBase
 
     public async Task EditCommentAsync(int commentId)
     {
-        if (!this.IsUserAuthenticated())
+        if (!IsAuthenticated)
         {
+            Challenge();
             return;
         }
 
-        var user = await UserManager.GetUserAsync(_userClaimsPrincipal);
+        var user = await UserManager.GetUserAsync(User);
         if (user == null || user.UserName == null)
         {
+            Forbid();
             return;
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName))
+        if (await UserModerationService.BanTicketExistsAsync(user.UserName))
         {
+            Forbid();
             return;
         }
 
@@ -104,11 +111,13 @@ public partial class CommentsContainer : ComponentBase
 
         if (comment == null)
         {
+            BadRequest();
             return;
         }
 
         if (user.UserName != comment?.AppUser.UserName)
         {
+            Forbid();
             return;
         }
 
@@ -123,21 +132,24 @@ public partial class CommentsContainer : ComponentBase
 
     public async Task CreateCommentAsync()
     {
-        if (!IsUserAuthenticated())
+        if (!IsAuthenticated)
         {
+            Challenge();
             return;
         }
 
-        var user = await UserManager.GetUserAsync(_userClaimsPrincipal);
+        var user = await UserManager.GetUserAsync(User);
         if (user == null)
         {
+            Forbid();
             return;
         }
 
         var userName = user.UserName ?? string.Empty;
 
-        if (await _userModerationService.BanTicketExistsAsync(userName))
+        if (await UserModerationService.BanTicketExistsAsync(userName))
         {
+            Forbid();
             return;
         }
 
@@ -145,7 +157,8 @@ public partial class CommentsContainer : ComponentBase
         {
             AppUserId = user.Id,
             BlogId = BlogId,
-            Content = CreateCommentViewModel.Content
+            Content = CreateCommentViewModel.Content,
+            CreationTime = DateTime.UtcNow,
         });
 
         await DbContext.SaveChangesAsync();
