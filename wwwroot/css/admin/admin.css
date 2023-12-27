@@ -1,65 +1,53 @@
-.smooth-transition, .button, .primary-button, .secondary-button, .clickable-card {
-  -webkit-transition: 180ms ease-in;
+.smooth-transition, .clickable-card, .button, .secondary-button, .primary-button {
   transition: 180ms ease-in;
 }
-
-.smooth-transition:hover, .button:hover, .primary-button:hover, .secondary-button:hover, .clickable-card:hover {
-  -webkit-transition: 180ms ease-in;
+.smooth-transition:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover {
   transition: 180ms ease-in;
 }
 
 html * {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-.button, .primary-button, .secondary-button {
-  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+.button, .secondary-button, .primary-button {
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
-
-.button:hover, .primary-button:hover, .secondary-button:hover {
+.button:hover, .secondary-button:hover, .primary-button:hover {
   cursor: pointer;
 }
 
 .primary-button {
   border: none;
-  background-color: #630094;
+  background-color: rgb(99, 0, 148);
   text-decoration: none;
   color: white;
 }
-
 .primary-button:hover {
-  -webkit-filter: brightness(0.8);
-          filter: brightness(0.8);
+  filter: brightness(0.8);
 }
 
 .secondary-button {
-  color: #630094;
+  color: rgb(99, 0, 148);
   background-color: white;
-  border: 1px solid #630094;
+  border: 1px solid rgb(99, 0, 148);
 }
-
 .secondary-button:hover {
-  background-color: #630094;
+  background-color: rgb(99, 0, 148);
   color: white;
 }
 
 .card {
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
 }
 
 .clickable-card {
-  -webkit-box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
-          box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
-
 .clickable-card:hover {
-  -webkit-box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 :root {
@@ -67,43 +55,27 @@ html * {
 }
 
 .user-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  flex-direction: column;
+  align-items: center;
   gap: 0.3rem;
   width: 50%;
   margin-inline: auto;
   margin-top: 5rem;
 }
-
 @media screen and (max-width: 1000px) {
   .user-container {
     width: 80%;
   }
 }
-
 .user-container .user-card {
-  -webkit-box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-          box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
   padding: 1rem;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  flex-direction: row;
   gap: 0.3rem;
   width: 100%;
 }
-
 .user-container .user-card .button, .user-container .user-card .primary-button, .user-container .user-card .secondary-button {
   color: white;
   border-radius: 1px;
@@ -113,10 +85,8 @@ html * {
   border: none;
   width: 10rem;
 }
-
 .user-container .user-card .button:hover, .user-container .user-card .primary-button:hover, .user-container .user-card .secondary-button:hover {
-  -webkit-filter: brightness(0.6);
-          filter: brightness(0.6);
+  filter: brightness(0.6);
   cursor: pointer;
 }
 
@@ -136,5 +106,4 @@ html * {
 
 .user-container form {
   margin-left: auto;
-}
-/*# sourceMappingURL=admin.css.map */
+}/*# sourceMappingURL=admin.css.map */

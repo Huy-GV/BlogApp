@@ -6,28 +6,25 @@
 @using RazorBlog.Models
 @using RazorBlog.Services
 
-@inject AuthenticationStateProvider _authenticationStateProvider
-@inject SignInManager<ApplicationUser> _signInManager
-@inject UserManager<ApplicationUser> _userManager
-@inject RazorBlogDbContext _dbContext
-@inject ILogger<CommentsContainer> _logger
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject RazorBlogDbContext DbContext
+@inject ILogger<CommentsContainer> Logger
 @inject IUserModerationService _userModerationService
 
 
-@if (!CurrentUser.IsBanned && _signInManager.IsSignedIn(_userClaimsPrincipal))
+@if (!CurrentUser.IsBanned && SignInManager.IsSignedIn(_userClaimsPrincipal))
 {
     <EditForm Model="CreateCommentViewModel"
               class="comment-form"
               OnValidSubmit="(async () => await CreateCommentAsync())">
         <DataAnnotationsValidator />
-
-        <ValidationSummary />
-
-        <input type="hidden" @bind="CreateCommentViewModel.BlogId" />
         <textarea rows="5" cols="50"
                   @bind="CreateCommentViewModel.Content"
                   name="CreateCommentViewModel.Content"
                   placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
+        <ValidationMessage For="@(() => CreateCommentViewModel.Content)" />
         <input type="submit" value="POST" class="submit-comment" />
     </EditForm>
 }
@@ -45,6 +42,7 @@
                     ? "blog-author"
                     : "comment-author";
 
+                    var isUserCommentAuthor = comment.AuthorName == CurrentUser.UserName;
                     <div class="author-container">
                         <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
                         <span class="@authorClass">@comment.AuthorName</span>
@@ -59,7 +57,6 @@
 
                 <div class="comment-option-container">
                     @{
-                        var isUserCommentAuthor = comment.AuthorName == CurrentUser.UserName;
                         if (isUserCommentAuthor && !IsCommentEditorDisplayed[comment.Id])
                         {
                             <form asp-page-handler="DeleteComment"
@@ -80,40 +77,36 @@
 
                         if (isUserCommentAuthor)
                         {
+                            if (!IsCommentEditorDisplayed[comment.Id])
+                            {
+                                <button type="button" class="edit-comment" @onclick="(() => ToggleEditButton(comment))">
+                                    Edit
+                                </button>
+                            }
 
-                            <EditForm 
-                                Model="EditCommentViewModel" 
-                                class="edit-comment-form" 
-                                OnValidSubmit="(async () => await EditCommentAsync(comment.Id))">
-                                <DataAnnotationsValidator />
+                            if (IsCommentEditorDisplayed[comment.Id])
+                            {
+                                <EditForm Model="EditCommentViewModel"
+                                          class="edit-comment-form"
+                                          OnValidSubmit="(async () => await EditCommentAsync(comment.Id))">
+                                    <DataAnnotationsValidator />
 
-                                <ValidationSummary />
+                                    <ValidationMessage For="@(() => EditCommentViewModel.Content)" />
 
-                                @{
-                                    if (IsCommentEditorDisplayed[comment.Id])
-                                    {
-                                        <textarea rows="5" cols="50" 
+                                    <textarea rows="5" cols="50"
                                                 @bind="EditCommentViewModel.Content"
                                                 name="EditCommentViewModel.Content"
                                                 class="edit-comment-textarea">@comment.Content</textarea>
-                                        <input asp-for="EditCommentViewModel.BlogId" value="@BlogId" type="hidden" />
-                                    }
-                                }
+                                    <input asp-for="EditCommentViewModel.BlogId" value="@BlogId" type="hidden" />
 
-                                <input type="hidden" @bind="EditCommentViewModel.BlogId" />
+                                    <input type="hidden" @bind="EditCommentViewModel.BlogId" />
 
-                                <button type="button" class="edit-comment" @onclick="(() => ToggleEditButton(comment))">
-                                    @{
-                                        var label = IsCommentEditorDisplayed[comment.Id] ? CancelText : EditText;
-                                        @label
-                                    }
-                                </button>
-
-                                @if (IsCommentEditorDisplayed[comment.Id])
-                                {
-                                    <button type="submit" class="save-btn">Save</button>
-                                }
-                            </EditForm>
+                                    <div class="edit-form-btn-container">
+                                        <button type="submit" class="edit-comment">Cancel</button>
+                                        <button type="submit" class="save-btn">Save</button>
+                                    </div>
+                                </EditForm>
+                            }
                         }
                     }
                 </div>
@@ -123,7 +116,7 @@
                     : string.Empty;
                 }
 
-                @if (!IsCommentEditorDisplayed[comment.Id])
+                @if (!isUserCommentAuthor || !IsCommentEditorDisplayed[comment.Id])
                 {
                     <p class="comment-text @postClass">@comment.Content</p>
                 }
@@ -143,7 +136,13 @@
 
     private void ToggleEditButton(CommentDto comment)
     {
+        foreach (var commentId in IsCommentEditorDisplayed.Keys)
+        {
+            IsCommentEditorDisplayed[commentId] = false;
+        }
+
         IsCommentEditorDisplayed[comment.Id] = !IsCommentEditorDisplayed[comment.Id];
+
         if (IsCommentEditorDisplayed[comment.Id])
         {
             LoadEditCommentContext(comment);

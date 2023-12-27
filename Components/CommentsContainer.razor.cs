@@ -38,9 +38,7 @@ public partial class CommentsContainer : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        // TODO: set comments here, comments should be re rendered every time but user principal should only be rendered once
-        _userClaimsPrincipal = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
-
+        _userClaimsPrincipal = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
 
         await LoadCommentData();
 
@@ -51,7 +49,9 @@ public partial class CommentsContainer : ComponentBase
     private async Task LoadCommentData()
     {
         CommentDtos = await LoadComments();
-        IsCommentEditorDisplayed = LoadCommentEditorStatus();
+        IsCommentEditorDisplayed = CommentDtos
+            .Where(x => x.AuthorName == _userClaimsPrincipal.Identity?.Name)
+            .ToDictionary(x => x.Id, _ => false);
     }
 
     private bool IsUserAuthenticated()
@@ -59,16 +59,9 @@ public partial class CommentsContainer : ComponentBase
         return _userClaimsPrincipal?.Identity?.IsAuthenticated ?? false;
     }
 
-    private IDictionary<int, bool> LoadCommentEditorStatus()
-    {
-        return CommentDtos
-            .Where(x => x.AuthorName == _userClaimsPrincipal.Identity?.Name)
-            .ToDictionary(x => x.Id, _ => false);
-    }
-
     private async Task<List<CommentDto>> LoadComments()
     {
-        return await _dbContext.Comment
+        return await DbContext.Comment
             .Where(x => x.BlogId == BlogId)
             .Select(c => new CommentDto
             {
@@ -89,15 +82,12 @@ public partial class CommentsContainer : ComponentBase
 
     public async Task EditCommentAsync(int commentId)
     {
-        // TODO: validate form
-
-        // TODO: save model
         if (!this.IsUserAuthenticated())
         {
             return;
         }
 
-        var user = await _userManager.GetUserAsync(_userClaimsPrincipal ?? new());
+        var user = await UserManager.GetUserAsync(_userClaimsPrincipal);
         if (user == null || user.UserName == null)
         {
             return;
@@ -108,7 +98,7 @@ public partial class CommentsContainer : ComponentBase
             return;
         }
 
-        var comment = await _dbContext.Comment
+        var comment = await DbContext.Comment
             .Include(x => x.AppUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
@@ -123,8 +113,8 @@ public partial class CommentsContainer : ComponentBase
         }
 
         comment.LastUpdateTime = DateTime.UtcNow;
-        _dbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
+        await DbContext.SaveChangesAsync();
 
         await LoadCommentData();
     }
@@ -136,19 +126,7 @@ public partial class CommentsContainer : ComponentBase
             return;
         }
 
-        // TODO: rewrite form validation here
-        //var errorKeys = ModelState
-        //    .Where(x => x.Value?.Errors.Any() ?? false)
-        //    .Select(x => x.Key)
-        //    .Distinct();
-
-        //if (errorKeys.Any(e => e.Contains(nameof(CreateCommentViewModel))))
-        //{
-        //    _logger.LogError("Model state invalid when submitting new comment.");
-        //    return;
-        //}
-
-        var user = await _userManager.GetUserAsync(_userClaimsPrincipal ?? new());
+        var user = await UserManager.GetUserAsync(_userClaimsPrincipal);
         if (user == null)
         {
             return;
@@ -161,14 +139,14 @@ public partial class CommentsContainer : ComponentBase
             return;
         }
 
-        _dbContext.Comment.Add(new Comment
+        DbContext.Comment.Add(new Comment
         {
             AppUserId = user.Id,
             BlogId = BlogId,
             Content = CreateCommentViewModel.Content
         });
 
-        await _dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
         CreateCommentViewModel.Content = string.Empty;
 
