@@ -64,9 +64,10 @@ public class ImageLocalFileStorage(
         IFormFile imageFile,
         ImageType type)
     {
-        var pathRelativeToImageDir = Path.Combine(Enum.GetName(type)!);
+        var imageTypeName = Enum.GetName(type)!;
+        var pathRelativeToImageDir = Path.Combine(imageTypeName);
         var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
-        var formattedName = BuildFileName(imageFile.FileName, nameof(type));
+        var formattedName = BuildFileName(imageFile.FileName, imageTypeName);
         Directory.CreateDirectory(directoryPath);
         var filePath = Path.Combine(directoryPath, formattedName);
         await using var stream = File.Create(filePath);

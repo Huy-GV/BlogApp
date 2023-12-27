@@ -37,6 +37,8 @@
                     : "comment-author";
 
                     var isUserCommentAuthor = comment.AuthorName == CurrentUser.UserName;
+                    var isCommentEditorDisplayed = IsCommentEditorDisplayed.TryGetValue(comment.Id, out var isDisplayed) && isDisplayed;
+
                     <div class="author-container">
                         <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
                         <span class="@authorClass">@comment.AuthorName</span>
@@ -53,35 +55,31 @@
                     @{
                         if (isUserCommentAuthor && !IsCommentEditorDisplayed[comment.Id])
                         {
-                            <form asp-page-handler="DeleteComment"
-                                  asp-route-commentID="@comment.Id"
-                                  method="post">
+                            <form method="post" @onsubmit="(async () => await DeleteCommentAsync(comment.Id))">
                                 <button class="delete-comment">Delete</button>
                             </form>
                         }
 
                         if (CurrentUser.AllowedToHideBlogOrComment && 
-                            !comment.IsHidden && 
-                            IsCommentEditorDisplayed.TryGetValue(comment.Id, out var isCommentEditorDisplayed) &&
-                            !isCommentEditorDisplayed)
+                            !comment.IsHidden &&
+                            (!isUserCommentAuthor || 
+                            !isCommentEditorDisplayed))
                         {
-                            <form asp-page-handler="HideComment"
-                                  asp-route-commentID="@comment.Id"
-                                  method="post">
+                            <form method="post" @onsubmit="(async () => await HideCommentAsync(comment.Id))">
                                 <button class="delete-comment">Hide</button>
                             </form>
                         }
 
                         if (isUserCommentAuthor)
                         {
-                            if (!IsCommentEditorDisplayed[comment.Id])
+                            if (!isCommentEditorDisplayed)
                             {
                                 <button type="button" class="edit-comment" @onclick="(() => ToggleEditButton(comment))">
                                     Edit
                                 </button>
                             }
 
-                            if (IsCommentEditorDisplayed[comment.Id])
+                            if (isCommentEditorDisplayed)
                             {
                                 <EditForm Model="EditCommentViewModel"
                                           class="edit-comment-form"
@@ -113,7 +111,7 @@
                     : string.Empty;
                 }
 
-                @if (!isUserCommentAuthor || !IsCommentEditorDisplayed[comment.Id])
+                @if (!isUserCommentAuthor || !isCommentEditorDisplayed)
                 {
                     <p class="comment-text @postClass">@comment.Content</p>
                 }
@@ -125,12 +123,6 @@
 </section>
 
 @code {
-    private const string EditText = "Edit";
-    private const string CancelText = "Cancel";
-    private const string SaveText = "Save";
-
-    public string EditCommentButtonLabel { get; set; } = EditText;
-
     private void ToggleEditButton(CommentDto comment)
     {
         var originalValue = IsCommentEditorDisplayed[comment.Id];

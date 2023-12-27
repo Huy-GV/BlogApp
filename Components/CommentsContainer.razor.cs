@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
@@ -13,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RazorBlog.Components;
 public partial class CommentsContainer : RichComponentBase
@@ -81,6 +78,7 @@ public partial class CommentsContainer : RichComponentBase
                     : c.AppUser.ProfileImageUri ?? "default.jpg",
                 IsHidden = c.IsHidden
             })
+            .OrderBy(x => x.CreationTime)
             .ToListAsync();
     }
 
@@ -88,20 +86,20 @@ public partial class CommentsContainer : RichComponentBase
     {
         if (!IsAuthenticated)
         {
-            Challenge();
+            NavigateToChallenge();
             return;
         }
 
         var user = await UserManager.GetUserAsync(User);
         if (user == null || user.UserName == null)
         {
-            Forbid();
+            NavigateToForbid();
             return;
         }
 
         if (await UserModerationService.BanTicketExistsAsync(user.UserName))
         {
-            Forbid();
+            NavigateToForbid();
             return;
         }
 
@@ -111,13 +109,13 @@ public partial class CommentsContainer : RichComponentBase
 
         if (comment == null)
         {
-            BadRequest();
+            NavigateToBadRequest();
             return;
         }
 
         if (user.UserName != comment?.AppUser.UserName)
         {
-            Forbid();
+            NavigateToForbid();
             return;
         }
 
@@ -134,14 +132,14 @@ public partial class CommentsContainer : RichComponentBase
     {
         if (!IsAuthenticated)
         {
-            Challenge();
+            NavigateToChallenge();
             return;
         }
 
         var user = await UserManager.GetUserAsync(User);
         if (user == null)
         {
-            Forbid();
+            NavigateToForbid();
             return;
         }
 
@@ -149,21 +147,96 @@ public partial class CommentsContainer : RichComponentBase
 
         if (await UserModerationService.BanTicketExistsAsync(userName))
         {
-            Forbid();
+            NavigateToForbid();
             return;
         }
 
+        var creationTime = DateTime.UtcNow;
         DbContext.Comment.Add(new Comment
         {
             AppUserId = user.Id,
             BlogId = BlogId,
             Content = CreateCommentViewModel.Content,
-            CreationTime = DateTime.UtcNow,
+            CreationTime = creationTime,
+            LastUpdateTime = creationTime,
         });
 
         await DbContext.SaveChangesAsync();
 
         CreateCommentViewModel.Content = string.Empty;
+
+        await LoadCommentData();
+    }
+
+    public async Task HideCommentAsync(int commentId)
+    {
+        if (!IsAuthenticated)
+        {
+            NavigateToChallenge();
+            return;
+        }
+
+        var user = await UserManager.GetUserAsync(User);
+        if (user == null)
+        {
+            NavigateToForbid();
+            return;
+        }
+
+        var roles = await UserManager.GetRolesAsync(user);
+        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
+        {
+            NavigateToForbid();
+            return;
+        }
+
+        var comment = await DbContext.Comment
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(x => x.Id == commentId);
+
+        if (comment == null)
+        {
+            NavigateToNotFound();
+            return;
+        }
+
+        if (await UserManager.IsInRoleAsync(comment.AppUser, Roles.AdminRole))
+        {
+            NavigateToForbid();
+            return;
+        }
+
+        await UserModerationService.HideCommentAsync(commentId);
+        await LoadCommentData();
+    }
+
+    public async Task DeleteCommentAsync(int commentId)
+    {
+        if (!IsAuthenticated)
+        {
+            NavigateToChallenge();
+            return;
+        }
+
+        var comment = await DbContext.Comment
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(x => x.Id == commentId);
+
+        if (comment == null)
+        {
+            NavigateToNotFound();
+            return;
+        }
+
+        var user = await UserManager.GetUserAsync(User);
+        if (user == null || user.UserName == null || user.UserName != comment.AppUser.UserName)
+        {
+            NavigateToForbid();
+            return; 
+        }
+
+        DbContext.Comment.Remove(comment);
+        await DbContext.SaveChangesAsync();
 
         await LoadCommentData();
     }

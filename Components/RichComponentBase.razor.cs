@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using RazorBlog.Models;
@@ -34,24 +33,24 @@ public class RichComponentBase : ComponentBase
         User = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
     }
 
-    protected void Challenge()
+    protected void NavigateToChallenge()
     {
         NavigationManager.NavigateTo("/Authentication/LogIn", forceLoad: true);
     }
 
-    protected void Forbid()
+    protected void NavigateToForbid()
     {
         var message = "You are not allowed to access the requested resource";
         NavigationManager.NavigateTo($"/Error/Error?ErrorMessage='{message}'", forceLoad: true);
     }
 
-    protected void BadRequest()
+    protected void NavigateToBadRequest()
     {
         var message = "An unknown error occurred with your request";
         NavigationManager.NavigateTo($"/Error/Error?ErrorMessage='{message}'", forceLoad: true);
     }
 
-    protected void NotFound()
+    protected void NavigateToNotFound()
     {
         var message = "Page not found";
         NavigationManager.NavigateTo($"/Error/Error?ErrorMessage='{message}'", forceLoad: true);

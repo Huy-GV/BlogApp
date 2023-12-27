@@ -60,7 +60,7 @@ context, userManager, logger)
         {
             UserName = blog.AppUser?.UserName ?? ReplacementText.DeletedUser,
             // todo: un-hardcode default profile pic
-            ProfileImageUri = blog.AppUser?.ProfileImageUri ?? "default.jpg",
+            ProfileImageUri = blog.AppUser?.ProfileImageUri ?? "readonly/default.jpg",
             Description = blog.AppUser?.Description ?? ReplacementText.DeletedUser
         };
 
@@ -103,98 +103,6 @@ context, userManager, logger)
         return Page();
     }
 
-    //public async Task<IActionResult> OnPostCreateCommentAsync()
-    //{
-    //    if (!this.IsUserAuthenticated())
-    //    {
-    //        return Challenge();
-    //    }
-
-    //    var errorKeys = ModelState
-    //        .Where(x => x.Value?.Errors.Any() ?? false)
-    //        .Select(x => x.Key)
-    //        .Distinct();
-
-    //    if (errorKeys.Any(e => e.Contains(nameof(CreateCommentViewModel))))
-    //    {
-    //        Logger.LogError("Model state invalid when submitting new comment.");
-    //        return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
-    //    }
-
-    //    var user = await GetUserOrDefaultAsync();
-    //    if (user == null)
-    //    {
-    //        return Forbid();
-    //    }
-
-    //    var userName = user.UserName ?? string.Empty;
-
-    //    if (await _userModerationService.BanTicketExistsAsync(userName))
-    //    {
-    //        return Forbid();
-    //    }
-
-    //    DbContext.Comment.Add(new Comment
-    //    {
-    //        AppUserId = user.Id,
-    //        BlogId = CreateCommentViewModel.BlogId,
-    //        Content = CreateCommentViewModel.Content
-    //    });
-
-    //    await DbContext.SaveChangesAsync();
-
-    //    return RedirectToPage("/Blogs/Read", new { id = CreateCommentViewModel.BlogId });
-    //}
-
-    //public async Task<IActionResult> OnPostEditCommentAsync(int commentId)
-    //{
-    //    if (!this.IsUserAuthenticated())
-    //    {
-    //        return Challenge();
-    //    }
-
-    //    var errorKeys = ModelState
-    //        .Where(x => x.Value?.Errors.Any() ?? false)
-    //        .Select(x => x.Key)
-    //        .Distinct();
-
-    //    if (errorKeys.Any(e => e.Contains(nameof(EditCommentViewModel))))
-    //    {
-    //        return BadRequest();
-    //    }
-
-    //    var user = await GetUserOrDefaultAsync();
-    //    if (user == null || user.UserName == null)
-    //    {
-    //        return Forbid();
-    //    }
-
-    //    if (await _userModerationService.BanTicketExistsAsync(user.UserName))
-    //    {
-    //        return Forbid();
-    //    }
-
-    //    var comment = await DbContext.Comment
-    //        .Include(x => x.AppUser)
-    //        .FirstOrDefaultAsync(x => x.Id == commentId);
-
-    //    if (comment == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    if (user.UserName != comment?.AppUser.UserName)
-    //    {
-    //        return Forbid();
-    //    }
-
-    //    comment.LastUpdateTime = DateTime.UtcNow;
-    //    DbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
-    //    await DbContext.SaveChangesAsync();
-
-    //    return RedirectToPage("/Blogs/Read", new { id = comment.BlogId });
-    //}
-
     public async Task<IActionResult> OnPostHideBlogAsync(int blogId)
     {
         if (!this.IsUserAuthenticated())
@@ -232,43 +140,6 @@ context, userManager, logger)
         return RedirectToPage("/Blogs/Read", new { id = blogId });
     }
 
-    public async Task<IActionResult> OnPostHideCommentAsync(int commentId)
-    {
-        if (!this.IsUserAuthenticated())
-        {
-            return Challenge();
-        }
-
-        var user = await GetUserOrDefaultAsync();
-        if (user == null)
-        {
-            return Forbid();
-        }
-
-        var roles = await UserManager.GetRolesAsync(user);
-        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
-        {
-            return Forbid();
-        }
-
-        var comment = await DbContext.Comment
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(x => x.Id == commentId);
-
-        if (comment == null)
-        {
-            return NotFound();
-        }
-
-        if (await UserManager.IsInRoleAsync(comment.AppUser, Roles.AdminRole))
-        {
-            return Forbid();
-        }
-
-        await _userModerationService.HideCommentAsync(commentId);
-        return RedirectToPage("/Blogs/Read", new { id = comment.BlogId });
-    }
-
     public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
     {
         if (!this.IsUserAuthenticated())
@@ -300,33 +171,5 @@ context, userManager, logger)
         await DbContext.SaveChangesAsync();
 
         return RedirectToPage("/Blogs/Index");
-    }
-
-    public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
-    {
-        if (!this.IsUserAuthenticated())
-        {
-            return Challenge();
-        }
-
-        var comment = await DbContext.Comment
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(x => x.Id == commentId);
-
-        if (comment == null)
-        {
-            return NotFound();
-        }
-
-        var user = await GetUserOrDefaultAsync();
-        if (user == null || user.UserName == null || user.UserName != comment.AppUser.UserName)
-        {
-            return Forbid();
-        }
-
-        DbContext.Comment.Remove(comment);
-        await DbContext.SaveChangesAsync();
-
-        return RedirectToPage("/Blogs/Read", new { id = comment.BlogId });
     }
 }
