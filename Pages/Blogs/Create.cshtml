@@ -5,7 +5,6 @@
     ViewData["Title"] = "Create Blog";
     ViewData["CSSLink"] = "/css/blogs/createblog.css";
     ViewData["Shared"] = "/css/shared.css";
-    ViewData["Script"] = "#";
 }
 
 <form class="add-form" method="post" enctype="multipart/form-data">
@@ -14,8 +13,8 @@
         <input asp-for="CreateBlogViewModel.Title" type="text" required>
         <span asp-validation-for="CreateBlogViewModel.Title" class="error-message"></span>
         <label asp-for="CreateBlogViewModel.Introduction">Introduction</label>
-        <textarea rows="8" cols="50" 
-            asp-for="CreateBlogViewModel.Introduction" 
+        <textarea rows="8" cols="50"
+            asp-for="CreateBlogViewModel.Introduction"
             required
             type="text"
             placeholder="Description">
@@ -25,10 +24,10 @@
         <input type="file" asp-for="CreateBlogViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>
         <span asp-validation-for="CreateBlogViewModel.CoverImage" class="error-message"></span>
         <label asp-for="CreateBlogViewModel.Content">Content</label>
-        <textarea rows="18" cols="50" 
-            asp-for="CreateBlogViewModel.Content" 
+        <textarea rows="18" cols="50"
+            asp-for="CreateBlogViewModel.Content"
             required
-            placeholder="What do you want to share?" 
+            placeholder="What do you want to share?"
             type="text"></textarea><br>
         <span asp-validation-for="CreateBlogViewModel.Content" class="error-message"></span>
     </div>

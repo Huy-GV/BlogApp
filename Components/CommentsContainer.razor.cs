@@ -112,9 +112,11 @@ public partial class CommentsContainer : ComponentBase
             return;
         }
 
+        DbContext.Comment.Update(comment);
         comment.LastUpdateTime = DateTime.UtcNow;
-        DbContext.Comment.Update(comment).CurrentValues.SetValues(EditCommentViewModel);
+        comment.Content = EditCommentViewModel.Content;
         await DbContext.SaveChangesAsync();
+        EditCommentViewModel.Content = string.Empty;
 
         await LoadCommentData();
     }

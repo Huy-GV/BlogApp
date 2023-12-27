@@ -6,7 +6,6 @@
 @{
     ViewData["Title"] = "User Details";
     ViewData["CSSLink"] = "/css/admin/admindetails.css";
-    ViewData["Script"] = "/js/admindetails.js";
     ViewData["Shared"] = "/css/shared.css";
 }
 
@@ -107,3 +106,22 @@
 
 
 </section>
+
+@section Scripts {
+    <script>
+        const banBtn = document.querySelector(".ban-btn");
+        const cancelBtn = document.querySelector(".cancel-btn");
+        const confirmBanBtn = document.querySelector(".confirm-ban-btn")
+        const form = document.querySelector(".suspend-form")
+
+        form.addEventListener("click", event => {
+            if (event.target && 
+            event.target.className === 'ban-btn' || 
+            event.target.className === 'cancel-btn') {
+                banBtn.classList.toggle('hidden-element')
+                cancelBtn.classList.toggle('hidden-element')
+                confirmBanBtn.classList.toggle('hidden-element')
+            }
+        })
+    </script>
+}

@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Management";
     ViewData["CSSLink"] = "/css/admin/admin.css";
-    ViewData["Script"] = "#";
     ViewData["Shared"] = "/css/shared.css";
 }
 
@@ -19,7 +18,7 @@
     @foreach(var moderator in Model.Moderators)
     {
         <div class="user-card">
-            
+
             <p>@moderator.UserName (joined @moderator.RegistrationDate)</p>
 
             <form asp-page-handler="RemoveModeratorRole"
@@ -45,7 +44,7 @@
                     method="post">
                 <button class="button assign-role">Assign as moderator</button>
             </form>
-            
+
             <a class="details-btn" asp-route-username="@user.UserName" asp-page="Details">Details</a>
         </div>
     }

@@ -6,6 +6,7 @@
 @using RazorBlog.Models
 @using RazorBlog.Services
 
+@inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -66,7 +67,10 @@
                             </form>
                         }
 
-                        if (CurrentUser.AllowedToHideBlogOrComment && !comment.IsHidden && !IsCommentEditorDisplayed[comment.Id])
+                        if (CurrentUser.AllowedToHideBlogOrComment && 
+                            !comment.IsHidden && 
+                            IsCommentEditorDisplayed.TryGetValue(comment.Id, out var isCommentEditorDisplayed) &&
+                            !isCommentEditorDisplayed)
                         {
                             <form asp-page-handler="HideComment"
                                   asp-route-commentID="@comment.Id"
@@ -102,7 +106,7 @@
                                     <input type="hidden" @bind="EditCommentViewModel.BlogId" />
 
                                     <div class="edit-form-btn-container">
-                                        <button type="submit" class="edit-comment">Cancel</button>
+                                        <button type="button" @onclick="(() => ToggleEditButton(comment))" class="edit-comment">Cancel</button>
                                         <button type="submit" class="save-btn">Save</button>
                                     </div>
                                 </EditForm>
@@ -136,12 +140,13 @@
 
     private void ToggleEditButton(CommentDto comment)
     {
+        var originalValue = IsCommentEditorDisplayed[comment.Id];
         foreach (var commentId in IsCommentEditorDisplayed.Keys)
         {
             IsCommentEditorDisplayed[commentId] = false;
         }
 
-        IsCommentEditorDisplayed[comment.Id] = !IsCommentEditorDisplayed[comment.Id];
+        IsCommentEditorDisplayed[comment.Id] = !originalValue;
 
         if (IsCommentEditorDisplayed[comment.Id])
         {
