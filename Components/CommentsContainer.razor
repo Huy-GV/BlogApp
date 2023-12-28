@@ -7,6 +7,7 @@
 @using RazorBlog.Services
 
 @inherits RichComponentBase
+@attribute [StreamRendering(true)]
 
 @if (!CurrentUser.IsBanned && IsSignedIn)
 {
@@ -28,6 +29,13 @@
         <p>
             <strong>Comments</strong>
         </p>
+
+        @{
+            if (CommentDtos.Count == 0) {
+                <p>Loading comments ...</p>
+            }
+        }
+
         @foreach (var comment in CommentDtos)
         {
             <article class="comment" data-id="@comment.Id">
@@ -62,8 +70,8 @@
 
                         if (CurrentUser.AllowedToHideBlogOrComment && 
                             !comment.IsHidden &&
-                            (!isUserCommentAuthor || 
-                            !isCommentEditorDisplayed))
+                            !isUserCommentAuthor &&
+                            !isCommentEditorDisplayed)
                         {
                             <form method="post" @onsubmit="(async () => await HideCommentAsync(comment.Id))">
                                 <button class="delete-comment">Hide</button>

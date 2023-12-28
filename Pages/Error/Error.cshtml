@@ -1,5 +1,5 @@
 ﻿@page
-@model RazorBlog.Pages.Error.BadRequestModel
+@model RazorBlog.Pages.Error.ErrorModel
 
 @{
     ViewData["Title"] = "Bad Request";
@@ -8,5 +8,8 @@
 }
 
 <h1>
-    An error occurred with your request.
+    @Model.ErrorMessage
 </h1>
+<p>
+    @Model.ErrorDescription
+</p>

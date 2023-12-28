@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorBlog.Pages.Error;
 
-public class BadRequestModel : PageModel
+public class ErrorModel : PageModel
 {
     [BindProperty(SupportsGet =true)]
     public string ErrorMessage { get; private set; } = "An unknown error occurred";

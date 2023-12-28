@@ -41,18 +41,18 @@ public class RichComponentBase : ComponentBase
     protected void NavigateToForbid()
     {
         var message = "You are not allowed to access the requested resource";
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage='{message}'", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
     }
 
     protected void NavigateToBadRequest()
     {
         var message = "An unknown error occurred with your request";
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage='{message}'", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
     }
 
     protected void NavigateToNotFound()
     {
         var message = "Page not found";
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage='{message}'", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
     }
 }
