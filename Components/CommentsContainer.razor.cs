@@ -74,11 +74,12 @@ public partial class CommentsContainer : RichComponentBase
                     ? ReplacementText.DeletedUser
                     : c.AppUser.UserName ?? ReplacementText.DeletedUser,
                 AuthorProfileImageUri = c.AppUser == null
-                    ? "default.jpg"
-                    : c.AppUser.ProfileImageUri ?? "default.jpg",
+                    ? "readonly/default.jpg"
+                    : c.AppUser.ProfileImageUri ?? "readonly/default.jpg",
                 IsHidden = c.IsHidden
             })
-            .OrderBy(x => x.CreationTime)
+            .OrderByDescending(x => x.CreationTime)
+            .ThenByDescending(x => x.LastUpdateTime)
             .ToListAsync();
     }
 

@@ -50,7 +50,8 @@ public class IndexModel(
                         SearchString == string.Empty ||
                         b.Title.Contains(SearchString) ||
                         b.AuthorName.Contains(SearchString))
-            .OrderBy(x => x.LastUpdateTime)
+            .OrderByDescending(x => x.CreationTime)
+            .ThenByDescending(x => x.LastUpdateTime)
             .Take(10)
             .ToListAsync();
     }
