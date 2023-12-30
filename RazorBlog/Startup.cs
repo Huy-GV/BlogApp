@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RazorBlog.Data;
+using RazorBlog.Middleware;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
@@ -94,7 +95,7 @@ public class Startup(IConfiguration configuration)
         }
         else
         {
-            app.UseExceptionHandler("/Error");
+            app.UseExceptionHandler("/Error/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
@@ -106,6 +107,7 @@ public class Startup(IConfiguration configuration)
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<ErrorPageRoutingMiddleware>();
 
         app.UseEndpoints(endpoints => 
         { 

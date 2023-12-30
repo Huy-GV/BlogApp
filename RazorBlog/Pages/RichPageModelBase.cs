@@ -7,7 +7,7 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Pages;
 
-public class BasePageModel<TPageModel>(
+public class RichPageModelBase<TPageModel>(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
     ILogger<TPageModel> logger) : PageModel where TPageModel : PageModel

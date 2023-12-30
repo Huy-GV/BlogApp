@@ -23,7 +23,7 @@ public class ReadModel(
     UserManager<ApplicationUser> userManager,
     ILogger<ReadModel> logger,
     IUserModerationService userModerationService,
-    IPostModerationService postModerationService) : BasePageModel<ReadModel>(
+    IPostModerationService postModerationService) : RichPageModelBase<ReadModel>(
 context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userModerationService;
@@ -118,10 +118,9 @@ context, userManager, logger)
             return Forbid();
         }
 
-        var result = await _postModerationService.HideBlogAsync(blogId, user.Id);
-        // TODO: redirect to error pages
-
-        return RedirectToPage("/Blogs/Read", new { id = blogId });
+        return this.NavigateOnResult(
+            await _postModerationService.HideBlogAsync(blogId, user.Id),
+            () => RedirectToPage("/Blogs/Read", new { id = blogId }));
     }
 
     public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)

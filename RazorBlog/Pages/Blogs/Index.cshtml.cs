@@ -17,7 +17,7 @@ namespace RazorBlog.Pages.Blogs;
 public class IndexModel(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
-    ILogger<IndexModel> logger) : BasePageModel<IndexModel>(context, userManager, logger)
+    ILogger<IndexModel> logger) : RichPageModelBase<IndexModel>(context, userManager, logger)
 {
     [BindProperty]
     public IEnumerable<IndexBlogDto> Blogs { get; set; } = Enumerable.Empty<IndexBlogDto>();

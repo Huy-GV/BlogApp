@@ -16,7 +16,7 @@ namespace RazorBlog.Pages.Admin;
 [Authorize(Roles = Roles.AdminRole)]
 public class AdminModel(RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
-    ILogger<AdminModel> logger) : BasePageModel<AdminModel>(context, userManager, logger)
+    ILogger<AdminModel> logger) : RichPageModelBase<AdminModel>(context, userManager, logger)
 {
     [BindProperty]
     public List<UserProfileDto> Moderators { get; set; } = [];

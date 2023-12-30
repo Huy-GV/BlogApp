@@ -12,6 +12,7 @@ using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Data.Validation;
+using RazorBlog.Extensions;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
@@ -24,7 +25,7 @@ public class DetailsModel(
     ILogger<DetailsModel> logger,
     IUserModerationService userUserModerationService,
     IPostModerationService postModerationService,
-    IPostDeletionScheduler postDeletionService) : BasePageModel<DetailsModel>(context, userManager, logger)
+    IPostDeletionScheduler postDeletionService) : RichPageModelBase<DetailsModel>(context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userUserModerationService;
     private readonly IPostDeletionScheduler _postDeletionService = postDeletionService;
@@ -151,9 +152,9 @@ public class DetailsModel(
             return Page();
         }
 
-        var result = await _postModerationService.UnhideBlogAsync(blogId, User.Identity?.Name ?? string.Empty);
-
-        return RedirectToPage("Details", new { userName = UserName });
+        return this.NavigateOnResult(
+             await _postModerationService.UnhideBlogAsync(blogId, User.Identity?.Name ?? string.Empty), 
+            () => RedirectToPage("Details", new { userName = UserName }));
     }
 
     public async Task<IActionResult> OnPostUnhideCommentAsync(int commentId)
@@ -163,9 +164,9 @@ public class DetailsModel(
             return Page();
         }
 
-        var result = await _postModerationService.UnhideCommentAsync(commentId, User.Identity?.Name ?? string.Empty);
-
-        return RedirectToPage("Details", new { userName = UserName });
+        return this.NavigateOnResult(
+            await _postModerationService.UnhideCommentAsync(commentId, User.Identity?.Name ?? string.Empty),
+            () => RedirectToPage("Details", new { userName = UserName }));
     }
 
     public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)

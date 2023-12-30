@@ -17,7 +17,7 @@ public class CreateModel(
     UserManager<ApplicationUser> userManager,
     ILogger<CreateModel> logger,
     IImageStorage imageService,
-    IUserModerationService userModerationService) : BasePageModel<CreateModel>(
+    IUserModerationService userModerationService) : RichPageModelBase<CreateModel>(
 context, userManager, logger)
 {
     private readonly IImageStorage _imageStorage = imageService;

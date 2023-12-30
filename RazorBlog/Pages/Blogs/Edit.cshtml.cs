@@ -17,7 +17,7 @@ public class EditModel(
     UserManager<ApplicationUser> userManager,
     ILogger<EditModel> logger,
     IImageStorage imageStorage,
-    IUserModerationService userModerationService) : BasePageModel<EditModel>(context, userManager, logger)
+    IUserModerationService userModerationService) : RichPageModelBase<EditModel>(context, userManager, logger)
 {
     private readonly IImageStorage _imageStorage = imageStorage;
     private readonly IUserModerationService _userModerationService = userModerationService;

@@ -19,7 +19,7 @@ public class EditModel(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
     ILogger<EditModel> logger,
-    IImageStorage imageStorage) : BasePageModel<EditModel>(context, userManager, logger)
+    IImageStorage imageStorage) : RichPageModelBase<EditModel>(context, userManager, logger)
 {
     private readonly IImageStorage _imageStorage = imageStorage;
 
