@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using RazorBlog.Communication;
 using RazorBlog.Models;
 
 namespace RazorBlog.Services;
@@ -18,21 +19,23 @@ public interface IUserModerationService
     /// </summary>
     /// <param name="userName">Name of user with the ban ticket.</param>
     /// <returns>Ban ticket if it exists.</returns>
-    Task<BanTicket?> FindAsync(string userName);
+    Task<BanTicket?> FindByUserNameAsync(string userName);
 
     /// <summary>
     ///     Marks the comment content as hidden until it is unhidden or deleted.
     /// </summary>
     /// <param name="commentId">ID of comment to hide.</param>
+    /// <param name="userName">Name of user hiding the comment.</param>
     /// <returns></returns>
-    Task HideCommentAsync(int commentId);
+    Task<ServiceResultCode> HideCommentAsync(int commentId, string userName);
 
     /// <summary>
     ///     Marks the blog title, description, and content as hidden until it is unhidden or deleted.
     /// </summary>
     /// <param name="blogId">ID of blog to hide.</param>
+    /// <param name="userName">Name of user hiding the blog.</param>
     /// <returns></returns>
-    Task HideBlogAsync(int blogId);
+    Task<ServiceResultCode> HideBlogAsync(int blogId, string userName);
 
     /// <summary>
     ///     Remove the ban ticket immediately.
@@ -47,5 +50,5 @@ public interface IUserModerationService
     /// <param name="userName">Name of user being banned.</param>
     /// <param name="expiry">Expiry date of the ticket. Ban is permanent if null.</param>
     /// <returns></returns>
-    Task BanUser(string userName, DateTime? expiry);
+    Task BanUserAsync(string userName, DateTime? expiry);
 }

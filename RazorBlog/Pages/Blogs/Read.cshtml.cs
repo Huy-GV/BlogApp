@@ -116,27 +116,9 @@ context, userManager, logger)
             return Forbid();
         }
 
-        var roles = await UserManager.GetRolesAsync(user);
-        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
-        {
-            return Forbid();
-        }
+        var result = await _userModerationService.HideBlogAsync(blogId, user.Id);
+        // TODO: redirect to error pages
 
-        var blog = await DbContext.Blog
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(x => x.Id == blogId);
-
-        if (blog == null)
-        {
-            return NotFound();
-        }
-
-        if (await UserManager.IsInRoleAsync(blog.AppUser, Roles.AdminRole))
-        {
-            return Forbid();
-        }
-
-        await _userModerationService.HideBlogAsync(blogId);
         return RedirectToPage("/Blogs/Read", new { id = blogId });
     }
 

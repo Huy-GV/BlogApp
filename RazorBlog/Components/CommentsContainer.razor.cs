@@ -5,6 +5,7 @@ using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Data.ViewModels;
+using RazorBlog.Extensions;
 using RazorBlog.Models;
 using RazorBlog.Services;
 using System;
@@ -184,30 +185,9 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var roles = await UserManager.GetRolesAsync(user);
-        if (!roles.Contains(Roles.AdminRole) && !roles.Contains(Roles.ModeratorRole))
-        {
-            NavigateToForbid();
-            return;
-        }
+        var result = await UserModerationService.HideCommentAsync(commentId, user.Id);
+        this.NavigateOnError(result);
 
-        var comment = await DbContext.Comment
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(x => x.Id == commentId);
-
-        if (comment == null)
-        {
-            NavigateToNotFound();
-            return;
-        }
-
-        if (await UserManager.IsInRoleAsync(comment.AppUser, Roles.AdminRole))
-        {
-            NavigateToForbid();
-            return;
-        }
-
-        await UserModerationService.HideCommentAsync(commentId);
         await LoadCommentData();
     }
 

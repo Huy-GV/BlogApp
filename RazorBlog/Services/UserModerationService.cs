@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
 using System.Net.Sockets;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Communication;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Models;
@@ -23,62 +25,118 @@ public class UserModerationService(
     private readonly ILogger<UserModerationService> _logger = logger;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
-    public async Task<bool> BanTicketExistsAsync(string username)
+    private async Task<bool> IsUserAllowedToHidePostAsync(string userName, Post post)
     {
-        return await _dbContext.BanTicket.AnyAsync(s => s.UserName == username);
-    }
-
-    public async Task<BanTicket?> FindAsync(string username)
-    {
-        return await _dbContext
-            .BanTicket
-            .FirstOrDefaultAsync(s => s.UserName == username);
-    }
-
-    public async Task HideCommentAsync(int commentId)
-    {
-        var comment = await _dbContext.Comment.FindAsync(commentId);
-        if (comment == null)
-        {
-            _logger.LogError($"Comment with ID {commentId} not found");
-            return;
-        }
-
-        comment.IsHidden = true;
-        _dbContext.Comment.Update(comment);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task HideBlogAsync(int blogId)
-    {
-        var blog = await _dbContext.Blog.FindAsync(blogId);
-        if (blog == null)
-        {
-            _logger.LogError($"Blog with ID {blogId} not found");
-            return;
-        }
-
-        blog.IsHidden = true;
-        _dbContext.Blog.Update(blog);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task BanUser(string userName, DateTime? expiry)
-    {
-        if (await BanTicketExistsAsync(userName))
-        {
-            _logger.LogInformation($"User {userName} has already been banned");
-        }
-
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
-            _logger.LogError($"User {userName} not found");
+            return false;
+        }
+
+        if (user.UserName == post.AppUser.UserName)
+        {
+            return false;
+        }
+
+        if (await BanTicketExistsAsync(user.UserName ?? string.Empty))
+        {
+            return false;
+        }
+
+        if (!await _userManager.IsInRoleAsync(user, Roles.ModeratorRole) && 
+            !await _userManager.IsInRoleAsync(user, Roles.AdminRole))
+        {
+            return false;
+        }
+
+        if (await _userManager.IsInRoleAsync(post.AppUser, Roles.AdminRole))
+        {
+            _logger.LogError($"Posts authored by admin users cannot be hidden");
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task<bool> BanTicketExistsAsync(string userName)
+    {
+        return await _dbContext.BanTicket.AnyAsync(s => s.UserName == userName);
+    }
+
+    public async Task<BanTicket?> FindByUserNameAsync(string userName)
+    {
+        return await _dbContext
+            .BanTicket
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(s => s.UserName == userName);
+    }
+
+    public async Task<ServiceResultCode> HideCommentAsync(int commentId, string userName)
+    {
+        var comment = await _dbContext.Comment
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(x => x.Id == commentId);
+
+        if (comment == null)
+        {
+            _logger.LogError($"Comment with ID {commentId} not found");
+            return ServiceResultCode.NotFound;
+        }
+
+        if (!await IsUserAllowedToHidePostAsync(userName, comment))
+        {
+            _logger.LogError($"Comment with ID {commentId} cannot be hidden by user {userName}");
+            return ServiceResultCode.Unauthorized;
+        }
+
+        _dbContext.Comment.Update(comment);
+        comment.IsHidden = true;
+        await _dbContext.SaveChangesAsync();
+
+        return ServiceResultCode.Success;
+    }
+
+    public async Task<ServiceResultCode> HideBlogAsync(int blogId, string userName)
+    {
+        var blog = await _dbContext.Blog
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(x => x.Id == blogId);
+
+        if (blog == null)
+        {
+            _logger.LogError($"Blog with ID {blogId} not found");
+            return ServiceResultCode.NotFound;
+        }
+
+        if (!await IsUserAllowedToHidePostAsync(userName, blog))
+        {
+            _logger.LogError(message: $"Blog with ID {blogId} cannot be hidden by user {userName}");
+            return ServiceResultCode.Unauthorized;
+        }
+
+        _dbContext.Blog.Update(blog);
+        blog.IsHidden = true;
+        await _dbContext.SaveChangesAsync();
+
+        return ServiceResultCode.Success;
+    }
+
+    public async Task BanUserAsync(string userToBanName, DateTime? expiry)
+    {
+        if (await BanTicketExistsAsync(userToBanName))
+        {
+            _logger.LogInformation($"User {userToBanName} has already been banned");
+        }
+
+        var user = await _userManager.FindByNameAsync(userToBanName);
+        if (user == null)
+        {
+            _logger.LogError($"User {userToBanName} not found");
             return;
         }
 
         await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
-        _dbContext.BanTicket.Add(new BanTicket() { UserName = userName, Expiry = expiry });
+        _dbContext.BanTicket.Add(new BanTicket() { UserName = userToBanName, Expiry = expiry });
         await _dbContext.SaveChangesAsync();
 
         if (!expiry.HasValue)
@@ -86,15 +144,15 @@ public class UserModerationService(
             return;
         }
 
-        BackgroundJob.Schedule(() => RemoveBanTicketAsync(userName), new DateTimeOffset(expiry.Value));
+        BackgroundJob.Schedule(() => RemoveBanTicketAsync(userToBanName), new DateTimeOffset(expiry.Value));
     }
 
-    public async Task RemoveBanTicketAsync(string userName)
+    public async Task RemoveBanTicketAsync(string bannedUserName)
     {
-        var banTicket = await FindAsync(userName);
+        var banTicket = await FindByUserNameAsync(bannedUserName);
         if (banTicket == null)
         {
-            _logger.LogWarning($"Ban ticket for user {userName} already removed");
+            _logger.LogWarning($"Ban ticket for user {bannedUserName} already removed");
             return;
         }
 

@@ -33,26 +33,29 @@ public class RichComponentBase : ComponentBase
         User = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
     }
 
-    protected void NavigateToChallenge()
+    public void NavigateToChallenge()
     {
         NavigationManager.NavigateTo("/Authentication/LogIn", forceLoad: true);
     }
 
-    protected void NavigateToForbid()
+    public void NavigateToForbid(string? message = null, string? description = null)
     {
-        var message = "You are not allowed to access the requested resource";
+        message ??= "You are not allowed to access the requested resource";
+        description ??= string.Empty;
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}&ErrorDescription={description}", forceLoad: true);
+    }
+
+    public void NavigateToBadRequest(string? message = null, string? description = null)
+    {
+        message ??= "An unknown error occurred with your request";
+        description ??= string.Empty;
         NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
     }
 
-    protected void NavigateToBadRequest()
+    public void NavigateToNotFound(string? message = null, string? description = null)
     {
-        var message = "An unknown error occurred with your request";
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
-    }
-
-    protected void NavigateToNotFound()
-    {
-        var message = "Page not found";
+        message ??= "Page not found";
+        description ??= string.Empty;
         NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
     }
 }

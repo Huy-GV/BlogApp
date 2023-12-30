@@ -48,7 +48,7 @@ public class DetailsModel(
         UserName = userName;
         HiddenComments = await GetHiddenComments(userName);
         HiddenBlogs = await GetHiddenBlogs(userName);
-        BanTicket = await _userModerationService.FindAsync(userName);
+        BanTicket = await _userModerationService.FindByUserNameAsync(userName);
 
         return Page();
     }
@@ -90,7 +90,7 @@ public class DetailsModel(
             return BadRequest("User not found");
         }
 
-        await _userModerationService.BanUser(BanTicket.UserName, BanTicket.Expiry);
+        await _userModerationService.BanUserAsync(BanTicket.UserName, BanTicket.Expiry);
 
         return RedirectToPage("Details", new { username = BanTicket.UserName });
     }
