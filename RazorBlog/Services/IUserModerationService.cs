@@ -19,23 +19,7 @@ public interface IUserModerationService
     /// </summary>
     /// <param name="userName">Name of user with the ban ticket.</param>
     /// <returns>Ban ticket if it exists.</returns>
-    Task<BanTicket?> FindByUserNameAsync(string userName);
-
-    /// <summary>
-    ///     Marks the comment content as hidden until it is unhidden or deleted.
-    /// </summary>
-    /// <param name="commentId">ID of comment to hide.</param>
-    /// <param name="userName">Name of user hiding the comment.</param>
-    /// <returns></returns>
-    Task<ServiceResultCode> HideCommentAsync(int commentId, string userName);
-
-    /// <summary>
-    ///     Marks the blog title, description, and content as hidden until it is unhidden or deleted.
-    /// </summary>
-    /// <param name="blogId">ID of blog to hide.</param>
-    /// <param name="userName">Name of user hiding the blog.</param>
-    /// <returns></returns>
-    Task<ServiceResultCode> HideBlogAsync(int blogId, string userName);
+    Task<BanTicket?> FindBanTicketByUserNameAsync(string userName);
 
     /// <summary>
     ///     Remove the ban ticket immediately.

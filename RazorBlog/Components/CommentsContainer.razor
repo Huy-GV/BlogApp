@@ -114,7 +114,7 @@
                     }
                 </div>
                 @{
-                    var postClass = comment.IsHidden
+                    var postClass = comment.IsHidden || comment.IsDeleted
                     ? "suspended-post"
                     : string.Empty;
                 }

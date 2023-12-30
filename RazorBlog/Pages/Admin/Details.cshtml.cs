@@ -23,10 +23,12 @@ public class DetailsModel(
     UserManager<ApplicationUser> userManager,
     ILogger<DetailsModel> logger,
     IUserModerationService userUserModerationService,
+    IPostModerationService postModerationService,
     IPostDeletionScheduler postDeletionService) : BasePageModel<DetailsModel>(context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userUserModerationService;
     private readonly IPostDeletionScheduler _postDeletionService = postDeletionService;
+    private readonly IPostModerationService _postModerationService = postModerationService;
 
     [BindProperty(SupportsGet =true)] 
     public BanTicket? CurrentBanTicket { get; set; }
@@ -62,7 +64,7 @@ public class DetailsModel(
         UserName = userName;
         HiddenComments = await GetHiddenComments(userName);
         HiddenBlogs = await GetHiddenBlogs(userName);
-        CurrentBanTicket = await _userModerationService.FindByUserNameAsync(userName);
+        CurrentBanTicket = await _userModerationService.FindBanTicketByUserNameAsync(userName);
 
         return Page();
     }
@@ -142,42 +144,28 @@ public class DetailsModel(
         return RedirectToPage("Details", new { userName });
     }
 
-    public async Task<IActionResult> OnPostUnhideBlogAsync(int blogId)
+    public async Task<IActionResult> OnPostUnhideBlog(int blogId)
     {
-        var blog = await DbContext.Blog
-            .Include(b => b.AppUser)
-            .FirstOrDefaultAsync(b => b.Id == blogId);
-
-        if (blog == null)
+        if (!ValidatorUtil.TryValidateProperty(UserName, nameof(UserName), this))
         {
-            Logger.LogError("blog not found");
-            return NotFound();
+            return Page();
         }
 
-        DbContext.Blog.Update(blog);
-        blog.IsHidden = false;
-        await DbContext.SaveChangesAsync();
+        var result = await _postModerationService.UnhideBlogAsync(blogId, User.Identity?.Name ?? string.Empty);
 
-        return RedirectToPage("Details", new { username = blog.AppUser.UserName });
+        return RedirectToPage("Details", new { userName = UserName });
     }
 
     public async Task<IActionResult> OnPostUnhideCommentAsync(int commentId)
     {
-        var comment = await DbContext.Comment
-            .Include(c => c.AppUser)
-            .FirstOrDefaultAsync(c => c.Id == commentId);
-
-        if (comment == null)
+        if (!ValidatorUtil.TryValidateProperty(UserName, nameof(UserName), this))
         {
-            Logger.LogError("Comment not found");
-            return NotFound();
+            return Page();
         }
 
-        DbContext.Comment.Update(comment);
-        comment.IsHidden = false;
-        await DbContext.SaveChangesAsync();
+        var result = await _postModerationService.UnhideCommentAsync(commentId, User.Identity?.Name ?? string.Empty);
 
-        return RedirectToPage("Details", new { username = comment.AppUser.UserName });
+        return RedirectToPage("Details", new { userName = UserName });
     }
 
     public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)

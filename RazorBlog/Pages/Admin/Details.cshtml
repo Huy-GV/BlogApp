@@ -31,6 +31,7 @@
                       asp-route-blogID="@blog.Id"
                       asp-route-type="blog">
                     <button class="un-hide-post">Unhide blog</button>
+                    <input type="hidden" asp-for="UserName" value="@Model.UserName" />
                 </form>
                 <form asp-page-handler="DeleteBlog"
                       asp-route-blogID="@blog.Id"
@@ -59,6 +60,7 @@
                       asp-page-handler="UnhideComment"
                       asp-route-commentID="@comment.Id">
                     <button class="un-hide-post">Unhide comment</button>
+                    <input type="hidden" asp-for="UserName" value="@Model.UserName" />
                 </form>
                 <form asp-page-handler="DeleteComment"
                       asp-route-commentID="@comment.Id"
@@ -104,8 +106,6 @@
             </form>
         }
     }
-
-
 
 </section>
 

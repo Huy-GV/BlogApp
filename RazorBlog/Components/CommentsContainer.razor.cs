@@ -38,6 +38,9 @@ public partial class CommentsContainer : RichComponentBase
     public ILogger<CommentsContainer> Logger { get; set; } = null!;
 
     [Inject]
+    public IPostModerationService PostModerationService { get; set; } = null!;
+
+    [Inject]
     public IUserModerationService UserModerationService { get; set; } = null!;
 
     public IReadOnlyCollection<CommentDto> CommentDtos { get; private set; } = [];
@@ -77,7 +80,8 @@ public partial class CommentsContainer : RichComponentBase
                 AuthorProfileImageUri = c.AppUser == null
                     ? "readonly/default.jpg"
                     : c.AppUser.ProfileImageUri ?? "readonly/default.jpg",
-                IsHidden = c.IsHidden
+                IsHidden = c.IsHidden,
+                IsDeleted = c.ToBeDeleted,
             })
             .OrderByDescending(x => x.CreationTime)
             .ThenByDescending(x => x.LastUpdateTime)
@@ -185,7 +189,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var result = await UserModerationService.HideCommentAsync(commentId, user.Id);
+        var result = await PostModerationService.HideCommentAsync(commentId, user.UserName ?? string.Empty);
         this.NavigateOnError(result);
 
         await LoadCommentData();

@@ -22,10 +22,12 @@ public class ReadModel(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
     ILogger<ReadModel> logger,
-    IUserModerationService moderationService) : BasePageModel<ReadModel>(
+    IUserModerationService userModerationService,
+    IPostModerationService postModerationService) : BasePageModel<ReadModel>(
 context, userManager, logger)
 {
-    private readonly IUserModerationService _userModerationService = moderationService;
+    private readonly IUserModerationService _userModerationService = userModerationService;
+    private readonly IPostModerationService _postModerationService = postModerationService;
 
     [BindProperty]
     public CommentViewModel CreateCommentViewModel { get; set; } = null!;
@@ -116,7 +118,7 @@ context, userManager, logger)
             return Forbid();
         }
 
-        var result = await _userModerationService.HideBlogAsync(blogId, user.Id);
+        var result = await _postModerationService.HideBlogAsync(blogId, user.Id);
         // TODO: redirect to error pages
 
         return RedirectToPage("/Blogs/Read", new { id = blogId });

@@ -73,7 +73,7 @@ public class Startup(IConfiguration configuration)
         services.ConfigureApplicationCookie(options =>
         {
             options.Cookie.HttpOnly = true;
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            options.ExpireTimeSpan = TimeSpan.FromDays(30);
             options.LoginPath = "/Authentication/Login";
             options.LogoutPath = "/Authentication/Logout";
         });
@@ -81,6 +81,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IImageStorage, ImageLocalFileStorage>();
         services.AddScoped<IUserModerationService, UserModerationService>();
         services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
+        services.AddScoped<IPostModerationService, PostModerationService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

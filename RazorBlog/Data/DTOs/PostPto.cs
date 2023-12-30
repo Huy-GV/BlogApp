@@ -10,4 +10,5 @@ public record PostPto
     public bool IsModified => CreationTime != LastUpdateTime;
     public required string AuthorName { get; set; }
     public bool IsHidden { get; set; }
+    public bool IsDeleted { get; set; }
 }
