@@ -7,5 +7,6 @@ public enum ServiceResultCode
     Unauthorized,
     NotFound,
     InvalidState,
+    InvalidArguments,
     Error,
 }

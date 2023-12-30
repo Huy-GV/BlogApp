@@ -76,16 +76,18 @@
 <section class="ban-details-container">
     <h2>Suspension details</h2>
     @{
-        if (Model.BanTicket != null)
+        if (Model.CurrentBanTicket != null)
         {
             <div class="current-suspension">
-                <p>Expiry date: @Model.BanTicket.Expiry</p>
+                @{
+                    var expiryDate = Model.CurrentBanTicket.Expiry?.ToShortDateString() ?? "Permanent";
+                    <p>Expiry date: @expiryDate</p>
+                }
                 <form method="post"
                         asp-page-handler="LiftBan"
                         asp-route-username="@Model.UserName">
                     <button class="lift-ban-btn">Lift ban</button>
                 </form>
-       
             </div>
         }
         else
@@ -93,9 +95,9 @@
             <p>No ban ticket exists</p>
             <form class="suspend-form" method="post" asp-page-handler="BanUser">
                 <h4>Create ban ticket</h4>
-                <label asp-for="BanTicket.Expiry">Expiry date (leave empty to permanently ban the user)</label>
-                <input type="date" asp-for="BanTicket.Expiry"/>
-                <input type="hidden" asp-for="BanTicket.UserName" value="@Model.UserName"/>
+                <label asp-for="NewBanTicketExpiryDate">Expiry date (leave empty to permanently ban the user)</label>
+                <input type="date" asp-for="NewBanTicketExpiryDate" />
+                <input type="hidden" asp-for="UserName" value="@Model.UserName" />
                 <button class="ban-btn" type="button">Ban</button>
                 <button class="cancel-btn hidden-element" type="button">Cancel</button>
                 <button class="confirm-ban-btn hidden-element">Confirm </button>

@@ -6,12 +6,12 @@ using RazorBlog.Data;
 
 namespace RazorBlog.Services;
 
-public class PostDeletionService(
+public class PostDeletionScheduler(
     RazorBlogDbContext dbContext,
-    ILogger<IPostDeletionService> logger) : IPostDeletionService
+    ILogger<IPostDeletionScheduler> logger) : IPostDeletionScheduler
 {
     private readonly RazorBlogDbContext _dbContext = dbContext;
-    private readonly ILogger<IPostDeletionService> _logger = logger;
+    private readonly ILogger<IPostDeletionScheduler> _logger = logger;
 
     public void ScheduleBlogDeletion(DateTimeOffset deleteTime, int blogId)
     {

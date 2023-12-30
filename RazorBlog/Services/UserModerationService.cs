@@ -58,6 +58,32 @@ public class UserModerationService(
         return true;
     }
 
+    private async Task<bool> IsUserNameFromAdminUser(string userName)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+        return user != null && await _userManager.IsInRoleAsync(user, Roles.AdminRole);
+    }
+
+    public async Task RemoveBanTicketAsync(string bannedUserName)
+    {
+        var banTicket = await FindByUserNameAsync(bannedUserName);
+        if (banTicket == null)
+        {
+            _logger.LogWarning($"Ban ticket for user {bannedUserName} already removed");
+            return;
+        }
+
+        try
+        {
+            _dbContext.BanTicket.Remove(banTicket);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DBConcurrencyException)
+        {
+            _logger.LogWarning($"Ban ticket for user {banTicket.UserName} already removed");
+        }
+    }
+
     public async Task<bool> BanTicketExistsAsync(string userName)
     {
         return await _dbContext.BanTicket.AnyAsync(s => s.UserName == userName);
@@ -121,8 +147,19 @@ public class UserModerationService(
         return ServiceResultCode.Success;
     }
 
-    public async Task BanUserAsync(string userToBanName, DateTime? expiry)
+    public async Task<ServiceResultCode> BanUserAsync(string userToBanName, string userName,  DateTime? expiry)
     {
+        if (!await IsUserNameFromAdminUser(userName))
+        {
+            return ServiceResultCode.Unauthorized;
+        }
+
+        var now = DateTime.UtcNow;
+        if (expiry.HasValue && expiry.Value <= now)
+        {
+            return ServiceResultCode.InvalidArguments;
+        }
+
         if (await BanTicketExistsAsync(userToBanName))
         {
             _logger.LogInformation($"User {userToBanName} has already been banned");
@@ -132,7 +169,7 @@ public class UserModerationService(
         if (user == null)
         {
             _logger.LogError($"User {userToBanName} not found");
-            return;
+            return ServiceResultCode.NotFound;
         }
 
         await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
@@ -141,29 +178,21 @@ public class UserModerationService(
 
         if (!expiry.HasValue)
         {
-            return;
+            return ServiceResultCode.Success;
         }
 
         BackgroundJob.Schedule(() => RemoveBanTicketAsync(userToBanName), new DateTimeOffset(expiry.Value));
+        return ServiceResultCode.Success;
     }
 
-    public async Task RemoveBanTicketAsync(string bannedUserName)
+    public async Task<ServiceResultCode> RemoveBanTicketAsync(string bannedUserName, string userName)
     {
-        var banTicket = await FindByUserNameAsync(bannedUserName);
-        if (banTicket == null)
+        if (!await IsUserNameFromAdminUser(userName))
         {
-            _logger.LogWarning($"Ban ticket for user {bannedUserName} already removed");
-            return;
+            return ServiceResultCode.Unauthorized;
         }
 
-        try
-        {
-            _dbContext.BanTicket.Remove(banTicket);
-            await _dbContext.SaveChangesAsync();
-        } 
-        catch (DBConcurrencyException)
-        {
-            _logger.LogWarning($"Ban ticket for user {banTicket.UserName} already removed");
-        }
+        await RemoveBanTicketAsync(bannedUserName);
+        return ServiceResultCode.Success;
     }
 }

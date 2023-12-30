@@ -3,32 +3,31 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
-namespace RazorBlog.Data.Validation
+namespace RazorBlog.Data.Validation;
+
+public class FileTypeAttribute : ValidationAttribute
 {
-    public class FileTypeAttribute : ValidationAttribute
+    private readonly string[] allowedFileTypes;
+
+    public override bool IsValid(object? value)
     {
-        private readonly string[] allowedFileTypes;
-
-        public override bool IsValid(object? value)
+        if (value is IFormFile file)
         {
-            if (value is IFormFile file)
-            {
-                return allowedFileTypes.Contains(Path.GetExtension(file.FileName).TrimStart('.'));
-            }
-
-            return false;
+            return allowedFileTypes.Contains(Path.GetExtension(file.FileName).TrimStart('.'));
         }
 
-        public FileTypeAttribute(params string[] allowedTypes)
-        {
-            if (allowedTypes.Any(x => string.IsNullOrWhiteSpace(x) || x == string.Empty))
-            {
-                throw new System.ArgumentException("File types must not be null or empty");
-            }
+        return false;
+    }
 
-            allowedFileTypes = allowedTypes
-                .Select(x => x.TrimStart('.', ' ').ToLowerInvariant())
-                .ToArray();
+    public FileTypeAttribute(params string[] allowedTypes)
+    {
+        if (allowedTypes.Any(x => string.IsNullOrWhiteSpace(x) || x == string.Empty))
+        {
+            throw new System.ArgumentException("File types must not be null or empty");
         }
+
+        allowedFileTypes = allowedTypes
+            .Select(x => x.TrimStart('.', ' ').ToLowerInvariant())
+            .ToArray();
     }
 }

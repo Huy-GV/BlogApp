@@ -49,13 +49,13 @@ public class RichComponentBase : ComponentBase
     {
         message ??= "An unknown error occurred with your request";
         description ??= string.Empty;
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}&ErrorDescription={description}", forceLoad: true);
     }
 
     public void NavigateToNotFound(string? message = null, string? description = null)
     {
         message ??= "Page not found";
         description ??= string.Empty;
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}&ErrorDescription={description}", forceLoad: true);
     }
 }

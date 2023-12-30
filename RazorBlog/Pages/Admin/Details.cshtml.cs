@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
+using RazorBlog.Data.Validation;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
@@ -21,15 +23,27 @@ public class DetailsModel(
     UserManager<ApplicationUser> userManager,
     ILogger<DetailsModel> logger,
     IUserModerationService userUserModerationService,
-    IPostDeletionService postDeletionService) : BasePageModel<DetailsModel>(context, userManager, logger)
+    IPostDeletionScheduler postDeletionService) : BasePageModel<DetailsModel>(context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userUserModerationService;
-    private readonly IPostDeletionService _postDeletionService = postDeletionService;
+    private readonly IPostDeletionScheduler _postDeletionService = postDeletionService;
 
-    [BindProperty] public BanTicket? BanTicket { get; set; }
-    [BindProperty] public string UserName { get; set; } = string.Empty;
-    [BindProperty] public List<HiddenCommentDto> HiddenComments { get; set; } = [];
-    [BindProperty] public List<HiddenBlogDto> HiddenBlogs { get; set; } = [];
+    [BindProperty(SupportsGet =true)] 
+    public BanTicket? CurrentBanTicket { get; set; }
+
+    [BindProperty]
+    [DateRange(allowsPast: false, allowsFuture: true, ErrorMessage ="Expiry date must be in the future")]
+    public DateTime NewBanTicketExpiryDate { get; set; } = DateTime.Now.AddDays(1);
+
+    [BindProperty(SupportsGet = true)]
+    [Required]
+    public string UserName { get; set; } = string.Empty;
+
+    [BindProperty] 
+    public List<HiddenCommentDto> HiddenComments { get; set; } = [];
+
+    [BindProperty] 
+    public List<HiddenBlogDto> HiddenBlogs { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync(string? userName)
     {
@@ -48,7 +62,7 @@ public class DetailsModel(
         UserName = userName;
         HiddenComments = await GetHiddenComments(userName);
         HiddenBlogs = await GetHiddenBlogs(userName);
-        BanTicket = await _userModerationService.FindByUserNameAsync(userName);
+        CurrentBanTicket = await _userModerationService.FindByUserNameAsync(userName);
 
         return Page();
     }
@@ -83,16 +97,37 @@ public class DetailsModel(
             .ToListAsync();
     }
 
+    private static void CensorDeletedComment(Comment comment)
+    {
+        comment.IsHidden = false;
+        comment.Content = ReplacementText.RemovedContent;
+        comment.ToBeDeleted = true;
+    }
+
+    private static void CensorDeletedBlog(Blog blog)
+    {
+        blog.IsHidden = false;
+        blog.ToBeDeleted = true;
+        blog.Title = ReplacementText.RemovedContent;
+        blog.Introduction = ReplacementText.RemovedContent;
+        blog.Content = ReplacementText.RemovedContent;
+    }
+
     public async Task<IActionResult> OnPostBanUserAsync()
     {
-        if (BanTicket?.UserName == null || await UserManager.FindByNameAsync(BanTicket.UserName) == null)
+        if (!ValidatorUtil.TryValidateProperty(NewBanTicketExpiryDate, nameof(NewBanTicketExpiryDate), this))
+        {
+            return Page();
+        }
+
+        if (string.IsNullOrWhiteSpace(UserName) || await UserManager.FindByNameAsync(UserName) == null)
         {
             return BadRequest("User not found");
         }
 
-        await _userModerationService.BanUserAsync(BanTicket.UserName, BanTicket.Expiry);
+        await _userModerationService.BanUserAsync(UserName, User.Identity?.Name ?? string.Empty, NewBanTicketExpiryDate);
 
-        return RedirectToPage("Details", new { username = BanTicket.UserName });
+        return RedirectToPage("Details", new { userName = UserName });
     }
 
     public async Task<IActionResult> OnPostLiftBanAsync(string userName)
@@ -102,7 +137,7 @@ public class DetailsModel(
             return BadRequest();
         }
 
-        await _userModerationService.RemoveBanTicketAsync(userName);
+        await _userModerationService.RemoveBanTicketAsync(userName, User.Identity?.Name ?? string.Empty);
 
         return RedirectToPage("Details", new { userName });
     }
@@ -148,7 +183,6 @@ public class DetailsModel(
     public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
     {
         var comment = await DbContext.Comment
-            .Include(c => c.AppUser)
             .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (comment == null)
@@ -158,20 +192,17 @@ public class DetailsModel(
         }
 
         DbContext.Comment.Update(comment);
-        comment.IsHidden = false;
-        comment.Content = ReplacementText.RemovedContent;
-        comment.ToBeDeleted = true;
+        CensorDeletedComment(comment);
         await DbContext.SaveChangesAsync();
         var deleteTime = new DateTimeOffset(DateTime.UtcNow.AddDays(7));
         _postDeletionService.ScheduleBlogDeletion(deleteTime, comment.Id);
 
-        return RedirectToPage("Details", new { username = comment.AppUser.UserName });
+        return RedirectToPage("Details", new { userName = UserName });
     }
 
     public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
     {
         var blog = await DbContext.Blog
-            .Include(b => b.AppUser)
             .FirstOrDefaultAsync(b => b.Id == blogId);
 
         if (blog == null)
@@ -181,15 +212,11 @@ public class DetailsModel(
         }
 
         DbContext.Blog.Update(blog);
-        blog.IsHidden = false;
-        blog.ToBeDeleted = true;
-        blog.Title = ReplacementText.RemovedContent;
-        blog.Introduction = ReplacementText.RemovedContent;
-        blog.Content = ReplacementText.RemovedContent;
+        CensorDeletedBlog(blog);
         await DbContext.SaveChangesAsync();
 
         var deleteTime = new DateTimeOffset(DateTime.UtcNow.AddDays(14));
         _postDeletionService.ScheduleBlogDeletion(deleteTime, blog.Id);
-        return RedirectToPage("Details", new { username = blog.AppUser.UserName });
+        return RedirectToPage("Details", new { userName = UserName });
     }
 }

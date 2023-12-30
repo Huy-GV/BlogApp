@@ -80,7 +80,7 @@ public class Startup(IConfiguration configuration)
 
         services.AddScoped<IImageStorage, ImageLocalFileStorage>();
         services.AddScoped<IUserModerationService, UserModerationService>();
-        services.AddScoped<IPostDeletionService, PostDeletionService>();
+        services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
