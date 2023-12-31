@@ -80,9 +80,10 @@ public class DetailsModel(
             return BadRequest("User not found");
         }
 
-        await _userModerationService.BanUserAsync(UserName, User.Identity?.Name ?? string.Empty, NewBanTicketExpiryDate);
-
-        return RedirectToPage("Details", new { userName = UserName });
+        return this.NavigateOnResult(
+            await _userModerationService.BanUserAsync(UserName, User.Identity?.Name ?? string.Empty, NewBanTicketExpiryDate),
+            () => RedirectToPage("Details", new { userName = UserName })
+        );
     }
 
     public async Task<IActionResult> OnPostLiftBanAsync(string userName)
@@ -92,8 +93,9 @@ public class DetailsModel(
             return BadRequest();
         }
 
-        await _userModerationService.RemoveBanTicketAsync(userName, User.Identity?.Name ?? string.Empty);
-
-        return RedirectToPage("Details", new { userName });
+        return this.NavigateOnResult(
+            await _userModerationService.RemoveBanTicketAsync(userName, User.Identity?.Name ?? string.Empty),
+            () => RedirectToPage("Details", new { userName })
+        );
     }
 }
