@@ -32,10 +32,18 @@ public class Startup(IConfiguration configuration)
             dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
         }
 
-        services
-            .AddDbContext<RazorBlogDbContext>(
-            options => options.UseSqlServer(dbConnectionString));
+        services.AddDbContext<RazorBlogDbContext>(options => options.UseSqlServer(dbConnectionString));
+
+        // for use in Blazor components as injected DB context is not scoped
+        services.AddDbContextFactory<RazorBlogDbContext>(options => 
+            options.UseSqlServer(dbConnectionString),
+
+            // use Scoped lifetime as the injected DbContextOptions used by AddDbContext also has a Scoped lifetime
+            lifetime: ServiceLifetime.Scoped
+        );
+
         services.AddDatabaseDeveloperPageExceptionFilter();
+        
         services
             .AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<RazorBlogDbContext>()

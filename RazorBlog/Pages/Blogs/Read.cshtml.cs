@@ -119,7 +119,7 @@ context, userManager, logger)
         }
 
         return this.NavigateOnResult(
-            await _postModerationService.HideBlogAsync(blogId, user.Id),
+            await _postModerationService.HideBlogAsync(blogId, user.UserName ?? string.Empty),
             () => RedirectToPage("/Blogs/Read", new { id = blogId }));
     }
 

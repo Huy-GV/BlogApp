@@ -67,7 +67,7 @@ html * {
   margin: 0 0 1rem 10rem;
   width: 50%;
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .search-form {
     width: 70%;
     margin-inline: auto;
@@ -79,7 +79,7 @@ html * {
   padding: 0.7rem;
   font-size: 1rem;
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .search-form input[type=submit] {
     width: 20%;
   }
@@ -146,7 +146,7 @@ html * {
   width: -moz-fit-content;
   width: fit-content;
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .today {
     margin-inline: auto;
     font-size: 1.5rem;

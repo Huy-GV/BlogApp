@@ -209,13 +209,46 @@ public class PostModerationService(
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Update(comment);
+        _dbContext.Comment.Update(comment);
         CensorDeletedComment(comment);
         await _dbContext.SaveChangesAsync();
 
         _postDeletionScheduler.ScheduleCommentDeletion(
             new DateTimeOffset(DateTime.UtcNow.AddDays(7)), 
             commentId);
+
+        return ServiceResultCode.Success;
+    }
+
+    public async Task<ServiceResultCode> ForciblyDeleteBlogAsync(int blogId, string deletorUserName)
+    {
+        if (!await IsUserInAdminRole(deletorUserName))
+        {
+            return ServiceResultCode.Unauthorized;
+        }
+
+        var blog = await _dbContext.Blog
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(x => x.Id == blogId);
+
+        if (blog == null)
+        {
+            return ServiceResultCode.NotFound;
+        }
+
+        if (!blog.IsHidden)
+        {
+            _logger.LogError($"Blog ID {blogId} must be hidden before being forcibly deleted");
+            return ServiceResultCode.Unauthorized;
+        }
+
+        _dbContext.Blog.Update(blog);
+        CensorDeletedBlog(blog);
+        await _dbContext.SaveChangesAsync();
+
+        _postDeletionScheduler.ScheduleBlogDeletion(
+            new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
+            blogId);
 
         return ServiceResultCode.Success;
     }

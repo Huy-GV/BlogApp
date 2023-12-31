@@ -9,6 +9,7 @@ public interface IPostModerationService
     Task<ServiceResultCode> HideBlogAsync(int blogId, string userName);
     Task<ServiceResultCode> HideCommentAsync(int commentId, string userName);
     Task<ServiceResultCode> ForciblyDeleteCommentAsync(int commentId, string deletorUserName);
+    Task<ServiceResultCode> ForciblyDeleteBlogAsync(int commentId, string deletorUserName);
     Task<ServiceResultCode> UnhideBlogAsync(int blogId, string userName);
     Task<ServiceResultCode> UnhideCommentAsync(int commentId, string userName);
 }

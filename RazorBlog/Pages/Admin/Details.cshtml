@@ -12,73 +12,14 @@
 
 <h1>Details of @Model.UserName</h1>
 <main class="suspended-blog-container">
-    
-    <h2>Reported blogs</h2>
-    @{
-        if (Model.HiddenBlogs.Count == 0)
-        {
-            <div class="suspended-blog">
-                <p>None</p>
-                <hr>
-            </div>
-        }
-        foreach (var blog in Model.HiddenBlogs)
-        {
-            <div class="suspended-blog">
-                <h5>Original content</h5>
-                <p>@blog.Content</p>
-                <form method="post"
-                      asp-page-handler="UnhideBlog"
-                      asp-route-blogID="@blog.Id"
-                      asp-route-type="blog">
-                    <button class="un-hide-post">Unhide blog</button>
-                    <input type="hidden" asp-for="UserName" value="@Model.UserName" />
-                </form>
-                <form asp-page-handler="DeleteBlog"
-                      asp-route-blogID="@blog.Id"
-                      asp-route-type="blog"
-                      method="post">
-                    <button class="delete-post">Delete blog</button>
-                </form>
-                <hr>
-            </div>
-        }
-    }
+
+    <component type="typeof(HiddenBlogContainer)"
+               render-mode="Server"
+               param-UserName="@Model.UserName" />
 
     <component type="typeof(HiddenCommentContainer)"
                render-mode="Server"
                param-UserName="@Model.UserName" />
-
-@*     <h2>Reported comments</h2>
-    @{
-        if (Model.HiddenComments.Count == 0)
-        {
-            <div class="suspended-comment">
-                <p>None</p>
-            </div>
-        }
-        foreach (var comment in Model.HiddenComments)
-        {
-            <div class="suspended-comment">
-                <h5>Original content</h5>
-                <p>@comment.Content</p>
-                <form method="post"
-                      asp-page-handler="UnhideComment"
-                      asp-route-commentID="@comment.Id">
-                    <button class="un-hide-post">Unhide comment</button>
-                    <input type="hidden" asp-for="UserName" value="@Model.UserName" />
-                </form>
-                <form asp-page-handler="DeleteComment"
-                      asp-route-commentID="@comment.Id"
-                      method="post">
-                    <button class="delete-post">Delete comment</button>
-                </form>
-                <hr>
-            </div>
-        }
-    }
- *@
-
 </main>
 
 <section class="ban-details-container">

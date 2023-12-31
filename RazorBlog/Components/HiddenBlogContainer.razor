@@ -1,0 +1,39 @@
+﻿@inherits RichComponentBase
+@attribute [StreamRendering(true)]
+
+<h2>Reported blogs</h2>
+@{
+    if (HiddenBlogs.Count == 0)
+    {
+        <div class="suspended-blog">
+            <p>None</p>
+            <hr>
+        </div>
+    }
+
+    foreach (var blog in HiddenBlogs)
+    {
+        <div class="suspended-blog">
+            <h5>Original content</h5>
+            <h6>Title</h6>
+            <hr />
+            <p>@blog.Title</p>
+
+            <h6>Introduction</h6>
+            <hr />
+            <p>@blog.Introduction</p>
+
+            <h6>Content</h6>
+            <hr />
+            <p>@blog.Content</p>
+
+            <form method="post" @onsubmit="(async () => await UnhideBlogAsync(blog.Id))">
+                <button class="un-hide-post">Unhide blog</button>
+            </form>
+            <form method="post" @onsubmit="(async () => await ForciblyDeleteBlogAsync(blog.Id))">
+                <button class="delete-post">Delete blog</button>
+            </form>
+            <hr>
+        </div>
+    }
+}

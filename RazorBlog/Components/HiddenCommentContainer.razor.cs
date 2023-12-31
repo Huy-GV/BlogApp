@@ -16,13 +16,10 @@ public partial class HiddenCommentContainer : RichComponentBase
     public string UserName { get; set; } = string.Empty;
 
     [Inject]
-    public RazorBlogDbContext DbContext { get; set; } = null!;
+    public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
 
     [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
-
-    [Inject]
-    public IPostDeletionScheduler PostDeletionService { get; set; } = null!;
 
     public IReadOnlyCollection<HiddenCommentDto> HiddenComments { get; private set; } = [];
 
@@ -39,7 +36,8 @@ public partial class HiddenCommentContainer : RichComponentBase
 
     private async Task<IReadOnlyCollection<HiddenCommentDto>> GetHiddenComments(string userName)
     {
-        return await DbContext.Comment
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();   
+        return await dbContext.Comment
             .Include(c => c.AppUser)
             .Where(c => c.AppUser.UserName == userName && c.IsHidden)
             .Select(c => new HiddenCommentDto
@@ -51,7 +49,7 @@ public partial class HiddenCommentContainer : RichComponentBase
             .ToListAsync();
     }
 
-    private async Task ForciblyDeleteComment(int commentId)
+    private async Task ForciblyDeleteCommentAsync(int commentId)
     {
         var result = await PostModerationService.ForciblyDeleteCommentAsync(commentId, CurrentUserName);
         this.NavigateOnError(result);

@@ -20,7 +20,7 @@
                 <button class="un-hide-post">Unhide comment</button>
             </form>
 
-            <form method="post" @onsubmit="(async () => await ForciblyDeleteComment(comment.Id))">
+            <form method="post" @onsubmit="(async () => await ForciblyDeleteCommentAsync(comment.Id))">
                 <button class="delete-post">Delete comment</button>
             </form>
             <hr>

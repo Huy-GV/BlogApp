@@ -32,7 +32,7 @@ public partial class CommentsContainer : RichComponentBase
     public CommentViewModel EditCommentViewModel { get; set; } = new();
 
     [Inject]
-    public RazorBlogDbContext DbContext { get; set; } = null!;
+    public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
 
     [Inject]
     public ILogger<CommentsContainer> Logger { get; set; } = null!;
@@ -42,6 +42,8 @@ public partial class CommentsContainer : RichComponentBase
 
     [Inject]
     public IUserModerationService UserModerationService { get; set; } = null!;
+
+    public bool AreCommentsLoaded { get; private set; } = false;
 
     public IReadOnlyCollection<CommentDto> CommentDtos { get; private set; } = [];
 
@@ -62,11 +64,14 @@ public partial class CommentsContainer : RichComponentBase
         IsCommentEditorDisplayed = CommentDtos
             .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
             .ToDictionary(x => x.Id, _ => false);
+
+        AreCommentsLoaded = true;
     }
 
     private async Task<List<CommentDto>> LoadComments()
     {
-        return await DbContext.Comment
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        return await dbContext.Comment
             .Where(x => x.BlogId == BlogId)
             .Select(c => new CommentDto
             {
@@ -109,7 +114,8 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var comment = await DbContext.Comment
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var comment = await dbContext.Comment
             .Include(x => x.AppUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
@@ -125,10 +131,10 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        DbContext.Comment.Update(comment);
+        dbContext.Comment.Update(comment);
         comment.LastUpdateTime = DateTime.UtcNow;
         comment.Content = EditCommentViewModel.Content;
-        await DbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
         EditCommentViewModel.Content = string.Empty;
 
         await LoadCommentData();
@@ -157,8 +163,9 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
         var creationTime = DateTime.UtcNow;
-        DbContext.Comment.Add(new Comment
+        dbContext.Comment.Add(new Comment
         {
             AppUserId = user.Id,
             BlogId = BlogId,
@@ -167,7 +174,7 @@ public partial class CommentsContainer : RichComponentBase
             LastUpdateTime = creationTime,
         });
 
-        await DbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         CreateCommentViewModel.Content = string.Empty;
 
@@ -203,7 +210,8 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var comment = await DbContext.Comment
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var comment = await dbContext.Comment
             .Include(x => x.AppUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
@@ -220,8 +228,8 @@ public partial class CommentsContainer : RichComponentBase
             return; 
         }
 
-        DbContext.Comment.Remove(comment);
-        await DbContext.SaveChangesAsync();
+        dbContext.Comment.Remove(comment);
+        await dbContext.SaveChangesAsync();
 
         await LoadCommentData();
     }
