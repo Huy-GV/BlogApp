@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
