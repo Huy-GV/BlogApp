@@ -25,15 +25,15 @@ public class EditModel(
     [BindProperty]
     public EditBlogViewModel EditBlogViewModel { get; set; } = null!;
 
-    public async Task<IActionResult> OnGetAsync(int? blogId, string? username)
+    public async Task<IActionResult> OnGetAsync(int? blogId, string? userName)
     {
-        if (blogId == null || username == null)
+        if (blogId == null || userName == null)
         {
             return NotFound();
         }
 
         var user = await GetUserOrDefaultAsync();
-        if (user?.UserName != username)
+        if (user?.UserName != userName)
         {
             return Forbid();
         }

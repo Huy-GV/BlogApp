@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using RazorBlog.Data;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Extensions;
@@ -30,13 +29,13 @@ public partial class HiddenBlogContainer : RichComponentBase
         await LoadHiddenBlogs();
     }
 
-    private async Task<List<HiddenBlogDto>> GetHiddenBlogs(string username)
+    private async Task<List<HiddenBlogDto>> GetHiddenBlogs(string userName)
     {
         using var dbContext = await DbContextFactory.CreateDbContextAsync();
 
         return await dbContext.Blog
             .Include(b => b.AppUser)
-            .Where(b => b.AppUser.UserName == username && b.IsHidden)
+            .Where(b => b.AppUser.UserName == userName && b.IsHidden)
             .Select(b => new HiddenBlogDto
             {
                 Id = b.Id,

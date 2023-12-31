@@ -27,14 +27,14 @@ public class EditModel(
 
     [BindProperty] public EditUserViewModel EditUserViewModel { get; set; } = null!;
 
-    public async Task<IActionResult> OnGetAsync(string? username)
+    public async Task<IActionResult> OnGetAsync(string? userName)
     {
-        if (username == null)
+        if (userName == null)
         {
             return NotFound();
         }
 
-        var user = await UserManager.FindByNameAsync(username);
+        var user = await UserManager.FindByNameAsync(userName);
         if (user == null)
         {
             return NotFound();
@@ -47,7 +47,7 @@ public class EditModel(
 
         EditUserViewModel = new EditUserViewModel
         {
-            UserName = username,
+            UserName = userName,
             Description = user.Description
         };
 
@@ -73,7 +73,7 @@ public class EditModel(
                 _logger.LogError(error);
             }
 
-            return RedirectToPage("/User/Edit", new { username = EditUserViewModel.UserName });
+            return RedirectToPage("/User/Edit", new { userName = EditUserViewModel.UserName });
         }
 
         var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);
@@ -93,7 +93,7 @@ public class EditModel(
 
         await DbContext.SaveChangesAsync();
 
-        return RedirectToPage("/User/Index", new { username = EditUserViewModel.UserName });
+        return RedirectToPage("/User/Index", new { userName = EditUserViewModel.UserName });
     }
 
     private async Task<string> UploadProfileImageAsync(IFormFile image)

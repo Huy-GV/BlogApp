@@ -35,9 +35,6 @@ public partial class CommentsContainer : RichComponentBase
     public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
 
     [Inject]
-    public ILogger<CommentsContainer> Logger { get; set; } = null!;
-
-    [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 
     [Inject]

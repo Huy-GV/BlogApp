@@ -60,12 +60,12 @@ public class AdminModel(RazorBlogDbContext context,
         return Page();
     }
 
-    public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string username)
+    public async Task<IActionResult> OnPostRemoveModeratorRoleAsync(string userName)
     {
-        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == username);
+        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
         if (user == null)
         {
-            Logger.LogError($"No user with ID {username} was found");
+            Logger.LogError($"No user with ID {userName} was found");
             return Page();
         }
 
@@ -74,12 +74,12 @@ public class AdminModel(RazorBlogDbContext context,
         return RedirectToPage("Admin");
     }
 
-    public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string username)
+    public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string userName)
     {
-        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == username);
+        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
         if (user == null)
         {
-            Logger.LogError($"No user with ID {username} was found");
+            Logger.LogError($"No user with ID {userName} was found");
             return Page();
         }
 

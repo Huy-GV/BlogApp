@@ -1,16 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
-using RazorBlog.Data.Dtos;
 using RazorBlog.Data.Validation;
 using RazorBlog.Extensions;
 using RazorBlog.Models;
@@ -41,12 +37,6 @@ public class DetailsModel(
     [BindProperty(SupportsGet = true)]
     [Required]
     public string UserName { get; set; } = string.Empty;
-
-    [BindProperty] 
-    public List<HiddenCommentDto> HiddenComments { get; set; } = [];
-
-    [BindProperty] 
-    public List<HiddenBlogDto> HiddenBlogs { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync(string? userName)
     {

@@ -1,6 +1,4 @@
-﻿using RazorBlog.Data.Constants;
-
-namespace RazorBlog.Data.DTOs;
+﻿namespace RazorBlog.Data.DTOs;
 
 public record HiddenPostPto
 {
