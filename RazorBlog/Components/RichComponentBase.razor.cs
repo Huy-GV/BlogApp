@@ -21,16 +21,18 @@ public class RichComponentBase : ComponentBase
     [Inject]
     public UserManager<ApplicationUser> UserManager { get; set; } = null!;
 
-    protected ClaimsPrincipal User { get; private set; } = new();
+    protected ClaimsPrincipal CurrentUser { get; private set; } = new();
 
-    protected bool IsAuthenticated => User?.Identity?.IsAuthenticated ?? false;
+    protected string CurrentUserName => CurrentUser.Identity?.Name ?? string.Empty;
 
-    protected bool IsSignedIn => SignInManager.IsSignedIn(User);
+    protected bool IsAuthenticated => CurrentUser?.Identity?.IsAuthenticated ?? false;
+
+    protected bool IsSignedIn => SignInManager.IsSignedIn(CurrentUser);
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        User = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        CurrentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
     }
 
     public void NavigateToChallenge()

@@ -9,7 +9,7 @@
 @inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-@if (!CurrentUser.IsBanned && IsSignedIn)
+@if (!CurrentUserInfo.IsBanned && IsSignedIn)
 {
     <EditForm Model="CreateCommentViewModel"
               class="comment-form"
@@ -44,7 +44,7 @@
                     ? "blog-author"
                     : "comment-author";
 
-                    var isUserCommentAuthor = comment.AuthorName == CurrentUser.UserName;
+                    var isUserCommentAuthor = comment.AuthorName == CurrentUserName;
                     var isCommentEditorDisplayed = IsCommentEditorDisplayed.TryGetValue(comment.Id, out var isDisplayed) && isDisplayed;
 
                     <div class="author-container">
@@ -68,7 +68,7 @@
                             </form>
                         }
 
-                        if (CurrentUser.AllowedToHideBlogOrComment && 
+                        if (CurrentUserInfo.AllowedToHideBlogOrComment &&
                             !comment.IsHidden &&
                             !isUserCommentAuthor &&
                             !isCommentEditorDisplayed)

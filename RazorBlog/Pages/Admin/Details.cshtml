@@ -1,4 +1,5 @@
 ﻿@page
+@using RazorBlog.Components
 @using RazorBlog.Data.Dtos
 @using RazorBlog.Models
 @model DetailsModel
@@ -43,7 +44,12 @@
             </div>
         }
     }
-    <h2>Reported comments</h2>
+
+    <component type="typeof(HiddenCommentContainer)"
+               render-mode="Server"
+               param-UserName="@Model.UserName" />
+
+@*     <h2>Reported comments</h2>
     @{
         if (Model.HiddenComments.Count == 0)
         {
@@ -71,7 +77,7 @@
             </div>
         }
     }
-
+ *@
 
 </main>
 

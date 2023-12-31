@@ -23,7 +23,7 @@ public partial class CommentsContainer : RichComponentBase
     public int BlogId { get; set; }
 
     [Parameter]
-    public CurrentUserInfo CurrentUser { get; set; } = null!;
+    public CurrentUserInfo CurrentUserInfo { get; set; } = null!;
 
     [SupplyParameterFromForm]
     public CommentViewModel CreateCommentViewModel { get; set; } = new();
@@ -60,7 +60,7 @@ public partial class CommentsContainer : RichComponentBase
     {
         CommentDtos = await LoadComments();
         IsCommentEditorDisplayed = CommentDtos
-            .Where(x => x.AuthorName == User?.Identity?.Name)
+            .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
             .ToDictionary(x => x.Id, _ => false);
     }
 
@@ -96,7 +96,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(User);
+        var user = await UserManager.GetUserAsync(base.CurrentUser);
         if (user == null || user.UserName == null)
         {
             NavigateToForbid();
@@ -142,7 +142,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(User);
+        var user = await UserManager.GetUserAsync(base.CurrentUser);
         if (user == null)
         {
             NavigateToForbid();
@@ -182,7 +182,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(User);
+        var user = await UserManager.GetUserAsync(base.CurrentUser);
         if (user == null)
         {
             NavigateToForbid();
@@ -213,7 +213,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(User);
+        var user = await UserManager.GetUserAsync(base.CurrentUser);
         if (user == null || user.UserName == null || user.UserName != comment.AppUser.UserName)
         {
             NavigateToForbid();

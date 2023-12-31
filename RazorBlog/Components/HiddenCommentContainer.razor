@@ -1,0 +1,29 @@
+﻿@inherits RichComponentBase
+@attribute [StreamRendering(true)]
+
+<h2>Reported comments</h2>
+
+@{
+    if (HiddenComments.Count == 0)
+    {
+        <div class="suspended-comment">
+            <p>None</p>
+        </div>
+    }
+
+    foreach (var comment in HiddenComments)
+    {
+        <div class="suspended-comment">
+            <h5>Original content</h5>
+            <p>@comment.Content</p>
+            <form method="post" @onsubmit="(async () => await UnhideCommentAsync(comment.Id))">
+                <button class="un-hide-post">Unhide comment</button>
+            </form>
+
+            <form method="post" @onsubmit="(async () => await ForciblyDeleteComment(comment.Id))">
+                <button class="delete-post">Delete comment</button>
+            </form>
+            <hr>
+        </div>
+    }
+}

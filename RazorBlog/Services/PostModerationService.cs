@@ -6,6 +6,7 @@ using RazorBlog.Data;
 using RazorBlog.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace RazorBlog.Services;
 
@@ -13,12 +14,14 @@ public class PostModerationService(
     RazorBlogDbContext dbContext,
     ILogger<UserModerationService> logger,
     UserManager<ApplicationUser> userManager,
-    IUserModerationService userModerationService) : IPostModerationService
+    IUserModerationService userModerationService,
+    IPostDeletionScheduler postDeletionScheduler) : IPostModerationService
 {
     private readonly RazorBlogDbContext _dbContext = dbContext;
     private readonly ILogger<UserModerationService> _logger = logger;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly UserModerationService _userModerationService = (UserModerationService)userModerationService;
+    private readonly IUserModerationService _userModerationService = userModerationService;
+    private readonly IPostDeletionScheduler _postDeletionScheduler = postDeletionScheduler;
 
     private async Task<bool> IsUserAllowedToHidePostAsync(string userName, Post post)
     {
@@ -53,11 +56,27 @@ public class PostModerationService(
         return true;
     }
 
-    private async Task<bool> IsUserAllowedToUnhidePostAsync(string userName)
+    private async Task<bool> IsUserInAdminRole(string userName)
     {
         var user = await _userManager.FindByNameAsync(userName);
 
         return user != null && await _userManager.IsInRoleAsync(user, Roles.AdminRole);
+    }
+
+    private static void CensorDeletedComment(Comment comment)
+    {
+        comment.IsHidden = false;
+        comment.Content = ReplacementText.RemovedContent;
+        comment.ToBeDeleted = true;
+    }
+
+    private static void CensorDeletedBlog(Blog blog)
+    {
+        blog.IsHidden = false;
+        blog.ToBeDeleted = true;
+        blog.Title = ReplacementText.RemovedContent;
+        blog.Introduction = ReplacementText.RemovedContent;
+        blog.Content = ReplacementText.RemovedContent;
     }
 
     public async Task<BanTicket?> FindByUserNameAsync(string userName)
@@ -130,7 +149,7 @@ public class PostModerationService(
             return ServiceResultCode.NotFound;
         }
 
-        if (!await IsUserAllowedToUnhidePostAsync(userName))
+        if (!await IsUserInAdminRole(userName))
         {
             _logger.LogError($"Comment with ID {commentId} cannot be un-hidden by user {userName}");
             return ServiceResultCode.Unauthorized;
@@ -155,7 +174,7 @@ public class PostModerationService(
             return ServiceResultCode.NotFound;
         }
 
-        if (!await IsUserAllowedToUnhidePostAsync(userName))
+        if (!await IsUserInAdminRole(userName))
         {
             _logger.LogError(message: $"Blog with ID {blogId} cannot be un-hidden by user {userName}");
             return ServiceResultCode.Unauthorized;
@@ -164,6 +183,39 @@ public class PostModerationService(
         _dbContext.Blog.Update(blog);
         blog.IsHidden = false;
         await _dbContext.SaveChangesAsync();
+
+        return ServiceResultCode.Success;
+    }
+
+    public async Task<ServiceResultCode> ForciblyDeleteCommentAsync(int commentId, string deletorUserName)
+    {
+        if (!await IsUserInAdminRole(deletorUserName))
+        {
+            return ServiceResultCode.Unauthorized;
+        }
+
+        var comment = await _dbContext.Comment
+            .Include(x => x.AppUser)
+            .FirstOrDefaultAsync(x => x.Id == commentId);
+
+        if (comment == null)
+        {
+            return ServiceResultCode.NotFound;
+        }
+
+        if (!comment.IsHidden)
+        {
+            _logger.LogError($"Comment ID {commentId} must be hidden before being forcibly deleted");
+            return ServiceResultCode.Unauthorized;
+        }
+
+        _dbContext.Update(comment);
+        CensorDeletedComment(comment);
+        await _dbContext.SaveChangesAsync();
+
+        _postDeletionScheduler.ScheduleCommentDeletion(
+            new DateTimeOffset(DateTime.UtcNow.AddDays(7)), 
+            commentId);
 
         return ServiceResultCode.Success;
     }
