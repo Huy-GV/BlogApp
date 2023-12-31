@@ -1,7 +1,7 @@
-.smooth-transition, .clickable-card, .button, .delete-post, .un-hide-post, .secondary-button, .primary-button {
+.smooth-transition, .clickable-card, .button, .delete-post, .un-hide-post, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, .clickable-card:hover, .button:hover, .delete-post:hover, .un-hide-post:hover, .secondary-button:hover, .primary-button:hover {
+.smooth-transition:hover, .clickable-card:hover, .button:hover, .delete-post:hover, .un-hide-post:hover, .cancel-btn:hover, .ban-btn:hover, .confirm-ban-btn:hover, .secondary-button:hover, .primary-button:hover {
   transition: 180ms ease-in;
 }
 
@@ -9,11 +9,11 @@ html * {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-.button, .delete-post, .un-hide-post, .secondary-button, .primary-button {
+.button, .delete-post, .un-hide-post, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
-.button:hover, .delete-post:hover, .un-hide-post:hover, .secondary-button:hover, .primary-button:hover {
+.button:hover, .delete-post:hover, .un-hide-post:hover, .cancel-btn:hover, .ban-btn:hover, .confirm-ban-btn:hover, .secondary-button:hover, .primary-button:hover {
   cursor: pointer;
 }
 
@@ -60,11 +60,14 @@ h1 {
   font-size: 2rem;
 }
 
-.suspended-blog-container {
+.middle-aligned, .suspended-blog-container {
   display: flex;
   margin-block: 2rem;
   flex-direction: column;
   margin-left: 20%;
+}
+
+.suspended-blog-container {
   background-color: white;
   border-radius: 10px;
   border: none;
@@ -136,20 +139,19 @@ h1 {
   color: white;
 }
 
-.ban-btn {
-  background-color: rgb(237, 250, 50);
-  border: 2px solid rgb(237, 250, 50);
-}
-
-.confirm-ban-btn {
+.ban-btn, .confirm-ban-btn {
+  font-size: 0.8rem;
+  padding: 0.6rem;
   background-color: rgb(112, 26, 26);
   border: 2px solid rgb(112, 26, 26);
   color: white;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
 }
 
 .cancel-btn {
-  background-color: orange;
+  font-size: 0.8rem;
+  padding: 0.6rem;
+  background-color: green;
+  border: 1px solid green;
   color: white;
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
 }
@@ -160,18 +162,19 @@ h1 {
   border: 1px solid green;
   width: 100%;
   color: white;
-  font-size: 1.2rem;
+  font-size: 0.8rem;
   padding: 1rem;
   font-weight: 700;
 }
 
 .delete-post {
+  align-items: center;
   margin-top: 0.2rem;
   background-color: red;
   border: 1px solid red;
   width: 100%;
   color: white;
-  font-size: 1.2rem;
+  font-size: 0.8rem;
   padding: 1rem;
   font-weight: 700;
 }/*# sourceMappingURL=admindetails.css.map */

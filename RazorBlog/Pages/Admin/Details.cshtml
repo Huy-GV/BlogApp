@@ -11,19 +11,18 @@
 }
 
 <h1>Details of @Model.UserName</h1>
-<main class="suspended-blog-container">
-
+<main>
     <component type="typeof(HiddenBlogContainer)"
-               render-mode="Server"
-               param-UserName="@Model.UserName" />
+                render-mode="Server"
+                param-UserName="@Model.UserName" />
 
     <component type="typeof(HiddenCommentContainer)"
-               render-mode="Server"
-               param-UserName="@Model.UserName" />
+                render-mode="Server"
+                param-UserName="@Model.UserName" />
 </main>
 
+<h2 class="middle-aligned">Suspension details</h2>
 <section class="ban-details-container">
-    <h2>Suspension details</h2>
     @{
         if (Model.CurrentBanTicket != null)
         {

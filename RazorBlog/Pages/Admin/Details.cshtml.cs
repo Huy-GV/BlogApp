@@ -63,57 +63,9 @@ public class DetailsModel(
         }
 
         UserName = userName;
-        HiddenComments = await GetHiddenComments(userName);
-        HiddenBlogs = await GetHiddenBlogs(userName);
         CurrentBanTicket = await _userModerationService.FindBanTicketByUserNameAsync(userName);
 
         return Page();
-    }
-
-    private async Task<List<HiddenBlogDto>> GetHiddenBlogs(string username)
-    {
-        return await DbContext.Blog
-            .Include(b => b.AppUser)
-            .Where(b => b.AppUser.UserName == username && b.IsHidden)
-            .Select(b => new HiddenBlogDto
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Introduction = b.Introduction,
-                Content = b.Content,
-                CreationTime = b.CreationTime,
-            })
-            .ToListAsync();
-    }
-
-    private async Task<List<HiddenCommentDto>> GetHiddenComments(string username)
-    {
-        return await DbContext.Comment
-            .Include(c => c.AppUser)
-            .Where(c => c.AppUser.UserName == username && c.IsHidden)
-            .Select(c => new HiddenCommentDto
-            {
-                Id = c.Id,
-                Content = c.Content,
-                CreationTime = c.CreationTime,
-            })
-            .ToListAsync();
-    }
-
-    private static void CensorDeletedComment(Comment comment)
-    {
-        comment.IsHidden = false;
-        comment.Content = ReplacementText.RemovedContent;
-        comment.ToBeDeleted = true;
-    }
-
-    private static void CensorDeletedBlog(Blog blog)
-    {
-        blog.IsHidden = false;
-        blog.ToBeDeleted = true;
-        blog.Title = ReplacementText.RemovedContent;
-        blog.Introduction = ReplacementText.RemovedContent;
-        blog.Content = ReplacementText.RemovedContent;
     }
 
     public async Task<IActionResult> OnPostBanUserAsync()
@@ -143,69 +95,5 @@ public class DetailsModel(
         await _userModerationService.RemoveBanTicketAsync(userName, User.Identity?.Name ?? string.Empty);
 
         return RedirectToPage("Details", new { userName });
-    }
-
-    public async Task<IActionResult> OnPostUnhideBlog(int blogId)
-    {
-        if (!ValidatorUtil.TryValidateProperty(UserName, nameof(UserName), this))
-        {
-            return Page();
-        }
-
-        return this.NavigateOnResult(
-             await _postModerationService.UnhideBlogAsync(blogId, User.Identity?.Name ?? string.Empty), 
-            () => RedirectToPage("Details", new { userName = UserName }));
-    }
-
-    public async Task<IActionResult> OnPostUnhideCommentAsync(int commentId)
-    {
-        if (!ValidatorUtil.TryValidateProperty(UserName, nameof(UserName), this))
-        {
-            return Page();
-        }
-
-        return this.NavigateOnResult(
-            await _postModerationService.UnhideCommentAsync(commentId, User.Identity?.Name ?? string.Empty),
-            () => RedirectToPage("Details", new { userName = UserName }));
-    }
-
-    public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
-    {
-        var comment = await DbContext.Comment
-            .FirstOrDefaultAsync(c => c.Id == commentId);
-
-        if (comment == null)
-        {
-            Logger.LogError("Comment not found");
-            return NotFound();
-        }
-
-        DbContext.Comment.Update(comment);
-        CensorDeletedComment(comment);
-        await DbContext.SaveChangesAsync();
-        var deleteTime = new DateTimeOffset(DateTime.UtcNow.AddDays(7));
-        _postDeletionService.ScheduleBlogDeletion(deleteTime, comment.Id);
-
-        return RedirectToPage("Details", new { userName = UserName });
-    }
-
-    public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
-    {
-        var blog = await DbContext.Blog
-            .FirstOrDefaultAsync(b => b.Id == blogId);
-
-        if (blog == null)
-        {
-            Logger.LogError("Blog not found");
-            return NotFound();
-        }
-
-        DbContext.Blog.Update(blog);
-        CensorDeletedBlog(blog);
-        await DbContext.SaveChangesAsync();
-
-        var deleteTime = new DateTimeOffset(DateTime.UtcNow.AddDays(14));
-        _postDeletionService.ScheduleBlogDeletion(deleteTime, blog.Id);
-        return RedirectToPage("Details", new { userName = UserName });
     }
 }
