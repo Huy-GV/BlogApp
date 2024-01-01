@@ -17,9 +17,6 @@ public class RichComponentBase : ComponentBase
     public AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     [Inject]
-    public SignInManager<ApplicationUser> SignInManager { get; set; } = null!;
-
-    [Inject]
     public UserManager<ApplicationUser> UserManager { get; set; } = null!;
 
     protected ClaimsPrincipal CurrentUser { get; private set; } = new();
@@ -27,8 +24,6 @@ public class RichComponentBase : ComponentBase
     protected string CurrentUserName => CurrentUser.Identity?.Name ?? string.Empty;
 
     protected bool IsAuthenticated => CurrentUser?.Identity?.IsAuthenticated ?? false;
-
-    protected bool IsSignedIn => SignInManager.IsSignedIn(CurrentUser);
 
     protected override async Task OnParametersSetAsync()
     {

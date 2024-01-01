@@ -9,17 +9,17 @@
 @inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-@if (!CurrentUserInfo.IsBanned && IsSignedIn)
+@if (CurrentUserInfo.AllowedToModifyOrDeletePost)
 {
     <EditForm Model="CreateCommentViewModel"
               class="comment-form"
               OnValidSubmit="(async () => await CreateCommentAsync())">
         <DataAnnotationsValidator />
         <textarea rows="5" cols="50"
-                  @bind="CreateCommentViewModel.Content"
+                  @bind="CreateCommentViewModel.Body"
                   name="CreateCommentViewModel.Content"
                   placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
-        <ValidationMessage For="@(() => CreateCommentViewModel.Content)" />
+        <ValidationMessage For="@(() => CreateCommentViewModel.Body)" />
         <input type="submit" value="POST" class="submit-comment" />
     </EditForm>
 }
@@ -51,7 +51,6 @@
                     ? "blog-author"
                     : "comment-author";
 
-                    var isUserCommentAuthor = comment.AuthorName == CurrentUserName;
                     var isCommentEditorDisplayed = IsCommentEditorDisplayed.TryGetValue(comment.Id, out var isDisplayed) && isDisplayed;
 
                     <div class="author-container">
@@ -68,16 +67,18 @@
 
                 <div class="comment-option-container">
                     @{
-                        if (isUserCommentAuthor && !IsCommentEditorDisplayed[comment.Id])
+                        if (CurrentUserInfo.AllowedToModifyOrDeletePost && 
+                            !IsCommentEditorDisplayed[comment.Id] &&
+                            !comment.IsHidden)
                         {
                             <form method="post" @onsubmit="(async () => await DeleteCommentAsync(comment.Id))">
                                 <button class="delete-comment">Delete</button>
                             </form>
                         }
 
-                        if (CurrentUserInfo.AllowedToHideBlogOrComment &&
+                        if (CurrentUserInfo.AllowedToHidePost &&
+                            comment.AuthorName != CurrentUserInfo.UserName &&
                             !comment.IsHidden &&
-                            !isUserCommentAuthor &&
                             !isCommentEditorDisplayed)
                         {
                             <form method="post" @onsubmit="(async () => await HideCommentAsync(comment.Id))">
@@ -85,7 +86,7 @@
                             </form>
                         }
 
-                        if (isUserCommentAuthor)
+                        if (CurrentUserInfo.AllowedToModifyOrDeletePost && !comment.IsHidden)
                         {
                             if (!isCommentEditorDisplayed)
                             {
@@ -93,18 +94,17 @@
                                     Edit
                                 </button>
                             }
-
-                            if (isCommentEditorDisplayed)
+                            else
                             {
                                 <EditForm Model="EditCommentViewModel"
                                           class="edit-comment-form"
                                           OnValidSubmit="(async () => await EditCommentAsync(comment.Id))">
                                     <DataAnnotationsValidator />
 
-                                    <ValidationMessage For="@(() => EditCommentViewModel.Content)" />
+                                    <ValidationMessage For="@(() => EditCommentViewModel.Body)" />
 
                                     <textarea rows="5" cols="50"
-                                                @bind="EditCommentViewModel.Content"
+                                                @bind="EditCommentViewModel.Body"
                                                 name="EditCommentViewModel.Content"
                                                 class="edit-comment-textarea">@comment.Content</textarea>
                                     <input asp-for="EditCommentViewModel.BlogId" value="@BlogId" type="hidden" />
@@ -126,7 +126,7 @@
                     : string.Empty;
                 }
 
-                @if (!isUserCommentAuthor || !isCommentEditorDisplayed)
+                @if (!CurrentUserInfo.AllowedToModifyOrDeletePost || !isCommentEditorDisplayed)
                 {
                     <p class="comment-text @postClass">@comment.Content</p>
                 }
@@ -156,6 +156,6 @@
 
     private void LoadEditCommentContext(CommentDto comment)
     {
-        EditCommentViewModel.Content = comment.Content;
+        EditCommentViewModel.Body = comment.Content;
     }
 }

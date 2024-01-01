@@ -93,14 +93,13 @@ public class ReadModel(
         CurrentUserInfo = new CurrentUserInfo
         {
             UserName = currentUserName,
-            AllowedToHideBlogOrComment = currentUser != null &&
-                                         currentUserRoles
+            AllowedToHidePost = IsAuthenticated && currentUserRoles
                                             .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
                                             .Any(),
-            AllowedToModifyOrDeleteBlog = await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(currentUserName, blog),
+            AllowedToModifyOrDeletePost = IsAuthenticated && await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(currentUserName, blog),
 
             // TODO: replace IsBanned with AllowedToCreateComment
-            IsBanned = currentUser != null && await _userModerationService.BanTicketExistsAsync(currentUserName),
+            IsBanned = IsAuthenticated && await _userModerationService.BanTicketExistsAsync(currentUserName),
             IsAuthenticated = this.IsUserAuthenticated()
         };
 

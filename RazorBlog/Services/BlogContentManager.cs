@@ -81,9 +81,7 @@ public class BlogContentManager(
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(
-            user.UserName ?? string.Empty,
-            blog))
+        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(userName, blog))
         {
             return ServiceResultCode.Unauthorized;
         }
@@ -128,7 +126,7 @@ public class BlogContentManager(
             return (ServiceResultCode.Unauthorized, 0);
         }
 
-        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(user.UserName ?? string.Empty))
+        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(userName))
         {
             return (ServiceResultCode.Unauthorized, 0);
         }
@@ -142,7 +140,6 @@ public class BlogContentManager(
             CreationTime = now,
             LastUpdateTime = now,
             AuthorUserName = userName,
-            //AuthorUserId = user.Id,
         };
 
         _dbContext.Blog.Add(newBlog);

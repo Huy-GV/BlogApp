@@ -20,7 +20,7 @@ public class IndexModel(
     ILogger<IndexModel> logger) : RichPageModelBase<IndexModel>(context, userManager, logger)
 {
     [BindProperty]
-    public IEnumerable<IndexBlogDto> Blogs { get; set; } = Enumerable.Empty<IndexBlogDto>();
+    public IReadOnlyCollection<IndexBlogDto> Blogs { get; set; } = [];
 
     [BindProperty(SupportsGet = true)]
     public string SearchString { get; set; } = string.Empty;

@@ -5,9 +5,7 @@ using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Data.ViewModels;
 using RazorBlog.Extensions;
-using RazorBlog.Models;
 using RazorBlog.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +35,7 @@ public partial class CommentsContainer : RichComponentBase
     public IPostModerationService PostModerationService { get; set; } = null!;
 
     [Inject]
-    public IUserModerationService UserModerationService { get; set; } = null!;
+    public ICommentContentManager CommentContentManager { get; set; } = null!;
 
     public bool AreCommentsLoaded { get; private set; } = false;
 
@@ -104,35 +102,13 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        if (await UserModerationService.BanTicketExistsAsync(user.UserName))
-        {
-            NavigateToForbid();
-            return;
-        }
+        var result = await CommentContentManager.UpdateCommentAsync(
+            commentId, 
+            EditCommentViewModel, 
+            user.UserName);
 
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        var comment = await dbContext.Comment
-            .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == commentId);
-
-        if (comment == null)
-        {
-            NavigateToBadRequest();
-            return;
-        }
-
-        if (user.UserName != comment?.AuthorUser.UserName || comment.IsHidden)
-        {
-            NavigateToForbid();
-            return;
-        }
-
-        dbContext.Comment.Update(comment);
-        comment.LastUpdateTime = DateTime.UtcNow;
-        comment.Body = EditCommentViewModel.Content;
-        await dbContext.SaveChangesAsync();
-        EditCommentViewModel.Content = string.Empty;
-
+        this.NavigateOnError(result);
+        EditCommentViewModel.Body = string.Empty;
         await LoadCommentData();
     }
 
@@ -145,34 +121,18 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var user = await UserManager.GetUserAsync(base.CurrentUser);
-        if (user == null)
+        if (user == null || user.UserName == null)
         {
             NavigateToForbid();
             return;
         }
 
-        var userName = user.UserName ?? string.Empty;
+        var (result, _) = await CommentContentManager.CreateCommentAsync(
+            CreateCommentViewModel,
+            user.UserName);
 
-        if (await UserModerationService.BanTicketExistsAsync(userName))
-        {
-            NavigateToForbid();
-            return;
-        }
-
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        var creationTime = DateTime.UtcNow;
-        dbContext.Comment.Add(new Comment
-        {
-            AuthorUserName = userName,
-            BlogId = BlogId,
-            Body = CreateCommentViewModel.Content,
-            CreationTime = creationTime,
-            LastUpdateTime = creationTime,
-        });
-
-        await dbContext.SaveChangesAsync();
-
-        CreateCommentViewModel.Content = string.Empty;
+        this.NavigateOnError(result);
+        CreateCommentViewModel.Body = string.Empty;
 
         await LoadCommentData();
     }
@@ -206,26 +166,17 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        var comment = await dbContext.Comment
-            .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == commentId);
-
-        if (comment == null)
-        {
-            NavigateToNotFound();
-            return;
-        }
-
         var user = await UserManager.GetUserAsync(base.CurrentUser);
-        if (user == null || user.UserName == null || user.UserName != comment.AuthorUser.UserName)
+        if (user == null || user.UserName == null)
         {
             NavigateToForbid();
             return; 
         }
 
-        dbContext.Comment.Remove(comment);
-        await dbContext.SaveChangesAsync();
+        var result = await CommentContentManager.DeleteCommentAsync(commentId, user.UserName);
+
+        this.NavigateOnError(result);
+        EditCommentViewModel.Body = string.Empty;
 
         await LoadCommentData();
     }

@@ -13,11 +13,15 @@ public class RichPageModelBase<TPageModel>(
     ILogger<TPageModel> logger) : PageModel where TPageModel : PageModel
 {
     protected RazorBlogDbContext DbContext { get; } = context;
+
     protected UserManager<ApplicationUser> UserManager { get; } = userManager;
+
     protected ILogger<TPageModel> Logger { get; } = logger;
 
     protected async Task<ApplicationUser?> GetUserOrDefaultAsync()
     {
         return await UserManager.GetUserAsync(User);
     }
+
+    protected bool IsAuthenticated => User.Identity?.IsAuthenticated ?? false;
 }

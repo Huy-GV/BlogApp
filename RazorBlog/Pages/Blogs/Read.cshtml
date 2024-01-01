@@ -39,7 +39,7 @@
         <hr>
         <div class="comment-option-container">
             @{
-                if (userInfo.AllowedToModifyOrDeleteBlog)
+                if (userInfo.AllowedToModifyOrDeletePost)
                 {
                     <form asp-page-handler="DeleteBlog"
                           asp-route-blogID="@Model.DetailedBlogDto.Id"
@@ -55,7 +55,7 @@
                     </a>
                 }
 
-                if (userInfo.AllowedToHideBlogOrComment && !Model.DetailedBlogDto.IsHidden)
+                if (userInfo.AllowedToHidePost && !Model.DetailedBlogDto.IsHidden)
                 {
                     <form asp-page-handler="HideBlog"
                           asp-route-blogID="@Model.DetailedBlogDto.Id"

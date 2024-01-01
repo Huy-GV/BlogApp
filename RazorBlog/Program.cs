@@ -130,6 +130,7 @@ public class Program
         builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();
         builder.Services.AddScoped<IBlogContentManager, BlogContentManager>();
+        builder.Services.AddScoped<ICommentContentManager, CommentContentManager>();
 
         return builder;
     }
