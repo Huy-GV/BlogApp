@@ -16,20 +16,32 @@ public class RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options) : 
         base.OnModelCreating(builder);
         builder.Entity<Blog>()
             .HasMany(b => b.Comments)
-            .WithOne();
+            .WithOne()
+            .IsRequired(true)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Blog>()
             .HasQueryFilter(blog => !blog.ToBeDeleted);
 
-        builder.Entity<BanTicket>()
-            .HasOne(b => b.AppUser)
+        builder.Entity<ApplicationUser>()
+            .HasMany(x => x.Blogs)
+            .WithOne(x => x.AuthorUser)
+            .HasForeignKey(x => x.AuthorUserName)
+            .HasPrincipalKey(x => x.UserName)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<Comment>()
+            .HasOne(x => x.AuthorUser)
             .WithMany()
-            .HasForeignKey(b => b.UserName)
-            .HasPrincipalKey(u => u.UserName)
-            .IsRequired();
+            .HasPrincipalKey(x => x.UserName)
+            .HasForeignKey(x => x.AuthorUserName)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<BanTicket>()
-            .HasIndex(b => b.UserName)
-            .IsUnique();
+            .HasOne(b => b.AppUser)
+            .WithOne()
+            .HasPrincipalKey<ApplicationUser>(x => x.UserName)
+            .HasForeignKey<BanTicket>(x => x.UserName)
+            .IsRequired();
     }
 }

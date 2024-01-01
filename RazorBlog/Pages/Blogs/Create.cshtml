@@ -23,13 +23,14 @@
         <label asp-for="CreateBlogViewModel.CoverImage"></label>
         <input type="file" asp-for="CreateBlogViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>
         <span asp-validation-for="CreateBlogViewModel.CoverImage" class="error-message"></span>
-        <label asp-for="CreateBlogViewModel.Content">Content</label>
+        <label asp-for="CreateBlogViewModel.Body">Body</label>
         <textarea rows="18" cols="50"
-            asp-for="CreateBlogViewModel.Content"
+            asp-for="CreateBlogViewModel.Body"
             required
             placeholder="What do you want to share?"
-            type="text"></textarea><br>
-        <span asp-validation-for="CreateBlogViewModel.Content" class="error-message"></span>
+            type="text"></textarea>
+        <br>
+        <span asp-validation-for="CreateBlogViewModel.Body" class="error-message"></span>
     </div>
 
     <input type="submit" value="Submit Post" class="submit-post"/>

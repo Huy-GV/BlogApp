@@ -22,11 +22,12 @@ public class ReadModel(
     UserManager<ApplicationUser> userManager,
     ILogger<ReadModel> logger,
     IUserModerationService userModerationService,
-    IPostModerationService postModerationService) : RichPageModelBase<ReadModel>(
-context, userManager, logger)
+    IPostModerationService postModerationService,
+    IBlogContentManager blogContentManager) : RichPageModelBase<ReadModel>(context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userModerationService;
     private readonly IPostModerationService _postModerationService = postModerationService;
+    private readonly IBlogContentManager _blogContentManager = blogContentManager;
 
     [BindProperty]
     public CommentViewModel CreateCommentViewModel { get; set; } = null!;
@@ -49,7 +50,7 @@ context, userManager, logger)
 
         var blog = await DbContext.Blog
             .IgnoreQueryFilters()
-            .Include(blog => blog.AppUser)
+            .Include(blog => blog.AuthorUser)
             .FirstOrDefaultAsync(blog => blog.Id == id);
 
         if (blog == null)
@@ -59,10 +60,10 @@ context, userManager, logger)
 
         var blogAuthor = new
         {
-            UserName = blog.AppUser?.UserName ?? ReplacementText.DeletedUser,
+            UserName = blog.AuthorUser?.UserName ?? ReplacementText.DeletedUser,
             // todo: un-hardcode default profile pic
-            ProfileImageUri = blog.AppUser?.ProfileImageUri ?? "readonly/default.jpg",
-            Description = blog.AppUser?.Description ?? ReplacementText.DeletedUser
+            ProfileImageUri = blog.AuthorUser?.ProfileImageUri ?? "readonly/default.jpg",
+            Description = blog.AuthorUser?.Description ?? ReplacementText.DeletedUser
         };
 
         DbContext.Blog.Update(blog);
@@ -73,7 +74,7 @@ context, userManager, logger)
             Id = blog.Id,
             Introduction = blog.IsHidden ? ReplacementText.HiddenContent : blog.Introduction,
             Title = blog.IsHidden ? ReplacementText.HiddenContent : blog.Title,
-            Content = blog.IsHidden ? ReplacementText.HiddenContent : blog.Content,
+            Content = blog.IsHidden ? ReplacementText.HiddenContent : blog.Body,
             CoverImageUri = blog.CoverImageUri,
             CreationTime = blog.CreationTime,
             LastUpdateTime = blog.LastUpdateTime,
@@ -129,29 +130,14 @@ context, userManager, logger)
             return Challenge();
         }
 
-        var blog = await DbContext.Blog
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(x => x.Id == blogId);
-
-        if (blog == null)
-        {
-            return NotFound();
-        }
-
         var user = await GetUserOrDefaultAsync();
-        if (user == null || user.UserName == null || user.UserName != blog.AppUser.UserName)
+        if (user == null)
         {
             return Forbid();
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName))
-        {
-            return Forbid();
-        }
-
-        DbContext.Blog.Remove(blog);
-        await DbContext.SaveChangesAsync();
-
-        return RedirectToPage("/Blogs/Index");
+        return this.NavigateOnResult(
+            await _blogContentManager.DeleteBlogAsync(blogId, user.UserName ?? string.Empty),
+            () => RedirectToPage("/Blogs/Index"));
     }
 }

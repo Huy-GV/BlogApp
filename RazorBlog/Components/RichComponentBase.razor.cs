@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using RazorBlog.Models;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -44,20 +45,20 @@ public class RichComponentBase : ComponentBase
     {
         message ??= "You are not allowed to access the requested resource";
         description ??= string.Empty;
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}&ErrorDescription={description}", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={Uri.EscapeDataString(message)}&ErrorDescription={Uri.EscapeDataString(description)}", forceLoad: true);
     }
 
     public void NavigateToBadRequest(string? message = null, string? description = null)
     {
         message ??= "An unknown error occurred with your request";
         description ??= string.Empty;
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}&ErrorDescription={description}", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={Uri.EscapeDataString(message)}&ErrorDescription={Uri.EscapeDataString(description)}", forceLoad: true);
     }
 
     public void NavigateToNotFound(string? message = null, string? description = null)
     {
         message ??= "Page not found";
         description ??= string.Empty;
-        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={message}&ErrorDescription={description}", forceLoad: true);
+        NavigationManager.NavigateTo($"/Error/Error?ErrorMessage={Uri.EscapeDataString(message)}&ErrorDescription={Uri.EscapeDataString(description)}", forceLoad: true);
     }
 }

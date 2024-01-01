@@ -27,9 +27,9 @@
     <br>
 
     <textarea rows="18" cols="50"
-            name="EditBlogViewModel.Content"
-            required>@Model.EditBlogViewModel.Content</textarea>
-    <span asp-validation-for="EditBlogViewModel.Content" class="error-message"></span>
+              name="EditBlogViewModel.Body"
+            required>@Model.EditBlogViewModel.Body</textarea>
+    <span asp-validation-for="EditBlogViewModel.Body" class="error-message"></span>
     <input type="hidden" value="@Model.EditBlogViewModel.Id" asp-for="EditBlogViewModel.Id"/>
     <input type="submit" value="Save changes" class="submit-post"/>
 </form>

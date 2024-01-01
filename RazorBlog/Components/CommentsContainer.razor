@@ -55,7 +55,7 @@
                     var isCommentEditorDisplayed = IsCommentEditorDisplayed.TryGetValue(comment.Id, out var isDisplayed) && isDisplayed;
 
                     <div class="author-container">
-                        <img alt="Commenter's Profile Image" src="~/images/@comment.AuthorProfileImageUri" asp-append-version="true">
+                        <img alt="Commenter's Profile Image" src="/images/@comment.AuthorProfileImageUri" asp-append-version="true">
                         <span class="@authorClass">@comment.AuthorName</span>
                         @{
                             var timestampText = comment.IsModified 

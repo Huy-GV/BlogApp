@@ -74,13 +74,13 @@ public partial class CommentsContainer : RichComponentBase
                 Id = c.Id,
                 CreationTime = c.CreationTime,
                 LastUpdateTime = c.LastUpdateTime,
-                Content = c.IsHidden ? ReplacementText.HiddenContent : c.Content,
-                AuthorName = c.AppUser == null
+                Content = c.IsHidden ? ReplacementText.HiddenContent : c.Body,
+                AuthorName = c.AuthorUser == null
                     ? ReplacementText.DeletedUser
-                    : c.AppUser.UserName ?? ReplacementText.DeletedUser,
-                AuthorProfileImageUri = c.AppUser == null
+                    : c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
+                AuthorProfileImageUri = c.AuthorUser == null
                     ? "readonly/default.jpg"
-                    : c.AppUser.ProfileImageUri ?? "readonly/default.jpg",
+                    : c.AuthorUser.ProfileImageUri ?? "readonly/default.jpg",
                 IsHidden = c.IsHidden,
                 IsDeleted = c.ToBeDeleted,
             })
@@ -112,7 +112,7 @@ public partial class CommentsContainer : RichComponentBase
 
         using var dbContext = await DbContextFactory.CreateDbContextAsync();
         var comment = await dbContext.Comment
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
@@ -121,7 +121,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        if (user.UserName != comment?.AppUser.UserName)
+        if (user.UserName != comment?.AuthorUser.UserName || comment.IsHidden)
         {
             NavigateToForbid();
             return;
@@ -129,7 +129,7 @@ public partial class CommentsContainer : RichComponentBase
 
         dbContext.Comment.Update(comment);
         comment.LastUpdateTime = DateTime.UtcNow;
-        comment.Content = EditCommentViewModel.Content;
+        comment.Body = EditCommentViewModel.Content;
         await dbContext.SaveChangesAsync();
         EditCommentViewModel.Content = string.Empty;
 
@@ -163,9 +163,9 @@ public partial class CommentsContainer : RichComponentBase
         var creationTime = DateTime.UtcNow;
         dbContext.Comment.Add(new Comment
         {
-            AppUserId = user.Id,
+            AuthorUserName = userName,
             BlogId = BlogId,
-            Content = CreateCommentViewModel.Content,
+            Body = CreateCommentViewModel.Content,
             CreationTime = creationTime,
             LastUpdateTime = creationTime,
         });
@@ -208,7 +208,7 @@ public partial class CommentsContainer : RichComponentBase
 
         using var dbContext = await DbContextFactory.CreateDbContextAsync();
         var comment = await dbContext.Comment
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
@@ -218,7 +218,7 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var user = await UserManager.GetUserAsync(base.CurrentUser);
-        if (user == null || user.UserName == null || user.UserName != comment.AppUser.UserName)
+        if (user == null || user.UserName == null || user.UserName != comment.AuthorUser.UserName)
         {
             NavigateToForbid();
             return; 

@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace RazorBlog.Data.ViewModels;
 
-public class EditBlogViewModel : CreateBlogViewModel
+public class EditBlogViewModel : BlogViewModel
 {
+    [Required]
     public int Id { get; set; }
 
     [Display(Name = "Change cover image")]
-    public new IFormFile? CoverImage { get; set; }
+    public IFormFile? CoverImage { get; set; }
 }

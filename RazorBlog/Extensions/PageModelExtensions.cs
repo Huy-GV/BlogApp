@@ -25,7 +25,7 @@ public static class PageModelExtensions
         return result switch
         {
             ServiceResultCode.NotFound => pageModel.NotFound(),
-            ServiceResultCode.Unauthorized => pageModel.Unauthorized(),
+            ServiceResultCode.Unauthorized => pageModel.StatusCode(403),
             ServiceResultCode.Unauthenticated => pageModel.Challenge(),
             ServiceResultCode.InvalidArguments or
             ServiceResultCode.InvalidState or

@@ -35,9 +35,9 @@ public class IndexModel(
         }
 
         var blogs = DbContext.Blog
-            .Include(b => b.AppUser)
+            .Include(b => b.AuthorUser)
             .AsNoTracking()
-            .Where(blog => blog.AppUser.UserName == userName)
+            .Where(blog => blog.AuthorUser.UserName == userName)
             .ToList();
 
         var groups = blogs.GroupBy(b => b.CreationTime.Year).OrderByDescending(g => g.Key);
@@ -65,17 +65,17 @@ public class IndexModel(
                 ? "None"
                 : user.Description,
             CommentCount = (uint)DbContext.Comment
-                .Include(c => c.AppUser)
-                .Where(c => c.AppUser.UserName == userName)
+                .Include(c => c.AuthorUser)
+                .Where(c => c.AuthorUser.UserName == userName)
                 .ToList()
                 .Count,
             BlogCountCurrentYear = (uint)blogs
-                .Where(blog => blog.AppUser.UserName == userName &&
+                .Where(blog => blog.AuthorUser.UserName == userName &&
                                blog.CreationTime.Year == DateTime.Now.Year)
                 .ToList()
                 .Count,
             ViewCountCurrentYear = (uint)blogs
-                .Where(blog => blog.AppUser.UserName == userName &&
+                .Where(blog => blog.AuthorUser.UserName == userName &&
                                blog.CreationTime.Year == DateTime.Now.Year)
                 .Sum(blogs => blogs.ViewCount),
             RegistrationDate = user.RegistrationDate == null

@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.ViewModels;
+using RazorBlog.Extensions;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
@@ -15,12 +15,12 @@ namespace RazorBlog.Pages.Blogs;
 public class EditModel(
     RazorBlogDbContext context,
     UserManager<ApplicationUser> userManager,
+    IBlogContentManager blogContentManager,
     ILogger<EditModel> logger,
-    IImageStorage imageStorage,
-    IUserModerationService userModerationService) : RichPageModelBase<EditModel>(context, userManager, logger)
+    IPostModerationService postModerationService) : RichPageModelBase<EditModel>(context, userManager, logger)
 {
-    private readonly IImageStorage _imageStorage = imageStorage;
-    private readonly IUserModerationService _userModerationService = userModerationService;
+    private readonly IPostModerationService _postModerationService = postModerationService;
+    private readonly IBlogContentManager _blogContentManager = blogContentManager;
 
     [BindProperty]
     public EditBlogViewModel EditBlogViewModel { get; set; } = null!;
@@ -38,23 +38,22 @@ public class EditModel(
             return Forbid();
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
-        {
-            return Forbid();
-        }
-
         var blog = await DbContext.Blog.FindAsync(blogId);
-
         if (blog == null)
         {
             return NotFound();
+        }
+
+        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePost(user.UserName ?? string.Empty, blog))
+        {
+            return Forbid();
         }
 
         EditBlogViewModel = new EditBlogViewModel
         {
             Id = blog.Id,
             Title = blog.Title,
-            Content = blog.Content,
+            Body = blog.Body,
             Introduction = blog.Introduction
         };
 
@@ -75,46 +74,8 @@ public class EditModel(
             return Forbid();
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
-        {
-            return Forbid();
-        }
-
-        var blog = await DbContext.Blog.FindAsync(EditBlogViewModel.Id);
-        if (blog == null)
-        {
-            return NotFound();
-        }
-
-        if (string.IsNullOrEmpty(EditBlogViewModel.Content))
-        {
-            return RedirectToPage("/Blogs/Read", new { id = blog.Id });
-        }
-
-        if (user.UserName != blog.AppUser.UserName)
-        {
-            return Forbid();
-        }
-
-        blog.LastUpdateTime = DateTime.UtcNow;
-        DbContext.Blog.Update(blog).CurrentValues.SetValues(EditBlogViewModel);
-
-        if (EditBlogViewModel.CoverImage != null)
-        {
-            try
-            {
-                await _imageStorage.DeleteImage(blog.CoverImageUri);
-                var imageName = await _imageStorage.UploadBlogCoverImageAsync(EditBlogViewModel.CoverImage);
-                blog.CoverImageUri = imageName;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("Failed to update blog image");
-                Logger.LogError(ex.Message);
-            }
-        }
-
-        await DbContext.SaveChangesAsync();
-        return RedirectToPage("/Blogs/Read", new { id = blog.Id });
+        return this.NavigateOnResult(
+            await _blogContentManager.UpdateBlog(EditBlogViewModel, user.UserName ?? string.Empty),
+            () => RedirectToPage("/Blogs/Read", new { id = EditBlogViewModel.Id }));
     }
 }

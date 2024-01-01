@@ -11,6 +11,7 @@ public class Blog : Post
     public string Title { get; set; } = string.Empty;
 
     public string Introduction { get; set; } = string.Empty;
+
     public uint ViewCount { get; set; } = 0;
 
     [Required] 

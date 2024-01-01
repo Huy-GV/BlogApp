@@ -38,12 +38,12 @@ public partial class HiddenCommentContainer : RichComponentBase
     {
         using var dbContext = await DbContextFactory.CreateDbContextAsync();   
         return await dbContext.Comment
-            .Include(c => c.AppUser)
-            .Where(c => c.AppUser.UserName == userName && c.IsHidden)
+            .Include(c => c.AuthorUser)
+            .Where(c => c.AuthorUser.UserName == userName && c.IsHidden)
             .Select(c => new HiddenCommentDto
             {
                 Id = c.Id,
-                Content = c.Content,
+                Content = c.Body,
                 CreationTime = c.CreationTime,
             })
             .ToListAsync();

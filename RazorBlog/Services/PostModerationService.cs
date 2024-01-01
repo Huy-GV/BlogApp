@@ -31,7 +31,7 @@ public class PostModerationService(
             return false;
         }
 
-        if (user.UserName == post.AppUser.UserName)
+        if (user.UserName == post.AuthorUser.UserName)
         {
             return false;
         }
@@ -47,7 +47,7 @@ public class PostModerationService(
             return false;
         }
 
-        if (await _userManager.IsInRoleAsync(post.AppUser, Roles.AdminRole))
+        if (await _userManager.IsInRoleAsync(post.AuthorUser, Roles.AdminRole))
         {
             _logger.LogError($"Posts authored by admin users cannot be hidden");
             return false;
@@ -66,7 +66,7 @@ public class PostModerationService(
     private static void CensorDeletedComment(Comment comment)
     {
         comment.IsHidden = false;
-        comment.Content = ReplacementText.RemovedContent;
+        comment.Body = ReplacementText.RemovedContent;
         comment.ToBeDeleted = true;
     }
 
@@ -76,7 +76,7 @@ public class PostModerationService(
         blog.ToBeDeleted = true;
         blog.Title = ReplacementText.RemovedContent;
         blog.Introduction = ReplacementText.RemovedContent;
-        blog.Content = ReplacementText.RemovedContent;
+        blog.Body = ReplacementText.RemovedContent;
     }
 
     public async Task<BanTicket?> FindByUserNameAsync(string userName)
@@ -90,7 +90,7 @@ public class PostModerationService(
     public async Task<ServiceResultCode> HideCommentAsync(int commentId, string userName)
     {
         var comment = await _dbContext.Comment
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
@@ -115,7 +115,7 @@ public class PostModerationService(
     public async Task<ServiceResultCode> HideBlogAsync(int blogId, string userName)
     {
         var blog = await _dbContext.Blog
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == blogId);
 
         if (blog == null)
@@ -140,7 +140,7 @@ public class PostModerationService(
     public async Task<ServiceResultCode> UnhideCommentAsync(int commentId, string userName)
     {
         var comment = await _dbContext.Comment
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
@@ -165,7 +165,7 @@ public class PostModerationService(
     public async Task<ServiceResultCode> UnhideBlogAsync(int blogId, string userName)
     {
         var blog = await _dbContext.Blog
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == blogId);
 
         if (blog == null)
@@ -195,7 +195,7 @@ public class PostModerationService(
         }
 
         var comment = await _dbContext.Comment
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
@@ -228,7 +228,7 @@ public class PostModerationService(
         }
 
         var blog = await _dbContext.Blog
-            .Include(x => x.AppUser)
+            .Include(x => x.AuthorUser)
             .FirstOrDefaultAsync(x => x.Id == blogId);
 
         if (blog == null)
@@ -251,5 +251,19 @@ public class PostModerationService(
             blogId);
 
         return ServiceResultCode.Success;
+    }
+
+    public async Task<bool> IsUserAllowedToUpdateOrDeletePost(string userName, Post post)
+    {
+        return !string.IsNullOrWhiteSpace(post.AuthorUser.UserName) &&
+            post != null &&
+            userName == post.AuthorUser.UserName &&
+            !post.IsHidden &&
+            !await _userModerationService.BanTicketExistsAsync(userName);
+    }
+
+    public async Task<bool> IsUserAllowedToCreatePost(string userName)
+    {
+        return !await _userModerationService.BanTicketExistsAsync(userName);
     }
 }

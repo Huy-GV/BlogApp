@@ -22,6 +22,12 @@ public class Program
     {
         var builder = CreateHostBuilder(args);
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            await scope.ServiceProvider.SeedProductionData();
+        }
+
         if (builder.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -123,6 +129,7 @@ public class Program
         builder.Services.AddScoped<IUserModerationService, UserModerationService>();
         builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();
+        builder.Services.AddScoped<IBlogContentManager, BlogContentManager>();
 
         return builder;
     }

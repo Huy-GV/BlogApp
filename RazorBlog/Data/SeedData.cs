@@ -8,9 +8,9 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Data;
 
-public class SeedData
+public static class SeedData
 {
-    public static async Task Initialize(IServiceProvider serviceProvider)
+    public static async Task SeedProductionData(this IServiceProvider serviceProvider)
     {
         await using var context =
             new RazorBlogDbContext(serviceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>());

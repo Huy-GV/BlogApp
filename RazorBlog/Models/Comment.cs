@@ -8,7 +8,7 @@ public class Comment : Post
 
     [Required] 
     [MaxLength(250)] 
-    public override string Content { get; set; } = string.Empty;
+    public override string Body { get; set; } = string.Empty;
 
-    public int? BlogId { get; set; }
+    public int BlogId { get; set; }
 }

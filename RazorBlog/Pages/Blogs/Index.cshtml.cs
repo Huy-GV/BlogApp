@@ -29,17 +29,17 @@ public class IndexModel(
     {
         SearchString = SearchString?.Trim().Trim(' ') ?? string.Empty;
         Blogs = await DbContext.Blog
-            .Include(b => b.AppUser)
+            .Include(b => b.AuthorUser)
             .Include(b => b.Comments)
-            .ThenInclude(c => c.AppUser)
+            .ThenInclude(c => c.AuthorUser)
             .Where(x => !x.IsHidden)
             .Select(b => new IndexBlogDto
             {
                 Id = b.Id,
                 Title = b.IsHidden ? ReplacementText.HiddenContent : b.Title,
-                AuthorName = b.AppUser == null
+                AuthorName = b.AuthorUser == null
                     ? ReplacementText.DeletedUser
-                    : b.AppUser.UserName!,
+                    : b.AuthorUser.UserName!,
                 CreationTime = b.CreationTime,
                 LastUpdateTime = b.LastUpdateTime,
                 ViewCount = b.ViewCount,
