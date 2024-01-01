@@ -253,7 +253,7 @@ public class PostModerationService(
         return ServiceResultCode.Success;
     }
 
-    public async Task<bool> IsUserAllowedToUpdateOrDeletePost(string userName, Post post)
+    public async Task<bool> IsUserAllowedToUpdateOrDeletePostAsync(string userName, Post post)
     {
         return !string.IsNullOrWhiteSpace(post.AuthorUser.UserName) &&
             post != null &&
@@ -262,7 +262,7 @@ public class PostModerationService(
             !await _userModerationService.BanTicketExistsAsync(userName);
     }
 
-    public async Task<bool> IsUserAllowedToCreatePost(string userName)
+    public async Task<bool> IsUserAllowedToCreatePostAsync(string userName)
     {
         return !await _userModerationService.BanTicketExistsAsync(userName);
     }

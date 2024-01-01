@@ -33,7 +33,7 @@ public class CreateModel(
             return Page();
         }
 
-        if (!await _postModerationService.IsUserAllowedToCreatePost(user.UserName))
+        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(user.UserName))
         {
             return Forbid();
         }

@@ -81,7 +81,7 @@ public class BlogContentManager(
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePost(
+        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(
             user.UserName ?? string.Empty,
             blog))
         {
@@ -128,7 +128,7 @@ public class BlogContentManager(
             return (ServiceResultCode.Unauthorized, 0);
         }
 
-        if (!await _postModerationService.IsUserAllowedToCreatePost(user.UserName ?? string.Empty))
+        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(user.UserName ?? string.Empty))
         {
             return (ServiceResultCode.Unauthorized, 0);
         }

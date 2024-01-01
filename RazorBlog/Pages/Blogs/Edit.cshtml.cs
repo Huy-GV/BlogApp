@@ -44,7 +44,7 @@ public class EditModel(
             return NotFound();
         }
 
-        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePost(user.UserName ?? string.Empty, blog))
+        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(user.UserName ?? string.Empty, blog))
         {
             return Forbid();
         }

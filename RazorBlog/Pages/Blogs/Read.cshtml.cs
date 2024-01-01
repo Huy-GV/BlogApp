@@ -97,7 +97,9 @@ public class ReadModel(
                                          currentUserRoles
                                             .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
                                             .Any(),
-            AllowedToModifyOrDeleteBlog = currentUserName == DetailedBlogDto.AuthorName,
+            AllowedToModifyOrDeleteBlog = await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(currentUserName, blog),
+
+            // TODO: replace IsBanned with AllowedToCreateComment
             IsBanned = currentUser != null && await _userModerationService.BanTicketExistsAsync(currentUserName),
             IsAuthenticated = this.IsUserAuthenticated()
         };
