@@ -208,7 +208,6 @@ namespace RazorBlog.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Body = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     BlogId = table.Column<int>(type: "int", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AuthorUserName = table.Column<string>(type: "nvarchar(256)", nullable: false),
@@ -218,11 +217,6 @@ namespace RazorBlog.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comment_AspNetUsers_AuthorUserName",
                         column: x => x.AuthorUserName,
@@ -285,11 +279,6 @@ namespace RazorBlog.Migrations
                 name: "IX_Blog_AuthorUserName",
                 table: "Blog",
                 column: "AuthorUserName");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comment_ApplicationUserId",
-                table: "Comment",
-                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_AuthorUserName",

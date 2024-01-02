@@ -12,9 +12,8 @@ public class ApplicationUser : IdentityUser
     public DateTime? RegistrationDate { get; set; }
 
     public string Description { get; set; } = string.Empty;
+
     public string ProfileImageUri { get; set; } = string.Empty;
-    public ICollection<Blog> Blogs { get; set; } = new List<Blog>();
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();   
 
     [NotMapped] public override bool LockoutEnabled { get; set; }
 

@@ -293,9 +293,6 @@ namespace RazorBlog.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("AuthorUserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(256)");
@@ -321,8 +318,6 @@ namespace RazorBlog.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("AuthorUserName");
 
@@ -397,7 +392,7 @@ namespace RazorBlog.Migrations
             modelBuilder.Entity("RazorBlog.Models.Blog", b =>
                 {
                     b.HasOne("RazorBlog.Models.ApplicationUser", "AuthorUser")
-                        .WithMany("Blogs")
+                        .WithMany()
                         .HasForeignKey("AuthorUserName")
                         .HasPrincipalKey("UserName")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -408,10 +403,6 @@ namespace RazorBlog.Migrations
 
             modelBuilder.Entity("RazorBlog.Models.Comment", b =>
                 {
-                    b.HasOne("RazorBlog.Models.ApplicationUser", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("RazorBlog.Models.ApplicationUser", "AuthorUser")
                         .WithMany()
                         .HasForeignKey("AuthorUserName")
@@ -426,13 +417,6 @@ namespace RazorBlog.Migrations
                         .IsRequired();
 
                     b.Navigation("AuthorUser");
-                });
-
-            modelBuilder.Entity("RazorBlog.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Blogs");
-
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("RazorBlog.Models.Blog", b =>

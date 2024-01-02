@@ -15,19 +15,17 @@ public class RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options) : 
     {
         base.OnModelCreating(builder);
         builder.Entity<Blog>()
+            .HasQueryFilter(blog => !blog.ToBeDeleted)
             .HasMany(b => b.Comments)
             .WithOne()
             .IsRequired(true)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Blog>()
-            .HasQueryFilter(blog => !blog.ToBeDeleted);
-
-        builder.Entity<ApplicationUser>()
-            .HasMany(x => x.Blogs)
-            .WithOne(x => x.AuthorUser)
-            .HasForeignKey(x => x.AuthorUserName)
+            .HasOne(x => x.AuthorUser)
+            .WithMany()
             .HasPrincipalKey(x => x.UserName)
+            .HasForeignKey(x => x.AuthorUserName)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<Comment>()
