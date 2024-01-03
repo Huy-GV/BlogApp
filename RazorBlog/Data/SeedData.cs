@@ -14,9 +14,12 @@ public static class SeedData
     {
         await using var context =
             new RazorBlogDbContext(serviceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>());
+
+        await context.Database.MigrateAsync();
+
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
+    
         await EnsureRole(Roles.AdminRole, roleManager);
         await EnsureRole(Roles.ModeratorRole, roleManager);
         await EnsureAdminUser(userManager);

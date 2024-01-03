@@ -57,7 +57,17 @@ public class Program
 
     public static WebApplicationBuilder CreateHostBuilder(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var environment = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
+            ? "Docker"
+            : Environments.Development;
+        var webApplicationOptions = new WebApplicationOptions
+        {
+            EnvironmentName = environment,
+            Args = args
+        };
+
+        var builder = WebApplication.CreateBuilder(webApplicationOptions);
+
         var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         var dbLocation = builder.Configuration.GetConnectionString("DefaultLocation") ?? string.Empty;
         if (!string.IsNullOrEmpty(dbLocation))
@@ -99,9 +109,9 @@ public class Program
         builder.Services.AddServerSideBlazor();
         builder.Services
             .AddMvc()
-            .AddRazorPagesOptions(options => 
-            { 
-                options.Conventions.AddPageRoute("/Blogs/Index", ""); 
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Blogs/Index", "");
             });
 
         builder.Services.Configure<IdentityOptions>(options =>

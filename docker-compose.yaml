@@ -1,0 +1,25 @@
+name: razor-blog
+services:
+    razor-blog-app:
+        container_name: razor-blog-app
+        build: .
+        ports:
+            - "5000:5000"
+            - "5001:5001"
+        environment:
+            - ASPNETCORE_URLS=https://+:5000;https://+:5001
+            - ASPNETCORE_HTTPS_PORT=5000,5001
+
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=cert@password
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+        depends_on:
+            - razor-blog-db
+    razor-blog-db:
+        container_name: razor-blog-db
+        ports:
+            - "1433:1433"
+        image: "mcr.microsoft.com/mssql/server:2022-latest"
+        environment:
+            SA_PASSWORD: Razorblog@db999
+            ACCEPT_EULA: Y
+            MSSQL_PID: Express
