@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RazorBlog.Models;
 
-public class Blog : Post
+public class Blog : Post<int>
 {
-    public int Id { get; set; }
-
     [Required] 
     public string Title { get; set; } = string.Empty;
 

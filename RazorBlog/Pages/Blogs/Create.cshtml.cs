@@ -17,9 +17,9 @@ public class CreateModel(
     UserManager<ApplicationUser> userManager,
     IBlogContentManager blogContentManager,
     ILogger<CreateModel> logger,
-    IPostModerationService userModerationService) : RichPageModelBase<CreateModel>(context, userManager, logger)
+    IUserPermissionValidator userPermissionValidator) : RichPageModelBase<CreateModel>(context, userManager, logger)
 {
-    private readonly IPostModerationService _postModerationService = userModerationService;
+    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager = blogContentManager;
 
     [BindProperty]
@@ -33,7 +33,7 @@ public class CreateModel(
             return Page();
         }
 
-        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(user.UserName))
+        if (!await _userPermissionValidator.IsUserAllowedToCreatePostAsync(user.UserName))
         {
             return Forbid();
         }

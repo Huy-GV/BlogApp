@@ -23,7 +23,7 @@ public class PostModerationService(
     private readonly IUserModerationService _userModerationService = userModerationService;
     private readonly IPostDeletionScheduler _postDeletionScheduler = postDeletionScheduler;
 
-    private async Task<bool> IsUserAllowedToHidePostAsync(string userName, Post post)
+    private async Task<bool> IsUserAllowedToHidePostAsync<TPostId>(string userName, Post<TPostId> post)
     {
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
@@ -251,19 +251,5 @@ public class PostModerationService(
             blogId);
 
         return ServiceResultCode.Success;
-    }
-
-    public async Task<bool> IsUserAllowedToUpdateOrDeletePostAsync(string userName, Post post)
-    {
-        return !string.IsNullOrWhiteSpace(post.AuthorUser.UserName) &&
-            post != null &&
-            userName == post.AuthorUser.UserName &&
-            !post.IsHidden &&
-            !await _userModerationService.BanTicketExistsAsync(userName);
-    }
-
-    public async Task<bool> IsUserAllowedToCreatePostAsync(string userName)
-    {
-        return !await _userModerationService.BanTicketExistsAsync(userName);
     }
 }

@@ -13,13 +13,13 @@ namespace RazorBlog.Services;
 public class CommentContentManager(
     RazorBlogDbContext dbContext,
     IUserModerationService userModerationService,
-    IPostModerationService postModerationService,
+    IUserPermissionValidator userPermissionValidator,
     UserManager<ApplicationUser> userManager) : ICommentContentManager
 {
     private readonly RazorBlogDbContext _dbContext = dbContext;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly IUserModerationService _userModerationService = userModerationService;
-    private readonly IPostModerationService _postModerationService = postModerationService;
+    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
 
     public async Task<ServiceResultCode> DeleteCommentAsync(int commentId, string userName)
     {
@@ -79,7 +79,7 @@ public class CommentContentManager(
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(userName, comment))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(userName, comment))
         {
             return ServiceResultCode.Unauthorized;
         }
@@ -108,7 +108,7 @@ public class CommentContentManager(
             return (ServiceResultCode.Unauthorized, 0);
         }
 
-        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(userName))
+        if (!await _userPermissionValidator.IsUserAllowedToCreatePostAsync(userName))
         {
             return (ServiceResultCode.Unauthorized, 0);
         }

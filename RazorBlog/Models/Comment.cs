@@ -2,10 +2,8 @@
 
 namespace RazorBlog.Models;
 
-public class Comment : Post
+public class Comment : Post<int>
 {
-    public int Id { get; set; }
-
     [Required] 
     [MaxLength(250)] 
     public override string Body { get; set; } = string.Empty;

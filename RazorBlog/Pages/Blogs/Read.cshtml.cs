@@ -23,10 +23,12 @@ public class ReadModel(
     ILogger<ReadModel> logger,
     IUserModerationService userModerationService,
     IPostModerationService postModerationService,
-    IBlogContentManager blogContentManager) : RichPageModelBase<ReadModel>(context, userManager, logger)
+    IBlogContentManager blogContentManager,
+    IUserPermissionValidator userPermissionValidator) : RichPageModelBase<ReadModel>(context, userManager, logger)
 {
     private readonly IUserModerationService _userModerationService = userModerationService;
     private readonly IPostModerationService _postModerationService = postModerationService;
+    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager = blogContentManager;
 
     [BindProperty]
@@ -96,10 +98,8 @@ public class ReadModel(
             AllowedToHidePost = IsAuthenticated && currentUserRoles
                                             .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
                                             .Any(),
-            AllowedToModifyOrDeletePost = IsAuthenticated && await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(currentUserName, blog),
-
-            // TODO: replace IsBanned with AllowedToCreateComment
-            IsBanned = IsAuthenticated && await _userModerationService.BanTicketExistsAsync(currentUserName),
+            AllowedToModifyOrDeletePost = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(currentUserName, blog),
+            AllowedToCreateComment = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToCreatePostAsync(currentUserName),
             IsAuthenticated = this.IsUserAuthenticated()
         };
 

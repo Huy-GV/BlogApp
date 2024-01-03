@@ -5,6 +5,7 @@ using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Data.ViewModels;
 using RazorBlog.Extensions;
+using RazorBlog.Models;
 using RazorBlog.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +32,11 @@ public partial class CommentsContainer : RichComponentBase
     [Inject]
     public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
 
-    [Inject]
+    [Inject] 
     public IPostModerationService PostModerationService { get; set; } = null!;
+
+    [Inject] 
+    public IUserPermissionValidator UserPermissionValidator { get; set; } = null!;
 
     [Inject]
     public ICommentContentManager CommentContentManager { get; set; } = null!;
@@ -42,6 +46,8 @@ public partial class CommentsContainer : RichComponentBase
     public IReadOnlyCollection<CommentDto> CommentDtos { get; private set; } = [];
 
     public IDictionary<int, bool> IsCommentEditorDisplayed { get; private set; } = new Dictionary<int, bool>();
+
+    public IReadOnlyDictionary<int, bool> AllowedToModifyComment { get; private set; } = new Dictionary<int, bool>();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -54,19 +60,13 @@ public partial class CommentsContainer : RichComponentBase
 
     private async Task LoadCommentData()
     {
-        CommentDtos = await LoadComments();
-        IsCommentEditorDisplayed = CommentDtos
-            .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
-            .ToDictionary(x => x.Id, _ => false);
+        var comments = await LoadComments();
 
-        AreCommentsLoaded = true;
-    }
+        AllowedToModifyComment = await UserPermissionValidator.IsUserAllowedToUpdateOrDeletePostsAsync(
+            CurrentUserName,
+            comments);
 
-    private async Task<List<CommentDto>> LoadComments()
-    {
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        return await dbContext.Comment
-            .Where(x => x.BlogId == BlogId)
+        CommentDtos = comments
             .Select(c => new CommentDto
             {
                 Id = c.Id,
@@ -82,6 +82,22 @@ public partial class CommentsContainer : RichComponentBase
                 IsHidden = c.IsHidden,
                 IsDeleted = c.ToBeDeleted,
             })
+            .ToList();
+
+
+        IsCommentEditorDisplayed = CommentDtos
+            .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
+            .ToDictionary(x => x.Id, _ => false);
+
+        AreCommentsLoaded = true;
+    }
+
+    private async Task<List<Comment>> LoadComments()
+    {
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        return await dbContext.Comment
+            .Include(x => x.AuthorUser)
+            .Where(x => x.BlogId == BlogId)
             .OrderByDescending(x => x.CreationTime)
             .ThenByDescending(x => x.LastUpdateTime)
             .ToListAsync();

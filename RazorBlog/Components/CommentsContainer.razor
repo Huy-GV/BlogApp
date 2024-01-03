@@ -9,7 +9,7 @@
 @inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-@if (CurrentUserInfo.AllowedToModifyOrDeletePost)
+@if (CurrentUserInfo.AllowedToCreateComment)
 {
     <EditForm Model="CreateCommentViewModel"
               class="comment-form"
@@ -67,7 +67,7 @@
 
                 <div class="comment-option-container">
                     @{
-                        if (CurrentUserInfo.AllowedToModifyOrDeletePost && 
+                        if (AllowedToModifyComment[comment.Id] && 
                             !IsCommentEditorDisplayed[comment.Id] &&
                             !comment.IsHidden)
                         {
@@ -86,7 +86,7 @@
                             </form>
                         }
 
-                        if (CurrentUserInfo.AllowedToModifyOrDeletePost && !comment.IsHidden)
+                        if (AllowedToModifyComment[comment.Id] && !comment.IsHidden)
                         {
                             if (!isCommentEditorDisplayed)
                             {
@@ -126,7 +126,7 @@
                     : string.Empty;
                 }
 
-                @if (!CurrentUserInfo.AllowedToModifyOrDeletePost || !isCommentEditorDisplayed)
+                @if (!isCommentEditorDisplayed)
                 {
                     <p class="comment-text @postClass">@comment.Content</p>
                 }

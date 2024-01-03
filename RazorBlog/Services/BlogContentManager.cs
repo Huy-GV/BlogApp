@@ -14,17 +14,17 @@ namespace RazorBlog.Services;
 public class BlogContentManager(
     RazorBlogDbContext dbContext,
     IUserModerationService userModerationService,
-    IPostModerationService postModerationService,
     UserManager<ApplicationUser> userManager,
     IImageStorage imageStorage,
-    ILogger<BlogContentManager> logger) : IBlogContentManager
+    ILogger<BlogContentManager> logger,
+    IUserPermissionValidator userPermissionValidator) : IBlogContentManager
 {
     private readonly RazorBlogDbContext _dbContext = dbContext;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly IUserModerationService _userModerationService = userModerationService;
-    private readonly IPostModerationService _postModerationService = postModerationService;
     private readonly IImageStorage _imageStorage = imageStorage;
     private readonly ILogger<BlogContentManager> _logger = logger;
+    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
 
     public async Task<ServiceResultCode> DeleteBlogAsync(int blogId, string userName)
     {
@@ -81,7 +81,7 @@ public class BlogContentManager(
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(userName, blog))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(userName, blog))
         {
             return ServiceResultCode.Unauthorized;
         }
@@ -126,7 +126,7 @@ public class BlogContentManager(
             return (ServiceResultCode.Unauthorized, 0);
         }
 
-        if (!await _postModerationService.IsUserAllowedToCreatePostAsync(userName))
+        if (!await _userPermissionValidator.IsUserAllowedToCreatePostAsync(userName))
         {
             return (ServiceResultCode.Unauthorized, 0);
         }

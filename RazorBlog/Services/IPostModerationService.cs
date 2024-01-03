@@ -12,6 +12,4 @@ public interface IPostModerationService
     Task<ServiceResultCode> ForciblyDeleteBlogAsync(int commentId, string deletorUserName);
     Task<ServiceResultCode> UnhideBlogAsync(int blogId, string userName);
     Task<ServiceResultCode> UnhideCommentAsync(int commentId, string userName);
-    Task<bool> IsUserAllowedToUpdateOrDeletePostAsync(string userName, Post post);
-    Task<bool> IsUserAllowedToCreatePostAsync(string userName);
 }

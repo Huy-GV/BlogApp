@@ -141,6 +141,7 @@ public class Program
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();
         builder.Services.AddScoped<IBlogContentManager, BlogContentManager>();
         builder.Services.AddScoped<ICommentContentManager, CommentContentManager>();
+        builder.Services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
 
         return builder;
     }

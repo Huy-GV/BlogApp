@@ -17,9 +17,9 @@ public class EditModel(
     UserManager<ApplicationUser> userManager,
     IBlogContentManager blogContentManager,
     ILogger<EditModel> logger,
-    IPostModerationService postModerationService) : RichPageModelBase<EditModel>(context, userManager, logger)
+    IUserPermissionValidator userPermissionValidator) : RichPageModelBase<EditModel>(context, userManager, logger)
 {
-    private readonly IPostModerationService _postModerationService = postModerationService;
+    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager = blogContentManager;
 
     [BindProperty]
@@ -44,7 +44,7 @@ public class EditModel(
             return NotFound();
         }
 
-        if (!await _postModerationService.IsUserAllowedToUpdateOrDeletePostAsync(user.UserName ?? string.Empty, blog))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(user.UserName ?? string.Empty, blog))
         {
             return Forbid();
         }
