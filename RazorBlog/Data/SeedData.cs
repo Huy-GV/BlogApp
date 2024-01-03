@@ -19,7 +19,7 @@ public static class SeedData
 
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    
+
         await EnsureRole(Roles.AdminRole, roleManager);
         await EnsureRole(Roles.ModeratorRole, roleManager);
         await EnsureAdminUser(userManager);
@@ -44,7 +44,7 @@ public static class SeedData
         {
             UserName = userName,
             EmailConfirmed = true,
-            ProfileImageUri = @"/ProfileImage/default.jpg",
+            ProfileImageUri = @"/readonly/default.jpg",
             Description =
                 "Lorem ipsum dolor sed temda met sedim ips dolor sed temda met sedim ips dolor sed temda met sedim ips"
         };
