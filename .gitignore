@@ -7,8 +7,9 @@
 .sass-cache/
 *.css.map
 
-# image folder
-images/
+# ignore image folder except images/readonly/
+**/images/*
+!**/images/readonly
 
 # User-specific files
 *.rsuser
