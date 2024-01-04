@@ -41,13 +41,13 @@ public partial class CommentsContainer : RichComponentBase
     [Inject]
     public ICommentContentManager CommentContentManager { get; set; } = null!;
 
-    public bool AreCommentsLoaded { get; private set; } = false;
+    private bool AreCommentsLoaded { get; set; } = false;
 
-    public IReadOnlyCollection<CommentDto> CommentDtos { get; private set; } = [];
+    private IReadOnlyCollection<CommentDto> CommentDtos { get; set; } = [];
 
-    public IDictionary<int, bool> IsCommentEditorDisplayed { get; private set; } = new Dictionary<int, bool>();
+    private IDictionary<int, bool> IsCommentEditorDisplayed { get; set; } = new Dictionary<int, bool>();
 
-    public IReadOnlyDictionary<int, bool> AllowedToModifyComment { get; private set; } = new Dictionary<int, bool>();
+    private IReadOnlyDictionary<int, bool> AllowedToModifyComment { get; set; } = new Dictionary<int, bool>();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -94,7 +94,7 @@ public partial class CommentsContainer : RichComponentBase
 
     private async Task<List<Comment>> LoadComments()
     {
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
         return await dbContext.Comment
             .Include(x => x.AuthorUser)
             .Where(x => x.BlogId == BlogId)
@@ -112,7 +112,7 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var user = await UserManager.GetUserAsync(base.CurrentUser);
-        if (user == null || user.UserName == null)
+        if (user?.UserName == null)
         {
             NavigateToForbid();
             return;
@@ -153,7 +153,7 @@ public partial class CommentsContainer : RichComponentBase
         await LoadCommentData();
     }
 
-    public async Task HideCommentAsync(int commentId)
+    private async Task HideCommentAsync(int commentId)
     {
         if (!IsAuthenticated)
         {
@@ -174,7 +174,7 @@ public partial class CommentsContainer : RichComponentBase
         await LoadCommentData();
     }
 
-    public async Task DeleteCommentAsync(int commentId)
+    private async Task DeleteCommentAsync(int commentId)
     {
         if (!IsAuthenticated)
         {
@@ -183,7 +183,7 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var user = await UserManager.GetUserAsync(base.CurrentUser);
-        if (user == null || user.UserName == null)
+        if (user?.UserName == null)
         {
             NavigateToForbid();
             return; 

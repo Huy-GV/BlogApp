@@ -74,7 +74,6 @@ public class RegisterModel(
         }
         catch (Exception ex)
         {
-            // todo: un-hardcode the default image path
             _logger.LogError($"Failed to upload new profile picture: {ex}");
             return GetDefaultProfileImageUri();
         }
@@ -82,6 +81,6 @@ public class RegisterModel(
 
     private static string GetDefaultProfileImageUri()
     {
-        return Path.Combine("ProfileImage", "default.jpg");
+        return Path.Combine("readonly", "default.jpg");
     }
 }

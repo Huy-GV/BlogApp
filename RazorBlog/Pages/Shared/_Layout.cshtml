@@ -11,8 +11,8 @@
 <body>
     <partial name="_NavBarPartial"/>
     @RenderBody()
-    @RenderSection(SectionNames.Scripts, required: false)
-</body>
+    @await RenderSectionAsync(SectionNames.Scripts, required: false)
+    </body>
 
 <script src="~/_framework/blazor.server.js"></script>
 </html>

@@ -7,13 +7,13 @@ namespace RazorBlog.Data.Validation;
 
 public class FileTypeAttribute : ValidationAttribute
 {
-    private readonly string[] allowedFileTypes;
+    private readonly string[] _allowedFileTypes;
 
     public override bool IsValid(object? value)
     {
         if (value is IFormFile file)
         {
-            return allowedFileTypes.Contains(Path.GetExtension(file.FileName).TrimStart('.'));
+            return _allowedFileTypes.Contains(Path.GetExtension(file.FileName).TrimStart('.'));
         }
 
         return false;
@@ -26,7 +26,7 @@ public class FileTypeAttribute : ValidationAttribute
             throw new System.ArgumentException("File types must not be null or empty");
         }
 
-        allowedFileTypes = allowedTypes
+        _allowedFileTypes = allowedTypes
             .Select(x => x.TrimStart('.', ' ').ToLowerInvariant())
             .ToArray();
     }

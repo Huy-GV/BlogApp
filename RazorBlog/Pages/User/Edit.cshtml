@@ -5,7 +5,7 @@
     ViewData["CSSLink"] = "/css/user/edituser.css";
     ViewData["Shared"] = "/css/shared.css";
 }
-
+<p class="page-title">Update Profile</p>
 <main>
     <form class="edit-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
         <div>
@@ -14,9 +14,10 @@
             </label>
             <textarea rows="8" cols="50"
                     asp-for="EditUserViewModel.Description">@Model.EditUserViewModel.Description</textarea>
+            <span asp-validation-for="EditUserViewModel.Description" class="error-message"></span>
 
             <label asp-for="EditUserViewModel.NewProfilePicture">
-                <strong>Profile picture</strong>
+                <strong>New Profile Picture</strong>
             </label>
             <input type="file" asp-for="EditUserViewModel.NewProfilePicture" accept=".png,.jpg,.jpeg" multiple>
         </div>

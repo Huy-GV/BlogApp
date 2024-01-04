@@ -20,10 +20,9 @@ public class CreateUserViewModel
     [Display(Name = "Confirm password")]
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string ConfirmPassword { get; set; } = string.Empty;
-
-    [Required]
-    [Display(Name = "Profile picture")]
-    public IFormFile ProfilePicture { get; set; } = null!;
+    
+    [Display(Name = "Profile picture (optional)")]
+    public IFormFile? ProfilePicture { get; set; }
 
     [Required]
     [StringLength(20, MinimumLength = 3)]

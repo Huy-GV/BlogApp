@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Hangfire;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,7 @@ public class PostDeletionScheduler(
 
     public void DeleteBlog(int blogId)
     {
-        var blogToDelete = _dbContext.Blog.Find(blogId);
+        var blogToDelete = _dbContext.Blog.FirstOrDefault(x => x.Id == blogId);
         if (blogToDelete == null)
         {
             _logger.LogInformation($"Blog ID {blogId} already deleted ahead of schedule");
@@ -32,11 +33,11 @@ public class PostDeletionScheduler(
         _dbContext.Blog.Remove(blogToDelete);
         _dbContext.SaveChanges();
     }
-
+    
     public void DeleteComment(int commentId)
     {
         _logger.LogInformation($"Comment ID {commentId} scheduled for deletion");
-        var commentToDelete = _dbContext.Comment.Find(commentId);
+        var commentToDelete = _dbContext.Comment.FirstOrDefault(x => x.Id == commentId);
         if (commentToDelete == null)
         {
             _logger.LogInformation($"Comment ID {commentId} already deleted ahead of schedule");

@@ -21,7 +21,7 @@ public partial class HiddenBlogContainer : RichComponentBase
     [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 
-    public IReadOnlyCollection<HiddenBlogDto> HiddenBlogs { get; private set; } = [];
+    private IReadOnlyCollection<HiddenBlogDto> HiddenBlogs { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -31,7 +31,7 @@ public partial class HiddenBlogContainer : RichComponentBase
 
     private async Task<List<HiddenBlogDto>> GetHiddenBlogs(string userName)
     {
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
 
         return await dbContext.Blog
             .Include(b => b.AuthorUser)

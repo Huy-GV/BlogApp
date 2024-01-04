@@ -65,10 +65,12 @@ public class ImageLocalFileStorage(
         ImageType type)
     {
         var imageTypeName = Enum.GetName(type)!;
+        
         var pathRelativeToImageDir = Path.Combine(imageTypeName);
         var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
-        var formattedName = BuildFileName(imageFile.FileName, imageTypeName);
         Directory.CreateDirectory(directoryPath);
+        
+        var formattedName = BuildFileName(imageFile.FileName, imageTypeName);
         var filePath = Path.Combine(directoryPath, formattedName);
         await using var stream = File.Create(filePath);
         await imageFile.CopyToAsync(stream);

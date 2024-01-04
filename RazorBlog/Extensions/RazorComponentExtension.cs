@@ -23,6 +23,8 @@ public static class RazorComponentExtension
             case ServiceResultCode.Unauthorized:
                 component.NavigateToForbid();
                 break;
+            case ServiceResultCode.InvalidState:
+            case ServiceResultCode.InvalidArguments:
             default: 
                 component.NavigateToBadRequest();
                 break;

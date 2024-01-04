@@ -21,7 +21,7 @@ public partial class HiddenCommentContainer : RichComponentBase
     [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 
-    public IReadOnlyCollection<HiddenCommentDto> HiddenComments { get; private set; } = [];
+    private IReadOnlyCollection<HiddenCommentDto> HiddenComments { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -36,7 +36,7 @@ public partial class HiddenCommentContainer : RichComponentBase
 
     private async Task<IReadOnlyCollection<HiddenCommentDto>> GetHiddenComments(string userName)
     {
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();   
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();   
         return await dbContext.Comment
             .Include(c => c.AuthorUser)
             .Where(c => c.AuthorUser.UserName == userName && c.IsHidden)

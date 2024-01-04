@@ -28,11 +28,11 @@ public class UserPermissionValidator(
 
         return posts.ToDictionary(
             x => x.Id,
-            x => x != null &&
-            !string.IsNullOrWhiteSpace(x.AuthorUser.UserName) &&
-            userName == x.AuthorUser.UserName &&
-            !x.IsHidden &&
-            allowedToCreatePost);
+            x =>
+                !string.IsNullOrWhiteSpace(x.AuthorUser.UserName) &&
+                userName == x.AuthorUser.UserName &&
+                !x.IsHidden &&
+                allowedToCreatePost);
     }
 
     public async Task<bool> IsUserAllowedToCreatePostAsync(string userName)

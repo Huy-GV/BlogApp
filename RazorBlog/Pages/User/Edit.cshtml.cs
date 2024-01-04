@@ -57,23 +57,14 @@ public class EditModel(
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await GetUserOrDefaultAsync();
-        if (user == null || user.UserName == null || user.UserName != EditUserViewModel.UserName)
+        if (user?.UserName == null || user.UserName != EditUserViewModel.UserName)
         {
             return Forbid();
         }
 
         if (!ModelState.IsValid)
         {
-            var errors = ModelState.Values
-                .SelectMany(m => m.Errors)
-                .Select(e => e.ErrorMessage);
-
-            foreach (var error in errors)
-            {
-                _logger.LogError(error);
-            }
-
-            return RedirectToPage("/User/Edit", new { userName = EditUserViewModel.UserName });
+            return Page();
         }
 
         var applicationUser = await DbContext.ApplicationUser.FindAsync(user.Id);

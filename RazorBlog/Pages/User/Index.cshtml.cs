@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +28,7 @@ public class IndexModel(
         }
 
         var user = await GetUserOrDefaultAsync();
-        if (user == null || user.UserName == null || user.UserName != User.Identity?.Name)
+        if (user?.UserName == null || user.UserName != User.Identity?.Name)
         {
             return Forbid();
         }
@@ -40,20 +39,16 @@ public class IndexModel(
             .Where(blog => blog.AuthorUser.UserName == userName)
             .ToList();
 
-        var groups = blogs.GroupBy(b => b.CreationTime.Year).OrderByDescending(g => g.Key);
-        var blogsGroupedByYear = new Dictionary<uint, List<MinimalBlogDto>>();
-        foreach (var group in groups)
-        {
-            blogsGroupedByYear.Add(
-                (uint)group.Key,
-                group.Select(b => new MinimalBlogDto
+        var blogsGroupedByYear = blogs
+            .GroupBy(b => b.CreationTime.Year)
+            .OrderByDescending(g => g.Key)
+            .ToDictionary(
+                group => (uint)group.Key, 
+                group => group.Select(b => new MinimalBlogDto
                 {
-                    Id = b.Id,
-                    Title = b.Title,
-                    ViewCount = b.ViewCount,
-                    CreationTime = b.CreationTime,
-                }).ToList());
-        }
+                    Id = b.Id, Title = b.Title, ViewCount = b.ViewCount, CreationTime = b.CreationTime,
+                })
+            .ToList());
 
         UserDto = new PersonalProfileDto
         {
@@ -77,7 +72,7 @@ public class IndexModel(
             ViewCountCurrentYear = (uint)blogs
                 .Where(blog => blog.AuthorUser.UserName == userName &&
                                blog.CreationTime.Year == DateTime.Now.Year)
-                .Sum(blogs => blogs.ViewCount),
+                .Sum(blog => blog.ViewCount),
             RegistrationDate = user.RegistrationDate == null
                     ? "a long time ago"
                     : user.RegistrationDate.Value.ToString("dd/MMMM/yyyy"),
