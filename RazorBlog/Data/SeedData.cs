@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RazorBlog.Data.Constants;
 using RazorBlog.Models;
@@ -17,17 +18,21 @@ public static class SeedData
 
         await context.Database.MigrateAsync();
 
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         await EnsureRole(Roles.AdminRole, roleManager);
         await EnsureRole(Roles.ModeratorRole, roleManager);
-        await EnsureAdminUser(userManager);
+        await EnsureAdminUser(userManager, configuration);
     }
 
-    private static async Task EnsureAdminUser(UserManager<ApplicationUser> userManager)
+    private static async Task EnsureAdminUser(
+        UserManager<ApplicationUser> userManager,
+        IConfiguration configuration)
     {
-        var (userName, password) = ("admin", "Admin123@@");
+        var userName = "admin";
+        var password = configuration.GetValue<string>("SeedUser:Password")!;
         var user = await userManager.FindByNameAsync(userName);
 
         if (user != null)

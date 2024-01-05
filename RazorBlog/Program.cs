@@ -57,16 +57,23 @@ public class Program
 
     public static WebApplicationBuilder CreateHostBuilder(string[] args)
     {
-        var environment = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
-            ? "Docker"
+        const string DockerEnvName = "Docker";
+        var environmentName = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
+            ? DockerEnvName
             : Environments.Development;
+
         var webApplicationOptions = new WebApplicationOptions
         {
-            EnvironmentName = environment,
-            Args = args
+            EnvironmentName = environmentName,
+            Args = args,
         };
 
         var builder = WebApplication.CreateBuilder(webApplicationOptions);
+        if (environmentName == DockerEnvName)
+        {
+            // secrets are configured via environment variables in Docker
+            builder.Configuration.AddEnvironmentVariables();
+        }
 
         var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         var dbLocation = builder.Configuration.GetConnectionString("DefaultLocation") ?? string.Empty;
