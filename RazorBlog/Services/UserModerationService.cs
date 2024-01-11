@@ -38,7 +38,7 @@ public class UserModerationService : IUserModerationService
         var banTicket = await FindBanTicketByUserNameAsync(bannedUserName);
         if (banTicket == null)
         {
-            _logger.LogWarning($"Ban ticket for user {bannedUserName} already removed");
+            _logger.LogWarning("Ban ticket for user {bannedUserName} already removed", bannedUserName);
             return;
         }
 
@@ -49,7 +49,7 @@ public class UserModerationService : IUserModerationService
         }
         catch (DBConcurrencyException)
         {
-            _logger.LogWarning($"Ban ticket for user {banTicket.UserName} already removed");
+            _logger.LogWarning("Ban ticket for user {bannedUserName} already removed", bannedUserName);
         }
     }
 
@@ -81,13 +81,13 @@ public class UserModerationService : IUserModerationService
 
         if (await BanTicketExistsAsync(userToBanName))
         {
-            _logger.LogInformation($"User {userToBanName} has already been banned");
+            _logger.LogInformation("User named {userToBanName} has already been banned", userToBanName);
         }
 
         var user = await _userManager.FindByNameAsync(userToBanName);
         if (user == null)
         {
-            _logger.LogError($"User {userToBanName} not found");
+            _logger.LogError("User named {userToBanName} not found", userToBanName);
             return ServiceResultCode.NotFound;
         }
 

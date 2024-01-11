@@ -67,7 +67,7 @@ public class RegisterModel : PageModel
             return Page();
         }
 
-        _logger.LogInformation($"User created a new account with username {CreateUserViewModel.UserName}.");
+        _logger.LogInformation("New account created by user: {userName}.", CreateUserViewModel.UserName);
         await _signInManager.SignInAsync(user, false);
 
         return LocalRedirect(Url.Content("~/"));
@@ -81,7 +81,7 @@ public class RegisterModel : PageModel
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Failed to upload new profile picture: {ex}");
+            _logger.LogError("Failed to upload new profile picture: {ex}", ex);
             return GetDefaultProfileImageUri();
         }
     }

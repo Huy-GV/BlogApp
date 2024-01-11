@@ -111,8 +111,7 @@ public class BlogContentManager : IBlogContentManager
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to update blog image");
-                _logger.LogError(ex.Message);
+                _logger.LogError("Failed to update blog image: {error}", ex);
 
                 return ServiceResultCode.InvalidArguments;
             }
@@ -161,8 +160,7 @@ public class BlogContentManager : IBlogContentManager
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to create blog");
-            _logger.LogError(ex.Message);
+            _logger.LogError("Failed to create blog: {ex}", ex);
 
             return (ServiceResultCode.InvalidArguments, 0);
         }

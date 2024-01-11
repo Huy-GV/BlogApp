@@ -29,20 +29,19 @@ public class ImageLocalFileStorage : IImageStorage
     {
         if (uri == DefaultProfilePictureName)
         {
-            _logger.LogError("Attempt to remove default profile picture failed.");
+            _logger.LogError("Failed to remove default image");
             return Task.CompletedTask;
         }
 
         try
         {
             File.Delete(uri);
-            _logger.LogDebug($"Deleted image of type and path {uri}.");
+            _logger.LogDebug("Deleted image at {uri}", uri);
             return Task.CompletedTask;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Failed to remove image with file path: ${uri}");
-            _logger.LogError(ex.Message);
+            _logger.LogError("Failed to remove image at {uri}: {ex}", uri, ex);
 
             return Task.CompletedTask;
         }
@@ -80,7 +79,7 @@ public class ImageLocalFileStorage : IImageStorage
         var filePath = Path.Combine(directoryPath, formattedName);
         await using var stream = File.Create(filePath);
         await imageFile.CopyToAsync(stream);
-        _logger.LogInformation($"File path of uploaded image is {filePath}.");
+        _logger.LogInformation("File path of uploaded image is {filePath}", filePath);
 
         return Path.Combine(pathRelativeToImageDir, formattedName);
     }

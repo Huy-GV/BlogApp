@@ -103,13 +103,13 @@ public class PostModerationService : IPostModerationService
 
         if (comment == null)
         {
-            _logger.LogError($"Comment with ID {commentId} not found");
+            _logger.LogError("Comment with ID {commentId} not found", commentId);
             return ServiceResultCode.NotFound;
         }
 
         if (!await IsUserAllowedToHidePostAsync(userName, comment))
         {
-            _logger.LogError($"Comment with ID {commentId} cannot be hidden by user {userName}");
+            _logger.LogError("Comment with ID {commentId} cannot be hidden by user {userName}", commentId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
@@ -128,13 +128,13 @@ public class PostModerationService : IPostModerationService
 
         if (blog == null)
         {
-            _logger.LogError($"Blog with ID {blogId} not found");
+            _logger.LogError("Blog with ID {blogId} not found", blogId);
             return ServiceResultCode.NotFound;
         }
 
         if (!await IsUserAllowedToHidePostAsync(userName, blog))
         {
-            _logger.LogError(message: $"Blog with ID {blogId} cannot be hidden by user {userName}");
+            _logger.LogError(message: "Blog with ID {blogId} cannot be hidden by user {userName}", blogId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
@@ -153,13 +153,13 @@ public class PostModerationService : IPostModerationService
 
         if (comment == null)
         {
-            _logger.LogError($"Comment with ID {commentId} not found");
+            _logger.LogError("Comment with ID {commentId} not found", commentId);
             return ServiceResultCode.NotFound;
         }
 
         if (!await IsUserInAdminRole(userName))
         {
-            _logger.LogError($"Comment with ID {commentId} cannot be un-hidden by user {userName}");
+            _logger.LogError("Comment with ID {commentId} cannot be un-hidden by user {userName}", commentId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
@@ -178,13 +178,13 @@ public class PostModerationService : IPostModerationService
 
         if (blog == null)
         {
-            _logger.LogError($"Blog with ID {blogId} not found");
+            _logger.LogError("Blog with ID {blogId} not found", blogId);
             return ServiceResultCode.NotFound;
         }
 
         if (!await IsUserInAdminRole(userName))
         {
-            _logger.LogError(message: $"Blog with ID {blogId} cannot be un-hidden by user {userName}");
+            _logger.LogError(message: "Blog with ID {blogId} cannot be un-hidden by user {userName}", blogId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
@@ -213,7 +213,7 @@ public class PostModerationService : IPostModerationService
 
         if (!comment.IsHidden)
         {
-            _logger.LogError($"Comment ID {commentId} must be hidden before being forcibly deleted");
+            _logger.LogError("Comment with ID {commentId} must be hidden before being forcibly deleted", commentId);
             return ServiceResultCode.Unauthorized;
         }
 
@@ -246,7 +246,7 @@ public class PostModerationService : IPostModerationService
 
         if (!blog.IsHidden)
         {
-            _logger.LogError($"Blog ID {blogId} must be hidden before being forcibly deleted");
+            _logger.LogError("Blog with ID {blogId} must be hidden before being forcibly deleted", blogId);
             return ServiceResultCode.Unauthorized;
         }
 

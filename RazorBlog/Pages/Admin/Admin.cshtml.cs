@@ -69,7 +69,7 @@ public class AdminModel : RichPageModelBase<AdminModel>
         var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
         if (user == null)
         {
-            Logger.LogError($"No user with ID {userName} was found");
+            Logger.LogError("User named {userName} not found", userName);
             return Page();
         }
 
@@ -83,7 +83,7 @@ public class AdminModel : RichPageModelBase<AdminModel>
         var user = await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
         if (user == null)
         {
-            Logger.LogError($"No user with ID {userName} was found");
+            Logger.LogError("User named {userName} not found", userName);
             return Page();
         }
 

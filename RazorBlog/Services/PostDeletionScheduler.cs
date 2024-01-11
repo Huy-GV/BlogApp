@@ -21,7 +21,7 @@ public class PostDeletionScheduler : IPostDeletionScheduler
 
     public void ScheduleBlogDeletion(DateTimeOffset deleteTime, int blogId)
     {
-        _logger.LogInformation($"Blog ID {blogId} scheduled for deletion");
+        _logger.LogInformation("Blog with ID {blogId} scheduled for deletion", blogId);
         Expression<Action> deleteBlog = () => DeleteBlog(blogId);
         BackgroundJob.Schedule(deleteBlog, deleteTime);
     }
@@ -31,7 +31,7 @@ public class PostDeletionScheduler : IPostDeletionScheduler
         var blogToDelete = _dbContext.Blog.FirstOrDefault(x => x.Id == blogId);
         if (blogToDelete == null)
         {
-            _logger.LogInformation($"Blog ID {blogId} already deleted ahead of schedule");
+            _logger.LogInformation("Blog with ID {blogId} already deleted ahead of schedule", blogId);
             return;
         }
 
@@ -41,11 +41,11 @@ public class PostDeletionScheduler : IPostDeletionScheduler
     
     public void DeleteComment(int commentId)
     {
-        _logger.LogInformation($"Comment ID {commentId} scheduled for deletion");
+        _logger.LogInformation("Comment with ID {commentId} scheduled for deletion", commentId);
         var commentToDelete = _dbContext.Comment.FirstOrDefault(x => x.Id == commentId);
         if (commentToDelete == null)
         {
-            _logger.LogInformation($"Comment ID {commentId} already deleted ahead of schedule");
+            _logger.LogInformation("Comment with ID {commentId} already deleted ahead of schedule", commentId);
             return;
         }
 

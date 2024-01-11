@@ -100,7 +100,7 @@ public class EditModel : RichPageModelBase<EditModel>
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Failed to upload new profile picture: {ex}");
+            _logger.LogError("Failed to upload new profile picture: {ex}", ex);
             return Path.Combine("ProfileImage", "default.jpg");
         }
     }
