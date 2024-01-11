@@ -14,7 +14,7 @@ public interface IBlogContentManager
     /// A tuple containing the result code and the newly created blog's identifier.
     /// The result code indicates the outcome of the operation.
     /// </returns>
-    Task<(ServiceResultCode, int)> CreateBlogAsync(CreateBlogViewModel createBlogViewModel, string userName);
+    Task<(ServiceResultCode, int?)> CreateBlogAsync(CreateBlogViewModel createBlogViewModel, string userName);
 
     /// <summary>
     /// Deletes a blog asynchronously.

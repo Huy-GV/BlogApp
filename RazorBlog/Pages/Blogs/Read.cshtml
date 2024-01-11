@@ -67,7 +67,7 @@
         </div>
 
         <p class="blog-description @blogContentClass">@Model.DetailedBlogDto.Introduction</p>
-        <img alt="Blog Cover Image" src="~/images/@Model.DetailedBlogDto.CoverImageUri" asp-append-version="true">
+        <img alt="Blog Cover Image" src="@Model.DetailedBlogDto.CoverImageUri" asp-append-version="true">
         <p class="blog-content @blogContentClass">@Model.DetailedBlogDto.Content</p>
     </article>
 </main>
@@ -75,7 +75,7 @@
 
 <section class="author-info">
     <div class="profile-header">
-        <img alt="Author's Profile Image" src="/images/@Model.DetailedBlogDto.AuthorProfileImageUri">
+        <img alt="Author's Profile Image" src="@Model.DetailedBlogDto.AuthorProfileImageUri">
         <span>@Model.DetailedBlogDto.AuthorName</span>
     </div>
 

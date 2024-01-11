@@ -18,7 +18,7 @@
     @foreach (var blog in Model.Blogs)
     {
         <a class="blog" asp-page="/Blogs/Read" asp-route-id="@blog.Id">
-            <img alt="Blog Image" src="~/images/@blog.CoverImageUri" asp-append-version="true">
+            <img alt="Blog Image" src="@blog.CoverImageUri" asp-append-version="true">
             <div class="blog-info">
                 <span class="info">@blog.AuthorName on @blog.CreationTime.ToString("dd MMM yyyy")</span>
                 <span class="info">&#128065; @blog.ViewCount.ToString()</span>

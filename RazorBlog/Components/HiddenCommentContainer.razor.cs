@@ -38,6 +38,7 @@ public partial class HiddenCommentContainer : RichComponentBase
     {
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();   
         return await dbContext.Comment
+            .AsNoTracking()
             .Include(c => c.AuthorUser)
             .Where(c => c.AuthorUser.UserName == userName && c.IsHidden)
             .Select(c => new HiddenCommentDto

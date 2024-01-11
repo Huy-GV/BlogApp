@@ -100,24 +100,24 @@ public class CommentContentManager : ICommentContentManager
         return ServiceResultCode.Success;
     }
 
-    public async Task<(ServiceResultCode, int)> CreateCommentAsync(
+    public async Task<(ServiceResultCode, int?)> CreateCommentAsync(
         CommentViewModel createCommentViewModel,
         string userName)
     {
         if (!Validator.TryValidateObject(createCommentViewModel, new ValidationContext(createCommentViewModel), null))
         {
-            return (ServiceResultCode.InvalidArguments, 0);
+            return (ServiceResultCode.InvalidArguments, null);
         }
 
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
-            return (ServiceResultCode.Unauthorized, 0);
+            return (ServiceResultCode.Unauthorized, null);
         }
 
         if (!await _userPermissionValidator.IsUserAllowedToCreatePostAsync(userName))
         {
-            return (ServiceResultCode.Unauthorized, 0);
+            return (ServiceResultCode.Unauthorized, null);
         }
 
         var creationTime = DateTime.UtcNow;

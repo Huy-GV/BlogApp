@@ -22,18 +22,21 @@ public class ReadModel : RichPageModelBase<ReadModel>
     private readonly IPostModerationService _postModerationService;
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager;
-
+    private readonly IImageStorage _imageStorage;
+    
     public ReadModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<ReadModel> logger,
         IUserModerationService userModerationService,
         IPostModerationService postModerationService,
         IBlogContentManager blogContentManager,
-        IUserPermissionValidator userPermissionValidator) : base(context, userManager, logger)
+        IUserPermissionValidator userPermissionValidator,
+        IImageStorage imageStorage) : base(context, userManager, logger)
     {
         _postModerationService = postModerationService;
         _userPermissionValidator = userPermissionValidator;
         _blogContentManager = blogContentManager;
+        _imageStorage = imageStorage;
     }
 
     [BindProperty]
@@ -64,15 +67,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
         {
             return NotFound();
         }
-
-        var blogAuthor = new
-        {
-            UserName = blog.AuthorUser?.UserName ?? ReplacementText.DeletedUser,
-            // todo: un-hardcode default profile pic
-            ProfileImageUri = blog.AuthorUser?.ProfileImageUri ?? "readonly/default.jpg",
-            Description = blog.AuthorUser?.Description ?? ReplacementText.DeletedUser
-        };
-
+        
         DbContext.Blog.Update(blog);
         blog.ViewCount++;
         await DbContext.SaveChangesAsync();
@@ -86,9 +81,9 @@ public class ReadModel : RichPageModelBase<ReadModel>
             CreationTime = blog.CreationTime,
             LastUpdateTime = blog.LastUpdateTime,
             IsHidden = blog.IsHidden,
-            AuthorDescription = blogAuthor.Description,
-            AuthorName = blogAuthor.UserName,
-            AuthorProfileImageUri = blogAuthor.ProfileImageUri,
+            AuthorDescription = blog.AuthorUser?.Description ?? ReplacementText.DeletedUser,
+            AuthorName = blog.AuthorUser?.UserName ?? ReplacementText.DeletedUser,
+            AuthorProfileImageUri = blog.AuthorUser?.ProfileImageUri ?? await _imageStorage.GetDefaultProfileImageUriAsync(),
         };
 
         var currentUser = await GetUserOrDefaultAsync();

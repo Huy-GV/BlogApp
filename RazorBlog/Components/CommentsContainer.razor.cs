@@ -41,6 +41,9 @@ public partial class CommentsContainer : RichComponentBase
     [Inject]
     public ICommentContentManager CommentContentManager { get; set; } = null!;
 
+    [Inject]
+    public IImageStorage ImageStorage { get; set; } = null!;
+    
     private bool AreCommentsLoaded { get; set; } = false;
 
     private IReadOnlyCollection<CommentDto> CommentDtos { get; set; } = [];
@@ -66,8 +69,8 @@ public partial class CommentsContainer : RichComponentBase
             CurrentUserName,
             comments);
 
-        CommentDtos = comments
-            .Select(c => new CommentDto
+        CommentDtos = await Task.WhenAll(comments
+            .Select(async c => new CommentDto
             {
                 Id = c.Id,
                 CreationTime = c.CreationTime,
@@ -77,12 +80,12 @@ public partial class CommentsContainer : RichComponentBase
                     ? ReplacementText.DeletedUser
                     : c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
                 AuthorProfileImageUri = c.AuthorUser == null
-                    ? "readonly/default.jpg"
-                    : c.AuthorUser.ProfileImageUri ?? "readonly/default.jpg",
+                    ? await ImageStorage.GetDefaultProfileImageUriAsync()
+                    : c.AuthorUser.ProfileImageUri,
                 IsHidden = c.IsHidden,
                 IsDeleted = c.ToBeDeleted,
             })
-            .ToList();
+            .ToList()) ;
         
         IsCommentEditorDisplayed = CommentDtos
             .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
@@ -95,6 +98,7 @@ public partial class CommentsContainer : RichComponentBase
     {
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();
         return await dbContext.Comment
+            .AsNoTracking()
             .Include(x => x.AuthorUser)
             .Where(x => x.BlogId == BlogId)
             .OrderByDescending(x => x.CreationTime)
@@ -136,7 +140,7 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var user = await UserManager.GetUserAsync(base.CurrentUser);
-        if (user == null || user.UserName == null)
+        if (user?.UserName is null)
         {
             NavigateToForbid();
             return;

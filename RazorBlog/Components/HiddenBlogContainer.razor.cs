@@ -34,6 +34,7 @@ public partial class HiddenBlogContainer : RichComponentBase
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();
 
         return await dbContext.Blog
+            .AsNoTracking()
             .Include(b => b.AuthorUser)
             .Where(b => b.AuthorUser.UserName == userName && b.IsHidden)
             .Select(b => new HiddenBlogDto

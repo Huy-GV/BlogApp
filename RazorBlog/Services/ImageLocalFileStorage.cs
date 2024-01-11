@@ -12,37 +12,48 @@ public class ImageLocalFileStorage : IImageStorage
 {
     private readonly ILogger<ImageLocalFileStorage> _logger;
     private readonly IWebHostEnvironment _webHostEnv;
-
-    public ImageLocalFileStorage(ILogger<ImageLocalFileStorage> logger,
+    
+    private const string DefaultProfilePictureName = "default.jpg";
+    private const string ImageDirectoryName = "images";
+    private const string ReadonlyDirectoryName = "readonly";
+    private const string DefaultProfileImageName = "default.jpg";
+    
+    public ImageLocalFileStorage(
+        ILogger<ImageLocalFileStorage> logger,
         IWebHostEnvironment webHostEnv)
     {
         _logger = logger;
         _webHostEnv = webHostEnv;
     }
 
-    private const string DefaultProfilePictureName = "default.jpg";
-    private const string ImageDirectoryName = "images";
-
-    private string AbsoluteImageDirPath => Path.Combine(_webHostEnv.WebRootPath, ImageDirectoryName);
+    public Task<string> GetDefaultProfileImageUriAsync()
+    {
+        return Task.FromResult(Path.Combine(ImageDirectoryName, ReadonlyDirectoryName, DefaultProfileImageName));
+    }
 
     public Task DeleteImage(string uri)
     {
-        if (uri == DefaultProfilePictureName)
+        var trimmedUri = uri.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var fullImageFilePath = Path.Combine(_webHostEnv.WebRootPath, trimmedUri);
+        _logger.LogInformation("Image uri '{uri}' expanded to '{fullImageFilePath}'", uri, fullImageFilePath);
+        
+        var directory = Directory.GetParent(fullImageFilePath)?.Name ?? string.Empty;
+        
+        if (directory.Equals(ReadonlyDirectoryName, StringComparison.InvariantCultureIgnoreCase))
         {
-            _logger.LogError("Failed to remove default image");
+            _logger.LogError("Failed to remove image at '{fullImageFilePath}' within readonly directory", fullImageFilePath);
             return Task.CompletedTask;
         }
 
         try
         {
-            File.Delete(uri);
-            _logger.LogDebug("Deleted image at {uri}", uri);
+            File.Delete(fullImageFilePath);
+            _logger.LogDebug("Deleted image at {fullImageFilePath}", fullImageFilePath);
             return Task.CompletedTask;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to remove image at {uri}: {ex}", uri, ex);
-
+            _logger.LogError("Failed to remove image at {fullImageFilePath}: {ex}", fullImageFilePath, ex);
             return Task.CompletedTask;
         }
     }
@@ -59,10 +70,11 @@ public class ImageLocalFileStorage : IImageStorage
 
     private static string BuildFileName(string originalName, string type)
     {
-        return string.Join
-        (
-        "_", DateTimeOffset.Now.ToUnixTimeSeconds().ToString(), type,
-        originalName.Trim('.', '_', '@', ' ', '#', '/', '\\', '!', '^', '&', '*'));
+        return string.Join(
+            "_", 
+            DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), 
+            type,
+            originalName.Trim('.', '_', '@', ' ', '#', '/', '\\', '!', '^', '&', '*'));
     }
 
     private async Task<string> UploadImageAsync(
@@ -71,16 +83,20 @@ public class ImageLocalFileStorage : IImageStorage
     {
         var imageTypeName = Enum.GetName(type)!;
         
-        var pathRelativeToImageDir = Path.Combine(imageTypeName);
-        var directoryPath = Path.Combine(AbsoluteImageDirPath, pathRelativeToImageDir);
+        // ensure the directory for the image type exists
+        var directoryPath = Path.Combine(ImageDirectoryName, imageTypeName);
         Directory.CreateDirectory(directoryPath);
         
+        // creates a new image name
         var formattedName = BuildFileName(imageFile.FileName, imageTypeName);
-        var filePath = Path.Combine(directoryPath, formattedName);
-        await using var stream = File.Create(filePath);
+        var relativeImageFilePath = Path.Combine(directoryPath, formattedName);
+        var absoluteImageFilePath = Path.Combine(_webHostEnv.WebRootPath, relativeImageFilePath);
+        
+        await using var stream = File.Create(absoluteImageFilePath);
         await imageFile.CopyToAsync(stream);
-        _logger.LogInformation("File path of uploaded image is {filePath}", filePath);
-
-        return Path.Combine(pathRelativeToImageDir, formattedName);
+        _logger.LogInformation("File path of uploaded image is {filePath}", absoluteImageFilePath);
+        
+        // return the portion of the image path relative to the web content directory
+        return relativeImageFilePath;
     }
 }

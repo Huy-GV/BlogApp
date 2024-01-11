@@ -20,6 +20,12 @@ public interface IImageStorage
     Task<string> UploadProfileImageAsync(IFormFile imageFile);
 
     /// <summary>
+    /// Get the default profile image.
+    /// </summary>
+    /// <returns>The uri of default profile image.</returns>
+    Task<string> GetDefaultProfileImageUriAsync();
+    
+    /// <summary>
     /// Called when user wants to revert their profile image to default or upload a new profile/ blog cover image
     /// </summary>
     Task DeleteImage(string uri);

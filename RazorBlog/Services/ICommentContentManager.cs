@@ -14,7 +14,7 @@ public interface ICommentContentManager
     /// A tuple containing the result code and the newly created comment's identifier.
     /// The result code indicates the outcome of the operation.
     /// </returns>
-    Task<(ServiceResultCode, int)> CreateCommentAsync(CommentViewModel createCommentViewModel, string userName);
+    Task<(ServiceResultCode, int?)> CreateCommentAsync(CommentViewModel createCommentViewModel, string userName);
 
     /// <summary>
     /// Deletes a comment asynchronously.
