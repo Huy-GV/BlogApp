@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Communication;
 using RazorBlog.Data.Constants;
 
 namespace RazorBlog.Services;
@@ -13,7 +14,6 @@ public class ImageLocalFileStorage : IImageStorage
     private readonly ILogger<ImageLocalFileStorage> _logger;
     private readonly IWebHostEnvironment _webHostEnv;
     
-    private const string DefaultProfilePictureName = "default.jpg";
     private const string ImageDirectoryName = "images";
     private const string ReadonlyDirectoryName = "readonly";
     private const string DefaultProfileImageName = "default.jpg";
@@ -31,7 +31,7 @@ public class ImageLocalFileStorage : IImageStorage
         return Task.FromResult(Path.Combine(ImageDirectoryName, ReadonlyDirectoryName, DefaultProfileImageName));
     }
 
-    public Task DeleteImage(string uri)
+    public Task<ServiceResultCode> DeleteImage(string uri)
     {
         var trimmedUri = uri.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         var fullImageFilePath = Path.Combine(_webHostEnv.WebRootPath, trimmedUri);
@@ -42,30 +42,48 @@ public class ImageLocalFileStorage : IImageStorage
         if (directory.Equals(ReadonlyDirectoryName, StringComparison.InvariantCultureIgnoreCase))
         {
             _logger.LogError("Failed to remove image at '{fullImageFilePath}' within readonly directory", fullImageFilePath);
-            return Task.CompletedTask;
+            return Task.FromResult(ServiceResultCode.Unauthorized);
         }
 
         try
         {
             File.Delete(fullImageFilePath);
             _logger.LogDebug("Deleted image at {fullImageFilePath}", fullImageFilePath);
-            return Task.CompletedTask;
+            return Task.FromResult(ServiceResultCode.Success);
         }
         catch (Exception ex)
         {
             _logger.LogError("Failed to remove image at {fullImageFilePath}: {ex}", fullImageFilePath, ex);
-            return Task.CompletedTask;
+            return Task.FromResult(ServiceResultCode.Error);;
         }
     }
 
-    public async Task<string> UploadBlogCoverImageAsync(IFormFile imageFile)
+    public async Task<(ServiceResultCode, string?)> UploadBlogCoverImageAsync(IFormFile imageFile)
     {
-        return await UploadImageAsync(imageFile, ImageType.BlogCover);
+        try
+        {
+            var uri = await UploadImageAsync(imageFile, ImageType.BlogCover);
+            return (ServiceResultCode.Success, uri);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to upload blog cover image named '{name}': {e}", imageFile.FileName, e);
+            return (ServiceResultCode.Error, null);
+        }
     }
 
-    public async Task<string> UploadProfileImageAsync(IFormFile imageFile)
+    public async Task<(ServiceResultCode, string?)> UploadProfileImageAsync(IFormFile imageFile)
     {
-        return await UploadImageAsync(imageFile, ImageType.ProfileImage);
+        try
+        {
+            var uri = await UploadImageAsync(imageFile, ImageType.ProfileImage);
+            return (ServiceResultCode.Success, uri);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to upload blog cover image named '{name}': {e}", imageFile.FileName, e);
+            return (ServiceResultCode.Error, null);
+        }
     }
 
     private static string BuildFileName(string originalName, string type)
@@ -94,7 +112,7 @@ public class ImageLocalFileStorage : IImageStorage
         
         await using var stream = File.Create(absoluteImageFilePath);
         await imageFile.CopyToAsync(stream);
-        _logger.LogInformation("File path of uploaded image is {filePath}", absoluteImageFilePath);
+        _logger.LogInformation("File path of uploaded image is '{filePath}'", absoluteImageFilePath);
         
         // return the portion of the image path relative to the web content directory
         return relativeImageFilePath;

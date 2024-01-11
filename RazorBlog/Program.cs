@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

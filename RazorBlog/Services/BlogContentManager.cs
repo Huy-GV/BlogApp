@@ -103,18 +103,17 @@ public class BlogContentManager : IBlogContentManager
 
         if (editBlogViewModel.CoverImage != null)
         {
-            try
+            _logger.LogInformation("Replacing cover image of blog with ID {id}", editBlogViewModel.Id);
+            
+            await _imageStorage.DeleteImage(blog.CoverImageUri);
+            var (result, imageUri) = await _imageStorage.UploadBlogCoverImageAsync(editBlogViewModel.CoverImage);
+            if (result != ServiceResultCode.Success)
             {
-                await _imageStorage.DeleteImage(blog.CoverImageUri);
-                var imageName = await _imageStorage.UploadBlogCoverImageAsync(editBlogViewModel.CoverImage);
-                blog.CoverImageUri = imageName;
+                _logger.LogError("Failed to upload new blog cover image");
+                return result;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to update blog image: {error}", ex);
-
-                return ServiceResultCode.InvalidArguments;
-            }
+            
+            blog.CoverImageUri = imageUri!;
         }
 
         await _dbContext.SaveChangesAsync();
@@ -139,6 +138,12 @@ public class BlogContentManager : IBlogContentManager
             return (ServiceResultCode.Unauthorized, null);
         }
 
+        var (result, imageUri) = await _imageStorage.UploadBlogCoverImageAsync(createBlogViewModel.CoverImage);
+        if (result != ServiceResultCode.Success)
+        {
+            return (result, null);
+        }
+        
         var now = DateTime.UtcNow;
         var newBlog = new Blog
         {
@@ -149,22 +154,12 @@ public class BlogContentManager : IBlogContentManager
             LastUpdateTime = now,
             AuthorUserName = userName,
         };
-
+        
         _dbContext.Blog.Add(newBlog);
-
-        try
-        {
-            var imageUri = await _imageStorage.UploadBlogCoverImageAsync(createBlogViewModel.CoverImage);
-            newBlog.CoverImageUri = imageUri;
-            await _dbContext.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Failed to create blog: {ex}", ex);
-
-            return (ServiceResultCode.InvalidArguments, 0);
-        }
+        newBlog.CoverImageUri = imageUri!;
+        await _dbContext.SaveChangesAsync();
 
         return (ServiceResultCode.Success, newBlog.Id);
+
     }
 }

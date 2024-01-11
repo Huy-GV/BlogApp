@@ -1,30 +1,32 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Communication;
+using RazorBlog.Data;
 using RazorBlog.Data.ViewModels;
+using RazorBlog.Extensions;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
 namespace RazorBlog.Pages.Authentication;
 
 [AllowAnonymous]
-public class RegisterModel : PageModel
+public class RegisterModel : RichPageModelBase<RegisterModel>
 {
     private readonly IImageStorage _imageStorage;
     private readonly ILogger<RegisterModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public RegisterModel(UserManager<ApplicationUser> userManager,
+    public RegisterModel(
+        RazorBlogDbContext dbContext,
+        UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger,
-        IImageStorage imageStorage)
+        IImageStorage imageStorage) : base (dbContext, userManager, logger)
     {
         _imageStorage = imageStorage;
         _logger = logger;
@@ -46,14 +48,24 @@ public class RegisterModel : PageModel
             return Page();
         }
 
+        var profileImageUri = await _imageStorage.GetDefaultProfileImageUriAsync();
+        if (CreateUserViewModel.ProfilePicture is not null)
+        {
+            var (uploadResult, uri) = await _imageStorage.UploadProfileImageAsync(CreateUserViewModel.ProfilePicture);
+            if (uploadResult != ServiceResultCode.Success)
+            {
+                return this.NavigateOnResult(uploadResult, BadRequest);
+            }
+
+            profileImageUri = uri!;
+        }
+  
         var user = new ApplicationUser
         {
             UserName = CreateUserViewModel.UserName,
             EmailConfirmed = true,
             RegistrationDate = DateTime.Now,
-            ProfileImageUri = CreateUserViewModel.ProfilePicture == null
-                ? GetDefaultProfileImageUri()
-                : await UploadProfileImage(CreateUserViewModel.ProfilePicture)
+            ProfileImageUri = profileImageUri
         };
 
         var result = await _userManager.CreateAsync(user, CreateUserViewModel.Password);
@@ -71,23 +83,5 @@ public class RegisterModel : PageModel
         await _signInManager.SignInAsync(user, false);
 
         return LocalRedirect(Url.Content("~/"));
-    }
-
-    private async Task<string> UploadProfileImage(IFormFile image)
-    {
-        try
-        {
-            return await _imageStorage.UploadProfileImageAsync(image);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Failed to upload new profile picture: {ex}", ex);
-            return GetDefaultProfileImageUri();
-        }
-    }
-
-    private static string GetDefaultProfileImageUri()
-    {
-        return Path.Combine("readonly", "default.jpg");
     }
 }

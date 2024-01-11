@@ -1,32 +1,36 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using RazorBlog.Communication;
 
 namespace RazorBlog.Services;
 
 public interface IImageStorage
 {
     /// <summary>
-    /// Upload the cover image of a blog.
+    /// Uploads the cover image of a blog.
     /// </summary>
-    /// <param name="imageFile"></param>
-    /// <returns>The name of the uploaded image.</returns>
-    Task<string> UploadBlogCoverImageAsync(IFormFile imageFile);
+    /// <param name="imageFile">The image file to be uploaded.</param>
+    /// <returns>A ServiceResultCode and the URI of the uploaded image if the result code is <see cref="ServiceResultCode.Success"/>.</returns>
+    Task<(ServiceResultCode, string?)> UploadBlogCoverImageAsync(IFormFile imageFile);
 
     /// <summary>
-    /// Upload the profile image of a user.
+    /// Uploads the profile image of a user.
     /// </summary>
-    /// <param name="imageFile"></param>
-    /// <returns>The name of the uploaded image.</returns>
-    Task<string> UploadProfileImageAsync(IFormFile imageFile);
+    /// <param name="imageFile">The image file to be uploaded.</param>
+    /// <returns>A ServiceResultCode and the URI of the uploaded image if the result code is <see cref="ServiceResultCode.Success"/>.</returns>
+    Task<(ServiceResultCode, string?)> UploadProfileImageAsync(IFormFile imageFile);
 
     /// <summary>
-    /// Get the default profile image.
+    /// Gets the default profile image URI.
     /// </summary>
-    /// <returns>The uri of default profile image.</returns>
+    /// <returns>The URI of the default profile image.</returns>
     Task<string> GetDefaultProfileImageUriAsync();
     
     /// <summary>
-    /// Called when user wants to revert their profile image to default or upload a new profile/ blog cover image
+    /// Deletes an image identified by the provided URI. 
+    /// This is used when a user wants to revert their profile image to default or upload a new profile/blog cover image.
     /// </summary>
-    Task DeleteImage(string uri);
+    /// <param name="uri">The URI of the image to be deleted.</param>
+    /// <returns>A ServiceResultCode indicating the success or failure of the operation.</returns>
+    Task<ServiceResultCode> DeleteImage(string uri);
 }

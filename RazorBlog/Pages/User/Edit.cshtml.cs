@@ -1,14 +1,12 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Communication;
 using RazorBlog.Data;
 using RazorBlog.Data.ViewModels;
+using RazorBlog.Extensions;
 using RazorBlog.Models;
 using RazorBlog.Services;
 
@@ -83,25 +81,21 @@ public class EditModel : RichPageModelBase<EditModel>
 
         if (EditUserViewModel.NewProfilePicture != null)
         {
-            await _imageStorage.DeleteImage(applicationUser.ProfileImageUri);
-            applicationUser.ProfileImageUri = await UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
+            var (result, imageUri) = await _imageStorage.UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
+            if (result == ServiceResultCode.Success)
+            {
+                _logger.LogInformation("Deleting previous profile image of user named '{userName}')", user.UserName);
+                await _imageStorage.DeleteImage(applicationUser.ProfileImageUri);
+                applicationUser.ProfileImageUri = imageUri!;
+            }
+            else
+            {
+                return this.NavigateOnResult(result, BadRequest);
+            }
         }
 
         await DbContext.SaveChangesAsync();
 
         return RedirectToPage("/User/Index", new { userName = EditUserViewModel.UserName });
-    }
-
-    private async Task<string> UploadProfileImageAsync(IFormFile image)
-    {
-        try
-        {
-            return await _imageStorage.UploadProfileImageAsync(image);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Failed to upload new profile picture: {ex}", ex);
-            return Path.Combine("ProfileImage", "default.jpg");
-        }
     }
 }
