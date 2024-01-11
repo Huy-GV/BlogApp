@@ -3,12 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RazorBlog.Data.Validation;
 
-public class DateRangeAttribute(
-    bool allowsPast, 
-    bool allowsFuture) : ValidationAttribute
+public class DateRangeAttribute : ValidationAttribute
 {
-    private readonly bool _allowsPast = allowsPast;
-    private readonly bool _allowsFuture = allowsFuture;
+    private readonly bool _allowsPast;
+    private readonly bool _allowsFuture;
+
+    public DateRangeAttribute(bool allowsPast, 
+        bool allowsFuture)
+    {
+        _allowsPast = allowsPast;
+        _allowsFuture = allowsFuture;
+    }
 
     public override bool IsValid(object? value)
     { 

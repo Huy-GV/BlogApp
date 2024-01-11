@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 
 namespace RazorBlog.Services;
 
-public class UserPermissionValidator(
-    IUserModerationService userModerationService) : IUserPermissionValidator
+public class UserPermissionValidator : IUserPermissionValidator
 {
-    private readonly IUserModerationService _userModerationService = userModerationService;
+    private readonly IUserModerationService _userModerationService;
+
+    public UserPermissionValidator(IUserModerationService userModerationService)
+    {
+        _userModerationService = userModerationService;
+    }
 
     public async Task<bool> IsUserAllowedToUpdateOrDeletePostAsync<TPostId>(string userName, Post<TPostId> post) where TPostId : notnull
     {

@@ -12,15 +12,20 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Blogs;
 
 [Authorize]
-public class EditModel(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    IBlogContentManager blogContentManager,
-    ILogger<EditModel> logger,
-    IUserPermissionValidator userPermissionValidator) : RichPageModelBase<EditModel>(context, userManager, logger)
+public class EditModel : RichPageModelBase<EditModel>
 {
-    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
-    private readonly IBlogContentManager _blogContentManager = blogContentManager;
+    private readonly IUserPermissionValidator _userPermissionValidator;
+    private readonly IBlogContentManager _blogContentManager;
+
+    public EditModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        IBlogContentManager blogContentManager,
+        ILogger<EditModel> logger,
+        IUserPermissionValidator userPermissionValidator) : base(context, userManager, logger)
+    {
+        _userPermissionValidator = userPermissionValidator;
+        _blogContentManager = blogContentManager;
+    }
 
     [BindProperty]
     public EditBlogViewModel EditBlogViewModel { get; set; } = null!;

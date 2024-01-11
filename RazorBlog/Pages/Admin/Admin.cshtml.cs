@@ -14,10 +14,14 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Admin;
 
 [Authorize(Roles = Roles.AdminRole)]
-public class AdminModel(RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    ILogger<AdminModel> logger) : RichPageModelBase<AdminModel>(context, userManager, logger)
+public class AdminModel : RichPageModelBase<AdminModel>
 {
+    public AdminModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<AdminModel> logger) : base(context, userManager, logger)
+    {
+    }
+
     [BindProperty]
     public List<UserProfileDto> Moderators { get; set; } = [];
 

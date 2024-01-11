@@ -12,15 +12,20 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Blogs;
 
 [Authorize]
-public class CreateModel(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    IBlogContentManager blogContentManager,
-    ILogger<CreateModel> logger,
-    IUserPermissionValidator userPermissionValidator) : RichPageModelBase<CreateModel>(context, userManager, logger)
+public class CreateModel : RichPageModelBase<CreateModel>
 {
-    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
-    private readonly IBlogContentManager _blogContentManager = blogContentManager;
+    private readonly IUserPermissionValidator _userPermissionValidator;
+    private readonly IBlogContentManager _blogContentManager;
+
+    public CreateModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        IBlogContentManager blogContentManager,
+        ILogger<CreateModel> logger,
+        IUserPermissionValidator userPermissionValidator) : base(context, userManager, logger)
+    {
+        _userPermissionValidator = userPermissionValidator;
+        _blogContentManager = blogContentManager;
+    }
 
     [BindProperty]
     public CreateBlogViewModel CreateBlogViewModel { get; set; } = null!;

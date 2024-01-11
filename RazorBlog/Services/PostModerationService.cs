@@ -10,18 +10,26 @@ using System;
 
 namespace RazorBlog.Services;
 
-public class PostModerationService(
-    RazorBlogDbContext dbContext,
-    ILogger<UserModerationService> logger,
-    UserManager<ApplicationUser> userManager,
-    IUserModerationService userModerationService,
-    IPostDeletionScheduler postDeletionScheduler) : IPostModerationService
+public class PostModerationService : IPostModerationService
 {
-    private readonly RazorBlogDbContext _dbContext = dbContext;
-    private readonly ILogger<UserModerationService> _logger = logger;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly IUserModerationService _userModerationService = userModerationService;
-    private readonly IPostDeletionScheduler _postDeletionScheduler = postDeletionScheduler;
+    private readonly RazorBlogDbContext _dbContext;
+    private readonly ILogger<UserModerationService> _logger;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserModerationService _userModerationService;
+    private readonly IPostDeletionScheduler _postDeletionScheduler;
+
+    public PostModerationService(RazorBlogDbContext dbContext,
+        ILogger<UserModerationService> logger,
+        UserManager<ApplicationUser> userManager,
+        IUserModerationService userModerationService,
+        IPostDeletionScheduler postDeletionScheduler)
+    {
+        _dbContext = dbContext;
+        _logger = logger;
+        _userManager = userManager;
+        _userModerationService = userModerationService;
+        _postDeletionScheduler = postDeletionScheduler;
+    }
 
     private async Task<bool> IsUserAllowedToHidePostAsync<TPostId>(string userName, Post<TPostId> post)
     {

@@ -15,15 +15,20 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.User;
 
 [Authorize]
-public class EditModel(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    ILogger<EditModel> logger,
-    IImageStorage imageStorage) : RichPageModelBase<EditModel>(context, userManager, logger)
+public class EditModel : RichPageModelBase<EditModel>
 {
-    private readonly IImageStorage _imageStorage = imageStorage;
+    private readonly IImageStorage _imageStorage;
 
-    private readonly ILogger<EditModel> _logger = logger;
+    private readonly ILogger<EditModel> _logger;
+
+    public EditModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<EditModel> logger,
+        IImageStorage imageStorage) : base(context, userManager, logger)
+    {
+        _imageStorage = imageStorage;
+        _logger = logger;
+    }
 
     [BindProperty] public EditUserViewModel EditUserViewModel { get; set; } = null!;
 

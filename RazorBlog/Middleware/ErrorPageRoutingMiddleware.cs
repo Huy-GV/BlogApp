@@ -4,9 +4,14 @@ using System.Threading.Tasks;
 
 namespace RazorBlog.Middleware;
 
-public class ErrorPageRoutingMiddleware(RequestDelegate next)
+public class ErrorPageRoutingMiddleware
 {
-    private readonly RequestDelegate _next = next;
+    private readonly RequestDelegate _next;
+
+    public ErrorPageRoutingMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task InvokeAsync(HttpContext context)
     {

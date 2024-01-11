@@ -7,5 +7,5 @@ public class CreateBlogViewModel : BlogViewModel
 {
     [Display(Name = "Cover image")]
     [Required]
-    public virtual IFormFile CoverImage { get; set; } = null!;
+    public IFormFile CoverImage { get; set; } = null!;
 }

@@ -7,16 +7,22 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Pages;
 
-public class RichPageModelBase<TPageModel>(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    ILogger<TPageModel> logger) : PageModel where TPageModel : PageModel
+public class RichPageModelBase<TPageModel> : PageModel where TPageModel : PageModel
 {
-    protected RazorBlogDbContext DbContext { get; } = context;
+    public RichPageModelBase(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<TPageModel> logger)
+    {
+        DbContext = context;
+        UserManager = userManager;
+        Logger = logger;
+    }
 
-    protected UserManager<ApplicationUser> UserManager { get; } = userManager;
+    protected RazorBlogDbContext DbContext { get; }
 
-    protected ILogger<TPageModel> Logger { get; } = logger;
+    protected UserManager<ApplicationUser> UserManager { get; }
+
+    protected ILogger<TPageModel> Logger { get; }
 
     protected async Task<ApplicationUser?> GetUserOrDefaultAsync()
     {

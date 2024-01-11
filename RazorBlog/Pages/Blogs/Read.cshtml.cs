@@ -17,19 +17,24 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Blogs;
 
 [AllowAnonymous]
-public class ReadModel(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    ILogger<ReadModel> logger,
-    IUserModerationService userModerationService,
-    IPostModerationService postModerationService,
-    IBlogContentManager blogContentManager,
-    IUserPermissionValidator userPermissionValidator) : RichPageModelBase<ReadModel>(context, userManager, logger)
+public class ReadModel : RichPageModelBase<ReadModel>
 {
-    private readonly IUserModerationService _userModerationService = userModerationService;
-    private readonly IPostModerationService _postModerationService = postModerationService;
-    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
-    private readonly IBlogContentManager _blogContentManager = blogContentManager;
+    private readonly IPostModerationService _postModerationService;
+    private readonly IUserPermissionValidator _userPermissionValidator;
+    private readonly IBlogContentManager _blogContentManager;
+
+    public ReadModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<ReadModel> logger,
+        IUserModerationService userModerationService,
+        IPostModerationService postModerationService,
+        IBlogContentManager blogContentManager,
+        IUserPermissionValidator userPermissionValidator) : base(context, userManager, logger)
+    {
+        _postModerationService = postModerationService;
+        _userPermissionValidator = userPermissionValidator;
+        _blogContentManager = blogContentManager;
+    }
 
     [BindProperty]
     public CommentViewModel CreateCommentViewModel { get; set; } = null!;
@@ -100,7 +105,6 @@ public class ReadModel(
                                             .Any(),
             AllowedToModifyOrDeletePost = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(currentUserName, blog),
             AllowedToCreateComment = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToCreatePostAsync(currentUserName),
-            IsAuthenticated = this.IsUserAuthenticated()
         };
 
         return Page();
@@ -108,7 +112,7 @@ public class ReadModel(
 
     public async Task<IActionResult> OnPostHideBlogAsync(int blogId)
     {
-        if (!this.IsUserAuthenticated())
+        if (!IsAuthenticated)
         {
             return Challenge();
         }
@@ -126,7 +130,7 @@ public class ReadModel(
 
     public async Task<IActionResult> OnPostDeleteBlogAsync(int blogId)
     {
-        if (!this.IsUserAuthenticated())
+        if (!IsAuthenticated)
         {
             return Challenge();
         }

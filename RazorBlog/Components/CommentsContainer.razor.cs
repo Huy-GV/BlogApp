@@ -83,8 +83,7 @@ public partial class CommentsContainer : RichComponentBase
                 IsDeleted = c.ToBeDeleted,
             })
             .ToList();
-
-
+        
         IsCommentEditorDisplayed = CommentDtos
             .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
             .ToDictionary(x => x.Id, _ => false);

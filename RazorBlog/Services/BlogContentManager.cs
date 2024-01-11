@@ -11,20 +11,29 @@ using System.Threading.Tasks;
 
 namespace RazorBlog.Services;
 
-public class BlogContentManager(
-    RazorBlogDbContext dbContext,
-    IUserModerationService userModerationService,
-    UserManager<ApplicationUser> userManager,
-    IImageStorage imageStorage,
-    ILogger<BlogContentManager> logger,
-    IUserPermissionValidator userPermissionValidator) : IBlogContentManager
+public class BlogContentManager : IBlogContentManager
 {
-    private readonly RazorBlogDbContext _dbContext = dbContext;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly IUserModerationService _userModerationService = userModerationService;
-    private readonly IImageStorage _imageStorage = imageStorage;
-    private readonly ILogger<BlogContentManager> _logger = logger;
-    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
+    private readonly RazorBlogDbContext _dbContext;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserModerationService _userModerationService;
+    private readonly IImageStorage _imageStorage;
+    private readonly ILogger<BlogContentManager> _logger;
+    private readonly IUserPermissionValidator _userPermissionValidator;
+
+    public BlogContentManager(RazorBlogDbContext dbContext,
+        IUserModerationService userModerationService,
+        UserManager<ApplicationUser> userManager,
+        IImageStorage imageStorage,
+        ILogger<BlogContentManager> logger,
+        IUserPermissionValidator userPermissionValidator)
+    {
+        _dbContext = dbContext;
+        _userManager = userManager;
+        _userModerationService = userModerationService;
+        _imageStorage = imageStorage;
+        _logger = logger;
+        _userPermissionValidator = userPermissionValidator;
+    }
 
     public async Task<ServiceResultCode> DeleteBlogAsync(int blogId, string userName)
     {

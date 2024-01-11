@@ -10,16 +10,23 @@ using System.Threading.Tasks;
 
 namespace RazorBlog.Services;
 
-public class CommentContentManager(
-    RazorBlogDbContext dbContext,
-    IUserModerationService userModerationService,
-    IUserPermissionValidator userPermissionValidator,
-    UserManager<ApplicationUser> userManager) : ICommentContentManager
+public class CommentContentManager : ICommentContentManager
 {
-    private readonly RazorBlogDbContext _dbContext = dbContext;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly IUserModerationService _userModerationService = userModerationService;
-    private readonly IUserPermissionValidator _userPermissionValidator = userPermissionValidator;
+    private readonly RazorBlogDbContext _dbContext;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserModerationService _userModerationService;
+    private readonly IUserPermissionValidator _userPermissionValidator;
+
+    public CommentContentManager(RazorBlogDbContext dbContext,
+        IUserModerationService userModerationService,
+        IUserPermissionValidator userPermissionValidator,
+        UserManager<ApplicationUser> userManager)
+    {
+        _dbContext = dbContext;
+        _userManager = userManager;
+        _userModerationService = userModerationService;
+        _userPermissionValidator = userPermissionValidator;
+    }
 
     public async Task<ServiceResultCode> DeleteCommentAsync(int commentId, string userName)
     {

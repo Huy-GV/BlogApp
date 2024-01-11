@@ -9,12 +9,17 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Authentication;
 
 [AllowAnonymous]
-public class LogoutModel(
-    SignInManager<ApplicationUser> signInManager,
-    ILogger<LogoutModel> logger) : PageModel
+public class LogoutModel : PageModel
 {
-    private readonly ILogger<LogoutModel> _logger = logger;
-    private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+    private readonly ILogger<LogoutModel> _logger;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+
+    public LogoutModel(SignInManager<ApplicationUser> signInManager,
+        ILogger<LogoutModel> logger)
+    {
+        _logger = logger;
+        _signInManager = signInManager;
+    }
 
     public void OnGet()
     {

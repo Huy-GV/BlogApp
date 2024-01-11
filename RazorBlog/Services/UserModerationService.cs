@@ -12,14 +12,20 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Services;
 
-public class UserModerationService(
-    RazorBlogDbContext dbContext,
-    ILogger<UserModerationService> logger,
-    UserManager<ApplicationUser> userManager) : IUserModerationService
+public class UserModerationService : IUserModerationService
 {
-    private readonly RazorBlogDbContext _dbContext = dbContext;
-    private readonly ILogger<UserModerationService> _logger = logger;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly RazorBlogDbContext _dbContext;
+    private readonly ILogger<UserModerationService> _logger;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public UserModerationService(RazorBlogDbContext dbContext,
+        ILogger<UserModerationService> logger,
+        UserManager<ApplicationUser> userManager)
+    {
+        _dbContext = dbContext;
+        _logger = logger;
+        _userManager = userManager;
+    }
 
     private async Task<bool> IsUserNameFromAdminUser(string userName)
     {

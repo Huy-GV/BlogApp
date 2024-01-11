@@ -13,11 +13,14 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.User;
 
 [Authorize]
-public class IndexModel(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    ILogger<IndexModel> logger) : RichPageModelBase<IndexModel>(context, userManager, logger)
+public class IndexModel : RichPageModelBase<IndexModel>
 {
+    public IndexModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<IndexModel> logger) : base(context, userManager, logger)
+    {
+    }
+
     [BindProperty] public PersonalProfileDto UserDto { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(string? userName)

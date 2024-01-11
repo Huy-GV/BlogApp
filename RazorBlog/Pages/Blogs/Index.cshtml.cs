@@ -14,11 +14,14 @@ using RazorBlog.Models;
 namespace RazorBlog.Pages.Blogs;
 
 [AllowAnonymous]
-public class IndexModel(
-    RazorBlogDbContext context,
-    UserManager<ApplicationUser> userManager,
-    ILogger<IndexModel> logger) : RichPageModelBase<IndexModel>(context, userManager, logger)
+public class IndexModel : RichPageModelBase<IndexModel>
 {
+    public IndexModel(RazorBlogDbContext context,
+        UserManager<ApplicationUser> userManager,
+        ILogger<IndexModel> logger) : base(context, userManager, logger)
+    {
+    }
+
     [BindProperty]
     public IReadOnlyCollection<IndexBlogDto> Blogs { get; set; } = [];
 

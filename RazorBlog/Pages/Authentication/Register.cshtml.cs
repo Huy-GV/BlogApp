@@ -14,16 +14,23 @@ using RazorBlog.Services;
 namespace RazorBlog.Pages.Authentication;
 
 [AllowAnonymous]
-public class RegisterModel(
-    UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager,
-    ILogger<RegisterModel> logger,
-    IImageStorage imageStorage) : PageModel
+public class RegisterModel : PageModel
 {
-    private readonly IImageStorage _imageStorage = imageStorage;
-    private readonly ILogger<RegisterModel> _logger = logger;
-    private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IImageStorage _imageStorage;
+    private readonly ILogger<RegisterModel> _logger;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public RegisterModel(UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        ILogger<RegisterModel> logger,
+        IImageStorage imageStorage)
+    {
+        _imageStorage = imageStorage;
+        _logger = logger;
+        _signInManager = signInManager;
+        _userManager = userManager;
+    }
 
     [BindProperty]
     public CreateUserViewModel CreateUserViewModel { get; set; } = null!;

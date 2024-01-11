@@ -8,12 +8,18 @@ using RazorBlog.Data.Constants;
 
 namespace RazorBlog.Services;
 
-public class ImageLocalFileStorage(
-    ILogger<ImageLocalFileStorage> logger,
-    IWebHostEnvironment webHostEnv) : IImageStorage
+public class ImageLocalFileStorage : IImageStorage
 {
-    private readonly ILogger<ImageLocalFileStorage> _logger = logger;
-    private readonly IWebHostEnvironment _webHostEnv = webHostEnv;
+    private readonly ILogger<ImageLocalFileStorage> _logger;
+    private readonly IWebHostEnvironment _webHostEnv;
+
+    public ImageLocalFileStorage(ILogger<ImageLocalFileStorage> logger,
+        IWebHostEnvironment webHostEnv)
+    {
+        _logger = logger;
+        _webHostEnv = webHostEnv;
+    }
+
     private const string DefaultProfilePictureName = "default.jpg";
     private const string ImageDirectoryName = "images";
 

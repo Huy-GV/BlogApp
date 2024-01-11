@@ -4,8 +4,12 @@ using RazorBlog.Models;
 
 namespace RazorBlog.Data;
 
-public class RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+public class RazorBlogDbContext : IdentityDbContext<ApplicationUser>
 {
+    public RazorBlogDbContext(DbContextOptions<RazorBlogDbContext> options) : base(options)
+    {
+    }
+
     public DbSet<Blog> Blog { get; set; } = null!;
     public DbSet<Comment> Comment { get; set; } = null!;
     public DbSet<BanTicket> BanTicket { get; set; } = null!;

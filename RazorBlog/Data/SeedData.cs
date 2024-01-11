@@ -31,7 +31,7 @@ public static class SeedData
         UserManager<ApplicationUser> userManager,
         IConfiguration configuration)
     {
-        var userName = "admin";
+        const string userName = "admin";
         var password = configuration.GetValue<string>("SeedUser:Password")!;
         var user = await userManager.FindByNameAsync(userName);
 
