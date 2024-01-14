@@ -15,16 +15,16 @@ namespace RazorBlog.Pages.User;
 [Authorize]
 public class EditModel : RichPageModelBase<EditModel>
 {
-    private readonly IImageStorage _imageStorage;
+    private readonly IImageStore _imageStore;
 
     private readonly ILogger<EditModel> _logger;
 
     public EditModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<EditModel> logger,
-        IImageStorage imageStorage) : base(context, userManager, logger)
+        IImageStore imageStore) : base(context, userManager, logger)
     {
-        _imageStorage = imageStorage;
+        _imageStore = imageStore;
         _logger = logger;
     }
 
@@ -81,11 +81,11 @@ public class EditModel : RichPageModelBase<EditModel>
 
         if (EditUserViewModel.NewProfilePicture != null)
         {
-            var (result, imageUri) = await _imageStorage.UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
+            var (result, imageUri) = await _imageStore.UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);
             if (result == ServiceResultCode.Success)
             {
                 _logger.LogInformation("Deleting previous profile image of user named '{userName}')", user.UserName);
-                await _imageStorage.DeleteImage(applicationUser.ProfileImageUri);
+                await _imageStore.DeleteImage(applicationUser.ProfileImageUri);
                 applicationUser.ProfileImageUri = imageUri!;
             }
             else

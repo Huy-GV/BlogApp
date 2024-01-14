@@ -16,7 +16,7 @@ namespace RazorBlog.Pages.Authentication;
 [AllowAnonymous]
 public class RegisterModel : RichPageModelBase<RegisterModel>
 {
-    private readonly IImageStorage _imageStorage;
+    private readonly IImageStore _imageStore;
     private readonly ILogger<RegisterModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -26,9 +26,9 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger,
-        IImageStorage imageStorage) : base (dbContext, userManager, logger)
+        IImageStore imageStore) : base (dbContext, userManager, logger)
     {
-        _imageStorage = imageStorage;
+        _imageStore = imageStore;
         _logger = logger;
         _signInManager = signInManager;
         _userManager = userManager;
@@ -48,10 +48,10 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
             return Page();
         }
 
-        var profileImageUri = await _imageStorage.GetDefaultProfileImageUriAsync();
+        var profileImageUri = await _imageStore.GetDefaultProfileImageUriAsync();
         if (CreateUserViewModel.ProfilePicture is not null)
         {
-            var (uploadResult, uri) = await _imageStorage.UploadProfileImageAsync(CreateUserViewModel.ProfilePicture);
+            var (uploadResult, uri) = await _imageStore.UploadProfileImageAsync(CreateUserViewModel.ProfilePicture);
             if (uploadResult != ServiceResultCode.Success)
             {
                 return this.NavigateOnResult(uploadResult, BadRequest);

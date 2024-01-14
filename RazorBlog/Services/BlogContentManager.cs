@@ -16,21 +16,21 @@ public class BlogContentManager : IBlogContentManager
     private readonly RazorBlogDbContext _dbContext;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUserModerationService _userModerationService;
-    private readonly IImageStorage _imageStorage;
+    private readonly IImageStore _imageStore;
     private readonly ILogger<BlogContentManager> _logger;
     private readonly IUserPermissionValidator _userPermissionValidator;
 
     public BlogContentManager(RazorBlogDbContext dbContext,
         IUserModerationService userModerationService,
         UserManager<ApplicationUser> userManager,
-        IImageStorage imageStorage,
+        IImageStore imageStore,
         ILogger<BlogContentManager> logger,
         IUserPermissionValidator userPermissionValidator)
     {
         _dbContext = dbContext;
         _userManager = userManager;
         _userModerationService = userModerationService;
-        _imageStorage = imageStorage;
+        _imageStore = imageStore;
         _logger = logger;
         _userPermissionValidator = userPermissionValidator;
     }
@@ -105,8 +105,8 @@ public class BlogContentManager : IBlogContentManager
         {
             _logger.LogInformation("Replacing cover image of blog with ID {id}", editBlogViewModel.Id);
             
-            await _imageStorage.DeleteImage(blog.CoverImageUri);
-            var (result, imageUri) = await _imageStorage.UploadBlogCoverImageAsync(editBlogViewModel.CoverImage);
+            await _imageStore.DeleteImage(blog.CoverImageUri);
+            var (result, imageUri) = await _imageStore.UploadBlogCoverImageAsync(editBlogViewModel.CoverImage);
             if (result != ServiceResultCode.Success)
             {
                 _logger.LogError("Failed to upload new blog cover image");
@@ -138,7 +138,7 @@ public class BlogContentManager : IBlogContentManager
             return (ServiceResultCode.Unauthorized, null);
         }
 
-        var (result, imageUri) = await _imageStorage.UploadBlogCoverImageAsync(createBlogViewModel.CoverImage);
+        var (result, imageUri) = await _imageStore.UploadBlogCoverImageAsync(createBlogViewModel.CoverImage);
         if (result != ServiceResultCode.Success)
         {
             return (result, null);

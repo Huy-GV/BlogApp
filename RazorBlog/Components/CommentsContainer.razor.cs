@@ -42,7 +42,7 @@ public partial class CommentsContainer : RichComponentBase
     public ICommentContentManager CommentContentManager { get; set; } = null!;
 
     [Inject]
-    public IImageStorage ImageStorage { get; set; } = null!;
+    public IImageStore ImageStore { get; set; } = null!;
     
     private bool AreCommentsLoaded { get; set; } = false;
 
@@ -80,7 +80,7 @@ public partial class CommentsContainer : RichComponentBase
                     ? ReplacementText.DeletedUser
                     : c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
                 AuthorProfileImageUri = c.AuthorUser == null
-                    ? await ImageStorage.GetDefaultProfileImageUriAsync()
+                    ? await ImageStore.GetDefaultProfileImageUriAsync()
                     : c.AuthorUser.ProfileImageUri,
                 IsHidden = c.IsHidden,
                 IsDeleted = c.ToBeDeleted,

@@ -22,21 +22,20 @@ public class ReadModel : RichPageModelBase<ReadModel>
     private readonly IPostModerationService _postModerationService;
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager;
-    private readonly IImageStorage _imageStorage;
+    private readonly IImageStore _imageStore;
     
     public ReadModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<ReadModel> logger,
-        IUserModerationService userModerationService,
         IPostModerationService postModerationService,
         IBlogContentManager blogContentManager,
         IUserPermissionValidator userPermissionValidator,
-        IImageStorage imageStorage) : base(context, userManager, logger)
+        IImageStore imageStore) : base(context, userManager, logger)
     {
         _postModerationService = postModerationService;
         _userPermissionValidator = userPermissionValidator;
         _blogContentManager = blogContentManager;
-        _imageStorage = imageStorage;
+        _imageStore = imageStore;
     }
 
     [BindProperty]
@@ -83,7 +82,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
             IsHidden = blog.IsHidden,
             AuthorDescription = blog.AuthorUser?.Description ?? ReplacementText.DeletedUser,
             AuthorName = blog.AuthorUser?.UserName ?? ReplacementText.DeletedUser,
-            AuthorProfileImageUri = blog.AuthorUser?.ProfileImageUri ?? await _imageStorage.GetDefaultProfileImageUriAsync(),
+            AuthorProfileImageUri = blog.AuthorUser?.ProfileImageUri ?? await _imageStore.GetDefaultProfileImageUriAsync(),
         };
 
         var currentUser = await GetUserOrDefaultAsync();

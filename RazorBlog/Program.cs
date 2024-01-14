@@ -141,7 +141,7 @@ public class Program
             options.LogoutPath = "/Authentication/Logout";
         });
 
-        builder.Services.AddScoped<IImageStorage, ImageLocalFileStorage>();
+        builder.Services.AddScoped<IImageStore, LocalImageStore>();
         builder.Services.AddScoped<IUserModerationService, UserModerationService>();
         builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();
