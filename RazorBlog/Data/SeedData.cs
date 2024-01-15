@@ -32,7 +32,7 @@ public static class SeedData
         IConfiguration configuration)
     {
         const string userName = "admin";
-        var password = configuration.GetValue<string>("SeedUser:Password")!;
+        var password = configuration["SeedUser:Password"]!;
         var user = await userManager.FindByNameAsync(userName);
 
         if (user != null)

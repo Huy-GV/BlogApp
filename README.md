@@ -9,11 +9,19 @@ All blogs can be monitored by Moderators and Administrators.
 - Frameworks & Libraries: .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS
 
 ### Features
+#### Blog Posting
 - Users can post blogs and write comments after creating an account
 - Users can upload basic information and view basic usage stats on their profile page
+
+#### Moderating Users and Posts
 - Administrators can assign/ remove Moderator role to/ from any user
-- Moderators can hide posts/ comments and their status will be decided by Administrators
+- Moderators can hide blogs and comments comments, their final status will be decided by Administrators (either un-hidden or deleted)
 - Administrators can create and lift bans on offending users.
+
+#### Different Image Stores
+- Images uploaded by the user can be stored in an AWS S3 Bucket or in the local file system
+    - To configure AWS S3, see the [Set Up AWS Image Storage](#set-up-aws-image-storage)
+    - Even when S3 is used to store images, the application logo and default profile image is still stored locally in `wwwroot\images\readonly\`
 
 ## Images
 ### Home Page
@@ -74,7 +82,11 @@ All blogs can be monitored by Moderators and Administrators.
     dotnet user-secrets set "Aws:SecretKey" "YourAwsSecretKeyPassword"
     dotnet user-secrets set "Aws:S3:BucketName" "your-bucket-name"
     ```
-
+- To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true`:
+    ```json
+    // appsettings.{environment}.json
+    "UseAwsS3": true
+    ```
 
 ## Run Inside Docker Container:
 - Start the Docker engine and ensure it is targeting *Linux*
@@ -89,7 +101,9 @@ All blogs can be monitored by Moderators and Administrators.
         ```env
         # docker.env
         SeedUser__Password=SecurePassword123@@
-        ConnectionStrings__DefaultConnection=Server=sqlserver;Database=RazorBlog;User ID=SA;Password=YourDbPassword;MultipleActiveResultSets=false;
+
+        # ensure the server name is the same as the container name
+        ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YourDbPassword;MultipleActiveResultSets=false;
 
         # must be the same as password in connection string
         SqlServer__Password=YourDbPassword
@@ -97,6 +111,11 @@ All blogs can be monitored by Moderators and Administrators.
         # ensure certificate password and name is correct
         ASPNETCORE_Kestrel__Certificates__Default__Password=cert@password
         ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+
+        # define AWS user credentials here
+        Aws__SecretKey=YourAwsSecretKeyPassword
+        Aws__S3__BucketName=YourS3BucketName
+        Aws__AccessKey=YourAwsAccessKeyPassword
         ```
 - Run the below command in admin mode:
     ```bash

@@ -12,13 +12,20 @@ services:
 
             - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
             - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+
             - SeedUser__Password=${SeedUser__Password}
+            - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+
+            # AWS Credentials
+            - Aws__SecretKey=${Aws__SecretKey}
+            - Aws__S3__BucketName=${Aws__S3__BucketName}
+            - Aws__AccessKey=${Aws__AccessKey}
         depends_on:
-            - razor-blog-db
+            - razorblogdb
         volumes:
             - ~/.aspnet/https:/https:ro
-    razor-blog-db:
-        container_name: razor-blog-db
+    razorblogdb:
+        container_name: razorblogdb
         ports:
             - "1433:1433"
         image: "mcr.microsoft.com/mssql/server:2022-latest"

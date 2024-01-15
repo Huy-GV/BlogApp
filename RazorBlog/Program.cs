@@ -27,7 +27,7 @@ public class Program
         var builder = CreateHostBuilder(args);
         var app = builder.Build();
 
-        using (var scope = app.Services.CreateScope())
+        await using (var scope = app.Services.CreateAsyncScope())
         {
             await scope.ServiceProvider.SeedProductionData();
         }
@@ -180,7 +180,7 @@ public class Program
 
             builder.Services.AddScoped<IHaveDefaultProfileImage, LocalImageStore>();
             builder.Services.AddScoped<IImageStore, S3ImageStore>();
-        } 
+        }
         else
         {
             logger.LogInformation("Registering local image store");
