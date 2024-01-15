@@ -10,7 +10,7 @@
 <form enctype="multipart/form-data" method="post" class="log-in-form">
     <h4>Create a new account.</h4>
     <hr/>
-    <div asp-validation-summary="ModelOnly"></div>
+    <div asp-validation-summary="All"></div>
     <label asp-for="CreateUserViewModel.UserName">Username</label>
     <input asp-for="CreateUserViewModel.UserName" class="text-input" autocomplete="off"/>
     <span asp-validation-for="CreateUserViewModel.UserName" class="error-message"></span>

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Middleware;
 using RazorBlog.Models;
@@ -60,6 +61,8 @@ public class Program
 
     public static WebApplicationBuilder CreateHostBuilder(string[] args)
     {
+        var logger = LoggerFactory.Create(x => x.AddConsole()).CreateLogger<Program>();
+
         const string DockerEnvName = "Docker";
         var environmentName = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
             ? DockerEnvName
@@ -82,6 +85,8 @@ public class Program
         var dbLocation = builder.Configuration.GetConnectionString("DefaultLocation") ?? string.Empty;
         if (!string.IsNullOrEmpty(dbLocation))
         {
+            logger.LogInformation("Creating database directory '{directory}'", dbLocation);
+
             var dbDirectory = Path.GetDirectoryName(dbLocation)
                 ?? throw new InvalidOperationException("Invalid DB directory name");
             Directory.CreateDirectory(dbDirectory);
@@ -145,7 +150,6 @@ public class Program
             options.LogoutPath = "/Authentication/Logout";
         });
 
-        builder.Services.AddScoped<IImageStore, LocalImageStore>();
         builder.Services.AddScoped<IUserModerationService, UserModerationService>();
         builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();
@@ -153,49 +157,35 @@ public class Program
         builder.Services.AddScoped<ICommentContentManager, CommentContentManager>();
         builder.Services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
 
-        // TODO: only register one image store service
-        var useAwsS3 = bool.Parse(builder.Configuration["UseAwsS3"] ?? false.ToString());
-        //if (useAwsS3)
-        //{
-        //    var awsOptions = new AWSOptions
-        //    {
-        //        Credentials = new BasicAWSCredentials(
-        //            builder.Configuration["Aws:AccessKey"],
-        //            builder.Configuration["Aws:SecretKey"]),
-                
-        //    };
-
-        //    builder.Services.AddDefaultAWSOptions(awsOptions);
-        //    builder.Services.AddAWSService<IAmazonS3>();
-
-        //    builder.Services
-        //        .AddOptions<AwsS3Options>()
-        //        .Bind(builder.Configuration.GetRequiredSection("AwsS3"))
-        //        .ValidateOnStart()
-        //        .ValidateDataAnnotations();
-        //}
-
-        #region TEST
-        var testAwsOptions = new AWSOptions
+        var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var result) && result;
+        if (useAwsS3)
         {
-            Credentials = new BasicAWSCredentials(
-                builder.Configuration["Aws:AccessKey"],
-                builder.Configuration["Aws:SecretKey"]),
-            Region = Amazon.RegionEndpoint.APSoutheast2,
-        };
+            logger.LogInformation("Registering AWS S3 image store");
+            var awsOptions = new AWSOptions
+            {
+                Credentials = new BasicAWSCredentials(
+                    builder.Configuration["Aws:AccessKey"],
+                    builder.Configuration["Aws:SecretKey"]),
+                Region = Amazon.RegionEndpoint.APSoutheast2,
+            };
 
-        builder.Services.AddDefaultAWSOptions(testAwsOptions);
-        builder.Services.AddAWSService<IAmazonS3>();
+            builder.Services.AddDefaultAWSOptions(awsOptions);
+            builder.Services.AddAWSService<IAmazonS3>();
 
-        builder.Services
-            .AddOptions<AwsS3Options>()
-            .Bind(builder.Configuration.GetRequiredSection($"Aws:{AwsS3Options.Name}"))
-            .ValidateOnStart()
-            .ValidateDataAnnotations();
+            builder.Services
+                .AddOptions<AwsS3Options>()
+                .Bind(builder.Configuration.GetRequiredSection($"Aws:{AwsS3Options.Name}"))
+                .ValidateOnStart()
+                .ValidateDataAnnotations();
 
-        builder.Services.AddScoped<S3ImageStore>();
-        #endregion
-
+            builder.Services.AddScoped<IHaveDefaultProfileImage, LocalImageStore>();
+            builder.Services.AddScoped<IImageStore, S3ImageStore>();
+        } 
+        else
+        {
+            logger.LogInformation("Registering local image store");
+            builder.Services.AddScoped<IImageStore, LocalImageStore>();
+        }
 
         return builder;
     }
