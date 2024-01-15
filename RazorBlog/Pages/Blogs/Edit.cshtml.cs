@@ -17,14 +17,18 @@ public class EditModel : RichPageModelBase<EditModel>
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager;
 
+    private readonly S3ImageStore _s3ImageStore;
+
     public EditModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         IBlogContentManager blogContentManager,
         ILogger<EditModel> logger,
-        IUserPermissionValidator userPermissionValidator) : base(context, userManager, logger)
+        IUserPermissionValidator userPermissionValidator,
+        S3ImageStore s3ImageStore) : base(context, userManager, logger)
     {
         _userPermissionValidator = userPermissionValidator;
         _blogContentManager = blogContentManager;
+        _s3ImageStore = s3ImageStore;
     }
 
     [BindProperty]
@@ -67,6 +71,9 @@ public class EditModel : RichPageModelBase<EditModel>
 
     public async Task<IActionResult> OnPostEditBlogAsync()
     {
+        await _s3ImageStore.UploadBlogCoverImageAsync(EditBlogViewModel.CoverImage!);
+
+
         if (!ModelState.IsValid)
         {
             Logger.LogError("Invalid model state when editing blog");

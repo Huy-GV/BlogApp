@@ -62,6 +62,20 @@ All blogs can be monitored by Moderators and Administrators.
     dotnet run --configuration Release
     ```
 
+### Set Up AWS Image Storage
+- Initialize user secret storage:
+    ```bash
+    dotnet user-secrets init
+    ```
+- Set up AWS credentials:
+    ```bash
+    cd /directory/containing/RazorBlog.csproj/
+    dotnet user-secrets set "Aws:AccessKey" "YourAwsAccessKeyPassword"
+    dotnet user-secrets set "Aws:SecretKey" "YourAwsSecretKeyPassword"
+    dotnet user-secrets set "Aws:S3:BucketName" "your-bucket-name"
+    ```
+
+
 ## Run Inside Docker Container:
 - Start the Docker engine and ensure it is targeting *Linux*
 - Generate a certificate and store it in `~/.aspnet/https` on the host machine
