@@ -1,6 +1,6 @@
 ﻿namespace RazorBlog.Data.Constants;
 
-public class ReplacementText
+public static class ReplacementText
 {
     public const string HiddenContent = "[Hidden by Moderators]";
     public const string RemovedContent = "[Removed by Admin]";

@@ -14,7 +14,8 @@ public class LogoutModel : PageModel
     private readonly ILogger<LogoutModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public LogoutModel(SignInManager<ApplicationUser> signInManager,
+    public LogoutModel(
+        SignInManager<ApplicationUser> signInManager,
         ILogger<LogoutModel> logger)
     {
         _logger = logger;

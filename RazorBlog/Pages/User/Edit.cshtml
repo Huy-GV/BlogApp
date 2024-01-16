@@ -7,13 +7,13 @@
 }
 <p class="page-title">Update Profile</p>
 <main>
-    <form class="edit-form" method="post" asp-page-handler="EditBlog" enctype="multipart/form-data">
+    <form class="edit-form" method="post" enctype="multipart/form-data">
         <div>
             <label asp-for="EditUserViewModel.Description">
                 <strong>Description</strong>
             </label>
             <textarea rows="8" cols="50"
-                    asp-for="EditUserViewModel.Description">@Model.EditUserViewModel.Description</textarea>
+                      name="EditUserViewModel.Description">@Model.EditUserViewModel.Description</textarea>
             <span asp-validation-for="EditUserViewModel.Description" class="error-message"></span>
 
             <label asp-for="EditUserViewModel.NewProfilePicture">

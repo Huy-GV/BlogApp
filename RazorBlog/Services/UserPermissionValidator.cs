@@ -17,7 +17,6 @@ public class UserPermissionValidator : IUserPermissionValidator
     public async Task<bool> IsUserAllowedToUpdateOrDeletePostAsync<TPostId>(string userName, Post<TPostId> post) where TPostId : notnull
     {
         return
-            post != null &&
             !string.IsNullOrWhiteSpace(post.AuthorUser.UserName) &&
             userName == post.AuthorUser.UserName &&
             !post.IsHidden &&

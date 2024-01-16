@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
+using RazorBlog.Data.Seeder;
 using RazorBlog.Middleware;
 using RazorBlog.Models;
 using RazorBlog.Options;
@@ -22,6 +23,7 @@ namespace RazorBlog;
 
 public class Program
 {
+    private const string DockerEnvName = "Docker";
     public static async Task Main(string[] args)
     {
         var builder = CreateHostBuilder(args);
@@ -29,7 +31,8 @@ public class Program
 
         await using (var scope = app.Services.CreateAsyncScope())
         {
-            await scope.ServiceProvider.SeedProductionData();
+            var dataSeeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
+            await dataSeeder.SeedData();
         }
 
         if (builder.Environment.IsDevelopment())
@@ -59,11 +62,10 @@ public class Program
         await app.RunAsync();
     }
 
-    public static WebApplicationBuilder CreateHostBuilder(string[] args)
+    private static WebApplicationBuilder CreateHostBuilder(string[] args)
     {
         var logger = LoggerFactory.Create(x => x.AddConsole()).CreateLogger<Program>();
 
-        const string DockerEnvName = "Docker";
         var environmentName = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
             ? DockerEnvName
             : Environments.Development;
@@ -150,6 +152,8 @@ public class Program
             options.LogoutPath = "/Authentication/Logout";
         });
 
+        builder.Services.AddScoped<IDataSeeder, DataSeeder>();
+        
         builder.Services.AddScoped<IUserModerationService, UserModerationService>();
         builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();

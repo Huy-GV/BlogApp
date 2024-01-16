@@ -11,12 +11,8 @@ public class FileTypeAttribute : ValidationAttribute
 
     public override bool IsValid(object? value)
     {
-        if (value is IFormFile file)
-        {
-            return _allowedFileTypes.Contains(Path.GetExtension(file.FileName).TrimStart('.'));
-        }
-
-        return false;
+        return value is null || 
+               (value is IFormFile file && _allowedFileTypes.Contains(Path.GetExtension(file.FileName).TrimStart('.')));
     }
 
     public FileTypeAttribute(params string[] allowedTypes)

@@ -44,7 +44,7 @@ public partial class CommentsContainer : RichComponentBase
     [Inject]
     public IImageStore ImageStore { get; set; } = null!;
     
-    private bool AreCommentsLoaded { get; set; } = false;
+    private bool AreCommentsLoaded { get; set; }
 
     private IReadOnlyCollection<CommentDto> CommentDtos { get; set; } = [];
 
@@ -114,7 +114,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(base.CurrentUser);
+        var user = await UserManager.GetUserAsync(CurrentUser);
         if (user?.UserName == null)
         {
             NavigateToForbid();
@@ -139,7 +139,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(base.CurrentUser);
+        var user = await UserManager.GetUserAsync(CurrentUser);
         if (user?.UserName is null)
         {
             NavigateToForbid();
@@ -164,7 +164,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(base.CurrentUser);
+        var user = await UserManager.GetUserAsync(CurrentUser);
         if (user == null)
         {
             NavigateToForbid();
@@ -185,7 +185,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var user = await UserManager.GetUserAsync(base.CurrentUser);
+        var user = await UserManager.GetUserAsync(CurrentUser);
         if (user?.UserName == null)
         {
             NavigateToForbid();

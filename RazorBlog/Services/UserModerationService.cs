@@ -92,7 +92,7 @@ public class UserModerationService : IUserModerationService
         }
 
         await _userManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
-        _dbContext.BanTicket.Add(new BanTicket() { UserName = userToBanName, Expiry = expiry });
+        _dbContext.BanTicket.Add(new BanTicket { UserName = userToBanName, Expiry = expiry });
         await _dbContext.SaveChangesAsync();
 
         if (!expiry.HasValue)

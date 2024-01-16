@@ -28,7 +28,8 @@ public class EditModel : RichPageModelBase<EditModel>
         _logger = logger;
     }
 
-    [BindProperty] public EditUserViewModel EditUserViewModel { get; set; } = null!;
+    [BindProperty] 
+    public EditUserViewModel EditUserViewModel { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(string? userName)
     {

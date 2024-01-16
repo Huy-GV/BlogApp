@@ -23,7 +23,7 @@ public class RichComponentBase : ComponentBase
 
     protected string CurrentUserName => CurrentUser.Identity?.Name ?? string.Empty;
 
-    protected bool IsAuthenticated => CurrentUser?.Identity?.IsAuthenticated ?? false;
+    protected bool IsAuthenticated => CurrentUser.Identity?.IsAuthenticated ?? false;
 
     protected override async Task OnParametersSetAsync()
     {

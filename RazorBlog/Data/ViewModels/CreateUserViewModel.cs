@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using RazorBlog.Data.Validation;
 
 namespace RazorBlog.Data.ViewModels;
 
@@ -22,6 +23,7 @@ public class CreateUserViewModel
     public string ConfirmPassword { get; set; } = string.Empty;
     
     [Display(Name = "Profile picture (optional)")]
+    [FileType("jpg", "jpeg", "png", ErrorMessage = "File type must be one of: .png, .jpeg, .jpg")]
     public IFormFile? ProfilePicture { get; set; }
 
     [Required]

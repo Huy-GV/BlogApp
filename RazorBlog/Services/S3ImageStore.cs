@@ -36,7 +36,16 @@ public class S3ImageStore : IImageStore
 
     public async Task<ServiceResultCode> DeleteImage(string uri)
     {
-        var s3Uri = new S3Uri(uri);
+        S3Uri s3Uri;
+        try
+        {
+            s3Uri = new S3Uri(uri);
+        }
+        catch (UriFormatException exception)
+        {
+            _logger.LogError("Failed to convert image URI '{uri}' to S3 URI: {ex}", uri, exception);
+            return ServiceResultCode.InvalidState;
+        }
 
         var request = new DeleteObjectRequest
         {
@@ -67,9 +76,9 @@ public class S3ImageStore : IImageStore
         }
     }
 
-    public Task<string> GetDefaultProfileImageUriAsync()
+    public async Task<string> GetDefaultProfileImageUriAsync()
     {
-        return _defaultProfileImageProvider.GetDefaultProfileImageUriAsync();
+        return await _defaultProfileImageProvider.GetDefaultProfileImageUriAsync();
     }
 
     private static string BuildFileName(string originalName, string type)
@@ -89,9 +98,7 @@ public class S3ImageStore : IImageStore
 
     public async Task<(ServiceResultCode, string?)> UploadBlogCoverImageAsync(IFormFile imageFile)
     {
-        var objectName = Guid.NewGuid().ToString();
-
-        var tag = new Tag()
+        var tag = new Tag
         {
             Key = nameof(ImageType),
             Value = ImageType.BlogCover.ToString(),
@@ -134,9 +141,7 @@ public class S3ImageStore : IImageStore
 
     public async Task<(ServiceResultCode, string?)> UploadProfileImageAsync(IFormFile imageFile)
     {
-        var objectName = Guid.NewGuid().ToString();
-
-        var tag = new Tag()
+        var tag = new Tag
         {
             Key = nameof(ImageType),
             Value = ImageType.ProfileImage.ToString(),
