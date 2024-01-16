@@ -30,6 +30,12 @@ All blogs can be monitored by Moderators and Administrators.
 ### Profile Page
 ![Screenshot (1062)](https://user-images.githubusercontent.com/78300296/142516988-522a6d22-2af0-41a2-9b28-bf19ad9adab0.png)
 
+### Post Hidden By Moderators
+![image](https://github.com/Huy-GV/RazorBlog/assets/78300296/7ce30232-4659-457d-8d96-8c145faf0827)
+
+### Admin User Reviewing Reported Post
+![image](https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965)
+
 ##  Run Locally
 ### Pre-requisites
 - Required installations:
@@ -82,9 +88,8 @@ All blogs can be monitored by Moderators and Administrators.
     dotnet user-secrets set "Aws:SecretKey" "YourAwsSecretKeyPassword"
     dotnet user-secrets set "Aws:S3:BucketName" "your-bucket-name"
     ```
-- To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true`:
+- To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in your `appsettings.{env}.json` file:
     ```json
-    // appsettings.{environment}.json
     "UseAwsS3": true
     ```
 
