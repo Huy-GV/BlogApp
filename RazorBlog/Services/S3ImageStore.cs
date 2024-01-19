@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal.Util;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -10,6 +9,7 @@ using RazorBlog.Options;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using RazorBlog.Utils;
 
 namespace RazorBlog.Services;
 
@@ -36,17 +36,12 @@ public class S3ImageStore : IImageStore
 
     public async Task<ServiceResultCode> DeleteImage(string uri)
     {
-        S3Uri s3Uri;
-        try
+        if (!AwsUtils.TryConvertToS3Uri(uri, out var s3Uri))
         {
-            s3Uri = new S3Uri(uri);
-        }
-        catch (UriFormatException exception)
-        {
-            _logger.LogError("Failed to convert image URI '{uri}' to S3 URI: {ex}", uri, exception);
+            _logger.LogError("Failed to convert image URI '{uri}' to S3 URI", uri);
             return ServiceResultCode.InvalidState;
         }
-
+        
         var request = new DeleteObjectRequest
         {
             Key = s3Uri.Key,

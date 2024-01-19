@@ -1,17 +1,9 @@
 ﻿using RazorBlog.Communication;
-using RazorBlog.Models;
 using System.Threading.Tasks;
 
 namespace RazorBlog.Services;
 public interface IPostModerationService
 {
-    /// <summary>
-    /// Finds a ban ticket by user name asynchronously.
-    /// </summary>
-    /// <param name="userName">The name of the user to search for.</param>
-    /// <returns>A <see cref="BanTicket"/> representing the ban information, or <c>null</c> if not found.</returns>
-    Task<BanTicket?> FindByUserNameAsync(string userName);
-
     /// <summary>
     /// Hides a blog asynchronously.
     /// </summary>

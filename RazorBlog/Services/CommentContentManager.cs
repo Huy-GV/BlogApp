@@ -86,7 +86,10 @@ public class CommentContentManager : ICommentContentManager
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(userName, comment))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
+                userName, 
+                comment.IsHidden,
+                comment.AuthorUserName))
         {
             return ServiceResultCode.Unauthorized;
         }

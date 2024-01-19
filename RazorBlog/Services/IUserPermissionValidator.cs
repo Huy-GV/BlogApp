@@ -18,15 +18,15 @@ public interface IUserPermissionValidator
     /// <summary>
     /// Checks if the user is allowed to update or delete a specific post asynchronously.
     /// </summary>
-    /// <typeparam name="TPostId">The type of the post identifier.</typeparam>
     /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="post">The post to check permission for.</param>
+    /// <param name="isPostHidden">Whether the post is hidden by a moderator.</param>
+    /// <param name="postAuthorUsername">User name of the author.</param>
     /// <returns>
     /// A task that represents the asynchronous operation.
     /// The task result is <c>true</c> if the user is allowed to update or delete the specified post; otherwise, <c>false</c>.
     /// </returns>
-    Task<bool> IsUserAllowedToUpdateOrDeletePostAsync<TPostId>(string userName, Post<TPostId> post) where TPostId : notnull;
-
+    Task<bool> IsUserAllowedToUpdateOrDeletePostAsync(string userName, bool isPostHidden, string postAuthorUsername);
+    
     /// <summary>
     /// Checks if the user is allowed to update or delete multiple posts asynchronously.
     /// </summary>

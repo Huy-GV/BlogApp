@@ -28,4 +28,25 @@ public static class PageModelExtensions
             _ => pageModel.BadRequest()
         };
     }
+    
+    public static IActionResult NavigateOnError(
+        this PageModel pageModel, 
+        ServiceResultCode result)
+    {
+        if (result == ServiceResultCode.Success)
+        {
+            throw new InvalidOperationException();
+        }
+
+        return result switch
+        {
+            ServiceResultCode.NotFound => pageModel.NotFound(),
+            ServiceResultCode.Unauthorized => pageModel.StatusCode(403),
+            ServiceResultCode.Unauthenticated => pageModel.Challenge(),
+            ServiceResultCode.InvalidArguments or
+                ServiceResultCode.InvalidState or
+                ServiceResultCode.Error => pageModel.BadRequest(),
+            _ => pageModel.BadRequest()
+        };
+    }
 }

@@ -10,16 +10,20 @@ using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Models;
+using RazorBlog.Services;
 
 namespace RazorBlog.Pages.Blogs;
 
 [AllowAnonymous]
 public class IndexModel : RichPageModelBase<IndexModel>
 {
+    private readonly IBlogReader _blogReader;
     public IndexModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
-        ILogger<IndexModel> logger) : base(context, userManager, logger)
+        ILogger<IndexModel> logger, 
+        IBlogReader blogReader) : base(context, userManager, logger)
     {
+        _blogReader = blogReader;
     }
 
     [BindProperty]
@@ -30,32 +34,6 @@ public class IndexModel : RichPageModelBase<IndexModel>
 
     public async Task OnGetAsync()
     {
-        SearchString = SearchString?.Trim().Trim(' ') ?? string.Empty;
-        Blogs = await DbContext.Blog
-            .Include(b => b.AuthorUser)
-            .Include(b => b.Comments)
-            .ThenInclude(c => c.AuthorUser)
-            .Where(x => !x.IsHidden)
-            .Select(b => new IndexBlogDto
-            {
-                Id = b.Id,
-                Title = b.IsHidden ? ReplacementText.HiddenContent : b.Title,
-                AuthorName = b.AuthorUser == null
-                    ? ReplacementText.DeletedUser
-                    : b.AuthorUser.UserName!,
-                CreationTime = b.CreationTime,
-                LastUpdateTime = b.LastUpdateTime,
-                ViewCount = b.ViewCount,
-                CoverImageUri = b.CoverImageUri,
-                Introduction = b.IsHidden ? ReplacementText.HiddenContent : b.Introduction
-            })
-            .Where(b => SearchString == null ||
-                        SearchString == string.Empty ||
-                        b.Title.Contains(SearchString) ||
-                        b.AuthorName.Contains(SearchString))
-            .OrderByDescending(x => x.CreationTime)
-            .ThenByDescending(x => x.LastUpdateTime)
-            .Take(10)
-            .ToListAsync();
+        Blogs = await _blogReader.GetBlogsAsync(searchString: SearchString.Trim().Trim(' '));
     }
 }

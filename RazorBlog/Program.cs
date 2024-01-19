@@ -160,6 +160,7 @@ public class Program
         builder.Services.AddScoped<IBlogContentManager, BlogContentManager>();
         builder.Services.AddScoped<ICommentContentManager, CommentContentManager>();
         builder.Services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
+        builder.Services.AddScoped<IBlogReader, BlogReader>();
 
         var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var result) && result;
         if (useAwsS3)

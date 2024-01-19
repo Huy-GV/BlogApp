@@ -90,7 +90,7 @@ public class BlogContentManager : IBlogContentManager
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(userName, blog))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(userName, blog.IsHidden, blog.AuthorUserName))
         {
             return ServiceResultCode.Unauthorized;
         }

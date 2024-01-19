@@ -49,7 +49,10 @@ public class EditModel : RichPageModelBase<EditModel>
             return NotFound();
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(user.UserName ?? string.Empty, blog))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
+                user.UserName ?? string.Empty, 
+                blog.IsHidden,
+                blog.AuthorUserName))
         {
             return Forbid();
         }

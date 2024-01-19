@@ -14,12 +14,12 @@ public class UserPermissionValidator : IUserPermissionValidator
         _userModerationService = userModerationService;
     }
 
-    public async Task<bool> IsUserAllowedToUpdateOrDeletePostAsync<TPostId>(string userName, Post<TPostId> post) where TPostId : notnull
+    public async Task<bool> IsUserAllowedToUpdateOrDeletePostAsync(string userName, bool isPostHidden, string postAuthorUsername)
     {
         return
-            !string.IsNullOrWhiteSpace(post.AuthorUser.UserName) &&
-            userName == post.AuthorUser.UserName &&
-            !post.IsHidden &&
+            !string.IsNullOrWhiteSpace(postAuthorUsername) &&
+            userName == postAuthorUsername &&
+            !isPostHidden &&
             await IsUserAllowedToCreatePostAsync(userName);
     }
 
