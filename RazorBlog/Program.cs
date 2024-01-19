@@ -161,6 +161,8 @@ public class Program
         builder.Services.AddScoped<ICommentContentManager, CommentContentManager>();
         builder.Services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
         builder.Services.AddScoped<IBlogReader, BlogReader>();
+        builder.Services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
+        builder.Services.AddScoped<IHaveDefaultProfileImage, LocalImageStore>();
 
         var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var result) && result;
         if (useAwsS3)
@@ -183,13 +185,17 @@ public class Program
                 .ValidateOnStart()
                 .ValidateDataAnnotations();
 
-            builder.Services.AddScoped<IHaveDefaultProfileImage, LocalImageStore>();
             builder.Services.AddScoped<IImageStore, S3ImageStore>();
+            
+            // register LocalImageUriResolver as a fallback
+            builder.Services.AddScoped<IImageUriResolver, S3ImageUriResolver>();
+            builder.Services.AddScoped<IImageUriResolver, LocalImageUriResolver>();
         }
         else
         {
             logger.LogInformation("Registering local image store");
             builder.Services.AddScoped<IImageStore, LocalImageStore>();
+            builder.Services.AddScoped<IImageUriResolver, LocalImageUriResolver>();
         }
 
         return builder;

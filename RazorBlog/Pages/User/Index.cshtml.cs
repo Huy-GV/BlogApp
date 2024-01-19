@@ -9,16 +9,24 @@ using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
 using RazorBlog.Data.Dtos;
 using RazorBlog.Models;
+using RazorBlog.Services;
 
 namespace RazorBlog.Pages.User;
 
 [Authorize]
 public class IndexModel : RichPageModelBase<IndexModel>
 {
+    private readonly IAggregateImageUriResolver _aggregateImageUriResolver;
+    private readonly IHaveDefaultProfileImage _defaultProfileImageProvider;
+    
     public IndexModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
-        ILogger<IndexModel> logger) : base(context, userManager, logger)
+        ILogger<IndexModel> logger, 
+        IAggregateImageUriResolver aggregateImageUriResolver, 
+        IHaveDefaultProfileImage defaultProfileImageProvider) : base(context, userManager, logger)
     {
+        _aggregateImageUriResolver = aggregateImageUriResolver;
+        _defaultProfileImageProvider = defaultProfileImageProvider;
     }
 
     [BindProperty] public PersonalProfileDto UserDto { get; set; } = null!;
@@ -57,7 +65,8 @@ public class IndexModel : RichPageModelBase<IndexModel>
         {
             UserName = userName,
             BlogCount = (uint)blogs.Count,
-            ProfileImageUri = user.ProfileImageUri,
+            ProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(user.ProfileImageUri) 
+                              ?? await _defaultProfileImageProvider.GetDefaultProfileImageUriAsync(),
             BlogsGroupedByYear = blogsGroupedByYear,
             Description = string.IsNullOrEmpty(user.Description)
                 ? "None"

@@ -54,7 +54,7 @@ public class LocalImageStore : IImageStore
         catch (Exception ex)
         {
             _logger.LogError("Failed to remove image at {fullImageFilePath}: {ex}", fullImageFilePath, ex);
-            return Task.FromResult(ServiceResultCode.Error);;
+            return Task.FromResult(ServiceResultCode.Error);
         }
     }
 
@@ -115,6 +115,6 @@ public class LocalImageStore : IImageStore
         _logger.LogInformation("File path of uploaded image is '{filePath}'", absoluteImageFilePath);
         
         // return the portion of the image path relative to the web content directory
-        return relativeImageFilePath;
+        return Uri.EscapeDataString(relativeImageFilePath);
     }
 }

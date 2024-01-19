@@ -18,8 +18,6 @@ namespace RazorBlog.Pages.Admin;
 public class DetailsModel : RichPageModelBase<DetailsModel>
 {
     private readonly IUserModerationService _userModerationService;
-    private readonly IPostDeletionScheduler _postDeletionService;
-    private readonly IPostModerationService _postModerationService;
 
     public DetailsModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
@@ -29,8 +27,6 @@ public class DetailsModel : RichPageModelBase<DetailsModel>
         IPostDeletionScheduler postDeletionService) : base(context, userManager, logger)
     {
         _userModerationService = userUserModerationService;
-        _postDeletionService = postDeletionService;
-        _postModerationService = postModerationService;
     }
 
     [BindProperty(SupportsGet =true)] 

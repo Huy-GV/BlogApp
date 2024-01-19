@@ -1,23 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.S3;
-using Amazon.S3.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Communication;
 using RazorBlog.Data;
 using RazorBlog.Data.Constants;
 using RazorBlog.Data.Dtos;
-using RazorBlog.Data.ViewModels;
 using RazorBlog.Extensions;
 using RazorBlog.Models;
 using RazorBlog.Services;
-using RazorBlog.Utils;
 
 namespace RazorBlog.Pages.Blogs;
 
@@ -27,25 +22,20 @@ public class ReadModel : RichPageModelBase<ReadModel>
     private readonly IPostModerationService _postModerationService;
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager;
-    private readonly IImageStore _imageStore;
-    private readonly IAmazonS3 _s3Client;
     private readonly IBlogReader _blogReader;
     
-    public ReadModel(RazorBlogDbContext context,
+    public ReadModel(
+        RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<ReadModel> logger,
         IPostModerationService postModerationService,
         IBlogContentManager blogContentManager,
         IUserPermissionValidator userPermissionValidator,
-        IImageStore imageStore, 
-        IAmazonS3 s3Client, 
         IBlogReader blogReader) : base(context, userManager, logger)
     {
         _postModerationService = postModerationService;
         _userPermissionValidator = userPermissionValidator;
         _blogContentManager = blogContentManager;
-        _imageStore = imageStore;
-        _s3Client = s3Client;
         _blogReader = blogReader;
     }
 

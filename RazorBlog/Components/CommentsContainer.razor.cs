@@ -42,7 +42,10 @@ public partial class CommentsContainer : RichComponentBase
     public ICommentContentManager CommentContentManager { get; set; } = null!;
 
     [Inject]
-    public IImageStore ImageStore { get; set; } = null!;
+    public IHaveDefaultProfileImage DefaultProfileImageProvider { get; set; } = null!;
+    
+    [Inject]
+    public IAggregateImageUriResolver AggregateImageUriResolver { get; set; } = null!;
     
     private bool AreCommentsLoaded { get; set; }
 
@@ -76,12 +79,9 @@ public partial class CommentsContainer : RichComponentBase
                 CreationTime = c.CreationTime,
                 LastUpdateTime = c.LastUpdateTime,
                 Content = c.IsHidden ? ReplacementText.HiddenContent : c.Body,
-                AuthorName = c.AuthorUser == null
-                    ? ReplacementText.DeletedUser
-                    : c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
-                AuthorProfileImageUri = c.AuthorUser == null
-                    ? await ImageStore.GetDefaultProfileImageUriAsync()
-                    : c.AuthorUser.ProfileImageUri,
+                AuthorName = c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
+                AuthorProfileImageUri = await AggregateImageUriResolver.ResolveImageUriAsync(c.AuthorUser.ProfileImageUri)
+                    ?? await DefaultProfileImageProvider.GetDefaultProfileImageUriAsync(),
                 IsHidden = c.IsHidden,
                 IsDeleted = c.ToBeDeleted,
             })
