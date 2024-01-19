@@ -82,7 +82,20 @@ public class S3ImageStore : IImageStore
             "_",
             DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
             type,
-            originalName.Trim('.', '_', '@', ' ', '#', '/', '\\', '!', '^', '&', '*'));
+            originalName
+                .Trim('.', '_', '@', ' ', '#', '/', '\\', '!', '^', '&', '*')
+                .Replace(".", "")
+                .Replace("_", "")
+                .Replace("@", "")
+                .Replace(" ", "")
+                .Replace("#", "")
+                .Replace("/", "")
+                .Replace("\\", "")
+                .Replace("!", "")
+                .Replace("^", "")
+                .Replace("&", "")
+                .Replace("*", "")
+            );
     }
 
     private string BuildImageUrl(string objectKey)

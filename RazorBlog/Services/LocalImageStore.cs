@@ -92,7 +92,19 @@ public class LocalImageStore : IImageStore
             "_", 
             DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), 
             type,
-            originalName.Trim(Path.GetInvalidFileNameChars()));
+            originalName
+                .Trim(Path.GetInvalidFileNameChars()))
+                .Replace(".", "")
+                .Replace("_", "")
+                .Replace("@", "")
+                .Replace(" ", "")
+                .Replace("#", "")
+                .Replace("/", "")
+                .Replace("\\", "")
+                .Replace("!", "")
+                .Replace("^", "")
+                .Replace("&", "")
+                .Replace("*", "");
     }
 
     private async Task<string> UploadImageAsync(
