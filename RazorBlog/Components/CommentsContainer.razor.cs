@@ -42,7 +42,7 @@ public partial class CommentsContainer : RichComponentBase
     public ICommentContentManager CommentContentManager { get; set; } = null!;
 
     [Inject]
-    public IHaveDefaultProfileImage DefaultProfileImageProvider { get; set; } = null!;
+    public IDefaultProfileImageProvider DefaultProfileImageProvider { get; set; } = null!;
     
     [Inject]
     public IAggregateImageUriResolver AggregateImageUriResolver { get; set; } = null!;

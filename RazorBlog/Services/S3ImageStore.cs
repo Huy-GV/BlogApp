@@ -18,7 +18,7 @@ public class S3ImageStore : IImageStore
     private readonly ILogger<S3ImageStore> _logger;
     private readonly IAmazonS3 _awsS3Client;
     private readonly AwsS3Options _awsS3Options;
-    private readonly IHaveDefaultProfileImage _defaultProfileImageProvider;
+    private readonly IDefaultProfileImageProvider _defaultProfileImageProvider;
 
     private const string AwsS3UrlFormat = "https://{0}.s3.{1}.amazonaws.com/{2}";
 
@@ -26,7 +26,7 @@ public class S3ImageStore : IImageStore
         ILogger<S3ImageStore> logger,
         IAmazonS3 awsS3Client,
         IOptions<AwsS3Options> awsS3Options,
-        IHaveDefaultProfileImage defaultProfileImageProvider)
+        IDefaultProfileImageProvider defaultProfileImageProvider)
     {
         _logger = logger;
         _awsS3Client = awsS3Client;

@@ -17,13 +17,13 @@ namespace RazorBlog.Pages.User;
 public class IndexModel : RichPageModelBase<IndexModel>
 {
     private readonly IAggregateImageUriResolver _aggregateImageUriResolver;
-    private readonly IHaveDefaultProfileImage _defaultProfileImageProvider;
+    private readonly IDefaultProfileImageProvider _defaultProfileImageProvider;
     
     public IndexModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<IndexModel> logger, 
         IAggregateImageUriResolver aggregateImageUriResolver, 
-        IHaveDefaultProfileImage defaultProfileImageProvider) : base(context, userManager, logger)
+        IDefaultProfileImageProvider defaultProfileImageProvider) : base(context, userManager, logger)
     {
         _aggregateImageUriResolver = aggregateImageUriResolver;
         _defaultProfileImageProvider = defaultProfileImageProvider;

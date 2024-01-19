@@ -162,7 +162,7 @@ public class Program
         builder.Services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
         builder.Services.AddScoped<IBlogReader, BlogReader>();
         builder.Services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
-        builder.Services.AddScoped<IHaveDefaultProfileImage, LocalImageStore>();
+        builder.Services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();
 
         var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var result) && result;
         if (useAwsS3)

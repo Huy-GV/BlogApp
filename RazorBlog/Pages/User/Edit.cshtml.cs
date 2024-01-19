@@ -91,7 +91,7 @@ public class EditModel : RichPageModelBase<EditModel>
             }
             else
             {
-                return this.NavigateOnResult(result, BadRequest);
+                return this.NavigateOnError(result);
             }
         }
 

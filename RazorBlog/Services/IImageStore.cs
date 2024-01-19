@@ -4,7 +4,7 @@ using RazorBlog.Communication;
 
 namespace RazorBlog.Services;
 
-public interface IImageStore : IHaveDefaultProfileImage
+public interface IImageStore : IDefaultProfileImageProvider
 {
     /// <summary>
     /// Uploads the cover image of a blog.

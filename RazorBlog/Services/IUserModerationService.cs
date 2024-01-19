@@ -8,7 +8,7 @@ namespace RazorBlog.Services;
 public interface IUserModerationService
 {
     /// <summary>
-    ///     Checks if a user is banned.
+    /// Checks if a user is banned.
     /// </summary>
     /// <param name="userName"></param>
     /// <returns></returns>
@@ -22,7 +22,7 @@ public interface IUserModerationService
     Task<BanTicket?> FindBanTicketByUserNameAsync(string userName);
 
     /// <summary>
-    ///     Remove the ban ticket immediately.
+    /// Remove the ban ticket immediately.
     /// </summary>
     /// <param name="bannedUserName">Name of banned user.</param>
     /// <param name="userName">Name of user lifting the ban.</param>
@@ -30,7 +30,7 @@ public interface IUserModerationService
     Task<ServiceResultCode> RemoveBanTicketAsync(string bannedUserName, string userName);
 
     /// <summary>
-    ///     Create a ban ticket.
+    /// Create a ban ticket.
     /// </summary>
     /// <param name="userToBanName">Name of user being banned.</param>
     /// <param name="userName">Name of user executing the ban.</param>

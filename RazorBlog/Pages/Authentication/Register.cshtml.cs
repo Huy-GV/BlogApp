@@ -54,7 +54,7 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
             var (uploadResult, uri) = await _imageStore.UploadProfileImageAsync(CreateUserViewModel.ProfilePicture);
             if (uploadResult != ServiceResultCode.Success)
             {
-                return this.NavigateOnResult(uploadResult, BadRequest);
+                return this.NavigateOnError(uploadResult);
             }
 
             profileImageUri = uri!;

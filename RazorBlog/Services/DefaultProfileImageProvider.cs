@@ -2,7 +2,7 @@
 
 namespace RazorBlog.Services;
 
-public interface IHaveDefaultProfileImage
+public interface IDefaultProfileImageProvider
 {
     /// <summary>
     /// Gets the default profile image URI.
