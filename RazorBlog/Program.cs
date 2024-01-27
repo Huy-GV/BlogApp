@@ -70,6 +70,7 @@ public class Program
             ? DockerEnvName
             : Environments.Development;
 
+        logger.LogInformation("Using environment '{env}'", environmentName);
         var webApplicationOptions = new WebApplicationOptions
         {
             EnvironmentName = environmentName,
@@ -80,11 +81,17 @@ public class Program
         if (environmentName == DockerEnvName)
         {
             // secrets are configured via environment variables in Docker
+            logger.LogInformation("Adding environment variables");
             builder.Configuration.AddEnvironmentVariables();
         }
 
         var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        var dbLocation = builder.Configuration.GetConnectionString("DefaultLocation") ?? string.Empty;
+        if (string.IsNullOrEmpty(dbConnectionString))
+        {
+            throw new InvalidOperationException("Connection string must not be null");
+        }
+
+        var dbLocation = builder.Configuration.GetConnectionString("DefaultLocation");
         if (!string.IsNullOrEmpty(dbLocation))
         {
             logger.LogInformation("Creating database directory '{directory}'", dbLocation);
@@ -95,7 +102,11 @@ public class Program
             dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
         }
 
-        builder.Services.AddDbContext<RazorBlogDbContext>(options => options.UseSqlServer(dbConnectionString));
+        builder.Services.AddDbContext<RazorBlogDbContext>(
+            options => options.UseSqlServer(
+                dbConnectionString,
+                x => x.EnableRetryOnFailure(2))
+        );
 
         // for use in Blazor components as injected DB context is not scoped
         builder.Services.AddDbContextFactory<RazorBlogDbContext>(options =>
@@ -153,7 +164,6 @@ public class Program
         });
 
         builder.Services.AddScoped<IDataSeeder, DataSeeder>();
-        
         builder.Services.AddScoped<IUserModerationService, UserModerationService>();
         builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         builder.Services.AddScoped<IPostModerationService, PostModerationService>();
@@ -186,7 +196,7 @@ public class Program
                 .ValidateDataAnnotations();
 
             builder.Services.AddScoped<IImageStore, S3ImageStore>();
-            
+
             // register LocalImageUriResolver as a fallback
             builder.Services.AddScoped<IImageUriResolver, S3ImageUriResolver>();
             builder.Services.AddScoped<IImageUriResolver, LocalImageUriResolver>();

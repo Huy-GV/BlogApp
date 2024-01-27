@@ -17,10 +17,10 @@ internal class DataSeeder : IDataSeeder
     private readonly ILogger<DataSeeder> _logger;
 
     public DataSeeder(
-        RazorBlogDbContext dbContext, 
-        IConfiguration configuration, 
-        RoleManager<IdentityRole> roleManager, 
-        UserManager<ApplicationUser> userManager, 
+        RazorBlogDbContext dbContext,
+        IConfiguration configuration,
+        RoleManager<IdentityRole> roleManager,
+        UserManager<ApplicationUser> userManager,
         ILogger<DataSeeder> logger)
     {
         _dbContext = dbContext;
@@ -34,7 +34,7 @@ internal class DataSeeder : IDataSeeder
     {
         _logger.LogInformation("Migrating database");
         await _dbContext.Database.MigrateAsync();
-        
+
         await EnsureRole(Roles.AdminRole);
         await EnsureRole(Roles.ModeratorRole);
         await EnsureAdminUser();
@@ -56,16 +56,16 @@ internal class DataSeeder : IDataSeeder
 
             return;
         }
-        
+
         user = new ApplicationUser
         {
             UserName = userName,
             EmailConfirmed = true,
-            ProfileImageUri = @"/readonly/default.jpg",
+            ProfileImageUri = @"images/readonly/default.jpg",
             Description =
                 "Lorem ipsum dolor sed temda met sedim ips dolor sed temda met sedim ips dolor sed temda met sedim ips"
         };
-        
+
         _logger.LogInformation("Creating admin user");
         await _userManager.CreateAsync(user, password);
         await _userManager.AddToRoleAsync(user, Roles.AdminRole);
