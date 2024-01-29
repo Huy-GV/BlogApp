@@ -84,17 +84,17 @@ public class S3ImageStore : IImageStore
             type,
             originalName
                 .Trim('.', '_', '@', ' ', '#', '/', '\\', '!', '^', '&', '*')
-                .Replace(".", "")
-                .Replace("_", "")
-                .Replace("@", "")
-                .Replace(" ", "")
-                .Replace("#", "")
-                .Replace("/", "")
-                .Replace("\\", "")
-                .Replace("!", "")
-                .Replace("^", "")
-                .Replace("&", "")
-                .Replace("*", "")
+                .Replace(".", string.Empty)
+                .Replace("_", string.Empty)
+                .Replace("@", string.Empty)
+                .Replace(" ", string.Empty)
+                .Replace("#", string.Empty)
+                .Replace("/", string.Empty)
+                .Replace("\\", string.Empty)
+                .Replace("!", string.Empty)
+                .Replace("^", string.Empty)
+                .Replace("&", string.Empty)
+                .Replace("*", string.Empty)
             );
     }
 

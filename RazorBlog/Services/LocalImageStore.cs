@@ -94,17 +94,17 @@ public class LocalImageStore : IImageStore
             type,
             originalName
                 .Trim(Path.GetInvalidFileNameChars()))
-                .Replace(".", "")
-                .Replace("_", "")
-                .Replace("@", "")
-                .Replace(" ", "")
-                .Replace("#", "")
-                .Replace("/", "")
-                .Replace("\\", "")
-                .Replace("!", "")
-                .Replace("^", "")
-                .Replace("&", "")
-                .Replace("*", "");
+                .Replace(".", string.Empty)
+                .Replace("_", string.Empty)
+                .Replace("@", string.Empty)
+                .Replace(" ", string.Empty)
+                .Replace("#", string.Empty)
+                .Replace("/", string.Empty)
+                .Replace("\\", string.Empty)
+                .Replace("!", string.Empty)
+                .Replace("^", string.Empty)
+                .Replace("&", string.Empty)
+                .Replace("*", string.Empty);
     }
 
     private async Task<string> UploadImageAsync(
