@@ -4,7 +4,10 @@
 A Blog application where users can write blogs or comment on others.
 All blogs can be monitored by Moderators and Administrators.
 
-Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS, SQL Server, AWS S3, IAM, Docker
+### Technologies
+- Languages: C#, JavaScript, HTML, CSS,
+- Frameworks: .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS, SQL Server,
+- Development Tools: Docker, AWS S3, IAM, ECS Fargate, ECR, RDS, VPC
 
 ### Table of Contents
 - [Overview](#overview)
@@ -22,7 +25,7 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
   - [Set Up Development Environment](#set-up-development-environment)
   - [Set Up AWS Image Storage](#set-up-aws-image-storage)
 - [Run Inside Docker Container:](#run-inside-docker-container)
-- [Full AWS Deployment (IN PROGRESS)](#full-aws-deployment-in-progress)
+- [Full AWS Deployment](#full-aws-deployment)
   - [VPC Setup](#vpc-setup)
   - [RDS Setup](#rds-setup)
   - [ECS and ECR Setup](#ecs-and-ecr-setup)
@@ -47,16 +50,17 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 
 ## Images
 ### Home Page
-![Screenshot (1085)](https://user-images.githubusercontent.com/78300296/145921039-838cb3af-6adc-41d9-b154-6be44df7d827.png)
+<img src="https://user-images.githubusercontent.com/78300296/145921039-838cb3af-6adc-41d9-b154-6be44df7d827.png" width=60%>
 
 ### Profile Page
-![Screenshot (1062)](https://user-images.githubusercontent.com/78300296/142516988-522a6d22-2af0-41a2-9b28-bf19ad9adab0.png)
+
+<img src="https://user-images.githubusercontent.com/78300296/142516988-522a6d22-2af0-41a2-9b28-bf19ad9adab0.png" width=60%>
 
 ### Post Hidden By Moderators
-![image](https://github.com/Huy-GV/RazorBlog/assets/78300296/7ce30232-4659-457d-8d96-8c145faf0827)
+<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/7ce30232-4659-457d-8d96-8c145faf0827" width=60%>
 
 ### Admin User Reviewing Reported Post
-![image](https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965)
+<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965" width=60%>
 
 ##  Run Locally
 ### Pre-requisites
@@ -99,23 +103,6 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 	```
 
 ### Set Up AWS Image Storage
-- Create a fully private S3 bucket and add a policy with the following the statement
-	```json
-	{
-		"Effect": "Deny",
-		"Principal": "*",
-		"Action": "s3:*",
-		"Resource": [
-			"arn:aws:s3:::your-bucket-name",
-			"arn:aws:s3:::your-bucket-name/*"
-		],
-		"Condition": {
-			"NotIpAddress": {
-				"aws:SourceIp": "your-ip-address"
-			}
-		}
-	}
-	```
 - Create an IAM user, generate AWS credentials, and store them:
 	```bash
 	cd /directory/containing/RazorBlog.csproj/
@@ -128,7 +115,7 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 	"UseAwsS3": true
 	```
 
-## Run Inside Docker Container:
+## Run Inside Local Docker Container:
 - Start the Docker engine and ensure it is targeting *Linux*
 - Generate a certificate and store it in `~/.aspnet/https` on the host machine
 - Create an environment file named `docker.env` and specify the following fields:
@@ -163,7 +150,7 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 	docker compose --env-file docker.env up --build
 	```
 
-## Full AWS Deployment (IN PROGRESS)
+## Full AWS Deployment
 ### VPC Setup
 - Create a VPC named `razor-blog-vpc` with 2 public subnets and 2 private subnets
 - Create two security groups:
@@ -174,24 +161,20 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 			- None
 	- `WebServerTier`:
 		- Inbound Rules:
-			- HTTP from any IPv4 addresses
-			- HTTPS from any IPv4 addresses
-			- HTTP from any IPv6 addresses
-			- HTTPS from any IPv6 addresses
-			<!-- TODO: narrow this down -->
-			- All TCP from any IPv4 addresses
-			- All TCP from any IPv6 addresses
+			- HTTP traffic from any IPv4 addresses
+			- HTTP traffic from any IPv6 addresses
+			- HTTPS traffic from any IPv4 addresses
+			- HTTPS traffic from any IPv6 addresses
 		- Outbound Rules:
 			- MSSQL TCP traffic to `DatabaseTier`
-			- All HTTPS to any IPv4 addresses
-			- All HTTPS to any IPv6 addresses
+			- HTTPS traffic to any IPv4 addresses
+			- HTTPS traffic to any IPv6 addresses
 
 ### RDS Setup
 - Create an RDS database with the following configurations:
 	- Engine: SQL Server Express Edition
-	- Configure master username and password
 	- Set VPC to `razor-blog-vpc`
-	- Set VPC security group to `DatabaseTier`
+	- Set VPC Security Group to `DatabaseTier`
 
 ### ECS and ECR Setup
 #### Image Repository
@@ -214,60 +197,53 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 #### Task Definition
 - Create a task definition with the following configurations:
 	- Launch type: AWS Fargate
-	- Task role and execution role: `ecsTaskExecutionRole`
-		- In AWS IAM, ensure the role has the following policies attached:
-			- `AmazonECSTaskExecutionRolePolicy`
-			- `AWSAppRunnerServicePolicyForECRAccess`
-		- Enter the container name and use the URI of the recently uploaded image
-		- Set the environment variables either manually or via an `.env` file stored in a S3 bucket
-			- If S3 is used, ensure the task execution role has `AmazonS3ReadonlyAccess`
-			- Example `.env` file:
-				```env
-				# aws.env
-				SeedUser__Password=SecurePassword123@@
+	- Task role and Task execution role: `ecsTaskExecutionRole`
+		- In AWS IAM, ensure the role has the policy `AmazonECSTaskExecutionRolePolicy`
+	- Enter the container name and use the URI of the recently uploaded image
+	- Set the environment variables either manually or via an `.env` file stored in a S3 bucket
+		- If S3 is used, ensure the Task execution role has the policy `AmazonS3ReadonlyAccess`
+		- Example `.env` file:
+			```env
+			# aws.env
+			SeedUser__Password=SecurePassword123@@
 
-				# ensure the server id is set to the RDS database endpoint and database credentials are correct
-				ConnectionStrings__DefaultConnection=Server=RdsEndpoint,1433;Database=RazorBlog;User ID=RdsUsername;Password=YourDbPassword;MultipleActiveResultSets=false;
+			# ensure the server id is set to the RDS database endpoint and database credentials are correct
+			ConnectionStrings__DefaultConnection=Server=RdsEndpoint,1433;Database=RazorBlog;User ID=RdsUsername;Password=YourDbPassword;MultipleActiveResultSets=false;
 
-				# must be the same as password in connection string
-				SqlServer__Password=YourDbPassword
+			# must be the same as password in connection string
+			SqlServer__Password=YourDbPassword
 
-				# ensure certificate password and name is correct
-				ASPNETCORE_Kestrel__Certificates__Default__Password=YourCertPassword
-				ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
+			# ensure certificate password and name is correct
+			ASPNETCORE_Kestrel__Certificates__Default__Password=YourCertPassword
+			ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
 
-				# configure ports
-				ASPNETCORE_URLS=https://+:443
-				ASPNETCORE_HTTPS_PORT=443
+			# configure ports
+			ASPNETCORE_URLS=https://+:443
+			ASPNETCORE_HTTPS_PORT=443
 
-				# define AWS user credentials here
-				Aws__SecretKey=YourAwsSecretKeyPassword
-				Aws__S3__BucketName=your-bucket-name
-				Aws__AccessKey=YourAwsAccessKeyPassword
-				```
-		- Set the following port mappings:
-			```json
-			{
-				"containerPort": 80,
-				"hostPort": 80,
-				"protocol": "tcp",
-				"appProtocol": "http"
-			},
-			{
-				"containerPort": 443,
-				"hostPort": 443,
-				"protocol": "tcp"
-			},
-			{
-				"containerPort": 1433,
-				"hostPort": 1433,
-				"protocol": "tcp",
-				"appProtocol": "http"
-			}
+			# define AWS user credentials here
+			Aws__SecretKey=YourAwsSecretKeyPassword
+			Aws__S3__BucketName=your-bucket-name
+			Aws__AccessKey=YourAwsAccessKeyPassword
 			```
+	- Set the port mappings for HTTP and HTTPS traffic:
+		```json
+		{
+			"containerPort": 80,
+			"hostPort": 80,
+			"protocol": "tcp",
+			"appProtocol": "http"
+		},
+		{
+			"containerPort": 443,
+			"hostPort": 443,
+			"protocol": "tcp",
+			"appProtocol": "http"
+		},
+		```
 - Deploy a service using the created task definition:
 	- Set Compute options to Launch type and select Fargate
 - Configure networking options:
-	- Select `razor-blog-vpc` as the VPC
-	- Select the public subnets within `razor-blog-vpc`
-	- Select the `WebServerTier` security group
+	- Set VPC to `razor-blog-vpc`
+	- Set subnets to public subnets in `razor-blog-vpc`
+	- Set VPC Security Group to `WebServerTier`
