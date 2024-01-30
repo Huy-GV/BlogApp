@@ -7,6 +7,7 @@
 }
 
 <main class="user-container">
+    <h2>Moderators</h2>
     @foreach(var moderator in Model.Moderators)
     {
         <div class="user-card">
@@ -25,6 +26,7 @@
 
     <hr />
 
+    <h2>Normal Users</h2>
     @foreach (var user in Model.NormalUsers)
     {
         <div class="user-card">

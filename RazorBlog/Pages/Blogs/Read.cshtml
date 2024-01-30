@@ -36,7 +36,7 @@
 
         <p class="title @blogContentClass">@Model.DetailedBlogDto.Title</p>
         <hr>
-        <div class="comment-option-container">
+        <div class="blog-option-container">
             @{
                 if (userInfo.AllowedToModifyOrDeletePost)
                 {
@@ -80,8 +80,8 @@
     <p class="@blogContentClass">@Model.DetailedBlogDto.Introduction</p>
 </section>
 
-<component 
-    type="typeof(CommentsContainer)" 
+<component
+    type="typeof(CommentsContainer)"
     render-mode="Server"
     param-blogId="@Model.DetailedBlogDto.Id"
     param-BlogAuthorName="@Model.DetailedBlogDto.AuthorName"

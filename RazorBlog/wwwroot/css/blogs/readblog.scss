@@ -21,9 +21,8 @@
       font-weight: 700;
       text-align: center;
       font-family: Garamond, serif;
-      font-size: 3rem;
+      font-size: 2rem;
       margin-top: 0.1rem;
-
 
       @media screen and (max-width: $medium-screen-width) {
         font-size: 2rem;
@@ -40,6 +39,12 @@
       color: #606060;;
     }
 
+    .blog-option-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
     img {
       border-radius: 10px;
       object-fit: cover;
@@ -51,8 +56,7 @@
       font-family: "Open Sans", Helvetica, arial, sans-serif;
       line-height: 1.8rem;
       white-space: pre-line;
-      font-size: 1.3rem;
-
+      font-size: 1rem;
     }
   }
 }
@@ -61,15 +65,45 @@
   display: flex;
   justify-content: center;
 
-  .blog-info {
+  .blog-author {
     margin-left: 0.1rem;
+    color: green;
+    font-weight: bold;
   }
 }
 
-.blog-author {
-  @extend .blog-info;
-  color: green;
-  font-weight: bold;
+.author-info {
+  padding: 1rem;
+  margin-inline: auto;
+  margin-block: 2rem;
+  width: 50%;
+  font-size: 0.8rem;
+  @extend .card;
+
+  @media screen and (max-width: $medium-screen-width) {
+    width: 60%;
+  }
+
+  @media screen and (max-width: $small-screen-width) {
+    width: 80%;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 1rem;
+      font-weight: 600;
+    }
+
+    img {
+      height: 3rem;
+      width: 3rem;
+      border-radius: 100%;
+      object-fit: cover;
+    }
+  }
 }
 
 .comment-section {
@@ -82,15 +116,15 @@
     flex-direction: column;
     padding: 0.1rem;
     margin: auto;
-    width: 40%;
+    width: 60%;
     border-radius: 3px;
 
     @media screen and (max-width: $medium-screen-width) {
-      width: 60%;
+      width: 80%;
     }
 
     @media screen and (max-width: $small-screen-width) {
-      width: 80%;
+      width: 90%;
     }
 
     .comment {
@@ -118,6 +152,11 @@
         }
       }
 
+      .comment-option-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
 
       .comment-author {
         color: $primary-purple;
@@ -125,50 +164,10 @@
 
       p {
         margin-top: 0.8rem;
-        font-size: 1rem;
+        font-size: 0.8rem;
       }
     }
   }
-}
-
-.author-info {
-  padding: 1rem;
-  margin-inline: auto;
-  margin-block: 2rem;
-  width: 40%;
-  @extend .card;
-
-  @media screen and (max-width: $medium-screen-width) {
-    width: 60%;
-  }
-
-  @media screen and (max-width: $small-screen-width) {
-    width: 80%;
-  }
-
-  .profile-header {
-    display: flex;
-    align-items: center;
-
-    span {
-      margin-left: 1rem;
-      font-weight: 600;
-    }
-
-    img {
-      height: 3rem;
-      width: 3rem;
-      border-radius: 100%;
-      object-fit: cover;
-    }
-  }
-
-}
-
-.comment-option-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 }
 
 .text-input-field {

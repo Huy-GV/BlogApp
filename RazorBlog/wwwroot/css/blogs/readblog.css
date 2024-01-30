@@ -37,7 +37,7 @@ html * {
   color: white;
 }
 
-.card, .author-info, .comment-section .comment-container .comment {
+.card, .comment-section .comment-container .comment, .author-info {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
 }
@@ -73,7 +73,7 @@ html * {
   font-weight: 700;
   text-align: center;
   font-family: Garamond, serif;
-  font-size: 3rem;
+  font-size: 2rem;
   margin-top: 0.1rem;
 }
 @media screen and (max-width: 1200px) {
@@ -91,6 +91,11 @@ html * {
   white-space: pre-line;
   color: #606060;
 }
+.blog-container .blog .blog-option-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
 .blog-container .blog img {
   border-radius: 10px;
   -o-object-fit: cover;
@@ -102,80 +107,25 @@ html * {
   font-family: "Open Sans", Helvetica, arial, sans-serif;
   line-height: 1.8rem;
   white-space: pre-line;
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 
 .blog-info-container {
   display: flex;
   justify-content: center;
 }
-.blog-info-container .blog-info, .blog-info-container .blog-author {
+.blog-info-container .blog-author {
   margin-left: 0.1rem;
-}
-
-.blog-author {
   color: green;
   font-weight: bold;
-}
-
-.comment-section {
-  width: 100%;
-  background-color: whitesmoke;
-  padding-bottom: 3rem;
-}
-.comment-section .comment-container {
-  display: flex;
-  flex-direction: column;
-  padding: 0.1rem;
-  margin: auto;
-  width: 40%;
-  border-radius: 3px;
-}
-@media screen and (max-width: 1200px) {
-  .comment-section .comment-container {
-    width: 60%;
-  }
-}
-@media screen and (max-width: 700px) {
-  .comment-section .comment-container {
-    width: 80%;
-  }
-}
-.comment-section .comment-container .comment {
-  padding: 1rem;
-  background-color: white;
-  margin: 0.3rem;
-  font-size: 0.8rem;
-}
-.comment-section .comment-container .comment .author-container {
-  display: flex;
-  align-items: center;
-  gap: 1%;
-}
-.comment-section .comment-container .comment .author-container img {
-  height: 2.5rem;
-  width: 2.5rem;
-  border-radius: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
-.comment-section .comment-container .comment .author-container span {
-  display: inline-block;
-  padding: 0.2rem;
-}
-.comment-section .comment-container .comment .comment-author {
-  color: rgb(99, 0, 148);
-}
-.comment-section .comment-container .comment p {
-  margin-top: 0.8rem;
-  font-size: 1rem;
 }
 
 .author-info {
   padding: 1rem;
   margin-inline: auto;
   margin-block: 2rem;
-  width: 40%;
+  width: 50%;
+  font-size: 0.8rem;
 }
 @media screen and (max-width: 1200px) {
   .author-info {
@@ -203,10 +153,62 @@ html * {
      object-fit: cover;
 }
 
-.comment-option-container {
+.comment-section {
+  width: 100%;
+  background-color: whitesmoke;
+  padding-bottom: 3rem;
+}
+.comment-section .comment-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.1rem;
+  margin: auto;
+  width: 60%;
+  border-radius: 3px;
+}
+@media screen and (max-width: 1200px) {
+  .comment-section .comment-container {
+    width: 80%;
+  }
+}
+@media screen and (max-width: 700px) {
+  .comment-section .comment-container {
+    width: 90%;
+  }
+}
+.comment-section .comment-container .comment {
+  padding: 1rem;
+  background-color: white;
+  margin: 0.3rem;
+  font-size: 0.8rem;
+}
+.comment-section .comment-container .comment .author-container {
+  display: flex;
+  align-items: center;
+  gap: 1%;
+}
+.comment-section .comment-container .comment .author-container img {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.comment-section .comment-container .comment .author-container span {
+  display: inline-block;
+  padding: 0.2rem;
+}
+.comment-section .comment-container .comment .comment-option-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+.comment-section .comment-container .comment .comment-author {
+  color: rgb(99, 0, 148);
+}
+.comment-section .comment-container .comment p {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .text-input-field, .edit-comment-form textarea, .comment-form textarea {

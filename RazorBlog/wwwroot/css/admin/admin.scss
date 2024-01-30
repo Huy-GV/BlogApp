@@ -13,8 +13,24 @@
   margin-inline: auto;
   margin-top: 5rem;
 
+  form {
+    margin-left: auto;
+    
+    @media screen and (max-width: $small-screen-width) {
+      margin: auto;
+    }
+  }
+
+  h2 {
+    align-self: flex-start;
+  }
+
   @media screen and (max-width: $medium-screen-width) {
     width: 80%;
+  }
+
+  @media screen and (max-width: $small-screen-width) {
+    width: 90%;
   }
 
   .user-card {
@@ -27,38 +43,40 @@
 
     .button {
       color: white;
-      border-radius: 1px;
       font-weight: 700;
-      height: 100%;
       border-radius: 5px;
       border: none;
-      width: 10rem;
+      padding: 1rem;
+      min-width: 10rem;
 
       &:hover {
         filter: brightness(0.6);
         cursor: pointer;
       }
+
+      @media screen and (max-width: $small-screen-width) {
+        padding-block: 1rem;
+      }
     }
 
+    .assign-role {
+      background-color: green;
+    }
+
+    .remove-role {
+      background-color: red;
+    }
+
+    .details-btn {
+      padding: 1rem;
+      color: blue;
+      font-weight: 700;
+    }
+
+    @media screen and (max-width: $small-screen-width) {
+      width: 90%;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }
-
-
-.assign-role {
-  background-color: green;
-}
-
-.remove-role {
-  background-color: red;
-}
-
-.details-btn {
-  padding: 1rem;
-  color: blue;
-  font-weight: 700;
-}
-
-.user-container form {
-  margin-left: auto;
-}
-
