@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 443
+EXPOSE 80
 
 # Copy project the container and publish it
 COPY ./RazorBlog ./RazorBlog

@@ -168,13 +168,12 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 - Create a VPC named `razor-blog-vpc` with 2 public subnets and 2 private subnets
 - Create two security groups:
 	- `DatabaseTier`:
-		- Inbound Rules
+		- Inbound Rules:
 			- MSSQL TCP traffic from `WebServerTier`
 		- Outbound Rules:
-			<!-- TODO: narrow this down -->
-			- MSSQL TCP traffic to `WebServerTier`
+			- None
 	- `WebServerTier`:
-		- Inbound Rules
+		- Inbound Rules:
 			- HTTP from any IPv4 addresses
 			- HTTPS from any IPv4 addresses
 			- HTTP from any IPv6 addresses
@@ -241,8 +240,8 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 				ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
 
 				# configure ports
-				ASPNETCORE_URLS=https://+:5000;https://+:5001
-				ASPNETCORE_HTTPS_PORT=5000,5001
+				ASPNETCORE_URLS=https://+:443
+				ASPNETCORE_HTTPS_PORT=443
 
 				# define AWS user credentials here
 				Aws__SecretKey=YourAwsSecretKeyPassword
