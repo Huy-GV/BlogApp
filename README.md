@@ -183,11 +183,8 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 			- All TCP from any IPv6 addresses
 		- Outbound Rules:
 			- MSSQL TCP traffic to `DatabaseTier`
-			<!-- TODO: narrow this down -->
-			- All TCP to any IPv4 addresses
-			- All TCP to any IPv6 addresses
-			- All UDP to any IPv4 addresses
-			- All UDP to any IPv6 addresses
+			- All HTTPS to any IPv4 addresses
+			- All HTTPS to any IPv6 addresses
 
 ### RDS Setup
 - Create an RDS database with the following configurations:
@@ -249,7 +246,6 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 				Aws__AccessKey=YourAwsAccessKeyPassword
 				```
 		- Set the following port mappings:
-			<!-- TODO: narrows down and remove 5000/5001 -->
 			```json
 			{
 				"containerPort": 80,
@@ -261,18 +257,6 @@ Technologies used: C#, JavaScript, HTML, CSS, .NET 8 Razor Pages, .NET Blazor, .
 				"containerPort": 443,
 				"hostPort": 443,
 				"protocol": "tcp"
-			},
-			{
-				"containerPort": 5000,
-				"hostPort": 5000,
-				"protocol": "tcp",
-				"appProtocol": "http"
-			},
-			{
-				"containerPort": 5001,
-				"hostPort": 5001,
-				"protocol": "tcp",
-				"appProtocol": "http"
 			},
 			{
 				"containerPort": 1433,
