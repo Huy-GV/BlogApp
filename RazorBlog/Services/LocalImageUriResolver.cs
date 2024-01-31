@@ -32,6 +32,5 @@ public class LocalImageUriResolver : IImageUriResolver
 
         _logger.LogError("Retry failed because '{escapedUri}' is not well-formed", imageUri);
         return Task.FromResult((ServiceResultCode.Success, imageUri))!;
-
     }
 }

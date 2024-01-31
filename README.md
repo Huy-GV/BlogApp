@@ -47,20 +47,21 @@ All blogs can be monitored by Moderators and Administrators.
 	- To configure AWS S3, see the [Set Up AWS Image Storage](#set-up-aws-image-storage)
 	- Even when S3 is used, the application logo and default profile image is still stored locally in `wwwroot\images\readonly\`
 	- Enabling S3 to store images will not affect locally-stored ones
+    - Mixing both image stores may cause the deletion of user-uploaded images to fail
 
 ## Images
 ### Home Page
-<img src="https://user-images.githubusercontent.com/78300296/145921039-838cb3af-6adc-41d9-b154-6be44df7d827.png" width=60%>
+<img src="https://user-images.githubusercontent.com/78300296/145921039-838cb3af-6adc-41d9-b154-6be44df7d827.png" width=60% alt="home-page-image">
 
 ### Profile Page
 
-<img src="https://user-images.githubusercontent.com/78300296/142516988-522a6d22-2af0-41a2-9b28-bf19ad9adab0.png" width=60%>
+<img src="https://user-images.githubusercontent.com/78300296/142516988-522a6d22-2af0-41a2-9b28-bf19ad9adab0.png" width=60% alt="home-page-image">
 
 ### Post Hidden By Moderators
-<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/7ce30232-4659-457d-8d96-8c145faf0827" width=60%>
+<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/7ce30232-4659-457d-8d96-8c145faf0827" width=60% alt="hidden-post-image">
 
 ### Admin User Reviewing Reported Post
-<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965" width=60%>
+<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965" width=60% alt="reported-post-image">
 
 ##  Run Locally
 ### Pre-requisites
@@ -112,7 +113,9 @@ All blogs can be monitored by Moderators and Administrators.
 	```
 - To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in your `appsettings.{env}.json` file:
 	```json
-	"UseAwsS3": true
+	{
+		"UseAwsS3": true
+ 	}
 	```
 
 ## Run Inside Local Docker Container:
@@ -182,7 +185,7 @@ All blogs can be monitored by Moderators and Administrators.
 - Create a private repository and upload an image using the push command templates:
 	- Log into the AWS CLI
 		```bash
-		aws ecr get-login-password --region your.aws.region | docker login --username AWS --password-stdin your.private.repository.uri
+		aws ecr get-login-password --region YOUR.AWS.REGION | docker login --username AWS --password-stdin YOUR.PRIVATE.REPOSITORY.URI
 		```
 	- Build the image and set the HTTPS certificate password as an argument
 		```bash
@@ -190,8 +193,8 @@ All blogs can be monitored by Moderators and Administrators.
 		```
 	- Tag the image and upload it
 		```bash
-		docker tag razor-blog:latest your.docker.image:latest
-		docker push your.docker.image:latest
+		docker tag razor-blog:latest YOUR.DOCKER.IMAGE:latest
+		docker push YOUR.DOCKER.IMAGE:latest
 		```
 
 #### Task Definition
@@ -228,21 +231,23 @@ All blogs can be monitored by Moderators and Administrators.
 			```
 	- Set the port mappings for HTTP and HTTPS traffic:
 		```json
-		{
-			"containerPort": 80,
-			"hostPort": 80,
-			"protocol": "tcp",
-			"appProtocol": "http"
-		},
-		{
-			"containerPort": 443,
-			"hostPort": 443,
-			"protocol": "tcp",
-			"appProtocol": "http"
-		},
+		[
+			{
+				"containerPort": 80,
+				"hostPort": 80,
+				"protocol": "tcp",
+				"appProtocol": "http"
+			},
+			{
+				"containerPort": 443,
+				"hostPort": 443,
+				"protocol": "tcp",
+				"appProtocol": "http"
+			}
+		]
 		```
 - Deploy a service using the created task definition:
-	- Set Compute options to Launch type and select Fargate
+	- Set Compute options to `Launch type` and select `Fargate`
 - Configure networking options:
 	- Set VPC to `razor-blog-vpc`
 	- Set subnets to public subnets in `razor-blog-vpc`

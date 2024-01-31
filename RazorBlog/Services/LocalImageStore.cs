@@ -38,7 +38,6 @@ public class LocalImageStore : IImageStore
         _logger.LogInformation("Image uri '{uri}' expanded to '{fullImageFilePath}'", uri, fullImageFilePath);
         
         var directory = Directory.GetParent(fullImageFilePath)?.Name ?? string.Empty;
-        
         if (directory.Equals(ReadonlyDirectoryName, StringComparison.InvariantCultureIgnoreCase))
         {
             _logger.LogError("Failed to remove image at '{fullImageFilePath}' within readonly directory", fullImageFilePath);

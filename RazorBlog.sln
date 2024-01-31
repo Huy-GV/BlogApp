@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B52673B-1EFF-4256-87E5-30C3A605F764}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		aws.Dockerfile = aws.Dockerfile
+		docker-compose.yaml = docker-compose.yaml
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorBlog", "RazorBlog\RazorBlog.csproj", "{5200E787-B10B-4EBD-A136-A915DE21E933}"

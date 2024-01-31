@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using Hangfire;
 using Microsoft.Extensions.Logging;
 using RazorBlog.Data;
@@ -11,19 +10,22 @@ public class PostDeletionScheduler : IPostDeletionScheduler
 {
     private readonly RazorBlogDbContext _dbContext;
     private readonly ILogger<IPostDeletionScheduler> _logger;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
-    public PostDeletionScheduler(RazorBlogDbContext dbContext,
-        ILogger<IPostDeletionScheduler> logger)
+    public PostDeletionScheduler(
+        RazorBlogDbContext dbContext,
+        ILogger<IPostDeletionScheduler> logger,
+        IBackgroundJobClient backgroundJobClient)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _backgroundJobClient = backgroundJobClient;
     }
 
     public void ScheduleBlogDeletion(DateTimeOffset deleteTime, int blogId)
     {
         _logger.LogInformation("Blog with ID {blogId} scheduled for deletion", blogId);
-        Expression<Action> deleteBlog = () => DeleteBlog(blogId);
-        BackgroundJob.Schedule(deleteBlog, deleteTime);
+        _backgroundJobClient.Schedule(() => DeleteBlog(blogId), deleteTime);
     }
 
     public void DeleteBlog(int blogId)
@@ -55,7 +57,6 @@ public class PostDeletionScheduler : IPostDeletionScheduler
 
     public void ScheduleCommentDeletion(DateTimeOffset deleteTime, int commentId)
     {
-        Expression<Action> deleteComment = () => DeleteComment(commentId);
-        BackgroundJob.Schedule(deleteComment, deleteTime);
+        _backgroundJobClient.Schedule(() => DeleteComment(commentId), deleteTime);
     }
 }

@@ -7,6 +7,7 @@ using RazorBlog.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RazorBlog.Communication;
 
 namespace RazorBlog.Components;
 
@@ -56,7 +57,11 @@ public partial class HiddenBlogContainer : RichComponentBase
     private async Task ForciblyDeleteBlogAsync(int blogId)
     {
         var result = await PostModerationService.ForciblyDeleteBlogAsync(blogId, CurrentUserName);
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
 
         await LoadHiddenBlogs();
     }
@@ -64,7 +69,11 @@ public partial class HiddenBlogContainer : RichComponentBase
     private async Task UnhideBlogAsync(int blogId)
     {
         var result = await PostModerationService.UnhideBlogAsync(blogId, CurrentUserName);
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
 
         await LoadHiddenBlogs();
     }

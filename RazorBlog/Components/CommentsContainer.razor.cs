@@ -10,6 +10,7 @@ using RazorBlog.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RazorBlog.Communication;
 
 namespace RazorBlog.Components;
 public partial class CommentsContainer : RichComponentBase
@@ -126,7 +127,12 @@ public partial class CommentsContainer : RichComponentBase
             EditCommentViewModel, 
             user.UserName);
 
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
+        
         EditCommentViewModel.Body = string.Empty;
         await LoadCommentData();
     }
@@ -150,7 +156,12 @@ public partial class CommentsContainer : RichComponentBase
             CreateCommentViewModel,
             user.UserName);
 
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
+        
         CreateCommentViewModel.Body = string.Empty;
 
         await LoadCommentData();
@@ -172,8 +183,12 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var result = await PostModerationService.HideCommentAsync(commentId, user.UserName ?? string.Empty);
-        this.NavigateOnError(result);
-
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
+        
         await LoadCommentData();
     }
 
@@ -193,10 +208,13 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var result = await CommentContentManager.DeleteCommentAsync(commentId, user.UserName);
-
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
+        
         EditCommentViewModel.Body = string.Empty;
-
         await LoadCommentData();
     }
 }

@@ -7,6 +7,7 @@ using RazorBlog.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RazorBlog.Communication;
 
 namespace RazorBlog.Components;
 
@@ -53,7 +54,11 @@ public partial class HiddenCommentContainer : RichComponentBase
     private async Task ForciblyDeleteCommentAsync(int commentId)
     {
         var result = await PostModerationService.ForciblyDeleteCommentAsync(commentId, CurrentUserName);
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
 
         await LoadHiddenComments();
     }
@@ -61,7 +66,11 @@ public partial class HiddenCommentContainer : RichComponentBase
     private async Task UnhideCommentAsync(int commentId)
     {
         var result = await PostModerationService.UnhideCommentAsync(commentId, CurrentUserName);
-        this.NavigateOnError(result);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
 
         await LoadHiddenComments();
     }

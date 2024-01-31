@@ -24,6 +24,7 @@ namespace RazorBlog;
 public class Program
 {
     private const string DockerEnvName = "Docker";
+    private const string DotnetRunningInContainerEnvVariable = "DOTNET_RUNNING_IN_CONTAINER";
     public static async Task Main(string[] args)
     {
         var builder = CreateHostBuilder(args);
@@ -66,7 +67,7 @@ public class Program
     {
         var logger = LoggerFactory.Create(x => x.AddConsole()).CreateLogger<Program>();
 
-        var environmentName = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
+        var environmentName = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(DotnetRunningInContainerEnvVariable))
             ? DockerEnvName
             : Environments.Development;
 
@@ -174,7 +175,7 @@ public class Program
         builder.Services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
         builder.Services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();
 
-        var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var result) && result;
+        var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var useAwsS3Option) && useAwsS3Option;
         if (useAwsS3)
         {
             logger.LogInformation("Registering AWS S3 image store");
