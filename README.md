@@ -91,11 +91,11 @@ All blogs can be monitored by Moderators and Administrators.
 
 	# Optionally set custom database location
 	# If this directory does not exist, it will automatically be created
-	dotnet user-secrets set "ConnectionStrings:DefaultLocation" "\\Path\\To\\Database\\Directory\\DatabaseName.mdf"
+	dotnet user-secrets set "ConnectionStrings:DefaultLocation" "\\PATH\\TO\\DB\\FILE\\DATABASE_NAME.mdf"
 
 	# Set up MS SQL server connection string
 	# Example using a local server: "Server=(localdb)\mssqllocaldb;Database=RazorBlog;Trusted_Connection=True;MultipleActiveResultSets=true;"
-	dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Your;Database;Connection;String;"
+	dotnet user-secrets set "ConnectionStrings:DefaultConnection" "YOUR;DB;CONNECTION;STRING;"
 	```
 - Start the web server in `Release` mode:
 	```bash
@@ -107,9 +107,9 @@ All blogs can be monitored by Moderators and Administrators.
 - Create an IAM user, generate AWS credentials, and store them:
 	```bash
 	cd /directory/containing/RazorBlog.csproj/
-	dotnet user-secrets set "Aws:AccessKey" "YourAwsAccessKeyPassword"
-	dotnet user-secrets set "Aws:SecretKey" "YourAwsSecretKeyPassword"
-	dotnet user-secrets set "Aws:S3:BucketName" "your-bucket-name"
+	dotnet user-secrets set "Aws:AccessKey" "YOUR_AWS_ACCESS_KEY"
+	dotnet user-secrets set "Aws:SecretKey" "YOUR_AWS_SECRET_KEY"
+	dotnet user-secrets set "Aws:S3:BucketName" "YOUR_S3_BUCKET_NAME"
 	```
 - To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in your `appsettings.{env}.json` file:
 	```json
@@ -133,19 +133,19 @@ All blogs can be monitored by Moderators and Administrators.
 		SeedUser__Password=SecurePassword123@@
 
 		# ensure the server name is the same as the container name
-		ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YourDbPassword;MultipleActiveResultSets=false;
+		ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;
 
 		# must be the same as password in connection string
-		SqlServer__Password=YourDbPassword
+		SqlServer__Password=YOUR_DB_PASSWORD
 
 		# ensure certificate password and name is correct
-		ASPNETCORE_Kestrel__Certificates__Default__Password=YourCertPassword
+		ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
 		ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
 
 		# define AWS user credentials here
-		Aws__SecretKey=YourAwsSecretKeyPassword
-		Aws__S3__BucketName=your-bucket-name
-		Aws__AccessKey=YourAwsAccessKeyPassword
+		Aws__SecretKey=YOUR_AWS_SECRET_KEY
+		Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
+		Aws__AccessKey=YOUR_AWS_ACCESS_KEY
 		```
 - Run the below command in admin mode:
 	```bash
@@ -174,10 +174,13 @@ All blogs can be monitored by Moderators and Administrators.
 			- HTTPS traffic to any IPv6 addresses
 
 ### RDS Setup
+- Create a Database Subnet Groups `razor-blog-db-subnet-group` that contains the private subnets within `razor-blog-vpc`
 - Create an RDS database with the following configurations:
 	- Engine: SQL Server Express Edition
 	- Set VPC to `razor-blog-vpc`
 	- Set VPC Security Group to `DatabaseTier`
+	- Set Subnet Group to `razor-blog-db-subnet-group`
+	- Disallow public access
 
 ### ECS and ECR Setup
 #### Image Repository
@@ -189,7 +192,7 @@ All blogs can be monitored by Moderators and Administrators.
 		```
 	- Build the image and set the HTTPS certificate password as an argument
 		```bash
-		docker build -f ./aws.Dockerfile --build-arg CERT_PASSWORD=YourCertPassword -t razor-blog .
+		docker build -f ./aws.Dockerfile --build-arg CERT_PASSWORD=YOUR_CERT_PASSWORD -t razor-blog .
 		```
 	- Tag the image and upload it
 		```bash
@@ -211,13 +214,13 @@ All blogs can be monitored by Moderators and Administrators.
 			SeedUser__Password=SecurePassword123@@
 
 			# ensure the server id is set to the RDS database endpoint and database credentials are correct
-			ConnectionStrings__DefaultConnection=Server=RdsEndpoint,1433;Database=RazorBlog;User ID=RdsUsername;Password=YourDbPassword;MultipleActiveResultSets=false;
+			ConnectionStrings__DefaultConnection=Server=YOUR.RDS.ENDPOINT,1433;Database=RazorBlog;User ID=YOUR_RDS_USERNAME;Password=YOUR_RDS_DB_PASSWORD;MultipleActiveResultSets=false;
 
 			# must be the same as password in connection string
-			SqlServer__Password=YourDbPassword
+			SqlServer__Password=YOUR_RDS_DB_PASSWORD
 
 			# ensure certificate password and name is correct
-			ASPNETCORE_Kestrel__Certificates__Default__Password=YourCertPassword
+			ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
 			ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
 
 			# configure ports
@@ -225,9 +228,9 @@ All blogs can be monitored by Moderators and Administrators.
 			ASPNETCORE_HTTPS_PORT=443
 
 			# define AWS user credentials here
-			Aws__SecretKey=YourAwsSecretKeyPassword
-			Aws__S3__BucketName=your-bucket-name
-			Aws__AccessKey=YourAwsAccessKeyPassword
+			Aws__SecretKey=YOUR_AWS_SECRET_KEY
+			Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
+			Aws__AccessKey=YOUR_AWS_ACCESS_KEY
 			```
 	- Set the port mappings for HTTP and HTTPS traffic:
 		```json
