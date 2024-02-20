@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using RazorBlog.Models;
+using RazorBlog.Core.Models;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;

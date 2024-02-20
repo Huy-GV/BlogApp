@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Data.Constants;
-using RazorBlog.Data.Dtos;
-using RazorBlog.Models;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Constants;
+using RazorBlog.Core.Data.Dtos;
+using RazorBlog.Core.Models;
 
 namespace RazorBlog.Pages.Admin;
 

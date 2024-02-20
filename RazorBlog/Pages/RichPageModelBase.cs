@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Models;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Models;
 
 namespace RazorBlog.Pages;
 

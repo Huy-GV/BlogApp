@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Amazon.S3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Communication;
-using RazorBlog.Data;
-using RazorBlog.Data.Constants;
-using RazorBlog.Data.Dtos;
+using RazorBlog.Core.Communication;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Constants;
+using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Extensions;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 
 namespace RazorBlog.Pages.Blogs;
 
@@ -23,7 +22,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IBlogContentManager _blogContentManager;
     private readonly IBlogReader _blogReader;
-    
+
     public ReadModel(
         RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
@@ -39,10 +38,10 @@ public class ReadModel : RichPageModelBase<ReadModel>
         _blogReader = blogReader;
     }
 
-    [BindProperty(SupportsGet = true)] 
+    [BindProperty(SupportsGet = true)]
     public CurrentUserInfo CurrentUserInfo { get; set; } = null!;
 
-    [BindProperty(SupportsGet = true)] 
+    [BindProperty(SupportsGet = true)]
     public DetailedBlogDto DetailedBlogDto { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(int id)
@@ -54,7 +53,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
         }
 
         DetailedBlogDto = blogDto!;
-        
+
         var currentUser = await GetUserOrDefaultAsync();
         var currentUserName = currentUser?.UserName ?? string.Empty;
         var currentUserRoles = currentUser != null
@@ -68,7 +67,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
                                             .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
                                             .Any(),
             AllowedToModifyOrDeletePost = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
-                currentUserName, 
+                currentUserName,
                 DetailedBlogDto.IsHidden,
                 DetailedBlogDto.AuthorName),
             AllowedToCreateComment = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToCreatePostAsync(currentUserName),

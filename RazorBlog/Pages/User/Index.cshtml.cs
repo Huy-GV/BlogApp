@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Data.Dtos;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Dtos;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 
 namespace RazorBlog.Pages.User;
 
@@ -18,11 +18,11 @@ public class IndexModel : RichPageModelBase<IndexModel>
 {
     private readonly IAggregateImageUriResolver _aggregateImageUriResolver;
     private readonly IDefaultProfileImageProvider _defaultProfileImageProvider;
-    
+
     public IndexModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
-        ILogger<IndexModel> logger, 
-        IAggregateImageUriResolver aggregateImageUriResolver, 
+        ILogger<IndexModel> logger,
+        IAggregateImageUriResolver aggregateImageUriResolver,
         IDefaultProfileImageProvider defaultProfileImageProvider) : base(context, userManager, logger)
     {
         _aggregateImageUriResolver = aggregateImageUriResolver;
@@ -54,7 +54,7 @@ public class IndexModel : RichPageModelBase<IndexModel>
             .GroupBy(b => b.CreationTime.Year)
             .OrderByDescending(g => g.Key)
             .ToDictionary(
-                group => (uint)group.Key, 
+                group => (uint)group.Key,
                 group => group.Select(b => new MinimalBlogDto
                 {
                     Id = b.Id, Title = b.Title, ViewCount = b.ViewCount, CreationTime = b.CreationTime,
@@ -65,7 +65,7 @@ public class IndexModel : RichPageModelBase<IndexModel>
         {
             UserName = userName,
             BlogCount = (uint)blogs.Count,
-            ProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(user.ProfileImageUri) 
+            ProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(user.ProfileImageUri)
                               ?? await _defaultProfileImageProvider.GetDefaultProfileImageUriAsync(),
             BlogsGroupedByYear = blogsGroupedByYear,
             Description = string.IsNullOrEmpty(user.Description)

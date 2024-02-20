@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Models;
+using RazorBlog.Core.Models;
 
 namespace RazorBlog.Pages.Authentication;
 

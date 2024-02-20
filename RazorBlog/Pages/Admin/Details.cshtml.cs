@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Data.Constants;
-using RazorBlog.Data.Validation;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Constants;
+using RazorBlog.Core.Data.Validation;
 using RazorBlog.Extensions;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 
 namespace RazorBlog.Pages.Admin;
 
@@ -29,7 +29,7 @@ public class DetailsModel : RichPageModelBase<DetailsModel>
         _userModerationService = userUserModerationService;
     }
 
-    [BindProperty(SupportsGet =true)] 
+    [BindProperty(SupportsGet =true)]
     public BanTicket? CurrentBanTicket { get; set; }
 
     [BindProperty]

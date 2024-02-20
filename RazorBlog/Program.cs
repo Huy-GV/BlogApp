@@ -1,24 +1,13 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
-using Amazon.Extensions.NETCore.Setup;
-using Amazon.Runtime;
-using Amazon.S3;
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Data.Seeder;
+using RazorBlog.Core.Data.Seeder;
 using RazorBlog.Middleware;
-using RazorBlog.Models;
-using RazorBlog.Options;
-using RazorBlog.Services;
-
+using RazorBlog.Core.Extensions;
 namespace RazorBlog;
 
 public class Program
@@ -39,7 +28,7 @@ public class Program
         if (builder.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseMigrationsEndPoint();
+            app.UseMigrationsEndpointExtension();
         }
         else
         {
@@ -86,53 +75,7 @@ public class Program
             builder.Configuration.AddEnvironmentVariables();
         }
 
-        var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrEmpty(dbConnectionString))
-        {
-            throw new InvalidOperationException("Connection string must not be null");
-        }
-
-        var dbLocation = builder.Configuration.GetConnectionString("DefaultLocation");
-        if (!string.IsNullOrEmpty(dbLocation))
-        {
-            logger.LogInformation("Creating database directory '{directory}'", dbLocation);
-
-            var dbDirectory = Path.GetDirectoryName(dbLocation)
-                ?? throw new InvalidOperationException("Invalid DB directory name");
-            Directory.CreateDirectory(dbDirectory);
-            dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
-        }
-
-        builder.Services.AddDbContext<RazorBlogDbContext>(
-            options => options.UseSqlServer(
-                dbConnectionString,
-                x => x.EnableRetryOnFailure(2))
-        );
-
-        // for use in Blazor components as injected DB context is not scoped
-        builder.Services.AddDbContextFactory<RazorBlogDbContext>(options =>
-            options.UseSqlServer(dbConnectionString),
-
-            // use Scoped lifetime as the injected DbContextOptions used by AddDbContext also has a Scoped lifetime
-            lifetime: ServiceLifetime.Scoped
-        );
-
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-        builder.Services
-            .AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<RazorBlogDbContext>()
-            .AddDefaultTokenProviders();
-
-        builder.Services.AddHangfire(config =>
-        {
-            config.UseSqlServerStorage(dbConnectionString);
-        });
-
-        builder.Services.AddHangfireServer(options =>
-        {
-            options.SchedulePollingInterval = TimeSpan.FromMinutes(1);
-        });
+        builder.Services.UseCoreDataStore(builder.Configuration);
 
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
@@ -143,18 +86,6 @@ public class Program
                 options.Conventions.AddPageRoute("/Blogs/Index", "");
             });
 
-        builder.Services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequiredLength = 6;
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
-            options.User.RequireUniqueEmail = false;
-            options.SignIn.RequireConfirmedEmail = false;
-        });
-
         builder.Services.AddAuthorization();
         builder.Services.ConfigureApplicationCookie(options =>
         {
@@ -164,49 +95,14 @@ public class Program
             options.LogoutPath = "/Authentication/Logout";
         });
 
-        builder.Services.AddScoped<IDataSeeder, DataSeeder>();
-        builder.Services.AddScoped<IUserModerationService, UserModerationService>();
-        builder.Services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
-        builder.Services.AddScoped<IPostModerationService, PostModerationService>();
-        builder.Services.AddScoped<IBlogContentManager, BlogContentManager>();
-        builder.Services.AddScoped<ICommentContentManager, CommentContentManager>();
-        builder.Services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
-        builder.Services.AddScoped<IBlogReader, BlogReader>();
-        builder.Services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
-        builder.Services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();
-
         var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var useAwsS3Option) && useAwsS3Option;
         if (useAwsS3)
         {
-            logger.LogInformation("Registering AWS S3 image store");
-            var awsOptions = new AWSOptions
-            {
-                Credentials = new BasicAWSCredentials(
-                    builder.Configuration["Aws:AccessKey"],
-                    builder.Configuration["Aws:SecretKey"]),
-                Region = Amazon.RegionEndpoint.APSoutheast2,
-            };
-
-            builder.Services.AddDefaultAWSOptions(awsOptions);
-            builder.Services.AddAWSService<IAmazonS3>();
-
-            builder.Services
-                .AddOptions<AwsS3Options>()
-                .Bind(builder.Configuration.GetRequiredSection($"Aws:{AwsS3Options.Name}"))
-                .ValidateOnStart()
-                .ValidateDataAnnotations();
-
-            builder.Services.AddScoped<IImageStore, S3ImageStore>();
-
-            // register LocalImageUriResolver as a fallback
-            builder.Services.AddScoped<IImageUriResolver, S3ImageUriResolver>();
-            builder.Services.AddScoped<IImageUriResolver, LocalImageUriResolver>();
+            builder.Services.UseCoreServicesWithS3(builder.Configuration);
         }
         else
         {
-            logger.LogInformation("Registering local image store");
-            builder.Services.AddScoped<IImageStore, LocalImageStore>();
-            builder.Services.AddScoped<IImageUriResolver, LocalImageUriResolver>();
+            builder.Services.UseCoreServices();
         }
 
         return builder;

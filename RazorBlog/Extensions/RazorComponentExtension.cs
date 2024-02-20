@@ -1,5 +1,5 @@
 ﻿using System;
-using RazorBlog.Communication;
+using RazorBlog.Core.Communication;
 using RazorBlog.Components;
 
 namespace RazorBlog.Extensions;

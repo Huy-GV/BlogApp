@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using RazorBlog.Data;
-using RazorBlog.Data.Constants;
-using RazorBlog.Data.Dtos;
-using RazorBlog.Data.ViewModels;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Constants;
+using RazorBlog.Core.Data.Dtos;
+using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Extensions;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RazorBlog.Communication;
+using RazorBlog.Core.Communication;
 
 namespace RazorBlog.Components;
 public partial class CommentsContainer : RichComponentBase
@@ -33,10 +33,10 @@ public partial class CommentsContainer : RichComponentBase
     [Inject]
     public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
 
-    [Inject] 
+    [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 
-    [Inject] 
+    [Inject]
     public IUserPermissionValidator UserPermissionValidator { get; set; } = null!;
 
     [Inject]
@@ -44,10 +44,10 @@ public partial class CommentsContainer : RichComponentBase
 
     [Inject]
     public IDefaultProfileImageProvider DefaultProfileImageProvider { get; set; } = null!;
-    
+
     [Inject]
     public IAggregateImageUriResolver AggregateImageUriResolver { get; set; } = null!;
-    
+
     private bool AreCommentsLoaded { get; set; }
 
     private IReadOnlyCollection<CommentDto> CommentDtos { get; set; } = [];
@@ -87,7 +87,7 @@ public partial class CommentsContainer : RichComponentBase
                 IsDeleted = c.ToBeDeleted,
             })
             .ToList()) ;
-        
+
         IsCommentEditorDisplayed = CommentDtos
             .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
             .ToDictionary(x => x.Id, _ => false);
@@ -123,8 +123,8 @@ public partial class CommentsContainer : RichComponentBase
         }
 
         var result = await CommentContentManager.UpdateCommentAsync(
-            commentId, 
-            EditCommentViewModel, 
+            commentId,
+            EditCommentViewModel,
             user.UserName);
 
         if (result != ServiceResultCode.Success)
@@ -132,7 +132,7 @@ public partial class CommentsContainer : RichComponentBase
             this.NavigateOnError(result);
             return;
         }
-        
+
         EditCommentViewModel.Body = string.Empty;
         await LoadCommentData();
     }
@@ -161,7 +161,7 @@ public partial class CommentsContainer : RichComponentBase
             this.NavigateOnError(result);
             return;
         }
-        
+
         CreateCommentViewModel.Body = string.Empty;
 
         await LoadCommentData();
@@ -188,7 +188,7 @@ public partial class CommentsContainer : RichComponentBase
             this.NavigateOnError(result);
             return;
         }
-        
+
         await LoadCommentData();
     }
 
@@ -204,7 +204,7 @@ public partial class CommentsContainer : RichComponentBase
         if (user?.UserName == null)
         {
             NavigateToForbid();
-            return; 
+            return;
         }
 
         var result = await CommentContentManager.DeleteCommentAsync(commentId, user.UserName);
@@ -213,7 +213,7 @@ public partial class CommentsContainer : RichComponentBase
             this.NavigateOnError(result);
             return;
         }
-        
+
         EditCommentViewModel.Body = string.Empty;
         await LoadCommentData();
     }

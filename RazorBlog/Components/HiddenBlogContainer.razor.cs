@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using RazorBlog.Data;
-using RazorBlog.Data.Dtos;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Extensions;
-using RazorBlog.Services;
+using RazorBlog.Core.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RazorBlog.Communication;
+using RazorBlog.Core.Communication;
 
 namespace RazorBlog.Components;
 

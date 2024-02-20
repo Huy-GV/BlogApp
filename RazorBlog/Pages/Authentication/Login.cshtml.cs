@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data.ViewModels;
-using RazorBlog.Models;
+using RazorBlog.Core.Data.ViewModels;
+using RazorBlog.Core.Models;
 
 namespace RazorBlog.Pages.Authentication;
 
@@ -25,7 +25,7 @@ public class LoginModel : PageModel
         _signInManager = signInManager;
     }
 
-    [BindProperty] 
+    [BindProperty]
     public LogInViewModel LogInViewModel { get; set; } = null!;
 
     public string? ReturnUrl { get; set; }

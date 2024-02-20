@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Data.ViewModels;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Extensions;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 
 namespace RazorBlog.Pages.Blogs;
 
@@ -59,7 +59,7 @@ public class CreateModel : RichPageModelBase<CreateModel>
             Logger.LogError("Invalid model state when submitting new blog.");
             return Page();
         }
-        
+
         var (result, newBlogId) = await _blogContentManager.CreateBlogAsync(CreateBlogViewModel, user.UserName);
 
         return this.NavigateOnResult(

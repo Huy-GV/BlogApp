@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Communication;
-using RazorBlog.Data;
-using RazorBlog.Data.ViewModels;
+using RazorBlog.Core.Communication;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Extensions;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 
 namespace RazorBlog.Pages.Authentication;
 
@@ -59,7 +59,7 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
 
             profileImageUri = uri!;
         }
-  
+
         var user = new ApplicationUser
         {
             UserName = CreateUserViewModel.UserName,
@@ -75,7 +75,7 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
             {
                 ModelState.AddModelError(error.Code, error.Description);
             }
-            
+
             return Page();
         }
 

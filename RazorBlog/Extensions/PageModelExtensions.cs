@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RazorBlog.Communication;
+using RazorBlog.Core.Communication;
 using System;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace RazorBlog.Extensions;
 

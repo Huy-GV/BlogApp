@@ -1,4 +1,4 @@
-﻿@using RazorBlog.Data.Dtos
+﻿@using RazorBlog.Core.Data.Dtos
 
 @inherits RichComponentBase
 @attribute [StreamRendering(true)]
@@ -51,7 +51,7 @@
                         <img alt="Commenter's Profile Image" src="@comment.AuthorProfileImageUri" asp-append-version="true">
                         <span class="@authorClass">@comment.AuthorName</span>
                         @{
-                            var timestampText = comment.IsModified 
+                            var timestampText = comment.IsModified
                                 ? $"Updated {comment.LastUpdateTime.ToShortDateString()}"
                                 : $"On {@comment.CreationTime.ToShortDateString()}";
                             <span>@timestampText</span>
@@ -61,7 +61,7 @@
 
                 <div class="comment-option-container">
                     @{
-                        if (AllowedToModifyComment[comment.Id] && 
+                        if (AllowedToModifyComment[comment.Id] &&
                             !IsCommentEditorDisplayed[comment.Id] &&
                             !comment.IsHidden)
                         {

@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RazorBlog.Data;
-using RazorBlog.Data.Dtos;
-using RazorBlog.Models;
-using RazorBlog.Services;
+using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Dtos;
+using RazorBlog.Core.Models;
+using RazorBlog.Core.Services;
 
 namespace RazorBlog.Pages.Blogs;
 
@@ -18,7 +18,7 @@ public class IndexModel : RichPageModelBase<IndexModel>
     public IndexModel(
         RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
-        ILogger<IndexModel> logger, 
+        ILogger<IndexModel> logger,
         IBlogReader blogReader) : base(context, userManager, logger)
     {
         _blogReader = blogReader;
