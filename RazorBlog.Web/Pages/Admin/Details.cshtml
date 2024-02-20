@@ -1,0 +1,75 @@
+﻿@page
+@using RazorBlog.Web.Components;
+    using RazorBlog.Web.Pages.Admin;
+    using RazorBlog.Web.Components
+@model DetailsModel
+
+@{
+    ViewData["Title"] = "User Details";
+    ViewData["CSSLink"] = "/css/admin/admindetails.css";
+    ViewData["Shared"] = "/css/shared.css";
+}
+
+<h1>Details of @Model.UserName</h1>
+<main>
+    <component type="typeof(HiddenBlogContainer)"
+                render-mode="Server"
+                param-UserName="@Model.UserName" />
+
+    <component type="typeof(HiddenCommentContainer)"
+                render-mode="Server"
+                param-UserName="@Model.UserName" />
+</main>
+
+<h2 class="middle-aligned">Suspension details</h2>
+<section class="ban-details-container">
+    @{
+        if (Model.CurrentBanTicket != null)
+        {
+            <div class="current-suspension">
+                @{
+                    var expiryDate = Model.CurrentBanTicket.Expiry?.ToShortDateString() ?? "Permanent";
+                    <p>Expiry date: @expiryDate</p>
+                }
+                <form method="post"
+                        asp-page-handler="LiftBan"
+                        asp-route-username="@Model.UserName">
+                    <button class="lift-ban-btn">Lift ban</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <p>No ban ticket exists</p>
+            <form class="suspend-form" method="post" asp-page-handler="BanUser">
+                <h4>Create ban ticket</h4>
+                <label asp-for="NewBanTicketExpiryDate">Expiry date (leave empty to permanently ban the user)</label>
+                <input type="date" asp-for="NewBanTicketExpiryDate" />
+                <input type="hidden" asp-for="UserName" value="@Model.UserName" />
+                <button class="ban-btn" type="button">Ban</button>
+                <button class="cancel-btn hidden-element" type="button">Cancel</button>
+                <button class="confirm-ban-btn hidden-element">Confirm </button>
+            </form>
+        }
+    }
+
+</section>
+
+@section Scripts {
+    <script>
+        const banBtn = document.querySelector(".ban-btn");
+        const cancelBtn = document.querySelector(".cancel-btn");
+        const confirmBanBtn = document.querySelector(".confirm-ban-btn")
+        const form = document.querySelector(".suspend-form")
+
+        form.addEventListener("click", event => {
+            if (event.target && 
+            event.target.className === 'ban-btn' || 
+            event.target.className === 'cancel-btn') {
+                banBtn.classList.toggle('hidden-element')
+                cancelBtn.classList.toggle('hidden-element')
+                confirmBanBtn.classList.toggle('hidden-element')
+            }
+        })
+    </script>
+}
