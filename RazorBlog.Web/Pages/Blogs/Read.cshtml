@@ -67,7 +67,13 @@
 
         <p class="blog-description @blogContentClass">@Model.DetailedBlogDto.Introduction</p>
         <img alt="Blog Cover Image" src="@Model.DetailedBlogDto.CoverImageUri" asp-append-version="true">
-        <p class="blog-content @blogContentClass">@Model.DetailedBlogDto.Content</p>
+
+        @{
+            foreach (var paragraph in Model.DetailedBlogDto.Content.Split(Environment.NewLine))
+            {
+                <p class="blog-content @blogContentClass">@paragraph</p>
+            }
+        }
     </article>
 </main>
 

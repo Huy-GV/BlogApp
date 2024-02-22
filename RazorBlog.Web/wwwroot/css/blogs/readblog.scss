@@ -25,16 +25,15 @@
       margin-top: 0.1rem;
 
       @media screen and (max-width: $medium-screen-width) {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
 
       @media screen and (max-width: $small-screen-width) {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
       }
     }
 
     .blog-description {
-      line-height: 1.5rem;
       white-space: pre-line;
       color: #606060;;
     }
@@ -54,9 +53,9 @@
 
     .blog-content {
       font-family: "Open Sans", Helvetica, arial, sans-serif;
-      line-height: 1.8rem;
+      line-height: 1.4rem;
       white-space: pre-line;
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
   }
 }
@@ -131,7 +130,7 @@
       padding: 1rem;
       background-color: white;
       margin: 0.3rem;
-      font-size: 0.8rem;
+      font-size: 1.1rem;
       @extend .card;
 
       .author-container {
@@ -149,6 +148,7 @@
         span {
           display: inline-block;
           padding: 0.2rem;
+          font-size: 1rem;
         }
       }
 

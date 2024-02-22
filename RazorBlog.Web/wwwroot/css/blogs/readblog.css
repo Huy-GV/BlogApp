@@ -78,16 +78,15 @@ html * {
 }
 @media screen and (max-width: 1200px) {
   .blog-container .blog .title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 }
 @media screen and (max-width: 700px) {
   .blog-container .blog .title {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
 }
 .blog-container .blog .blog-description {
-  line-height: 1.5rem;
   white-space: pre-line;
   color: #606060;
 }
@@ -105,9 +104,9 @@ html * {
 }
 .blog-container .blog .blog-content {
   font-family: "Open Sans", Helvetica, arial, sans-serif;
-  line-height: 1.8rem;
+  line-height: 1.4rem;
   white-space: pre-line;
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 .blog-info-container {
@@ -180,7 +179,7 @@ html * {
   padding: 1rem;
   background-color: white;
   margin: 0.3rem;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
 }
 .comment-section .comment-container .comment .author-container {
   display: flex;
@@ -197,6 +196,7 @@ html * {
 .comment-section .comment-container .comment .author-container span {
   display: inline-block;
   padding: 0.2rem;
+  font-size: 1rem;
 }
 .comment-section .comment-container .comment .comment-option-container {
   display: flex;
