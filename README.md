@@ -1,36 +1,20 @@
 # Razor Blog
 
 ## Overview
-A Blog application where users can write blogs or comment on others.
+Simple blog application where users can write blogs or comment on blogs written by others.
 All blogs can be monitored by Moderators and Administrators.
 
 ### Technologies
-- Languages: C#, JavaScript, HTML, CSS,
+- Languages: C#, JavaScript, TypeScript, HTML, CSS,
 - Frameworks: .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS, SQL Server,
-- Development Tools: Docker, AWS S3, IAM, ECS Fargate, ECR, RDS, VPC
+- Development Tools: Docker, AWS CDK, CloudFormation, S3, IAM, ECS Fargate, ECR, RDS, VPC,
 
 ### Table of Contents
 - [Overview](#overview)
-  - [Features](#features)
-    - [Blog Posting](#blog-posting)
-    - [Moderating Users and Posts](#moderating-users-and-posts)
-    - [Different Image Stores](#different-image-stores)
 - [Images](#images)
-  - [Home Page](#home-page)
-  - [Profile Page](#profile-page)
-  - [Post Hidden By Moderators](#post-hidden-by-moderators)
-  - [Admin User Reviewing Reported Post](#admin-user-reviewing-reported-post)
-- [Run Locally](#run-locally)
-  - [Pre-requisites](#pre-requisites)
-  - [Set Up Development Environment](#set-up-development-environment)
-  - [Set Up AWS Image Storage](#set-up-aws-image-storage)
-- [Run Inside Docker Container:](#run-inside-docker-container)
-- [Full AWS Deployment](#full-aws-deployment)
-  - [VPC Setup](#vpc-setup)
-  - [RDS Setup](#rds-setup)
-  - [ECS and ECR Setup](#ecs-and-ecr-setup)
-    - [Image Repository](#image-repository)
-    - [Task Definition](#task-definition)
+- [Quick Start](#quick-start)
+- [Run With Docker](#run-with-docker)
+- [AWS Deployment](./cdk/README.md)
 
 ### Features
 #### Blog Posting
@@ -39,7 +23,8 @@ All blogs can be monitored by Moderators and Administrators.
 
 #### Moderating Users and Posts
 - Administrators can assign/ remove Moderator role to/ from any user
-- Moderators can hide blogs and comments comments, their final status will be decided by Administrators (either un-hidden or deleted)
+- Moderators can hide blogs and comments, the final status of which will be decided by Administrators (either un-hidden or deleted)
+	- Posts deleted by Administrators will have their content changed to `Deleted by administrators` temporarily before being removed completely
 - Administrators can create and lift bans on offending users.
 
 #### Different Image Stores
@@ -63,7 +48,7 @@ All blogs can be monitored by Moderators and Administrators.
 ### Admin User Reviewing Reported Post
 <img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965" width=60% alt="reported-post-image">
 
-##  Run Locally
+##  Quick Start
 ### Pre-requisites
 - Required installations:
 	- [.NET 8.0 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
@@ -118,7 +103,7 @@ All blogs can be monitored by Moderators and Administrators.
  	}
 	```
 
-## Run Inside Local Docker Container:
+## Run With Docker
 - Start the Docker engine and ensure it is targeting *Linux*
 - Generate a certificate and store it in `~/.aspnet/https` on the host machine
 - Create an environment file named `docker.env` and specify the following fields:
@@ -152,106 +137,3 @@ All blogs can be monitored by Moderators and Administrators.
 	cd /directory/containing/docker-compose.yaml/
 	docker compose --env-file docker.env up --build
 	```
-
-## Full AWS Deployment
-### VPC Setup
-- Create a VPC named `razor-blog-vpc` with 2 public subnets and 2 private subnets
-- Create two security groups:
-	- `DatabaseTier`:
-		- Inbound Rules:
-			- MSSQL TCP traffic from `WebServerTier`
-		- Outbound Rules:
-			- None
-	- `WebServerTier`:
-		- Inbound Rules:
-			- HTTP traffic from any IPv4 addresses
-			- HTTP traffic from any IPv6 addresses
-			- HTTPS traffic from any IPv4 addresses
-			- HTTPS traffic from any IPv6 addresses
-		- Outbound Rules:
-			- MSSQL TCP traffic to `DatabaseTier`
-			- HTTPS traffic to any IPv4 addresses
-			- HTTPS traffic to any IPv6 addresses
-
-### RDS Setup
-- Create a Database Subnet Groups `razor-blog-db-subnet-group` that contains the private subnets within `razor-blog-vpc`
-- Create an RDS database with the following configurations:
-	- Engine: SQL Server Express Edition
-	- Set VPC to `razor-blog-vpc`
-	- Set VPC Security Group to `DatabaseTier`
-	- Set Subnet Group to `razor-blog-db-subnet-group`
-	- Disallow public access
-
-### ECS and ECR Setup
-#### Image Repository
-- Use `aws configure` to configure AWS credentials on the local machine
-- Create a private repository and upload an image using the push command templates:
-	- Log into the AWS CLI
-		```bash
-		aws ecr get-login-password --region YOUR.AWS.REGION | docker login --username AWS --password-stdin YOUR.PRIVATE.REPOSITORY.URI
-		```
-	- Build the image and set the HTTPS certificate password as an argument
-		```bash
-		docker build -f ./aws.Dockerfile --build-arg CERT_PASSWORD=YOUR_CERT_PASSWORD -t razor-blog .
-		```
-	- Tag the image and upload it
-		```bash
-		docker tag razor-blog:latest YOUR.DOCKER.IMAGE:latest
-		docker push YOUR.DOCKER.IMAGE:latest
-		```
-
-#### Task Definition
-- Create a task definition with the following configurations:
-	- Launch type: AWS Fargate
-	- Task role and Task execution role: `ecsTaskExecutionRole`
-		- In AWS IAM, ensure the role has the policy `AmazonECSTaskExecutionRolePolicy`
-	- Enter the container name and use the URI of the recently uploaded image
-	- Set the environment variables either manually or via an `.env` file stored in a S3 bucket
-		- If S3 is used, ensure the Task execution role has the policy `AmazonS3ReadonlyAccess`
-		- Example `.env` file:
-			```env
-			# aws.env
-			SeedUser__Password=SecurePassword123@@
-
-			# ensure the server id is set to the RDS database endpoint and database credentials are correct
-			ConnectionStrings__DefaultConnection=Server=YOUR.RDS.ENDPOINT,1433;Database=RazorBlog;User ID=YOUR_RDS_USERNAME;Password=YOUR_RDS_DB_PASSWORD;MultipleActiveResultSets=false;
-
-			# must be the same as password in connection string
-			SqlServer__Password=YOUR_RDS_DB_PASSWORD
-
-			# ensure certificate password and name is correct
-			ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
-			ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
-
-			# configure ports
-			ASPNETCORE_URLS=https://+:443
-			ASPNETCORE_HTTPS_PORT=443
-
-			# define AWS user credentials here
-			Aws__SecretKey=YOUR_AWS_SECRET_KEY
-			Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
-			Aws__AccessKey=YOUR_AWS_ACCESS_KEY
-			```
-	- Set the port mappings for HTTP and HTTPS traffic:
-		```json
-		[
-			{
-				"containerPort": 80,
-				"hostPort": 80,
-				"protocol": "tcp",
-				"appProtocol": "http"
-			},
-			{
-				"containerPort": 443,
-				"hostPort": 443,
-				"protocol": "tcp",
-				"appProtocol": "http"
-			}
-		]
-		```
-- Deploy a service using the created task definition:
-	- Set Compute options to `Launch type` and select `Fargate`
-- Configure networking options:
-	- Set VPC to `razor-blog-vpc`
-	- Set subnets to public subnets in `razor-blog-vpc`
-	- Set VPC Security Group to `WebServerTier`
