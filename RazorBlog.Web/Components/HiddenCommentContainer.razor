@@ -1,15 +1,16 @@
 ﻿@inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-<h2 class="middle-aligned">Reported comments</h2>
 @if (HiddenComments.Count == 0)
 {
+    <h2 class="middle-aligned">Reported Comments</h2>
     <div class="middle-aligned">
         <p>None</p>
     </div>
 }
 else
 {
+    <h2 class="middle-aligned">Reported Comments (@HiddenComments.Count)</h2>
     <section class="suspended-blog-container">
         @{
             foreach (var comment in HiddenComments)

@@ -1,15 +1,16 @@
 ﻿@inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-<h2 class="middle-aligned">Reported blogs</h2>
 @if (HiddenBlogs.Count == 0)
 {
+    <h2 class="middle-aligned">Reported Blogs</h2>
     <div class="middle-aligned">
         <p>None</p>
     </div>
 }
 else
 {
+    <h2 class="middle-aligned">Reported Blogs (@HiddenBlogs.Count)</h2>
     <section class="suspended-blog-container">
         @{
             foreach (var blog in HiddenBlogs)
@@ -23,7 +24,12 @@ else
 
                     <h4>Content</h4>
                     <hr />
-                    <p>@blog.Content</p>
+                    @{
+                        foreach (var paragraph in blog.Content.Split(Environment.NewLine))
+                        {
+                            <p>@paragraph</p>
+                        }
+                    }
 
                     <form method="post" @onsubmit="(async () => await UnhideBlogAsync(blog.Id))">
                         <button class="un-hide-post">Unhide blog</button>
@@ -36,4 +42,3 @@ else
         }
     </section>
 }
-

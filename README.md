@@ -26,6 +26,7 @@ All blogs can be monitored by Moderators and Administrators.
 - Moderators can hide blogs and comments, the final status of which will be decided by Administrators (either un-hidden or deleted)
 	- Posts deleted by Administrators will have their content changed to `Deleted by administrators` temporarily before being removed completely
 - Administrators can create and lift bans on offending users.
+	- Temporary bans will be automatically lifted by a background service.
 
 #### Different Image Stores
 - Images uploaded by the user can be stored in an AWS S3 Bucket or in the local file system
@@ -105,35 +106,21 @@ All blogs can be monitored by Moderators and Administrators.
 
 ## Run With Docker
 - Start the Docker engine and ensure it is targeting *Linux*
-- Generate a certificate and store it in `~/.aspnet/https` on the host machine
-- Create an environment file named `docker.env` and specify the following fields:
-	- `SeedUser__Password`: equivalent to `SeedData:Password`
-	- `ConnectionStrings__DefaultConnection`: equivalent to `ConnectionStrings:DefaultConnection`
-	- `SqlServer__Password`: password of MS SQL Server database
-	- `ASPNETCORE_Kestrel__Certificates__Default__Password`: password of HTTPS certificate
-	- `ASPNETCORE_Kestrel__Certificates__Default__Path`: path to certificate file
-	- Example:
-		```env
-		# docker.env
-		SeedUser__Password=SecurePassword123@@
-
-		# ensure the server name is the same as the container name
-		ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;
-
-		# must be the same as password in connection string
-		SqlServer__Password=YOUR_DB_PASSWORD
-
-		# ensure certificate password and name is correct
-		ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
-		ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-
-		# define AWS user credentials here
-		Aws__SecretKey=YOUR_AWS_SECRET_KEY
-		Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
-		Aws__AccessKey=YOUR_AWS_ACCESS_KEY
-		```
+- Generate a `.pfx` certificate and store it in `~/.aspnet/https` on the host machine
+- Create a `.env` files with fields as shown in the below example:
+	```env
+	# Example .env
+	SeedUser__Password=SecurePassword123@@
+	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;
+	SqlServer__Password=YOUR_DB_PASSWORD
+	ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
+	ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+	Aws__SecretKey=YOUR_AWS_SECRET_KEY
+	Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
+	Aws__AccessKey=YOUR_AWS_ACCESS_KEY
+	```
 - Run the below command in admin mode:
 	```bash
 	cd /directory/containing/docker-compose.yaml/
-	docker compose --env-file docker.env up --build
+	docker compose --env-file .env up --build
 	```

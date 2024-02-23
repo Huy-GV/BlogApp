@@ -28,6 +28,7 @@ interface EnvVariableProps {
 
 const VPC_NAME = 'razor-blog-vpc';
 const DATABASE_NAME = 'RazorBlogDatabase';
+const DATABASE_SUBNET_GROUP_NAME = 'razor-blog-db-subnet-group'
 const CLUSTER_NAME = 'RazorBlogCluster';
 const TASK_DEFINITION_NAME = 'RazorBlogTagDefinition';
 const FARGATE_SERVICE_NAME = 'RazorBlogService';
@@ -218,11 +219,11 @@ export class AppCdkStack extends Stack {
         securityGroups: [
           securityGroup
         ],
-        subnetGroup: new SubnetGroup(this, 'razorblogdbsubnetgroup', {
+        subnetGroup: new SubnetGroup(this, DATABASE_SUBNET_GROUP_NAME, {
           vpc: vpc,
-          subnetGroupName: 'razorblogdbsubnetgroup',
+          subnetGroupName: DATABASE_SUBNET_GROUP_NAME,
           vpcSubnets: vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
-          description: 'razorblogdbsubnetgroup'
+          description: 'private-subnet-group-for-db'
         })
       }
     );
@@ -238,16 +239,14 @@ export class AppCdkStack extends Stack {
       ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
     );
 
-    // razorBlogTaskExecutionRole.addManagedPolicy(
-    //   ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess')
-    // );
-
     return razorBlogTaskExecutionRole;
   }
 
   private parseEnvVariableProps(): EnvVariableProps | null {
+    const envFilePath = join(__dirname, '.env');
+    console.log(`Reading env variables from '${envFilePath}'`)
     const envConfigResult = config({
-      path: join(__dirname, '.env')
+      path: envFilePath
     });
 
     if (envConfigResult.error) {

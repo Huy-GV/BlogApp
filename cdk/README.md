@@ -229,7 +229,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
 ### RDS
 - Create a Database Subnet Groups `razor-blog-db-subnet-group` that contains the private subnets within `razor-blog-vpc`
 - Create an RDS database with the following configurations:
-	- Engine: SQL Server Express Edition
+	- Engine: `SQL Server Express Edition`
 	- Set VPC to `razor-blog-vpc`
 	- Set VPC Security Group to `DatabaseTier`
 	- Set Subnet Group to `razor-blog-db-subnet-group`

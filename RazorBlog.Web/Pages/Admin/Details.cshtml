@@ -48,7 +48,7 @@
                 <input type="hidden" asp-for="UserName" value="@Model.UserName" />
                 <button class="ban-btn" type="button">Ban</button>
                 <button class="cancel-btn hidden-element" type="button">Cancel</button>
-                <button class="confirm-ban-btn hidden-element">Confirm </button>
+                <button class="confirm-ban-btn hidden-element">Confirm</button>
             </form>
         }
     }
@@ -63,8 +63,8 @@
         const form = document.querySelector(".suspend-form")
 
         form.addEventListener("click", event => {
-            if (event.target && 
-            event.target.className === 'ban-btn' || 
+            if (event.target &&
+            event.target.className === 'ban-btn' ||
             event.target.className === 'cancel-btn') {
                 banBtn.classList.toggle('hidden-element')
                 cancelBtn.classList.toggle('hidden-element')
