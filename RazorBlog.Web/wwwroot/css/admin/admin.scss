@@ -1,9 +1,5 @@
 @import "../base.scss";
 
-:root {
-  font-size: 20px;
-}
-
 .user-container {
   display: flex;
   flex-direction: column;
@@ -15,7 +11,7 @@
 
   form {
     margin-left: auto;
-    
+
     @media screen and (max-width: $small-screen-width) {
       margin: auto;
     }

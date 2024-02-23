@@ -1,9 +1,5 @@
 @import "../base.scss";
 
-:root {
-  font-size: 20px;
-}
-
 h1 {
   width: 60%;
   margin: auto;
@@ -50,11 +46,11 @@ h1 {
   }
 }
 
+.ban-details-container {
+  margin-bottom: 1rem;
+}
+
 .suspend-form {
-  background-color: rgb(238, 63, 63);
-  padding: 1rem;
-  border-radius: 3px;
-  color: white;
   margin-top: 0.2rem;
 
   h4 {
@@ -62,15 +58,10 @@ h1 {
   }
 
   input[type="date"] {
-    padding: 0.3rem;
-    margin-top: 0.5rem;
-  }
-
-  label {
+    padding: 0.4rem;
     font-size: 1rem;
-    margin: 0;
+    margin: 0.5rem 0.5rem 0 0;
   }
-
 }
 
 .confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {
@@ -86,8 +77,8 @@ h1 {
 }
 
 .lift-ban-btn {
-  background-color: rgb(42, 214, 42);
-  border: 1px solid rgb(42, 214, 42);
+  background-color: green;
+  border: 1px solid green;
   width: 100%;
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   color: white;

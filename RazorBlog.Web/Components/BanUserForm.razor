@@ -1,0 +1,53 @@
+﻿@using System.Globalization
+@inherits RichComponentBase
+@attribute [StreamRendering(true)]
+
+@if (CurrentBanTicket != null)
+{
+    <div class="current-suspension">
+        @{
+            var expiryDate = CurrentBanTicket.Expiry?.ToString("dddd, dd/MM/yyyy", CultureInfo.InvariantCulture) ?? "Permanent";
+            <p>Expiry date: @expiryDate</p>
+        }
+        <form method="post"
+                asp-page-handler="LiftBan"
+                asp-route-username="UserName"
+              @onsubmit="(async () => await LiftBanAsync())">
+            <button class="lift-ban-btn">Lift Ban</button>
+        </form>
+    </div>
+}
+else
+{
+    <p>No ban ticket exists</p>
+
+    <EditForm Model="BanUserViewModel" class="suspend-form" OnValidSubmit="async () => await BanUserAsync()">
+        <DataAnnotationsValidator />
+        <p>Create ban ticket (leave empty to permanently ban user)</p>
+
+        <ValidationMessage For="@(() => BanUserViewModel.NewBanTicketExpiryDate)" />
+
+        <input type="date"
+               name="BanUserViewModel.NewBanTicketExpiryDate"
+               id="BanUserViewModel.NewBanTicketExpiryDate"
+               @bind-value="@BanUserViewModel.NewBanTicketExpiryDate" />
+
+        @if (!IsConfirmBanButtonDisplayed)
+        {
+            <button class="ban-btn" type="button" @onclick="ToggleConfirmBanButtonForm">Ban</button>
+        }
+        
+        @if(IsConfirmBanButtonDisplayed) 
+        {            
+            <button class="cancel-btn" type="button" @onclick="ToggleConfirmBanButtonForm">Cancel</button>
+            <button class="confirm-ban-btn" type="submit">Confirm</button>
+        }
+
+    </EditForm>
+}
+
+@code {
+    private void ToggleConfirmBanButtonForm() {
+        IsConfirmBanButtonDisplayed = !IsConfirmBanButtonDisplayed;
+    }
+}

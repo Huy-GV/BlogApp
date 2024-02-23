@@ -33,7 +33,6 @@ public class DetailsModel : RichPageModelBase<DetailsModel>
     public BanTicket? CurrentBanTicket { get; set; }
 
     [BindProperty]
-    [DateRange(allowsPast: false, allowsFuture: true, ErrorMessage = "Expiry date must be in the future")]
     public DateTime NewBanTicketExpiryDate { get; set; } = DateTime.Now.AddDays(1);
 
     [BindProperty(SupportsGet = true)]

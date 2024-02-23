@@ -5,10 +5,6 @@
   transition: 180ms ease-in;
 }
 
-html * {
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
 .button, .secondary-button, .primary-button {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
@@ -48,10 +44,6 @@ html * {
 }
 .clickable-card:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-}
-
-:root {
-  font-size: 20px;
 }
 
 .user-container {

@@ -5,10 +5,6 @@
   transition: 180ms ease-in;
 }
 
-html * {
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
 .button, .delete-post, .un-hide-post, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
@@ -48,10 +44,6 @@ html * {
 }
 .clickable-card:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-}
-
-:root {
-  font-size: 20px;
 }
 
 h1 {
@@ -100,23 +92,20 @@ h1 {
   }
 }
 
+.ban-details-container {
+  margin-bottom: 1rem;
+}
+
 .suspend-form {
-  background-color: rgb(238, 63, 63);
-  padding: 1rem;
-  border-radius: 3px;
-  color: white;
   margin-top: 0.2rem;
 }
 .suspend-form h4 {
   font-size: 1.2rem;
 }
 .suspend-form input[type=date] {
-  padding: 0.3rem;
-  margin-top: 0.5rem;
-}
-.suspend-form label {
+  padding: 0.4rem;
   font-size: 1rem;
-  margin: 0;
+  margin: 0.5rem 0.5rem 0 0;
 }
 
 .confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {
@@ -132,8 +121,8 @@ h1 {
 }
 
 .lift-ban-btn {
-  background-color: rgb(42, 214, 42);
-  border: 1px solid rgb(42, 214, 42);
+  background-color: green;
+  border: 1px solid green;
   width: 100%;
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   color: white;

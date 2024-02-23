@@ -5,10 +5,6 @@
   transition: 180ms ease-in;
 }
 
-html * {
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
 .button, .secondary-button, main .basic-info .info .change-password, .primary-button, main .basic-info .info .edit-profile {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
