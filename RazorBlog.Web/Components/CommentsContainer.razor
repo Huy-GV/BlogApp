@@ -11,7 +11,7 @@
         <DataAnnotationsValidator />
         <textarea rows="5" cols="50"
                   @bind="CreateCommentViewModel.Body"
-                  name="CreateCommentViewModel.Content"
+                  name="CreateCommentViewModel.Body"
                   placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
         <ValidationMessage For="@(() => CreateCommentViewModel.Body)" />
         <input type="submit" value="POST" class="submit-comment" />
@@ -122,7 +122,10 @@
 
                 @if (!isCommentEditorDisplayed)
                 {
-                    <p class="comment-text @postClass">@comment.Content</p>
+                    foreach (var paragraph in comment.Content.Split(Environment.NewLine))
+                    {
+                        <p class="comment-text @postClass">@paragraph</p>
+                    }
                 }
             </article>
         }

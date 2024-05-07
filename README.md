@@ -62,7 +62,7 @@ All blogs can be monitored by Moderators and Administrators.
 	```
 
 ### Set Up Development Environment
-- Initialize user secret storage:
+- Initialize user secret storage in the `Razor.Web` project:
 	```bash
 	dotnet user-secrets init
 	```

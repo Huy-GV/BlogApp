@@ -160,6 +160,5 @@ internal class BlogContentManager : IBlogContentManager
         await _dbContext.SaveChangesAsync();
 
         return (ServiceResultCode.Success, newBlog.Id);
-
     }
 }

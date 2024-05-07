@@ -64,7 +64,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
         {
             UserName = currentUserName,
             AllowedToHidePost = IsAuthenticated && currentUserRoles
-                                            .Intersect(new[] { Roles.AdminRole, Roles.ModeratorRole })
+                                            .Intersect([Roles.AdminRole, Roles.ModeratorRole])
                                             .Any(),
             AllowedToModifyOrDeletePost = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
                 currentUserName,
