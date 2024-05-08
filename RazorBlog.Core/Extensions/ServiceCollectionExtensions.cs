@@ -14,6 +14,7 @@ using System.IO;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace RazorBlog.Core.Extensions;
 public static class ServiceCollectionsExtensions
@@ -108,15 +109,22 @@ public static class ServiceCollectionsExtensions
             dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
         }
 
+        Action<SqlServerDbContextOptionsBuilder> buildSqlServerOptions = sqlServerOptions =>
+        {
+            sqlServerOptions.EnableRetryOnFailure(
+                maxRetryCount: 2,
+                maxRetryDelay: TimeSpan.FromSeconds(3),
+                errorNumbersToAdd: null
+            );
+        };
+
         services.AddDbContext<RazorBlogDbContext>(
-            options => options.UseSqlServer(
-                dbConnectionString,
-                x => x.EnableRetryOnFailure(2))
+            options => options.UseSqlServer(dbConnectionString, buildSqlServerOptions)
         );
 
         // for use in Blazor components as injected DB context is not scoped
-        services.AddDbContextFactory<RazorBlogDbContext>(options =>
-            options.UseSqlServer(dbConnectionString),
+        services.AddDbContextFactory<RazorBlogDbContext>(
+            options => options.UseSqlServer(dbConnectionString, buildSqlServerOptions),
 
             // use Scoped lifetime as the injected DbContextOptions used by AddDbContext also has a Scoped lifetime
             lifetime: ServiceLifetime.Scoped

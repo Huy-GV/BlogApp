@@ -99,9 +99,9 @@ All blogs can be monitored by Moderators and Administrators.
 	```
 - To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in your `appsettings.{env}.json` file:
 	```json
-	{
-		"UseAwsS3": true
- 	}
+		{
+			"UseAwsS3": true
+		}
 	```
 
 ## Run With Docker
@@ -111,10 +111,12 @@ All blogs can be monitored by Moderators and Administrators.
 	```env
 	# Example .env
 	SeedUser__Password=SecurePassword123@@
-	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;
+	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
 	SqlServer__Password=YOUR_DB_PASSWORD
+	
 	ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
 	ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+
 	Aws__SecretKey=YOUR_AWS_SECRET_KEY
 	Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
 	Aws__AccessKey=YOUR_AWS_ACCESS_KEY
