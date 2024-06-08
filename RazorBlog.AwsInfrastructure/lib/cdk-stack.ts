@@ -46,7 +46,7 @@ export class AppCdkStack extends Stack {
       exit(-1);
     }
 
-    this.createS3Bucket(S3_BUCKET_NAME);
+    this.createS3Bucket();
     const vpc = this.createVpc();
     const databaseTierSecurityGroup = this.createDatabaseTierSecurityGroup(vpc);
     const webServerTierSecurityGroup = this.createWebServerTierSecurityGroup(vpc);
@@ -66,7 +66,6 @@ export class AppCdkStack extends Stack {
     const ecrRepository = Repository.fromRepositoryName(this, `existing-${ECR_NAME}`, ECR_NAME)
 
     const databaseInstance = this.createRdsDatabase(
-      DATABASE_NAME,
       vpc,
       databaseTierSecurityGroup,
       envVariableProps.DatabaseUserId,
@@ -77,12 +76,10 @@ export class AppCdkStack extends Stack {
     const taskDefinition = this.createTaskDefinition(
       razorBlogTaskExecutionRole,
       databaseInstance,
-      DATABASE_NAME,
       envVariableProps.DatabaseUserId,
       envVariableProps.SqlServerPassword,
       envVariableProps,
-      ecrRepository,
-      DOCKER_IMAGE_TAG
+      ecrRepository
     );
 
     this.createFargateService(
@@ -96,12 +93,10 @@ export class AppCdkStack extends Stack {
     });
   }
 
-  private createS3Bucket(
-    bucketName: string,
-  ) {
+  private createS3Bucket() {
     return new Bucket(
       this,
-      bucketName,
+      S3_BUCKET_NAME,
       {
         blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         versioned: false,
@@ -136,12 +131,10 @@ export class AppCdkStack extends Stack {
   private createTaskDefinition(
     taskExecutionRole: Role,
     databaseInstance: DatabaseInstance,
-    databaseName: string,
     databaseUserId: string,
     databasePassword: string,
     envVariableProps: EnvVariableProps,
-    ecrRepository: IRepository,
-    dockerImageTag: string
+    ecrRepository: IRepository
   ): FargateTaskDefinition {
     const taskDefinition = new FargateTaskDefinition(
       this,
@@ -157,7 +150,7 @@ export class AppCdkStack extends Stack {
     // ensure the database endpoint is correctly loaded to the connection string
     taskDefinition.node.addDependency(databaseInstance);
 
-    const connectionString = `Server=${databaseInstance.dbInstanceEndpointAddress},${databaseInstance.dbInstanceEndpointPort};Database=${databaseName};User ID=${databaseUserId};Password=${databasePassword};MultipleActiveResultSets=false;TrustServerCertificate=true;`
+    const connectionString = `Server=${databaseInstance.dbInstanceEndpointAddress},${databaseInstance.dbInstanceEndpointPort};Database=${DATABASE_NAME};User ID=${databaseUserId};Password=${databasePassword};MultipleActiveResultSets=false;TrustServerCertificate=true;`
 
     const containerEnvVariables = {
       ...envVariableProps.RawConfig,
@@ -168,7 +161,7 @@ export class AppCdkStack extends Stack {
     taskDefinition.addContainer(
       CONTAINER_NAME,
       {
-        image: ContainerImage.fromEcrRepository(ecrRepository, dockerImageTag),
+        image: ContainerImage.fromEcrRepository(ecrRepository, DOCKER_IMAGE_TAG),
         memoryLimitMiB: 256,
         cpu: 128,
         environment: containerEnvVariables,
@@ -196,7 +189,6 @@ export class AppCdkStack extends Stack {
   }
 
   private createRdsDatabase(
-    name: string,
     vpc: Vpc,
     securityGroup: SecurityGroup,
     userId: string,
@@ -204,7 +196,7 @@ export class AppCdkStack extends Stack {
   ) {
     return new DatabaseInstance(
       this,
-      name,
+      DATABASE_NAME,
       {
         engine: DatabaseInstanceEngine.sqlServerEx({ version: SqlServerEngineVersion.VER_16 }),
         vpc,
