@@ -30,7 +30,7 @@ const VPC_NAME = 'razor-blog-vpc';
 const DATABASE_NAME = 'RazorBlogDatabase';
 const DATABASE_SUBNET_GROUP_NAME = 'razor-blog-db-subnet-group'
 const CLUSTER_NAME = 'RazorBlogCluster';
-const TASK_DEFINITION_NAME = 'RazorBlogTagDefinition';
+const TASK_DEFINITION_NAME = 'RazorBlogTaskDefinition';
 const FARGATE_SERVICE_NAME = 'RazorBlogService';
 const FARGATE_EXECUTION_ROLE = 'RazorBlogExecutionRole';
 const CONTAINER_NAME = 'razor-blog-container';
@@ -206,11 +206,11 @@ export class AppCdkStack extends Stack {
       this,
       name,
       {
-        engine: DatabaseInstanceEngine.sqlServerEx({ version: SqlServerEngineVersion.VER_14 }),
+        engine: DatabaseInstanceEngine.sqlServerEx({ version: SqlServerEngineVersion.VER_16 }),
         vpc,
         instanceType: InstanceType.of(
-          InstanceClass.BURSTABLE2,
-          InstanceSize.SMALL),
+          InstanceClass.T3,
+          InstanceSize.MICRO),
         credentials: {
           username: userId,
           password: SecretValue.unsafePlainText(password),

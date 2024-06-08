@@ -7,14 +7,14 @@ All blogs can be monitored by Moderators and Administrators.
 ### Technologies
 - Languages: C#, JavaScript, TypeScript, HTML, CSS,
 - Frameworks: .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS, SQL Server,
-- Development Tools: Docker, AWS CDK, CloudFormation, S3, IAM, ECS Fargate, ECR, RDS, VPC,
+- Development Tools: Docker, AWS CDK, CloudFormation, S3, IAM, ECS Fargate, ECR, RDS, VPC
 
 ### Table of Contents
 - [Overview](#overview)
 - [Images](#images)
 - [Quick Start](#quick-start)
 - [Run With Docker](#run-with-docker)
-- [AWS Deployment](./cdk/README.md)
+- [AWS Deployment](./RazorBlog.AwsInfrastructure/README.md)
 
 ### Features
 #### Blog Posting
@@ -113,7 +113,7 @@ All blogs can be monitored by Moderators and Administrators.
 	SeedUser__Password=SecurePassword123@@
 	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
 	SqlServer__Password=YOUR_DB_PASSWORD
-	
+
 	ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
 	ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
 
@@ -126,3 +126,6 @@ All blogs can be monitored by Moderators and Administrators.
 	cd /directory/containing/docker-compose.yaml/
 	docker compose --env-file .env up --build
 	```
+
+## AWS Deployment
+See [AWS Deployment](./RazorBlog.AwsInfrastructure//README.md)
