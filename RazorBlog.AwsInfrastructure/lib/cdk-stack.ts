@@ -26,17 +26,17 @@ interface EnvVariableProps {
   RawConfig: DotenvParseOutput;
 }
 
-const VPC_NAME = 'razor-blog-vpc';
-const DATABASE_NAME = 'RazorBlogDatabase';
-const DATABASE_SUBNET_GROUP_NAME = 'razor-blog-db-subnet-group'
-const CLUSTER_NAME = 'RazorBlogCluster';
-const TASK_DEFINITION_NAME = 'RazorBlogTaskDefinition';
-const FARGATE_SERVICE_NAME = 'RazorBlogService';
-const FARGATE_EXECUTION_ROLE = 'RazorBlogExecutionRole';
-const CONTAINER_NAME = 'razor-blog-container';
+const VPC_NAME = 'razorblog-cdk-vpc';
+const DATABASE_NAME = 'RazorBlogCdkDatabase';
+const DATABASE_SUBNET_GROUP_NAME = 'razorblog-db-subnet-group'
+const CLUSTER_NAME = 'RazorBlogCdkCluster';
+const TASK_DEFINITION_NAME = 'RazorBlogCdkTaskDefinition';
+const FARGATE_SERVICE_NAME = 'RazorBlogCdkService';
+const FARGATE_EXECUTION_ROLE = 'RazorBlogCdkExecutionRole';
+const CONTAINER_NAME = 'razorblog-cdk-container';
 const DOCKER_IMAGE_TAG = 'latest'
-const ECR_NAME = 'razor-blog-repository';
-const S3_BUCKET_NAME = 'razor-blog-bucket';
+const ECR_NAME = 'razorblog-cdk-repository';
+const S3_BUCKET_NAME = 'razorblog-cdk-bucket';
 
 export class AppCdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {

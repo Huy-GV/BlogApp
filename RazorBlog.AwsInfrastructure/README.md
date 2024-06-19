@@ -19,7 +19,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
 ### Set Up AWS Credentials
 - Run the following command and specify the access key, secret key, and region
     ```bash
-    aws configure
+    aws configure --profile razor-blog
     ```
 - Create a file named `cdk.context.json` containing availabilities zones within your region:
     ```json
@@ -41,15 +41,10 @@ This document describes the AWS deployment process using the CDK with TypeScript
     ```
 
 ### Upload Docker Image
-- The CDK stack requires a Docker image to be uploaded to a private ECR repository with the tag `latest`
-    1. Create a private repository named `razor-blog-repository`
-        ```bash
-        aws ecr create-repository --repository-name razor-blog-repository --region YOUR.AWS.REGION
-        ```
-    2. Upload an image using the push commands
-        ```bash
-        ./scripts/upload-ecr-images.sh
-        ```
+- Build a Docker image locally and upload it to ECR:
+    ```bash
+    ./scripts/build-ecr-image.sh <repository name> <HTTPS certificate password> <Dockerfile directory>?
+    ```
 
 ### Deploy Stack
 - Create an `.env` file in `./lib/`:
@@ -69,18 +64,6 @@ This document describes the AWS deployment process using the CDK with TypeScript
 - Deploy the stack to AWS using the command:
     ```bash
     cdk deploy
-    ```
-- Destroy the deployed stackL
-    ```bash
-    cdk destroy
-    ```
-- Compare deployed stack with current state
-    ```bash
-    cdk diff
-    ```
-- Generate CloudFormation template
-    ```bash
-    cdk synth
     ```
 
 ## Infrastructure
