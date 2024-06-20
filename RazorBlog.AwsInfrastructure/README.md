@@ -34,24 +34,14 @@ This document describes the AWS deployment process using the CDK with TypeScript
 
 ### Bootstrap CDK
 - Attach 2 IAM policies to the current user:
-    - [iam/cdkBootstrapPolicy.json](iam/cdkBootstrapPolicy.json)
-    - [iam/cdkDeployPolicy.json](iam/cdkDeployPolicy.json)
+    - [./iam/cdkBootstrapPolicy.json](iam/cdkBootstrapPolicy.json)
+    - [./iam/cdkDeployPolicy.json](iam/cdkDeployPolicy.json)
 - Run the boostrap command:
     ```bash
     cdk bootstrap --profile razor-blog
     ```
 
-### Upload Docker Image
-1. Ensure the ECR repository already exists by deploying the `DataStoreStack`:
-    ```bash
-    cdk deploy DataStoreStack
-    ```
-2. Build a Docker image locally and upload it to ECR:
-    ```bash
-    ./scripts/build-ecr-image.sh YOUR_HTTPS_CERT_PASSWORD YOUR_DOCKERFILE_DIR
-    ```
-
-### Deploy Stack
+### Deploy Application
 - Create an `aws.env` file in [./config](./config/):
     ```env
     SeedUser__Password=SecurePassword123@@
@@ -66,7 +56,8 @@ This document describes the AWS deployment process using the CDK with TypeScript
     Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
     Aws__AccessKey=YOUR_AWS_ACCESS_KEY
     ```
-- Deploy the stack to AWS using the command:
-    ```bash
-    cdk deploy --all
-    ```
+- Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
+    1. Deploy `VpcStack`
+    2. Deploy `DataStoreStack`
+    3. Push Docker image to ECR via [./scripts/build-ecr-image.sh](./scripts/build-ecr-image.sh)
+    4. Deploy `ContainerServiceStack`

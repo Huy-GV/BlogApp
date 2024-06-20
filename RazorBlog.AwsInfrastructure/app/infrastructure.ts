@@ -10,8 +10,7 @@ import { ContainerServiceStack } from '../lib/container-service-stack';
 const app = new cdk.App();
 const awsEnv = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
 
-const appConfiguration = parseEnvFile() || exit(-1);
-
+const appConfiguration = parseEnvFile() || exit(1);
 const vpcStack = new VpcStack(app, 'VpcStack');
 
 const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
