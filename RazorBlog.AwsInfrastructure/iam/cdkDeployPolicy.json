@@ -9,7 +9,7 @@
                 "cloudformation:DescribeStacks"
             ],
             "Resource": [
-                "arn:aws:cloudformation:ap-southeast-2:YOUR_AWS_ACCOUNT_ID:stack/CdkStack/*",
+                "arn:aws:cloudformation:ap-southeast-2:YOUR_AWS_ACCOUNT_ID:stack/*",
                 "arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/cdk-*"
             ]
         },
@@ -23,7 +23,7 @@
             "Sid": "VisualEditor2",
             "Effect": "Allow",
             "Action": "cloudformation:DescribeStacks",
-            "Resource": "arn:aws:cloudformation:ap-southeast-2:YOUR_AWS_ACCOUNT_ID:stack/CdkStack/*"
+            "Resource": "arn:aws:cloudformation:ap-southeast-2:YOUR_AWS_ACCOUNT_ID:stack/*"
         },
         {
             "Sid": "VisualEditor3",

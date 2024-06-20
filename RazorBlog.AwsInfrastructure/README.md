@@ -20,6 +20,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
 - Run the following command and specify the access key, secret key, and region
     ```bash
     aws configure --profile razor-blog
+    set AWS_PROFILE=razor-blog
     ```
 - Create a file named `cdk.context.json` containing availabilities zones within your region:
     ```json
@@ -37,7 +38,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
 - Create an IAM policy named `CdkDeployPolicy` (see [iam/cdkDeployPolicy.json](iam/cdkDeployPolicy.json)) and attach it to the user
 - Run the boostrap command:
     ```bash
-    cdk boostrap
+    cdk bootstrap --profile razor-blog
     ```
 
 ### Upload Docker Image
@@ -47,11 +48,11 @@ This document describes the AWS deployment process using the CDK with TypeScript
     ```
 
 ### Deploy Stack
-- Create an `.env` file in `./lib/`:
+- Create an `aws.env` file in [./config](./config/):
     ```env
-    # Example .env file
     SeedUser__Password=SecurePassword123@@
     Database__UserId=YOUR_RDS_DB_USER_ID
+    Database__Name=YOUR_RDS_INSTANCE_NAME
     SqlServer__Password=YOUR_RDS_DB_PASSWORD
     ASPNETCORE_URLS=https://+:443
     ASPNETCORE_HTTPS_PORT=443
@@ -63,7 +64,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
     ```
 - Deploy the stack to AWS using the command:
     ```bash
-    cdk deploy
+    cdk deploy --all
     ```
 
 ## Infrastructure
