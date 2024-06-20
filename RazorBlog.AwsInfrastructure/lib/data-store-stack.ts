@@ -8,8 +8,10 @@ import { Construct } from "constructs";
 export interface DataStoreStackProps extends StackProps {
     vpc: IVpc,
     databaseTierSecurityGroup: ISecurityGroup,
-    userId: string,
-    password: string
+    dataBucketName: string,
+    databaseName: string,
+    databaseUserId: string,
+    databasePassword: string
 }
 
 export class DataStoreStack extends Stack {
@@ -19,68 +21,49 @@ export class DataStoreStack extends Stack {
     constructor(scope: Construct, id: string, props: DataStoreStackProps) {
         super(scope, id);
 
-        this.createS3Bucket();
-        this.databaseInstance = this.createRdsDatabase(
-            props.vpc, 
-            props.databaseTierSecurityGroup, 
-            props.userId, 
-            props.password);
-
-        this.repository = this.createEcrRepository();
-    }
-
-    private createEcrRepository() {
-        return new Repository(this, 'RazorBlogCdkRepository', {
-            repositoryName: "razorblog-cdk-repository",
-            emptyOnDelete: true,
-            removalPolicy: RemovalPolicy.DESTROY
-        })  
-    }
-
-    private createS3Bucket() {
-        return new Bucket(
+        new Bucket(
             this,
             'RazorBlogDataBucket',
             {
-                bucketName: 'razorblog-cdk-data',
+                bucketName: props.dataBucketName,
                 blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
                 versioned: false,
                 removalPolicy: RemovalPolicy.DESTROY,
             }
         );
-    }
-  
-    private createRdsDatabase(
-        vpc: IVpc,
-        securityGroup: ISecurityGroup,
-        userId: string,
-        password: string
-    ) {
-        return new DatabaseInstance(
+
+        this.databaseInstance = new DatabaseInstance(
             this,
             'RazorBlogCdkDb',
             {
-                databaseName: 'razorblog-cdk-db',
+                removalPolicy: RemovalPolicy.SNAPSHOT,
+                instanceIdentifier: props.databaseName,
                 engine: DatabaseInstanceEngine.sqlServerEx({ version: SqlServerEngineVersion.VER_16 }),
-                vpc,
+                vpc: props.vpc,
                 instanceType: InstanceType.of(
                     InstanceClass.T3,
                     InstanceSize.MICRO),
-                    credentials: {
-                    username: userId,
-                    password: SecretValue.unsafePlainText(password),
+                credentials: {
+                    username: props.databaseUserId,
+                    password: SecretValue.unsafePlainText(props.databasePassword),
                 },
-                vpcSubnets: vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
+                vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
                 securityGroups: [
-                    securityGroup
+                    props.databaseTierSecurityGroup
                 ],
                 subnetGroup: new SubnetGroup(this, 'RazorBlogCdkDbSubnetGroup', {
-                    vpc: vpc,
+                    vpc: props.vpc,
                     subnetGroupName: 'razorblog-cdk-db-subnet-group',
-                    vpcSubnets: vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
+                    vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
                     description: 'private-subnet-group-for-db'
                 })
             }
         );
+
+        this.repository = new Repository(this, 'RazorBlogCdkRepository', {
+            repositoryName: "razorblog-cdk-repository",
+            emptyOnDelete: true,
+            removalPolicy: RemovalPolicy.DESTROY
+        });
     }
 }

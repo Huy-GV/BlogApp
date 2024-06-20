@@ -24,7 +24,7 @@ export class ContainerServiceStack extends Stack {
 
 		const taskExecutionRole = this.createEcsExecutionRole();
 		const cluster = new Cluster(this, 'RazorBlogCdkCluster', {
-		  clusterName: "razorblog-cdk-cluster"  
+		  	clusterName: "razorblog-cdk-cluster"
 		})
 
 		const taskDefinition = this.createTaskDefinition(
@@ -37,7 +37,7 @@ export class ContainerServiceStack extends Stack {
 			props.envProps,
 			props.ecrRepository
 		);
-	
+
 		this.createFargateService(
 			taskDefinition,
 			props.webTierSecurityGroup,
@@ -48,14 +48,14 @@ export class ContainerServiceStack extends Stack {
 
 	private createEcsExecutionRole(): Role {
 		const razorBlogTaskExecutionRole = new Role(this, 'RazorBlogFargateExeRole', {
-		  assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
+		  	assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
 		});
-	
+
 		// required to pull images from the ECR repository
 		razorBlogTaskExecutionRole.addManagedPolicy(
-		  ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
+		  	ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
 		);
-	
+
 		return razorBlogTaskExecutionRole;
 	}
 
@@ -71,18 +71,18 @@ export class ContainerServiceStack extends Stack {
 			{
 				taskDefinition,
 				cluster: cluster,
-				desiredCount: 0,
+				desiredCount: 1,
 				assignPublicIp: true,
 				securityGroups: [
-				webServerTierSecurityGroup
+					webServerTierSecurityGroup
 				],
 				vpcSubnets: {
-				subnets: vpc.publicSubnets
+					subnets: vpc.publicSubnets
 				},
 			}
 		);
 	}
-	
+
 	private createTaskDefinition(
 		taskExecutionRole: Role,
 		databaseEndpoint: string,
@@ -103,14 +103,14 @@ export class ContainerServiceStack extends Stack {
 				executionRole: taskExecutionRole,
 			},
 		);
-	
+
 		const connectionString = `Server=${databaseEndpoint},${databasePort};Database=${databaseName};User ID=${databaseUserId};Password=${databasePassword};MultipleActiveResultSets=false;TrustServerCertificate=true;`
-	
+
 		const containerEnvVariables = {
 		  	...envVariables,
 		  	ConnectionStrings__DefaultConnection: connectionString
 		};
-	
+
 		const logging = new AwsLogDriver({ streamPrefix: "razor-blog" });
 		taskDefinition.addContainer(
 			'RazorBlogCdkContainer',
@@ -122,24 +122,24 @@ export class ContainerServiceStack extends Stack {
 				environment: containerEnvVariables,
 				logging: logging,
 				portMappings: [
-				{
-					containerPort: 80,
-					hostPort: 80,
-					protocol: Protocol.TCP,
-					appProtocol: AppProtocol.http,
-					name: 'http-mappings'
-				},
-				{
-					containerPort: 443,
-					hostPort: 443,
-					protocol: Protocol.TCP,
-					appProtocol: AppProtocol.http,
-					name: 'https-mappings'
-				}
+					{
+						containerPort: 80,
+						hostPort: 80,
+						protocol: Protocol.TCP,
+						appProtocol: AppProtocol.http,
+						name: 'http-mappings'
+					},
+					{
+						containerPort: 443,
+						hostPort: 443,
+						protocol: Protocol.TCP,
+						appProtocol: AppProtocol.http,
+						name: 'https-mappings'
+					}
 				]
 			}
 		);
-	
+
 		return taskDefinition;
 	}
 }

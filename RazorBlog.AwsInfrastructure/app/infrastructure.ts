@@ -18,8 +18,10 @@ const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
 	env: awsEnv,
 	vpc: vpcStack.vpc,
 	databaseTierSecurityGroup: vpcStack.databaseTierSecurityGroup,
-	userId: appConfiguration.DatabaseUserId,
-	password: appConfiguration.SqlServerPassword
+	databaseName: appConfiguration.DatabaseName,
+	dataBucketName: appConfiguration.AwsS3BucketName,
+	databaseUserId: appConfiguration.DatabaseUserId,
+	databasePassword: appConfiguration.SqlServerPassword
 });
 
 const containerServiceStack = new ContainerServiceStack(app, 'ContainerServiceStack', {

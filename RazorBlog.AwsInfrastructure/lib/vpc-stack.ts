@@ -43,6 +43,7 @@ export class VpcStack extends cdk.Stack {
 		this.webTierSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(80));
 		this.webTierSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443));
 		this.webTierSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443));
+		this.webTierSecurityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(443));
 		this.webTierSecurityGroup.addEgressRule(this.databaseTierSecurityGroup, Port.tcp(1433));
 		this.databaseTierSecurityGroup.addIngressRule(this.webTierSecurityGroup, Port.tcp(1433));
 	}

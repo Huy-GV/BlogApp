@@ -6,19 +6,19 @@ interface AppConfiguration {
     DatabaseUserId: string;
     DatabaseName: string;
     SqlServerPassword: string;
-    
+
     AspNetCoreKestrelCertPassword: string;
     AspNetCoreKestrelCertPath: string;
     AspNetCorUrls: string;
     AspNetCoreHttpsPort: number;
-  
+
     AwsSecretKey: string;
     AwsAccessKey: string;
     AwsS3BucketName: string;
-  
+
     RawConfig: DotenvParseOutput;
 }
-  
+
 export function parseEnvFile(): AppConfiguration | null {
     const envFilePath = join(__dirname, 'aws.env');
     console.log(`Reading environment variables from '${envFilePath}'`)
@@ -48,8 +48,8 @@ export function parseEnvFile(): AppConfiguration | null {
         AspNetCoreKestrelCertPassword: parsedConfig.ASPNETCORE_Kestrel__Certificates__Default__Password,
         AspNetCoreKestrelCertPath: parsedConfig.ASPNETCORE_Kestrel__Certificates__Default__Path,
         AwsSecretKey: parsedConfig.Aws__SecretKey,
-        AwsAccessKey: parsedConfig.Aws__S3__BucketName,
-        AwsS3BucketName: parsedConfig.Aws__AccessKey,
+        AwsS3BucketName: parsedConfig.Aws__S3__BucketName,
+        AwsAccessKey: parsedConfig.Aws__AccessKey,
         AspNetCoreHttpsPort: Number.parseInt(parsedConfig.ASPNETCORE_HTTPS_PORT),
         AspNetCorUrls: parsedConfig.ASPNETCORE_URLS,
 
