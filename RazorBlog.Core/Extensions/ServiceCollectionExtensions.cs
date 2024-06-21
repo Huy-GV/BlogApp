@@ -64,18 +64,16 @@ public static class ServiceCollectionsExtensions
         logger.LogInformation("Registering AWS S3 image store");
         var awsOptions = new AWSOptions
         {
-            Credentials = new BasicAWSCredentials(
-                configuration["Aws:AccessKey"],
-                configuration["Aws:SecretKey"]),
-            Region = Amazon.RegionEndpoint.APSoutheast2,
+            Profile = configuration["Aws:Profile"],
+            Region = Amazon.RegionEndpoint.GetBySystemName(configuration["Aws:Region"]),
         };
 
         services.AddDefaultAWSOptions(awsOptions);
         services.AddAWSService<IAmazonS3>();
 
         services
-            .AddOptions<AwsS3Options>()
-            .Bind(configuration.GetRequiredSection($"Aws:{AwsS3Options.Name}"))
+            .AddOptions<AwsOptions>()
+            .Bind(configuration.GetRequiredSection(AwsOptions.Name))
             .ValidateOnStart()
             .ValidateDataAnnotations();
 
@@ -112,7 +110,7 @@ public static class ServiceCollectionsExtensions
         Action<SqlServerDbContextOptionsBuilder> buildSqlServerOptions = sqlServerOptions =>
         {
             sqlServerOptions.EnableRetryOnFailure(
-                maxRetryCount: 2,
+                maxRetryCount: 3,
                 maxRetryDelay: TimeSpan.FromSeconds(3),
                 errorNumbersToAdd: null
             );

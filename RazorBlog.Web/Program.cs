@@ -98,10 +98,12 @@ public class Program
         var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var useAwsS3Option) && useAwsS3Option;
         if (useAwsS3)
         {
+            logger.LogInformation("Using S3 as image store");
             builder.Services.UseCoreServicesWithS3(builder.Configuration);
         }
         else
         {
+            logger.LogInformation("Using local image store");
             builder.Services.UseCoreServices();
         }
 

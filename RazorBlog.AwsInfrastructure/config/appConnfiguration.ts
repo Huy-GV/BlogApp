@@ -12,9 +12,7 @@ interface AppConfiguration {
     AspNetCorUrls: string;
     AspNetCoreHttpsPort: number;
 
-    AwsSecretKey: string;
-    AwsAccessKey: string;
-    AwsS3BucketName: string;
+    AwsDataBucket: string;
 
     RawConfig: DotenvParseOutput;
 }
@@ -47,9 +45,7 @@ export function parseEnvFile(): AppConfiguration | null {
         SqlServerPassword: parsedConfig.SqlServer__Password,
         AspNetCoreKestrelCertPassword: parsedConfig.ASPNETCORE_Kestrel__Certificates__Default__Password,
         AspNetCoreKestrelCertPath: parsedConfig.ASPNETCORE_Kestrel__Certificates__Default__Path,
-        AwsSecretKey: parsedConfig.Aws__SecretKey,
-        AwsS3BucketName: parsedConfig.Aws__S3__BucketName,
-        AwsAccessKey: parsedConfig.Aws__AccessKey,
+        AwsDataBucket: parsedConfig.Aws__DataBucket,
         AspNetCoreHttpsPort: Number.parseInt(parsedConfig.ASPNETCORE_HTTPS_PORT),
         AspNetCorUrls: parsedConfig.ASPNETCORE_URLS,
 

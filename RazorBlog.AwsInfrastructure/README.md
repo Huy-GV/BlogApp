@@ -52,9 +52,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
     ASPNETCORE_HTTPS_PORT=443
     ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
     ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
-    Aws__SecretKey=YOUR_AWS_SECRET_KEY
-    Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
-    Aws__AccessKey=YOUR_AWS_ACCESS_KEY
+    Aws__DataBucket=YOUR_S3_BUCKET_NAME
     ```
 - Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
     1. Deploy `VpcStack`

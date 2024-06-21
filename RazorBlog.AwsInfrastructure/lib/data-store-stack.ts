@@ -29,6 +29,7 @@ export class DataStoreStack extends Stack {
                 blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
                 versioned: false,
                 removalPolicy: RemovalPolicy.DESTROY,
+                autoDeleteObjects: true
             }
         );
 

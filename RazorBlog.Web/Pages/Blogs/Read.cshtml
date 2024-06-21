@@ -46,11 +46,10 @@
                         <input class="delete-post" type="submit" value="Delete">
                     </form>
 
-                    <a class="edit-post"
-                       asp-page="/Blogs/Edit"
+                    <a asp-page="/Blogs/Edit"
                        asp-route-username="@userInfo.UserName"
                        asp-route-blogID="@Model.DetailedBlogDto.Id">
-                        Edit
+                       <button  class="edit-post">Edit</button>
                     </a>
                 }
 

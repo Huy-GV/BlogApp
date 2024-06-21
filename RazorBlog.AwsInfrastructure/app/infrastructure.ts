@@ -18,7 +18,7 @@ const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
 	vpc: vpcStack.vpc,
 	databaseTierSecurityGroup: vpcStack.databaseTierSecurityGroup,
 	databaseName: appConfiguration.DatabaseName,
-	dataBucketName: appConfiguration.AwsS3BucketName,
+	dataBucketName: appConfiguration.AwsDataBucket,
 	databaseUserId: appConfiguration.DatabaseUserId,
 	databasePassword: appConfiguration.SqlServerPassword
 });

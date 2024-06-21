@@ -17,7 +17,7 @@ public class S3ImageStore : IImageStore
 {
     private readonly ILogger<S3ImageStore> _logger;
     private readonly IAmazonS3 _awsS3Client;
-    private readonly AwsS3Options _awsS3Options;
+    private readonly AwsOptions _awsS3Options;
     private readonly IDefaultProfileImageProvider _defaultProfileImageProvider;
 
     private const string AwsS3UrlFormat = "https://{0}.s3.{1}.amazonaws.com/{2}";
@@ -25,7 +25,7 @@ public class S3ImageStore : IImageStore
     public S3ImageStore(
         ILogger<S3ImageStore> logger,
         IAmazonS3 awsS3Client,
-        IOptions<AwsS3Options> awsS3Options,
+        IOptions<AwsOptions> awsS3Options,
         IDefaultProfileImageProvider defaultProfileImageProvider)
     {
         _logger = logger;
@@ -45,7 +45,7 @@ public class S3ImageStore : IImageStore
         var request = new DeleteObjectRequest
         {
             Key = s3Uri.Key,
-            BucketName = _awsS3Options.BucketName,
+            BucketName = _awsS3Options.DataBucket,
         };
 
         _logger.LogInformation("Deleting image with key '{key}'", request.Key);
@@ -101,7 +101,7 @@ public class S3ImageStore : IImageStore
     private string BuildImageUrl(string objectKey)
     {
         var region = _awsS3Client.Config.RegionEndpoint.SystemName;
-        return string.Format(AwsS3UrlFormat, _awsS3Options.BucketName, region, objectKey);
+        return string.Format(AwsS3UrlFormat, _awsS3Options.DataBucket, region, objectKey);
     }
 
     public async Task<(ServiceResultCode, string?)> UploadBlogCoverImageAsync(IFormFile imageFile)
@@ -115,7 +115,7 @@ public class S3ImageStore : IImageStore
         var putBlogCoverImageRequest = new PutObjectRequest
         {
             Key = BuildFileName(imageFile.FileName, ImageType.BlogCover.ToString()),
-            BucketName = _awsS3Options.BucketName,
+            BucketName = _awsS3Options.DataBucket,
             InputStream = imageFile.OpenReadStream(),
             TagSet = [tag],
         };
@@ -158,7 +158,7 @@ public class S3ImageStore : IImageStore
         var putProfileImageRequest = new PutObjectRequest
         {
             Key = BuildFileName(imageFile.FileName, ImageType.ProfileImage.ToString()),
-            BucketName = _awsS3Options.BucketName,
+            BucketName = _awsS3Options.DataBucket,
             InputStream = imageFile.OpenReadStream(),
             TagSet = [tag],
         };

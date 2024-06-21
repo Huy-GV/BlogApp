@@ -2,10 +2,17 @@
 
 namespace RazorBlog.Core.Options;
 
-public class AwsS3Options
+public class AwsOptions
 {
-    public const string Name = "S3";
+    public const string Name = "Aws";
 
     [Required]
-    public required string BucketName { get; init; }
+    public required string DataBucket { get; init; }
+    
+    [Required]
+    public required string Profile { get; init; }
+
+    [Required]
+    public required string Region { get; init; }
+
 }

@@ -15,15 +15,11 @@ services:
 
             - SeedUser__Password=${SeedUser__Password}
             - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
-
-            # AWS Credentials
-            - Aws__SecretKey=${Aws__SecretKey}
-            - Aws__S3__BucketName=${Aws__S3__BucketName}
-            - Aws__AccessKey=${Aws__AccessKey}
         depends_on:
             - razorblogdb
         volumes:
-            - ~/.aspnet/https:/https:ro
+            - ~/.aspnet/https:/root/https:ro
+            - ~/.aws:/root/.aws:ro
     razorblogdb:
         container_name: razorblogdb
         ports:

@@ -86,14 +86,12 @@ All blogs can be monitored by Moderators and Administrators.
 	```
 
 ### Set Up AWS Image Storage
-- Create an IAM user, generate AWS credentials, and store them:
+- Create an IAM user and configure their profile locally:
 	```bash
-	cd /directory/containing/RazorBlog.csproj/
-	dotnet user-secrets set "Aws:AccessKey" "YOUR_AWS_ACCESS_KEY"
-	dotnet user-secrets set "Aws:SecretKey" "YOUR_AWS_SECRET_KEY"
-	dotnet user-secrets set "Aws:S3:BucketName" "YOUR_S3_BUCKET_NAME"
+	aws configure --profile razor-blog
+	export AWS_PROFILE=razor-blog
 	```
-- To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in your `appsettings.{env}.json` file:
+- To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in `appsettings.{env}.json`:
 	```json
 		{
 			"UseAwsS3": true
@@ -105,17 +103,11 @@ All blogs can be monitored by Moderators and Administrators.
 - Generate a `.pfx` certificate and store it in `~/.aspnet/https` on the host machine
 - Create a `.env` files with fields as shown in the below example:
 	```env
-	# Example .env
 	SeedUser__Password=SecurePassword123@@
 	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
 	SqlServer__Password=YOUR_DB_PASSWORD
-
 	ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
 	ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-
-	Aws__SecretKey=YOUR_AWS_SECRET_KEY
-	Aws__S3__BucketName=YOUR_S3_BUCKET_NAME
-	Aws__AccessKey=YOUR_AWS_ACCESS_KEY
 	```
 - Run the below command in admin mode:
 	```bash
