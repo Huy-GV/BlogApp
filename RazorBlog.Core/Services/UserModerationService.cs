@@ -17,14 +17,17 @@ internal class UserModerationService : IUserModerationService
     private readonly RazorBlogDbContext _dbContext;
     private readonly ILogger<UserModerationService> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
     public UserModerationService(RazorBlogDbContext dbContext,
         ILogger<UserModerationService> logger,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        IBackgroundJobClient backgroundJobClient)
     {
         _dbContext = dbContext;
         _logger = logger;
         _userManager = userManager;
+        _backgroundJobClient = backgroundJobClient;
     }
 
     private async Task<bool> IsUserNameFromAdminUser(string userName)
@@ -100,7 +103,7 @@ internal class UserModerationService : IUserModerationService
             return ServiceResultCode.Success;
         }
 
-        BackgroundJob.Schedule(() => RemoveBanTicketAsync(userToBanName), new DateTimeOffset(expiry.Value));
+        _backgroundJobClient.Schedule(() => RemoveBanTicketAsync(userToBanName), new DateTimeOffset(expiry.Value));
         return ServiceResultCode.Success;
     }
 
