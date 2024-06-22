@@ -36,7 +36,7 @@ internal class UserModerationService : IUserModerationService
         return user != null && await _userManager.IsInRoleAsync(user, Roles.AdminRole);
     }
 
-    public async Task RemoveBanTicketAsync(string bannedUserName)
+    public async Task PrivateRemoveBanTicketAsync(string bannedUserName)
     {
         var banTicket = await FindBanTicketByUserNameAsync(bannedUserName);
         if (banTicket == null)
@@ -76,8 +76,8 @@ internal class UserModerationService : IUserModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        var now = DateTime.UtcNow;
-        if (expiry.HasValue && expiry.Value <= now)
+        var now = DateTime.UtcNow.Date;
+        if (expiry.HasValue && expiry.Value.Date <= now)
         {
             return ServiceResultCode.InvalidArguments;
         }
@@ -85,6 +85,7 @@ internal class UserModerationService : IUserModerationService
         if (await BanTicketExistsAsync(userToBanName))
         {
             _logger.LogInformation("User named {userToBanName} has already been banned", userToBanName);
+            return ServiceResultCode.InvalidArguments;
         }
 
         var user = await _userManager.FindByNameAsync(userToBanName);
@@ -103,7 +104,7 @@ internal class UserModerationService : IUserModerationService
             return ServiceResultCode.Success;
         }
 
-        _backgroundJobClient.Schedule(() => RemoveBanTicketAsync(userToBanName), new DateTimeOffset(expiry.Value));
+        _backgroundJobClient.Schedule(() => PrivateRemoveBanTicketAsync(userToBanName), new DateTimeOffset(expiry.Value));
         return ServiceResultCode.Success;
     }
 
@@ -114,7 +115,7 @@ internal class UserModerationService : IUserModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        await RemoveBanTicketAsync(bannedUserName);
+        await PrivateRemoveBanTicketAsync(bannedUserName);
         return ServiceResultCode.Success;
     }
 }
