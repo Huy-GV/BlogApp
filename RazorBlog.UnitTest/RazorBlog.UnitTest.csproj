@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RazorBlog.Core\RazorBlog.Core.csproj" />
+    <ProjectReference Include="..\RazorBlog.Web\RazorBlog.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

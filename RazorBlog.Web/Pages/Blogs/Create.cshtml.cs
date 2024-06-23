@@ -35,7 +35,7 @@ public class CreateModel : RichPageModelBase<CreateModel>
         var user = await GetUserOrDefaultAsync();
         if (user?.UserName == null)
         {
-            return Page();
+            return Forbid();
         }
 
         if (!await _userPermissionValidator.IsUserAllowedToCreatePostAsync(user.UserName))
@@ -51,7 +51,7 @@ public class CreateModel : RichPageModelBase<CreateModel>
         var user = await GetUserOrDefaultAsync();
         if (user?.UserName == null)
         {
-            return Page();
+            return Forbid();
         }
 
         if (!ModelState.IsValid)

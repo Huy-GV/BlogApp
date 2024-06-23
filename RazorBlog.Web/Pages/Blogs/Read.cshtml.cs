@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -58,7 +57,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
         var currentUserName = currentUser?.UserName ?? string.Empty;
         var currentUserRoles = currentUser != null
             ? await UserManager.GetRolesAsync(currentUser)
-            : new List<string>();
+            : [];
 
         CurrentUserInfo = new CurrentUserInfo
         {
