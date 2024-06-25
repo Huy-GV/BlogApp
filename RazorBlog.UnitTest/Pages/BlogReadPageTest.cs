@@ -86,7 +86,7 @@ public class BlogReadPageTest
         httpContext.Setup(x => x.User).Returns(principal);
 
         var modelState = new ModelStateDictionary();
-        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(httpContext.Object, new RouteData(), new PageActionDescriptor(), modelState);
+        var actionContext = new ActionContext(httpContext.Object, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
 
         var pageModel = CreateTestSubject(

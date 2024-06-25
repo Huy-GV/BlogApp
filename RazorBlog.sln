@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorBlog.Web", "RazorBlog.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorBlog.UnitTest", "RazorBlog.UnitTest\RazorBlog.UnitTest.csproj", "{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorBlog.IntegrationTest", "RazorBlog.IntegrationTest\RazorBlog.IntegrationTest.csproj", "{08345D6B-816F-49ED-85DF-135468B33451}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
