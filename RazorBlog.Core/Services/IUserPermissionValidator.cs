@@ -16,6 +16,17 @@ public interface IUserPermissionValidator
     Task<bool> IsUserAllowedToCreatePostAsync(string userName);
 
     /// <summary>
+    /// Checks if the user is allowed to hide a post.
+    /// </summary>
+    /// <param name="userName">The name of the user to check permission for.</param>
+    /// <param name="postAuthorUserName">The name of the post author user to check permission for.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result is <c>true</c> if the user is allowed to hide a post; otherwise, <c>false</c>.
+    /// </returns>
+    Task<bool> IsUserAllowedToHidePostAsync(string userName, string postAuthorUserName);
+
+    /// <summary>
     /// Checks if the user is allowed to update or delete a specific post asynchronously.
     /// </summary>
     /// <param name="userName">The name of the user to check permission for.</param>

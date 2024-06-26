@@ -17,51 +17,22 @@ internal class PostModerationService : IPostModerationService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUserModerationService _userModerationService;
     private readonly IPostDeletionScheduler _postDeletionScheduler;
+    private readonly IUserPermissionValidator _userPermissionValidator;
 
-    public PostModerationService(RazorBlogDbContext dbContext,
+    public PostModerationService(
+        RazorBlogDbContext dbContext,
         ILogger<UserModerationService> logger,
         UserManager<ApplicationUser> userManager,
         IUserModerationService userModerationService,
-        IPostDeletionScheduler postDeletionScheduler)
+        IPostDeletionScheduler postDeletionScheduler,
+        IUserPermissionValidator userPermissionValidator)
     {
         _dbContext = dbContext;
         _logger = logger;
         _userManager = userManager;
         _userModerationService = userModerationService;
         _postDeletionScheduler = postDeletionScheduler;
-    }
-
-    private async Task<bool> IsUserAllowedToHidePostAsync<TPostId>(string userName, Post<TPostId> post)
-    {
-        var user = await _userManager.FindByNameAsync(userName);
-        if (user == null)
-        {
-            return false;
-        }
-
-        if (user.UserName == post.AuthorUser.UserName)
-        {
-            return false;
-        }
-
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
-        {
-            return false;
-        }
-
-        if (!await _userManager.IsInRoleAsync(user, Roles.ModeratorRole) &&
-            !await _userManager.IsInRoleAsync(user, Roles.AdminRole))
-        {
-            return false;
-        }
-
-        if (await _userManager.IsInRoleAsync(post.AuthorUser, Roles.AdminRole))
-        {
-            _logger.LogError($"Posts authored by admin users cannot be hidden");
-            return false;
-        }
-
-        return true;
+        _userPermissionValidator = userPermissionValidator;
     }
 
     private async Task<bool> IsUserInAdminRole(string userName)
@@ -107,7 +78,7 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.NotFound;
         }
 
-        if (!await IsUserAllowedToHidePostAsync(userName, comment))
+        if (!await _userPermissionValidator.IsUserAllowedToHidePostAsync(userName, comment.AuthorUserName))
         {
             _logger.LogError("Comment with ID {commentId} cannot be hidden by user {userName}", commentId, userName);
             return ServiceResultCode.Unauthorized;
@@ -132,7 +103,7 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.NotFound;
         }
 
-        if (!await IsUserAllowedToHidePostAsync(userName, blog))
+        if (!await _userPermissionValidator.IsUserAllowedToHidePostAsync(userName, blog.AuthorUserName))
         {
             _logger.LogError(message: "Blog with ID {blogId} cannot be hidden by user {userName}", blogId, userName);
             return ServiceResultCode.Unauthorized;

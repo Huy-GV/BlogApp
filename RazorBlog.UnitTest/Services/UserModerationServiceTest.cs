@@ -28,9 +28,9 @@ public class UserModerationServiceTest
     }
 
     [Theory]
-    [InlineData("RegularUser", true, false)]
-    [InlineData("NotFoundUser", false, false)]
-    private async Task BanUserAsync_ShouldFail_IfUserIsNotAdmin(string userName, bool isUserFound, bool isAdminRole)
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    private async Task BanUserAsync_ShouldFail_IfUserIsNotAdmin(bool isUserFound, bool isAdminRole)
     {
         var faker = new Faker();
         var userToBanName = faker.Name.LastName();
@@ -39,9 +39,9 @@ public class UserModerationServiceTest
         var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
         if (isUserFound)
         {
-            var user = new ApplicationUser { UserName = userName };
+            var user = new ApplicationUser { UserName = banningUserName };
             mockUserManager
-                .Setup(x => x.FindByNameAsync(userName))
+                .Setup(x => x.FindByNameAsync(banningUserName))
                 .ReturnsAsync(user);
 
             mockUserManager

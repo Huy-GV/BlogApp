@@ -10,11 +10,15 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data;
+using RazorBlog.Core.Data.Constants;
+using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Core.Models;
 using RazorBlog.Core.Services;
 using RazorBlog.IntegrationTest.Factories;
 using RazorBlog.Web.Pages.Blogs;
+using System;
 using System.Net;
 using System.Security.Claims;
 using Xunit;
@@ -33,7 +37,7 @@ public class BlogReadPageTest : BaseTest
         var httpClient = ApplicationFactory.CreateClient();
 
         await using var scope = CreateScope();
-        await using var dbContext = CreateDbContext(scope);
+        await using var dbContext = CreateDbContext(scope.ServiceProvider);
         var existingBlogIds = dbContext.Blog.Select(x => x.Id).ToHashSet();
         var faker = new Faker();
         var blogId = faker.Random.Int(); 
@@ -48,55 +52,114 @@ public class BlogReadPageTest : BaseTest
         response.RequestMessage!.RequestUri!.PathAndQuery.Should().BeEquivalentTo("/Error/Error/?ErrorMessage=Not%20Found&ErrorDescription=Resource%20not%20found");
     }
 
-    [Fact]
-    private async Task GetBlog_ShouldReturnBlogPage_IfBlogIsFound()
+    [Theory]
+    [InlineData("Author1", "", "", "", false, false)]
+    [InlineData("Author2", "", "User1", "", true, false)]
+    [InlineData("Author3", "", "User2", "", true, true)]
+    [InlineData("Author4", "", "Author4", "", true, false)]
+    [InlineData("Author5", "", "moderator", "moderator", true, false)]
+    [InlineData("Author6", "", "admin", "admin", true, false)]
+    [InlineData("admin", "", "moderator", "moderator", true, false)]
+    private async Task GetBlog_ShouldReturnBlogPage_IfBlogIsFound(
+        string authorUserName,
+        string authorUserRole,
+        string visitorUserName,
+        string visitorUserRole,
+        bool isVisitorUserAuthenticated,
+        bool isVisitorUserBanned)
     {
+        async Task<ApplicationUser> createUser(IServiceProvider serviceProvider, string userName, string role = "")
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var faker = new Faker();
+            var existing = await userManager.FindByNameAsync(userName);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = userName,
+                EmailConfirmed = true,
+                RegistrationDate = DateTime.UtcNow,
+                ProfileImageUri = faker.Internet.Url()
+            };
+
+            var createUserResult = await userManager.CreateAsync(user, "TestPassword999@@");
+            createUserResult.Succeeded.Should().BeTrue(string.Join("\n", createUserResult.Errors.Select(x => x.Description)));
+
+            if (!string.IsNullOrEmpty(role))
+            {
+                var assignRoleResult = await userManager.AddToRoleAsync(user, role);
+                assignRoleResult.Succeeded.Should().BeTrue(string.Join("\n", assignRoleResult.Errors.Select(x => x.Description)));
+            }
+
+            return user;
+        }
+
+        async Task SetUpVisitorUserBanned(IServiceProvider serviceProvider, bool isBanned)
+        {
+            if (!isVisitorUserBanned)
+            {
+                return;
+            }
+
+            var faker = new Faker();
+            var userModerationService = serviceProvider.GetRequiredService<IUserModerationService>();
+            var banUserResult = await userModerationService.BanUserAsync(visitorUserName, "admin", faker.Date.Future());
+            banUserResult.Should().Be(ServiceResultCode.Success);
+        }
+
+        async Task<Blog> SetUpBlogCreated(IServiceProvider serviceProvider)
+        {
+            var faker = new Faker();
+            await using var dbContext = CreateDbContext(serviceProvider);
+            var blog = new Blog
+            {
+                AuthorUserName = authorUserName,
+                Body = faker.Lorem.Paragraph(),
+                Title = faker.Lorem.Sentence(),
+                Introduction = faker.Lorem.Sentences(2),
+            };
+
+            dbContext.Blog.Add(blog);
+            await dbContext.SaveChangesAsync();
+
+            return blog;
+        }
+
         var faker = new Faker();
-
         await using var scope = CreateScope();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        await using var dbContext = CreateDbContext(scope);
-        var user = new ApplicationUser
-        {
-            UserName = faker.Name.LastName(),
-            EmailConfirmed = true,
-            RegistrationDate = DateTime.Now,
-            ProfileImageUri = faker.Internet.Url(),
-        };
 
-        var userResult = await userManager.CreateAsync(user, "TestPassword999@@");
-        userResult.Succeeded.Should().BeTrue();
-        var blog = new Blog
-        {
-            AuthorUserName = user.UserName,
-            Body = faker.Lorem.Paragraph(),
-            Title = faker.Lorem.Sentence(),
-            Introduction = faker.Lorem.Sentences(2),
-        };
-
-        dbContext.Blog.Add(blog);
-        await dbContext.SaveChangesAsync();
-
-        var existingBlogIds = dbContext.Blog.Select(x => x.Id).ToHashSet();
+        await createUser(scope.ServiceProvider, authorUserName, authorUserRole);
+        var blog = await SetUpBlogCreated(scope.ServiceProvider);
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
         var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
-        var pageModel = new ReadModel(
-            scope.ServiceProvider.GetRequiredService<RazorBlogDbContext>(),
-            scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
-            scope.ServiceProvider.GetRequiredService<ILogger<ReadModel>>(),
-            scope.ServiceProvider.GetRequiredService<IPostModerationService>(),
-            scope.ServiceProvider.GetRequiredService<IBlogContentManager>(),
-            scope.ServiceProvider.GetRequiredService<IUserPermissionValidator>(),
-            scope.ServiceProvider.GetRequiredService<IBlogReader>())
-        {
-            PageContext = new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) },
-            Url = new UrlHelper(actionContext)
-        };
+        var pageModel = ActivatorUtilities.CreateInstance<ReadModel>(scope.ServiceProvider);
 
-        pageModel.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(authenticationType: null));
+        pageModel.PageContext = new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) };
+        pageModel.Url = new UrlHelper(actionContext);
+
+        if (isVisitorUserAuthenticated)
+        {
+            var visitorUser = await createUser(scope.ServiceProvider, visitorUserName, visitorUserRole);
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, visitorUserName),
+                new(ClaimTypes.Role, visitorUserRole),
+                new(ClaimTypes.NameIdentifier, visitorUser!.Id)
+            };
+
+            pageModel.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType: "Test"));
+            await SetUpVisitorUserBanned(scope.ServiceProvider, isVisitorUserBanned);
+        } else
+        {
+            pageModel.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(authenticationType: null));
+        }
 
         var pageModelResult = await pageModel.OnGetAsync(blog.Id);
 
@@ -105,5 +168,17 @@ public class BlogReadPageTest : BaseTest
         pageModel.DetailedBlogDto.Introduction.Should().BeEquivalentTo(blog.Introduction);
         pageModel.DetailedBlogDto.Content.Should().BeEquivalentTo(blog.Body);
         pageModel.DetailedBlogDto.AuthorName.Should().BeEquivalentTo(blog.AuthorUserName);
+
+        var isVisitorUserAuthor = visitorUserName == authorUserName;
+        var isAdminOrModerator = visitorUserRole is "admin" or "moderator";
+        var expectedUserInfo = new CurrentUserInfo
+        {
+            UserName = visitorUserName,
+            AllowedToHidePost = isVisitorUserAuthenticated && isAdminOrModerator && authorUserRole != "admin",
+            AllowedToModifyOrDeletePost = isVisitorUserAuthenticated && isVisitorUserAuthor,
+            AllowedToCreateComment = isVisitorUserAuthenticated && !isVisitorUserBanned,
+        };
+
+        pageModel.CurrentUserInfo.Should().BeEquivalentTo(expectedUserInfo);
     }
 }

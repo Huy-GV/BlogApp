@@ -19,9 +19,9 @@ public abstract class BaseTest : IClassFixture<RazorBlogApplicationFactory>
         return ApplicationFactory.Services.CreateAsyncScope();
     }
 
-    internal static RazorBlogDbContext CreateDbContext(IServiceScope scope)
+    internal static RazorBlogDbContext CreateDbContext(IServiceProvider serviceProvider)
     {
-        var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>();
+        var options = serviceProvider.GetRequiredService<DbContextOptions<RazorBlogDbContext>>();
 
         return new RazorBlogDbContext(options);
     }
