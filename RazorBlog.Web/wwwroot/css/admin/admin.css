@@ -57,6 +57,7 @@
 }
 .user-container form {
   margin-left: auto;
+  display: flex;
 }
 @media screen and (max-width: 700px) {
   .user-container form {
@@ -78,7 +79,7 @@
 }
 .user-container .user-card {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
+  padding: 0.5rem 0.6rem;
   display: flex;
   flex-direction: row;
   gap: 0.3rem;
@@ -89,7 +90,7 @@
   font-weight: 700;
   border-radius: 5px;
   border: none;
-  padding: 1rem;
+  padding: 1rem 0.6rem;
   min-width: 10rem;
 }
 .user-container .user-card .button:hover, .user-container .user-card .primary-button:hover, .user-container .user-card .secondary-button:hover {

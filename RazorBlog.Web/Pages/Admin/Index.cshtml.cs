@@ -14,11 +14,11 @@ using RazorBlog.Core.Models;
 namespace RazorBlog.Web.Pages.Admin;
 
 [Authorize(Roles = Roles.AdminRole)]
-public class AdminModel : RichPageModelBase<AdminModel>
+public class IndexModel : RichPageModelBase<IndexModel>
 {
-    public AdminModel(RazorBlogDbContext context,
+    public IndexModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
-        ILogger<AdminModel> logger) : base(context, userManager, logger)
+        ILogger<IndexModel> logger) : base(context, userManager, logger)
     {
     }
 
@@ -75,7 +75,7 @@ public class AdminModel : RichPageModelBase<AdminModel>
 
         await UserManager.RemoveFromRoleAsync(user, Roles.ModeratorRole);
 
-        return RedirectToPage("Admin");
+        return RedirectToPage("Index");
     }
 
     public async Task<IActionResult> OnPostAssignModeratorRoleAsync(string userName)
@@ -88,6 +88,6 @@ public class AdminModel : RichPageModelBase<AdminModel>
         }
 
         await UserManager.AddToRoleAsync(user, Roles.ModeratorRole);
-        return RedirectToPage("Admin");
+        return RedirectToPage("Index");
     }
 }

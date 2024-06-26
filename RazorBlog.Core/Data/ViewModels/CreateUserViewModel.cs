@@ -25,9 +25,4 @@ public class CreateUserViewModel
     [Display(Name = "Profile picture (optional)")]
     [FileType("jpg", "jpeg", "png", ErrorMessage = "File type must be one of: .png, .jpeg, .jpg")]
     public IFormFile? ProfilePicture { get; set; }
-
-    [Required]
-    [StringLength(20, MinimumLength = 3)]
-    [Display(Name = "Country")]
-    public string Country { get; set; } = string.Empty;
 }
