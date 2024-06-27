@@ -53,7 +53,7 @@ public class BlogCreatePageTest
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
-        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+        var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
 
         var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
@@ -80,7 +80,7 @@ public class BlogCreatePageTest
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
-        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+        var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
         var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
         var pageModel = CreateTestSubject(

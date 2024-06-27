@@ -57,7 +57,7 @@ public class BlogReadPageTest
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
-        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+        var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
         var pageModel = CreateTestSubject(
             mockAppDbContext,
@@ -93,7 +93,7 @@ public class BlogReadPageTest
             mockAppDbContext,
             UserManagerTestUtil.CreateMockUserManager().Object,
             new TempDataDictionary(httpContext.Object, Mock.Of<ITempDataProvider>()),
-            new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) }, 
+            new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) },
             new UrlHelper(actionContext));
 
         var faker = new Faker();

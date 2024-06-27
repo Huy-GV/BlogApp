@@ -36,7 +36,7 @@ public class BlogReadPageTest : BaseTest
         await using var dbContext = CreateDbContext(scope.ServiceProvider);
         var existingBlogIds = dbContext.Blog.Select(x => x.Id).ToHashSet();
         var faker = new Faker();
-        var blogId = faker.Random.Int(); 
+        var blogId = faker.Random.Int();
         while (existingBlogIds.Contains(blogId))
         {
             blogId = faker.Random.Int();
@@ -64,7 +64,7 @@ public class BlogReadPageTest : BaseTest
         bool isVisitorUserAuthenticated,
         bool isVisitorUserBanned)
     {
-        async Task<ApplicationUser> createUser(IServiceProvider serviceProvider, string userName, string role = "")
+        async Task<ApplicationUser> EnsureUserExists(IServiceProvider serviceProvider, string userName, string role = "")
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var faker = new Faker();
@@ -82,13 +82,17 @@ public class BlogReadPageTest : BaseTest
                 ProfileImageUri = faker.Internet.Url()
             };
 
-            var createUserResult = await userManager.CreateAsync(user, "TestPassword999@@");
-            createUserResult.Succeeded.Should().BeTrue(string.Join("\n", createUserResult.Errors.Select(x => x.Description)));
+            var ensureUserExistsResult = await userManager.CreateAsync(user, "TestPassword999@@");
+            ensureUserExistsResult.Succeeded
+                .Should()
+                .BeTrue(string.Join("\n", ensureUserExistsResult.Errors.Select(x => x.Description)));
 
             if (!string.IsNullOrEmpty(role))
             {
                 var assignRoleResult = await userManager.AddToRoleAsync(user, role);
-                assignRoleResult.Succeeded.Should().BeTrue(string.Join("\n", assignRoleResult.Errors.Select(x => x.Description)));
+                assignRoleResult.Succeeded
+                    .Should()
+                    .BeTrue(string.Join("\n", assignRoleResult.Errors.Select(x => x.Description)));
             }
 
             return user;
@@ -128,7 +132,7 @@ public class BlogReadPageTest : BaseTest
         var faker = new Faker();
         await using var scope = CreateScope();
 
-        await createUser(scope.ServiceProvider, authorUserName, authorUserRole);
+        await EnsureUserExists(scope.ServiceProvider, authorUserName, authorUserRole);
         var blog = await SetUpBlogCreated(scope.ServiceProvider);
 
         var httpContext = new DefaultHttpContext();
@@ -142,7 +146,7 @@ public class BlogReadPageTest : BaseTest
 
         if (isVisitorUserAuthenticated)
         {
-            var visitorUser = await createUser(scope.ServiceProvider, visitorUserName, visitorUserRole);
+            var visitorUser = await EnsureUserExists(scope.ServiceProvider, visitorUserName, visitorUserRole);
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, visitorUserName),
