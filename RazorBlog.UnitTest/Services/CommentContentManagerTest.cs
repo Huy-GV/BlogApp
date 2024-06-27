@@ -1,6 +1,7 @@
 using Bogus;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.ViewModels;
@@ -29,7 +30,7 @@ public class CommentContentManagerTest
     private async Task CreateComment_ShouldFail_IfUserIsBanned()
     {
         var faker = new Faker();
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
 
         var bannedUser = new ApplicationUser()
         {
@@ -44,7 +45,7 @@ public class CommentContentManagerTest
             .Setup(x => x.IsUserAllowedToCreatePostAsync(bannedUser.UserName))
             .ReturnsAsync(false);
 
-        await using var dbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var dbContext = await DatabaseTestUtil.CreateDbDummy();
         var commentContentManager = CreateTestSubject(
                 dbContext,
                 mockUserManager.Object);
@@ -61,7 +62,7 @@ public class CommentContentManagerTest
     {
         var faker = new Faker();
         var bannedUserName = faker.Name.LastName();
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
         var bannedUser = new ApplicationUser()
         {
             UserName = faker.Name.LastName(),
@@ -75,7 +76,7 @@ public class CommentContentManagerTest
             .Setup(x => x.IsUserAllowedToCreatePostAsync(bannedUserName))
             .ReturnsAsync(false);
 
-        await using var dbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var dbContext = await DatabaseTestUtil.CreateDbDummy();
         var commentContentManager = CreateTestSubject(
                 dbContext,
                 mockUserManager.Object);
@@ -91,7 +92,7 @@ public class CommentContentManagerTest
     private async Task CreateComment_ShouldSucceed()
     {
         var faker = new Faker();
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
         var user = new ApplicationUser()
         {
             UserName = faker.Name.LastName()
@@ -113,12 +114,17 @@ public class CommentContentManagerTest
             .Setup(x => x.IsUserAllowedToCreatePostAsync(user.UserName))
             .ReturnsAsync(true);
 
-        await using var dbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var dbContext = await DatabaseTestUtil.CreateInMemorySqliteDbMock();
+
         dbContext.Users.Add(user);
         dbContext.Blog.Add(blog);
         await dbContext.SaveChangesAsync();
 
-        var viewModel = new CommentViewModel() { BlogId = blog.Id };
+        var viewModel = new CommentViewModel()
+        {
+            BlogId = blog.Id,
+            Body = faker.Lorem.Sentence(),
+        };
 
         var commentContentManager = CreateTestSubject(
                 dbContext,
@@ -126,6 +132,19 @@ public class CommentContentManagerTest
 
         var (code, id) = await commentContentManager.CreateCommentAsync(viewModel, user.UserName);
         code.Should().Be(Core.Communication.ServiceResultCode.Success);
-        id.Should().NotBeNull();
+        var addedComment = await dbContext.Comment.FirstAsync(x => x.Id == id);
+        addedComment
+            .Should()
+            .BeEquivalentTo(new Comment
+            {
+                Id = id!.Value,
+                BlogId = viewModel.BlogId,
+                Body = viewModel.Body,
+                AuthorUserName = user.UserName
+            }, 
+            options => options
+                .Excluding(x => x.CreationTime)
+                .Excluding(x => x.LastUpdateTime)
+                .Excluding(x => x.AuthorUser));
     }
 }

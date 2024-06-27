@@ -49,17 +49,17 @@ public class BlogCreatePageTest
     [InlineData(false)]
     private async Task OnGetAsync_ShouldReturnForbid_IfUserIsNotFound(bool isUserNull)
     {
-        await using var mockAppDbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var mockAppDbContext = await DatabaseTestUtil.CreateDbDummy();
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
         var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
 
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
         var pageModel = CreateTestSubject(
             mockAppDbContext,
-            UserManagerTestUtil.CreateMockUserManager().Object,
+            UserManagerTestUtil.CreateUserManagerMock().Object,
             new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>()),
             new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) },
             new UrlHelper(actionContext));
@@ -76,13 +76,13 @@ public class BlogCreatePageTest
     private async Task OnGetAsync_ShouldReturnForbid_IfUserIsBanned()
     {
         var faker = new Faker();
-        await using var mockAppDbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var mockAppDbContext = await DatabaseTestUtil.CreateDbDummy();
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
         var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
         var modelMetadataProvider = new EmptyModelMetadataProvider();
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
         var pageModel = CreateTestSubject(
             mockAppDbContext,
             mockUserManager.Object,

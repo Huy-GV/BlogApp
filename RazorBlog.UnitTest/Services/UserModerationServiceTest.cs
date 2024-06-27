@@ -35,8 +35,9 @@ public class UserModerationServiceTest
         var faker = new Faker();
         var userToBanName = faker.Name.LastName();
         var banningUserName = faker.Name.LastName();
-        await using var dbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        await using var dbContext = await DatabaseTestUtil.CreateDbDummy();
+
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
         if (isUserFound)
         {
             var user = new ApplicationUser { UserName = banningUserName };
@@ -65,8 +66,8 @@ public class UserModerationServiceTest
         var faker = new Faker();
         var userToBanName = faker.Name.LastName();
         var banningUserName = faker.Name.LastName();
-        await using var dbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
-        var mockUserManager = UserManagerTestUtil.CreateMockUserManager();
+        await using var dbContext = await DatabaseTestUtil.CreateDbDummy();
+        var mockUserManager = UserManagerTestUtil.CreateUserManagerMock();
         var user = new ApplicationUser { UserName = banningUserName };
         mockUserManager
             .Setup(x => x.FindByNameAsync(banningUserName))
@@ -75,6 +76,7 @@ public class UserModerationServiceTest
         mockUserManager
             .Setup(x => x.IsInRoleAsync(user, "admin"))
             .ReturnsAsync(true);
+
         var userModerationService = CreateTestSubject(dbContext, mockUserManager.Object);
 
         var result = await userModerationService.BanUserAsync(

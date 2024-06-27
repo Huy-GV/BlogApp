@@ -6,7 +6,7 @@ namespace RazorBlog.UnitTest.Utils;
 
 internal class DatabaseTestUtil
 {
-    internal static async Task<RazorBlogDbContext> CreateMockSqliteDatabase()
+    internal static async Task<RazorBlogDbContext> CreateInMemorySqliteDbMock()
     {
         var newConnection = new SqliteConnection("DataSource=:memory:;");
         await newConnection.OpenAsync();
@@ -17,6 +17,19 @@ internal class DatabaseTestUtil
                 .Options);
 
         await dbContext.Database.EnsureCreatedAsync();
+
+        return dbContext;
+    }
+
+    internal static async Task<RazorBlogDbContext> CreateDbDummy()
+    {
+        var newConnection = new SqliteConnection("DataSource=:memory:;");
+        await newConnection.OpenAsync();
+
+        var dbContext = new RazorBlogDbContext(
+             new DbContextOptionsBuilder<RazorBlogDbContext>()
+                .UseSqlite(newConnection)
+                .Options);
 
         return dbContext;
     }

@@ -53,7 +53,7 @@ public class BlogReadPageTest
     [Fact]
     private async Task OnGetAsync_ShouldReturnNotFound_IfBlogIsNotFound()
     {
-        await using var mockAppDbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var mockAppDbContext = await DatabaseTestUtil.CreateDbDummy();
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
@@ -61,13 +61,14 @@ public class BlogReadPageTest
         var modelMetadataProvider = new EmptyModelMetadataProvider();
         var pageModel = CreateTestSubject(
             mockAppDbContext,
-            UserManagerTestUtil.CreateMockUserManager().Object,
+            UserManagerTestUtil.CreateUserManagerMock().Object,
             new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>()),
             new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) },
             new UrlHelper(actionContext));
 
         var faker = new Faker();
         var blogId = faker.Random.Int(0, int.MaxValue);
+
         _mockBlogReader
             .Setup(x => x.GetBlogAsync(blogId))
             .ReturnsAsync((ServiceResultCode.NotFound, null));
@@ -79,7 +80,7 @@ public class BlogReadPageTest
     [Fact]
     private async Task OnPostHideBlogAsync_ShouldReturnChallenge_IfUserIsUnauthenticated()
     {
-        await using var mockAppDbContext = await DatabaseTestUtil.CreateMockSqliteDatabase();
+        await using var mockAppDbContext = await DatabaseTestUtil.CreateDbDummy();
 
         var principal = new ClaimsPrincipal(new ClaimsIdentity(authenticationType: null));
         var httpContext = new Mock<HttpContext>();
@@ -91,7 +92,7 @@ public class BlogReadPageTest
 
         var pageModel = CreateTestSubject(
             mockAppDbContext,
-            UserManagerTestUtil.CreateMockUserManager().Object,
+            UserManagerTestUtil.CreateUserManagerMock().Object,
             new TempDataDictionary(httpContext.Object, Mock.Of<ITempDataProvider>()),
             new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) },
             new UrlHelper(actionContext));

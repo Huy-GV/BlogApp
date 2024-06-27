@@ -8,7 +8,7 @@ namespace RazorBlog.UnitTest.Utils;
 
 internal class UserManagerTestUtil
 {
-    internal static Mock<UserManager<ApplicationUser>> CreateMockUserManager(
+    internal static Mock<UserManager<ApplicationUser>> CreateUserManagerMock(
         IUserStore<ApplicationUser>? userStore = null)
     {
         return new Mock<UserManager<ApplicationUser>>(
