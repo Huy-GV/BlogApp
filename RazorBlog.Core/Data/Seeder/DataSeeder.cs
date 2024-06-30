@@ -73,10 +73,10 @@ internal class DataSeeder : IDataSeeder
 
     private async Task EnsureRole(string roleName)
     {
-        _logger.LogInformation("Ensuring role {roleName} exists", roleName);
+        _logger.LogInformation("Ensuring role '{roleName}' exists", roleName);
         if (!await _roleManager.RoleExistsAsync(roleName))
         {
-            _logger.LogInformation("Creating new role: {roleName}", roleName);
+            _logger.LogInformation("Creating role: '{roleName}'", roleName);
             await _roleManager.CreateAsync(new IdentityRole(roleName));
         }
     }

@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RazorBlog.Core.Data;
 using RazorBlog.Core.Models;
 using RazorBlog.IntegrationTest.Factories;
 using System.Security.Claims;
@@ -43,6 +45,7 @@ public class AdminIndexPageTest : BaseTest
         var faker = new Faker();
         await using var scope = CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RazorBlogDbContext>();
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
@@ -53,19 +56,14 @@ public class AdminIndexPageTest : BaseTest
         pageModel.PageContext = new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) };
         pageModel.Url = new UrlHelper(actionContext);
 
-        var normalUserCount = 10;
-        var normalUsers = new List<ApplicationUser>();
-        for (int i = 0; i < normalUserCount; i++)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = faker.Name.LastName(),
-                RegistrationDate = faker.Date.Past()
-            };
+        var adminAndModeratorUserIds = await dbContext.UserRoles
+            .Select(x => x.UserId)
+            .Distinct()
+            .ToListAsync();
 
-            await userManager.CreateAsync(user, "TestPassword123@@");
-            normalUsers.Add(user);
-        }
+        var normalUsers = await dbContext.Users
+            .Where(x => !adminAndModeratorUserIds.Contains(x.Id))
+            .ToListAsync();
 
         var randomUserIndex = faker.Random.Int(min: 0, max: normalUsers.Count - 1);
         var userToAssignModeratorRole = normalUsers[randomUserIndex];
@@ -103,18 +101,6 @@ public class AdminIndexPageTest : BaseTest
 
         pageModel.PageContext = new PageContext(actionContext) { ViewData = new ViewDataDictionary(modelMetadataProvider, modelState) };
         pageModel.Url = new UrlHelper(actionContext);
-
-        for (int i = 0; i < 10; i++)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = faker.Name.LastName(),
-                RegistrationDate = faker.Date.Past()
-            };
-
-            await userManager.CreateAsync(user, "TestPassword123@@");
-            await userManager.AddToRoleAsync(user, "moderator");
-        }
 
         var moderatorUsers = await userManager.GetUsersInRoleAsync("moderator");
         var randomUserIndex = faker.Random.Int(min: 0, max: moderatorUsers.Count - 1);

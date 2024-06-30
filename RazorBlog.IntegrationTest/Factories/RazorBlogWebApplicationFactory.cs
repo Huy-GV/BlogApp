@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using RazorBlog.Core.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
 using RazorBlog.Web;
+using Bogus;
+using RazorBlog.Core.Models;
+using Microsoft.AspNetCore.Identity;
+using FluentAssertions;
 
 namespace RazorBlog.IntegrationTest.Factories;
 
@@ -16,10 +20,6 @@ public class RazorBlogApplicationFactory : WebApplicationFactory<Program>, IAsyn
     private const string DatabaseName = "RazorBlogIntegrationTestDatabase";
     private const string Username = "sa";
     private const ushort MsSqlPort = 1433;
-
-    // use random host port so multiple containers can run at the same time
-    private const bool UseRandomHostPort = true;
-
     private readonly IContainer _mssqlContainer;
     private readonly string _databasePassword;
 
@@ -31,9 +31,9 @@ public class RazorBlogApplicationFactory : WebApplicationFactory<Program>, IAsyn
         _databasePassword = configuration["SeedUser:Password"]!;
 
         _mssqlContainer = new ContainerBuilder()
-            .WithName($"RazorBlogTest{Guid.NewGuid()}")
+            .WithName($"RazorBlogTest-{Guid.NewGuid()}")
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-            .WithPortBinding(MsSqlPort, UseRandomHostPort)
+            .WithPortBinding(MsSqlPort, assignRandomHostPort: true)
             .WithEnvironment("ACCEPT_EULA", "Y")
             .WithEnvironment("MSSQL_SA_PASSWORD", _databasePassword)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
@@ -43,6 +43,37 @@ public class RazorBlogApplicationFactory : WebApplicationFactory<Program>, IAsyn
     public async Task InitializeAsync()
     {
         await _mssqlContainer.StartAsync();
+        await SeedUsers();
+    }
+
+    private async Task SeedUsers()
+    {
+        await using var scope = Services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RazorBlogDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        var faker = new Faker();
+        for (int i = 0; i < 30; i++)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = $"{faker.Name.LastName().Replace("'", string.Empty)}{faker.Random.UShort()}",
+                RegistrationDate = faker.Date.Past()
+            };
+
+            if (userManager.Users.Any(x => x.UserName == user.UserName))
+            {
+                continue;
+            }
+
+            var createUserResult = await userManager.CreateAsync(user, "TestPassword123@@");
+            createUserResult.Succeeded.Should().BeTrue(string.Join("\n", createUserResult.Errors.Select(x => x.Description)));
+            if (i % 2 == 0)
+            {
+                var createRoleResult = await userManager.AddToRoleAsync(user, "moderator");
+                createRoleResult.Succeeded.Should().BeTrue(string.Join("\n", createRoleResult.Errors.Select(x => x.Description)));
+            }
+        }
     }
 
     public new async Task DisposeAsync()
@@ -54,7 +85,6 @@ public class RazorBlogApplicationFactory : WebApplicationFactory<Program>, IAsyn
     {
         var host = _mssqlContainer.Hostname;
         var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
-
         builder.ConfigureServices(services =>
         {
             services.Remove(services.First(descriptor => descriptor.ServiceType == typeof(DbContextOptions<RazorBlogDbContext>)));
