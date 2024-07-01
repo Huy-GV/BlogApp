@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Models;
-using RazorBlog.IntegrationTest.Factories;
+using RazorBlog.IntegrationTest.Fixtures;
 using System.Security.Claims;
 using Xunit;
 using IndexModel = RazorBlog.Web.Pages.Admin.IndexModel;
@@ -20,7 +20,7 @@ using IndexModel = RazorBlog.Web.Pages.Admin.IndexModel;
 namespace RazorBlog.IntegrationTest.Pages;
 public class AdminIndexPageTest : BaseTest
 {
-    public AdminIndexPageTest(RazorBlogApplicationFactory webApplicationFactory) : base(webApplicationFactory)
+    public AdminIndexPageTest(TestWebAppFactoryFixture webApplicationFactory) : base(webApplicationFactory)
     {
     }
 

@@ -13,7 +13,7 @@ using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Core.Models;
 using RazorBlog.Core.Services;
-using RazorBlog.IntegrationTest.Factories;
+using RazorBlog.IntegrationTest.Fixtures;
 using RazorBlog.Web.Pages.Blogs;
 using System.Net;
 using System.Security.Claims;
@@ -23,7 +23,7 @@ namespace RazorBlog.IntegrationTest.Pages;
 
 public class BlogReadPageTest : BaseTest
 {
-    public BlogReadPageTest(RazorBlogApplicationFactory webApplicationFactory) : base(webApplicationFactory)
+    public BlogReadPageTest(TestWebAppFactoryFixture webApplicationFactory) : base(webApplicationFactory)
     {
     }
 

@@ -1,7 +1,5 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Microsoft.Extensions.Configuration;
@@ -12,23 +10,26 @@ using Bogus;
 using RazorBlog.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using FluentAssertions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration.Memory;
 
-namespace RazorBlog.IntegrationTest.Factories;
+namespace RazorBlog.IntegrationTest.Fixtures;
 
-public class RazorBlogApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private const string DatabaseName = "RazorBlogIntegrationTestDatabase";
     private const string Username = "sa";
     private const ushort MsSqlPort = 1433;
     private readonly IContainer _mssqlContainer;
+    private readonly IConfigurationRoot _configuration;
     private readonly string _databasePassword;
 
-    public RazorBlogApplicationFactory()
+    public TestWebAppFactoryFixture()
     {
-        var configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
+        _configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
         // use the admin user password as the test database password
-        _databasePassword = configuration["SeedUser:Password"]!;
+        _databasePassword = _configuration["SeedUser:Password"]!;
 
         _mssqlContainer = new ContainerBuilder()
             .WithName($"RazorBlogTest-{Guid.NewGuid()}")
@@ -81,19 +82,25 @@ public class RazorBlogApplicationFactory : WebApplicationFactory<Program>, IAsyn
         await _mssqlContainer.DisposeAsync();
     }
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    protected override IHost CreateHost(IHostBuilder builder)
     {
         var host = _mssqlContainer.Hostname;
         var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
-        builder.ConfigureServices(services =>
+        builder.ConfigureHostConfiguration(config =>
         {
-            services.Remove(services.First(descriptor => descriptor.ServiceType == typeof(DbContextOptions<RazorBlogDbContext>)));
+            config.AddConfiguration(_configuration);
 
-            services.AddDbContext<RazorBlogDbContext>(options =>
-                options.UseSqlServer($"Server={host},{port};Database={DatabaseName};User Id={Username};Password={_databasePassword};TrustServerCertificate=True"));
+            config.Sources.Add(new MemoryConfigurationSource
+            {
+                InitialData = new Dictionary<string, string>
+                {
+                    ["ConnectionStrings:DefaultConnection"] = $"Server={host},{port};Database={DatabaseName};User Id={Username};Password={_databasePassword};TrustServerCertificate=True",
+                    ["ConnectionStrings:DefaultLocation"] = string.Empty
+                }!
+            });
 
-            services.AddRazorPages();
         });
 
+        return base.CreateHost(builder);
     }
 }

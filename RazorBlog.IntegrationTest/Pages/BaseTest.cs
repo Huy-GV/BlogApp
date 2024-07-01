@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RazorBlog.Core.Data;
-using RazorBlog.IntegrationTest.Factories;
+using RazorBlog.IntegrationTest.Fixtures;
 using Xunit;
 
 namespace RazorBlog.IntegrationTest.Pages;
-public abstract class BaseTest : IClassFixture<RazorBlogApplicationFactory>
+public abstract class BaseTest : IClassFixture<TestWebAppFactoryFixture>
 {
-    public BaseTest(RazorBlogApplicationFactory webApplicationFactory)
+    public BaseTest(TestWebAppFactoryFixture webApplicationFactory)
     {
         ApplicationFactory = webApplicationFactory;
     }
 
-    protected RazorBlogApplicationFactory ApplicationFactory { get; }
+    protected TestWebAppFactoryFixture ApplicationFactory { get; }
 
     internal AsyncServiceScope CreateScope()
     {
