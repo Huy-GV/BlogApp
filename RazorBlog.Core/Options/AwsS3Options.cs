@@ -4,7 +4,7 @@ namespace RazorBlog.Core.Options;
 
 public class AwsOptions
 {
-    public const string Name = "Aws";
+    public const string SectionName = "Aws";
 
     [Required]
     public required string DataBucket { get; init; }

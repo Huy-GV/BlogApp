@@ -23,22 +23,31 @@ else
 
     <EditForm Model="BanUserViewModel" class="suspend-form" OnValidSubmit="async () => await BanUserAsync()">
         <DataAnnotationsValidator />
-        <p>Create ban ticket (leave empty to permanently ban user)</p>
 
-        <ValidationMessage For="@(() => BanUserViewModel.NewBanTicketExpiryDate)" />
+        @if (IsTemporaryBanEnabled)
+        {
+            <p>Create temporary ban ticket. Leave end date empty to create a permanent ticket.</p>
 
-        <input type="date"
-               name="BanUserViewModel.NewBanTicketExpiryDate"
-               id="BanUserViewModel.NewBanTicketExpiryDate"
-               @bind-value="@BanUserViewModel.NewBanTicketExpiryDate" />
+            <ValidationMessage For="@(() => BanUserViewModel.NewBanTicketExpiryDate)" />
+
+            <input type="date"
+                   name="BanUserViewModel.NewBanTicketExpiryDate"
+                   id="BanUserViewModel.NewBanTicketExpiryDate"
+                   @bind-value="@BanUserViewModel.NewBanTicketExpiryDate" />
+        }
+        else
+        {
+            <p>Create permanent ban ticket.</p>
+        }
+
 
         @if (!IsConfirmBanButtonDisplayed)
         {
             <button class="ban-btn" type="button" @onclick="ToggleConfirmBanButtonForm">Ban</button>
         }
-        
-        @if(IsConfirmBanButtonDisplayed) 
-        {            
+
+        @if(IsConfirmBanButtonDisplayed)
+        {
             <button class="cancel-btn" type="button" @onclick="ToggleConfirmBanButtonForm">Cancel</button>
             <button class="confirm-ban-btn" type="submit">Confirm</button>
         }

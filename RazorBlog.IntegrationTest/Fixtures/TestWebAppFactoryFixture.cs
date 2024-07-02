@@ -14,8 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Hangfire;
-using RazorBlog.IntegrationTest.Mock;
+using Microsoft.Extensions.Configuration.Memory;
+using RazorBlog.Core.Features;
 
 namespace RazorBlog.IntegrationTest.Fixtures;
 
@@ -61,10 +61,6 @@ public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLi
             var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
             x.AddDbContext<RazorBlogDbContext>(options =>
                 options.UseSqlServer($"Server={host},{port};Database={DatabaseName};User Id={Username};Password={_databasePassword};TrustServerCertificate=True"));
-
-            // HangFire static global configuration does not work well with integration tests, regardless of storage type
-            x.RemoveAll<IBackgroundJobClient>();
-            x.AddSingleton<IBackgroundJobClient, BackgroundJobClientMock>();
         });
 
         base.ConfigureWebHost(builder);
@@ -118,6 +114,14 @@ public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLi
         {
             // load default secrets and configuration so the builder works normally
             config.AddConfiguration(_secretConfiguration);
+
+            config.Sources.Add(new MemoryConfigurationSource
+            {
+                InitialData = new Dictionary<string, string>
+                {
+                    [$"{FeatureNames.SectionName}:{FeatureNames.UseHangFire}"] = false.ToString()
+                }!
+            });
         });
 
         return base.CreateHost(builder);

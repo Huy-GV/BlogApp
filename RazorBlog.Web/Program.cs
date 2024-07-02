@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using RazorBlog.Core.Data.Seeder;
 using RazorBlog.Core.Extensions;
+using RazorBlog.Core.Features;
 using RazorBlog.Web.Middleware;
 namespace RazorBlog.Web;
 
@@ -95,7 +97,9 @@ public class Program
             options.LogoutPath = "/Authentication/Logout";
         });
 
-        var useAwsS3 = bool.TryParse(builder.Configuration["UseAwsS3"], out var useAwsS3Option) && useAwsS3Option;
+        builder.Services.AddFeatureManagement(builder.Configuration.GetSection(FeatureNames.SectionName));
+        var featureFlags = builder.Configuration.GetSection(FeatureNames.SectionName);
+        var useAwsS3 = bool.TryParse(featureFlags[FeatureNames.UseAwsS3], out var useAwsS3Option) && useAwsS3Option;
         if (useAwsS3)
         {
             logger.LogInformation("Using S3 as image store");
@@ -105,6 +109,18 @@ public class Program
         {
             logger.LogInformation("Using local image store");
             builder.Services.UseCoreServices();
+        }
+
+        var useHangFire = bool.TryParse(featureFlags[FeatureNames.UseHangFire], out var useHangFireOption) && useHangFireOption;
+        if (useHangFire)
+        {
+            logger.LogInformation("Using HangFire as background job server");
+            builder.Services.UseHangFireServer(builder.Configuration);
+        }
+        else
+        {
+            logger.LogInformation("Background job disabled");
+            builder.Services.UseFakeHangFireServer();
         }
 
         return builder;

@@ -7,6 +7,8 @@ using RazorBlog.Core.Models;
 using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Constants;
+using Microsoft.FeatureManagement;
+using RazorBlog.Core.Features;
 
 namespace RazorBlog.Core.Services;
 
@@ -18,6 +20,7 @@ internal class PostModerationService : IPostModerationService
     private readonly IUserModerationService _userModerationService;
     private readonly IPostDeletionScheduler _postDeletionScheduler;
     private readonly IUserPermissionValidator _userPermissionValidator;
+    private readonly IFeatureManager _featureManager;
 
     public PostModerationService(
         RazorBlogDbContext dbContext,
@@ -25,7 +28,8 @@ internal class PostModerationService : IPostModerationService
         UserManager<ApplicationUser> userManager,
         IUserModerationService userModerationService,
         IPostDeletionScheduler postDeletionScheduler,
-        IUserPermissionValidator userPermissionValidator)
+        IUserPermissionValidator userPermissionValidator,
+        IFeatureManager featureManager)
     {
         _dbContext = dbContext;
         _logger = logger;
@@ -33,6 +37,7 @@ internal class PostModerationService : IPostModerationService
         _userModerationService = userModerationService;
         _postDeletionScheduler = postDeletionScheduler;
         _userPermissionValidator = userPermissionValidator;
+        _featureManager = featureManager;
     }
 
     private async Task<bool> IsUserInAdminRole(string userName)
@@ -190,12 +195,18 @@ internal class PostModerationService : IPostModerationService
 
         _dbContext.Comment.Update(comment);
         CensorDeletedComment(comment);
+
+        if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
+        {
+            _postDeletionScheduler.ScheduleCommentDeletion(
+                new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
+                commentId);
+        } else
+        {
+            _dbContext.Comment.Remove(comment);
+        }
+
         await _dbContext.SaveChangesAsync();
-
-        _postDeletionScheduler.ScheduleCommentDeletion(
-            new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
-            commentId);
-
         return ServiceResultCode.Success;
     }
 
@@ -223,12 +234,18 @@ internal class PostModerationService : IPostModerationService
 
         _dbContext.Blog.Update(blog);
         CensorDeletedBlog(blog);
+        if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
+        {
+            _postDeletionScheduler.ScheduleBlogDeletion(
+                new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
+                blogId);
+        }
+        else
+        {
+            _dbContext.Blog.Remove(blog);
+        }
+
         await _dbContext.SaveChangesAsync();
-
-        _postDeletionScheduler.ScheduleBlogDeletion(
-            new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
-            blogId);
-
         return ServiceResultCode.Success;
     }
 }

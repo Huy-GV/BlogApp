@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.FeatureManagement;
 using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data.ViewModels;
+using RazorBlog.Core.Features;
 using RazorBlog.Core.Models;
 using RazorBlog.Core.Services;
 using RazorBlog.Web.Extensions;
@@ -21,12 +23,19 @@ public partial class BanUserForm : RichComponentBase
     [Inject]
     public IUserModerationService UserModerationService { get; set; } = null!;
 
+    [Inject]
+    public IFeatureManager FeatureManager { get; set; } = null!;
+
     private bool IsConfirmBanButtonDisplayed { get; set; } = false;
+
+    private bool IsTemporaryBanEnabled { get; set; } = false;
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
         await LoadBanTicketAsync();
+
+        IsTemporaryBanEnabled = await FeatureManager.IsEnabledAsync(FeatureNames.UseHangFire);
     }
 
     private async Task LoadBanTicketAsync()

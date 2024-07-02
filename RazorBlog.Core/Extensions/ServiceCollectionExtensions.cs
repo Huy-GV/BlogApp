@@ -72,7 +72,7 @@ public static class ServiceCollectionsExtensions
 
         services
             .AddOptions<AwsOptions>()
-            .Bind(configuration.GetRequiredSection(AwsOptions.Name))
+            .Bind(configuration.GetRequiredSection(AwsOptions.SectionName))
             .ValidateOnStart()
             .ValidateDataAnnotations();
 
@@ -83,28 +83,36 @@ public static class ServiceCollectionsExtensions
         services.AddScoped<IImageUriResolver, LocalImageUriResolver>();
     }
 
+    public static void UseHangFireServer(this IServiceCollection services, IConfiguration configuration)
+    {
+        var logger = LoggerFactory
+            .Create(x => x.AddConsole())
+            .CreateLogger(nameof(ServiceCollectionsExtensions));
+
+        var connectionString = ResolveConnectionString(configuration, "DefaultConnection", "DefaultLocation", logger);
+        services.AddHangfire(config =>
+        {
+            config.UseSqlServerStorage(connectionString);
+        });
+
+        services.AddHangfireServer(options =>
+        {
+            options.SchedulePollingInterval = TimeSpan.FromMinutes(1);
+        });
+    }
+
+    public static void UseFakeHangFireServer(this IServiceCollection services)
+    {
+        services.AddTransient<IBackgroundJobClient, FakeBackgroundJobClient>();
+    }
+
     public static void UseCoreDataStore(this IServiceCollection services, IConfiguration configuration)
     {
         var logger = LoggerFactory
             .Create(x => x.AddConsole())
             .CreateLogger(nameof(ServiceCollectionsExtensions));
 
-        var dbConnectionString = configuration.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrEmpty(dbConnectionString))
-        {
-            throw new InvalidOperationException("Connection string must not be null");
-        }
-
-        var dbLocation = configuration.GetConnectionString("DefaultLocation");
-        if (!string.IsNullOrEmpty(dbLocation))
-        {
-            logger.LogInformation("Creating database directory '{directory}'", dbLocation);
-
-            var dbDirectory = Path.GetDirectoryName(dbLocation)
-                ?? throw new InvalidOperationException("Invalid DB directory name");
-            Directory.CreateDirectory(dbDirectory);
-            dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
-        }
+        var dbConnectionString = ResolveConnectionString(configuration, "DefaultConnection", "DefaultLocation", logger);
 
         Action<SqlServerDbContextOptionsBuilder> buildSqlServerOptions = sqlServerOptions =>
         {
@@ -134,16 +142,6 @@ public static class ServiceCollectionsExtensions
             .AddEntityFrameworkStores<RazorBlogDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddHangfire(config =>
-        {
-            config.UseSqlServerStorage(dbConnectionString);
-        });
-
-        services.AddHangfireServer(options =>
-        {
-            options.SchedulePollingInterval = TimeSpan.FromMinutes(1);
-        });
-
         services.Configure<IdentityOptions>(options =>
         {
             options.Password.RequireDigit = true;
@@ -155,5 +153,31 @@ public static class ServiceCollectionsExtensions
             options.User.RequireUniqueEmail = false;
             options.SignIn.RequireConfirmedEmail = false;
         });
+    }
+
+    private static string ResolveConnectionString(
+        IConfiguration configuration,
+        string connectionString,
+        string location,
+        ILogger logger)
+    {
+        var dbConnectionString = configuration.GetConnectionString(connectionString);
+        if (string.IsNullOrEmpty(dbConnectionString))
+        {
+            throw new InvalidOperationException("Connection string must not be null");
+        }
+
+        var dbLocation = configuration.GetConnectionString(location);
+        if (!string.IsNullOrEmpty(dbLocation))
+        {
+            logger.LogInformation("Creating database directory '{directory}'", dbLocation);
+
+            var dbDirectory = Path.GetDirectoryName(dbLocation)
+                ?? throw new InvalidOperationException("Invalid DB directory name");
+            Directory.CreateDirectory(dbDirectory);
+            dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
+        }
+
+        return dbConnectionString;
     }
 }
