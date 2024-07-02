@@ -11,7 +11,11 @@ using RazorBlog.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using FluentAssertions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Hangfire;
+using RazorBlog.IntegrationTest.Mock;
 
 namespace RazorBlog.IntegrationTest.Fixtures;
 
@@ -21,15 +25,15 @@ public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLi
     private const string Username = "sa";
     private const ushort MsSqlPort = 1433;
     private readonly IContainer _mssqlContainer;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfigurationRoot _secretConfiguration;
     private readonly string _databasePassword;
 
     public TestWebAppFactoryFixture()
     {
-        _configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
+        _secretConfiguration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
         // use the admin user password as the test database password
-        _databasePassword = _configuration["SeedUser:Password"]!;
+        _databasePassword = _secretConfiguration["SeedUser:Password"]!;
 
         _mssqlContainer = new ContainerBuilder()
             .WithName($"RazorBlogTest-{Guid.NewGuid()}")
@@ -45,6 +49,25 @@ public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLi
     {
         await _mssqlContainer.StartAsync();
         await SeedUsers();
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(x =>
+        {
+            x.RemoveAll<DbContextOptions<RazorBlogDbContext>>();
+
+            var host = _mssqlContainer.Hostname;
+            var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
+            x.AddDbContext<RazorBlogDbContext>(options =>
+                options.UseSqlServer($"Server={host},{port};Database={DatabaseName};User Id={Username};Password={_databasePassword};TrustServerCertificate=True"));
+
+            // HangFire static global configuration does not work well with integration tests, regardless of storage type
+            x.RemoveAll<IBackgroundJobClient>();
+            x.AddSingleton<IBackgroundJobClient, BackgroundJobClientMock>();
+        });
+
+        base.ConfigureWebHost(builder);
     }
 
     private async Task SeedUsers()
@@ -68,11 +91,16 @@ public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLi
             }
 
             var createUserResult = await userManager.CreateAsync(user, "TestPassword123@@");
-            createUserResult.Succeeded.Should().BeTrue(string.Join("\n", createUserResult.Errors.Select(x => x.Description)));
+            createUserResult.Succeeded
+                .Should()
+                .BeTrue(string.Join("\n", createUserResult.Errors.Select(x => x.Description)));
+
             if (i % 2 == 0)
             {
                 var createRoleResult = await userManager.AddToRoleAsync(user, "moderator");
-                createRoleResult.Succeeded.Should().BeTrue(string.Join("\n", createRoleResult.Errors.Select(x => x.Description)));
+                createRoleResult.Succeeded
+                    .Should()
+                    .BeTrue(string.Join("\n", createRoleResult.Errors.Select(x => x.Description)));
             }
         }
     }
@@ -88,17 +116,8 @@ public class TestWebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLi
         var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
         builder.ConfigureHostConfiguration(config =>
         {
-            config.AddConfiguration(_configuration);
-
-            config.Sources.Add(new MemoryConfigurationSource
-            {
-                InitialData = new Dictionary<string, string>
-                {
-                    ["ConnectionStrings:DefaultConnection"] = $"Server={host},{port};Database={DatabaseName};User Id={Username};Password={_databasePassword};TrustServerCertificate=True",
-                    ["ConnectionStrings:DefaultLocation"] = string.Empty
-                }!
-            });
-
+            // load default secrets and configuration so the builder works normally
+            config.AddConfiguration(_secretConfiguration);
         });
 
         return base.CreateHost(builder);

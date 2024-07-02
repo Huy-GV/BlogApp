@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,19 +32,18 @@ public class BlogReadPageTest : BaseTest
     private async Task GetBlog_ShouldReturnNotFound_IfBlogIsNotFound()
     {
         var httpClient = ApplicationFactory.CreateClient();
-
         await using var scope = CreateScope();
         await using var dbContext = CreateDbContext(scope.ServiceProvider);
         var existingBlogIds = dbContext.Blog.Select(x => x.Id).ToHashSet();
         var faker = new Faker();
-        var blogId = faker.Random.Int();
+        var blogId = Math.Abs(faker.Random.Int());
         while (existingBlogIds.Contains(blogId))
         {
-            blogId = faker.Random.Int();
+            blogId = Math.Abs(faker.Random.Int());
         }
 
         var url = $"/blogs/Read?id={blogId}";
-        var response = await httpClient.GetAsync(url);
+        var response = await httpClient.GetAsync(url); 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         response.RequestMessage!.RequestUri!.PathAndQuery.Should().BeEquivalentTo("/Error/Error/?ErrorMessage=Not%20Found&ErrorDescription=Resource%20not%20found");
     }
@@ -104,7 +104,7 @@ public class BlogReadPageTest : BaseTest
             {
                 return;
             }
-
+            
             var faker = new Faker();
             var userModerationService = serviceProvider.GetRequiredService<IUserModerationService>();
             var banUserResult = await userModerationService.BanUserAsync(visitorUserName, "admin", faker.Date.Future());

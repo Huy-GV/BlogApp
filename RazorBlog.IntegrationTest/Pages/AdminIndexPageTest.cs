@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Models;
 using RazorBlog.IntegrationTest.Fixtures;
+using System.Diagnostics;
 using System.Security.Claims;
 using Xunit;
 using IndexModel = RazorBlog.Web.Pages.Admin.IndexModel;
@@ -46,7 +47,8 @@ public class AdminIndexPageTest : BaseTest
         await using var scope = CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var dbContext = scope.ServiceProvider.GetRequiredService<RazorBlogDbContext>();
-
+        var cs = dbContext.Database.GetDbConnection().ConnectionString;
+        Debug.WriteLine(cs);
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
         var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
