@@ -77,9 +77,7 @@ public class EditModel : RichPageModelBase<EditModel>
             return Forbid();
         }
 
-        DbContext.Users.Update(applicationUser);
         applicationUser.Description = EditUserViewModel.Description;
-
         if (EditUserViewModel.NewProfilePicture != null)
         {
             var (result, imageUri) = await _imageStore.UploadProfileImageAsync(EditUserViewModel.NewProfilePicture);

@@ -232,6 +232,11 @@
     width: 90%;
   }
 }
+.comment-form .comment-counter {
+  color: gray;
+  align-self: flex-end;
+  font-size: 0.8rem;
+}
 .comment-form textarea {
   font-size: 0.8rem;
   width: 100%;
@@ -253,6 +258,11 @@
 .edit-comment-form textarea {
   width: 100%;
   box-sizing: border-box;
+}
+.edit-comment-form .comment-counter {
+  color: gray;
+  align-self: flex-end;
+  font-size: 0.8rem;
 }
 .edit-comment-form .edit-form-btn-container {
   display: flex;

@@ -95,7 +95,6 @@ internal class BlogContentManager : IBlogContentManager
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Blog.Update(blog);
         blog.LastUpdateTime = DateTime.UtcNow;
         blog.Title = editBlogViewModel.Title;
         blog.Introduction = editBlogViewModel.Introduction;

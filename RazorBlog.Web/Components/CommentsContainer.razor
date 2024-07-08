@@ -10,11 +10,23 @@
               OnValidSubmit="(async () => await CreateCommentAsync())">
         <DataAnnotationsValidator />
         <textarea rows="5" cols="50"
-                  @bind="CreateCommentViewModel.Body"
-                  name="CreateCommentViewModel.Body"
-                  placeholder="Add a comment. Comments exceeding 200 characters will not be accepted."></textarea>
+                @bind:event="oninput"
+                @bind="CreateCommentViewModel.Body"
+                name="CreateCommentViewModel.Body"></textarea>
         <ValidationMessage For="@(() => CreateCommentViewModel.Body)" />
-        <input type="submit" value="POST" class="submit-comment" />
+
+        @{
+            var remainingCount = 200 - CreateCommentViewModel.Body.Length;
+            if (remainingCount >= 0)
+            {
+                <p class='comment-counter'>@remainingCount characters remaining</p>;
+            }
+            else
+            {
+                <p class='comment-counter'>@Math.Abs(remainingCount) characters over the limit</p>;
+            }
+        }
+        <input type="submit" value="Add Comment" class="submit-comment" />
     </EditForm>
 }
 
@@ -98,6 +110,7 @@
                                     <ValidationMessage For="@(() => EditCommentViewModel.Body)" />
 
                                     <textarea rows="5" cols="50"
+                                                @bind:event="oninput"
                                                 @bind="EditCommentViewModel.Body"
                                                 name="EditCommentViewModel.Body"
                                                 class="edit-comment-textarea">@comment.Content</textarea>
@@ -105,9 +118,21 @@
 
                                     <input type="hidden" @bind="EditCommentViewModel.BlogId" />
 
+                                    @{
+                                        var remainingCount = 200 - EditCommentViewModel.Body.Length;
+                                        if (remainingCount >= 0)
+                                        {
+                                            <p class='comment-counter'>@remainingCount characters remaining</p>;
+                                        }
+                                        else
+                                        {
+                                            <p class='comment-counter'>@Math.Abs(remainingCount) characters over the limit</p>;
+                                        }
+                                    }
+
                                     <div class="edit-form-btn-container">
-                                        <button type="button" @onclick="(() => ToggleEditButton(comment))" class="edit-comment">Cancel</button>
                                         <button type="submit" class="save-btn">Save</button>
+                                        <button type="button" @onclick="(() => ToggleEditButton(comment))" class="edit-comment">Cancel</button>
                                     </div>
                                 </EditForm>
                             }

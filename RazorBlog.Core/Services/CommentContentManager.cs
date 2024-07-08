@@ -94,8 +94,6 @@ public class CommentContentManager : ICommentContentManager
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Comment.Update(comment);
-
         comment.LastUpdateTime = DateTime.UtcNow;
         comment.Body = editCommentViewModel.Body;
         await _dbContext.SaveChangesAsync();

@@ -193,6 +193,12 @@
     width: 90%;
   }
 
+  .comment-counter {
+    color: gray;
+    align-self: flex-end;
+    font-size: 0.8rem
+  }
+
   textarea {
     @extend .text-input-field;
     font-size: 0.8rem;
@@ -219,6 +225,12 @@
     @extend .text-input-field;
     width: 100%;
     box-sizing: border-box;
+  }
+  
+  .comment-counter {
+    color: gray;
+    align-self: flex-end;
+    font-size: 0.8rem
   }
 
   .edit-form-btn-container {

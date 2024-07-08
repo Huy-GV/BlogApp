@@ -68,7 +68,6 @@ internal class BlogReader : IBlogReader
             return (ServiceResultCode.NotFound, null);
         }
 
-        _dbContext.Blog.Update(blog);
         blog.ViewCount++;
         await _dbContext.SaveChangesAsync();
 

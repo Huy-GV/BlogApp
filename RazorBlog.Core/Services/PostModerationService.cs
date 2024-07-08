@@ -89,7 +89,6 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Comment.Update(comment);
         comment.IsHidden = true;
         await _dbContext.SaveChangesAsync();
 
@@ -114,7 +113,6 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Blog.Update(blog);
         blog.IsHidden = true;
         await _dbContext.SaveChangesAsync();
 
@@ -139,7 +137,6 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Comment.Update(comment);
         comment.IsHidden = false;
         await _dbContext.SaveChangesAsync();
 
@@ -164,7 +161,6 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Blog.Update(blog);
         blog.IsHidden = false;
         await _dbContext.SaveChangesAsync();
 
@@ -193,11 +189,10 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Comment.Update(comment);
-        CensorDeletedComment(comment);
 
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
+            CensorDeletedComment(comment);
             _postDeletionScheduler.ScheduleCommentDeletion(
                 new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
                 commentId);
@@ -232,10 +227,9 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
-        _dbContext.Blog.Update(blog);
-        CensorDeletedBlog(blog);
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
+            CensorDeletedBlog(blog);
             _postDeletionScheduler.ScheduleBlogDeletion(
                 new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
                 blogId);
