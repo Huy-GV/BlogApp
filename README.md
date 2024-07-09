@@ -7,7 +7,7 @@ All blogs can be monitored by Moderators and Administrators.
 ### Technologies
 - Languages: C#, JavaScript, TypeScript, HTML, CSS,
 - Frameworks: .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS, SQL Server,
-- Development Tools: Docker, AWS CDK, CloudFormation, S3, IAM, ECS Fargate, ECR, RDS, VPC
+- Development Tools: Docker, AWS CDK, CloudFormation, Route 53, ALB, S3, IAM, ECS Fargate, ECR, RDS, VPC
 
 ### Table of Contents
 - [Overview](#overview)
@@ -17,23 +17,12 @@ All blogs can be monitored by Moderators and Administrators.
 - [AWS Deployment](./RazorBlog.AwsInfrastructure/README.md)
 
 ### Features
-#### Blog Posting
 - Users can post blogs and write comments after creating an account
-- Users can upload basic information and view basic usage stats on their profile page
-
-#### Moderating Users and Posts
-- Administrators can assign/ remove Moderator role to/ from any user
+- Administrators can assign/remove Moderator role to/from any user
 - Moderators can hide blogs and comments, the final status of which will be decided by Administrators (either un-hidden or deleted)
-	- Posts deleted by Administrators will have their content changed to `Deleted by administrators` temporarily before being removed completely
-- Administrators can create and lift bans on offending users.
-	- Temporary bans will be automatically lifted by a background service.
-
-#### Different Image Stores
-- Images uploaded by the user can be stored in an AWS S3 Bucket or in the local file system
-	- To configure AWS S3, see the [Set Up AWS Image Storage](#set-up-aws-image-storage)
-	- Even when S3 is used, the application logo and default profile image is still stored locally in `wwwroot\images\readonly\`
-	- Enabling S3 to store images will not affect locally-stored ones
-    - Mixing both image stores may cause the deletion of user-uploaded images to fail
+	- Posts deleted by Administrators will have their content changed to `Deleted by administrators` temporarily before being deleted
+- Administrators can create and lift bans on offending users
+	- Temporary bans are automatically lifted by a background service
 
 ## Images
 ### Home Page
@@ -72,17 +61,9 @@ All blogs can be monitored by Moderators and Administrators.
 	cd /directory/containing/RazorBlog.csproj/
 
 	# Optionally set custom database location
-	# If this directory does not exist, it will automatically be created
 	dotnet user-secrets set "ConnectionStrings:DefaultLocation" "\\PATH\\TO\\DB\\FILE\\DATABASE_NAME.mdf"
 
-	# Set up MS SQL server connection string
-	# Example using a local server: "Server=(localdb)\mssqllocaldb;Database=RazorBlog;Trusted_Connection=True;MultipleActiveResultSets=true;"
 	dotnet user-secrets set "ConnectionStrings:DefaultConnection" "YOUR;DB;CONNECTION;STRING;"
-	```
-- Start the web server in `Release` mode:
-	```bash
-	cd /directory/containing/RazorBlog.csproj/
-	dotnet run --configuration Release
 	```
 
 ### Set Up AWS Image Storage
@@ -100,18 +81,14 @@ All blogs can be monitored by Moderators and Administrators.
 
 ## Run With Docker
 - Start the Docker engine and ensure it is targeting *Linux*
-- Generate a `.pfx` certificate and store it in `~/.aspnet/https` on the host machine
 - Create a `.env` files with fields as shown in the below example:
 	```env
 	SeedUser__Password=SecurePassword123@@
 	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
 	SqlServer__Password=YOUR_DB_PASSWORD
-	ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
-	ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
 	```
 - Run the below command in admin mode:
 	```bash
-	cd /directory/containing/docker-compose.yaml/
 	docker compose --env-file .env up --build
 	```
 
