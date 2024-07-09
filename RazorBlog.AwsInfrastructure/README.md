@@ -42,15 +42,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
     ```
 
 ### Deploy Application
-- Create an `aws.env` file in [./config](./config/):
-    ```env
-    SeedUser__Password=SecurePassword123@@
-    Database__UserId=YOUR_RDS_DB_USER_ID
-    Database__Name=YOUR_RDS_INSTANCE_NAME
-    SqlServer__Password=YOUR_RDS_DB_PASSWORD
-    ASPNETCORE_URLS=http://+:80
-    Aws__DataBucket=YOUR_S3_BUCKET_NAME
-    ```
+- Create an `aws.env` file in [./config](./config/) containing properties of [AppConfiguration](./config/appConfiguration.ts)
 - Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
     1. Deploy `VpcStack`
     2. Deploy `DataStoreStack`

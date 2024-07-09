@@ -40,7 +40,7 @@ export class VpcStack extends cdk.Stack {
 			allowAllOutbound: false
 		});
 
-		this.loadBalancerTierSecurityGroup = new SecurityGroup(this, 'RzCdkDatabaseSG', {
+		this.loadBalancerTierSecurityGroup = new SecurityGroup(this, 'RzCdkLoadBalancerSG', {
 			vpc: this.vpc,
 			securityGroupName: 'razorblog-cdk-alb-sg',
 			allowAllOutbound: false

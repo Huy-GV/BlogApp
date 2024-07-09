@@ -8,7 +8,9 @@ export interface AppConfiguration {
     SqlServer__Password: string;
     ASPNETCORE_URLS: string;
     Aws__DataBucket: string;
-    Aws__HttpsCertificateArn: string;
+    Aws__CertificateArn: string;
+    Aws__HostedZoneName: string;
+    Aws__HostedZoneId: string;
 }
 
 export function parseEnvFile(): AppConfiguration | null {
@@ -39,7 +41,9 @@ export function parseEnvFile(): AppConfiguration | null {
         SqlServer__Password: parsedConfig.SqlServer__Password,
         Aws__DataBucket: parsedConfig.Aws__DataBucket,
         ASPNETCORE_URLS: parsedConfig.ASPNETCORE_URLS,
-        Aws__HttpsCertificateArn: parsedConfig.Aws__HttpsCertificateArn
+        Aws__CertificateArn: parsedConfig.Aws__CertificateArn,
+        Aws__HostedZoneId: parsedConfig.Aws_HostedZoneId,
+        Aws__HostedZoneName: parsedConfig.Aws__HostedZoneName
     }
 
     return envVariableProps;

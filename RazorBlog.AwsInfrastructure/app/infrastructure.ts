@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { parseEnvFile } from '../config/appConnfiguration';
+import { parseEnvFile } from '../config/appConfiguration';
 import { VpcStack } from '../lib/vpc-stack';
 import { DataStoreStack } from '../lib/data-store-stack';
 import { exit } from 'process';
@@ -27,6 +27,7 @@ const containerServiceStack = new ContainerServiceStack(app, 'ContainerServiceSt
 	env: awsEnv,
 	dataBucket: dataStoreStack.dataBucket,
 	vpc: vpcStack.vpc,
+	loadBalancerTierSecurityGroup: vpcStack.loadBalancerTierSecurityGroup,
 	webTierSecurityGroup: vpcStack.webTierSecurityGroup,
 	databaseUserId: appConfiguration.Database__UserId,
 	databasePassword: appConfiguration.SqlServer__Password,
@@ -34,7 +35,7 @@ const containerServiceStack = new ContainerServiceStack(app, 'ContainerServiceSt
 	databaseEndpoint: dataStoreStack.databaseInstance.dbInstanceEndpointAddress,
 	databasePort: dataStoreStack.databaseInstance.dbInstanceEndpointPort,
 	ecrRepository: dataStoreStack.repository,
-	envProps: appConfiguration
+	appConfiguration: appConfiguration
 })
 
 app.synth();

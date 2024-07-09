@@ -1,17 +1,18 @@
 import { StackProps, Stack, aws_elasticloadbalancingv2, aws_certificatemanager, Duration } from "aws-cdk-lib";
-import { ISecurityGroup, IVpc } from "aws-cdk-lib/aws-ec2";
+import { ISecurityGroup, IVpc, PublicSubnet, SubnetType } from "aws-cdk-lib/aws-ec2";
 import { IRepository } from "aws-cdk-lib/aws-ecr";
 import { FargateTaskDefinition, FargateService, Cluster, AwsLogDriver, ContainerImage, AppProtocol, Protocol } from "aws-cdk-lib/aws-ecs";
 import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
-import { AppConfiguration } from "../config/appConnfiguration";
+import { AppConfiguration } from "../config/appConfiguration";
 import { IBucket } from "aws-cdk-lib/aws-s3";
-import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import { ARecord, HostedZone, PublicHostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { LoadBalancerTarget } from "aws-cdk-lib/aws-route53-targets";
 
 interface ContainerServiceStackProps extends StackProps {
 	vpc: IVpc,
 	dataBucket: IBucket,
+	loadBalancerTierSecurityGroup: ISecurityGroup
 	webTierSecurityGroup: ISecurityGroup
 	databaseUserId: string
 	databasePassword: string
@@ -19,7 +20,7 @@ interface ContainerServiceStackProps extends StackProps {
 	databaseEndpoint: string
 	databasePort: string
 	ecrRepository: IRepository,
-	envProps: AppConfiguration
+	appConfiguration: AppConfiguration
 }
 
 export class ContainerServiceStack extends Stack {
@@ -39,7 +40,7 @@ export class ContainerServiceStack extends Stack {
 			props.databaseName,
 			props.databaseUserId,
 			props.databasePassword,
-			props.envProps,
+			props.appConfiguration,
 			props.ecrRepository
 		);
 
@@ -50,49 +51,45 @@ export class ContainerServiceStack extends Stack {
 			cluster
 		);
 
-		const alb = new aws_elasticloadbalancingv2.ApplicationLoadBalancer(
+		const appLoadBalancer = new aws_elasticloadbalancingv2.ApplicationLoadBalancer(
 			this,
 			'RzCdkAlb',
 			{
 				vpc: props.vpc,
+				securityGroup: props.loadBalancerTierSecurityGroup,
+				vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PUBLIC }),
 				internetFacing: true
 			}
 		);
 
-		// const listener = alb.addListener('HttpsListener', {
-		// 	port: 443,
-		// 	open: true,
-		// 	certificates: [aws_certificatemanager.Certificate.fromCertificateArn(
-		// 		this,
-		// 		'RzCdkHttpsCertificateArn',
-		// 		props.envProps.Aws__HttpsCertificateArn)]
-		// });
+		const listener = appLoadBalancer.addListener('HttpsListener', {
+			port: 443,
+			open: true,
+			certificates: [aws_certificatemanager.Certificate.fromCertificateArn(
+				this,
+				'RzCdkHttpsCertificateArn',
+				props.appConfiguration.Aws__CertificateArn)]
+		});
 
-		// const targetGroup = new aws_elasticloadbalancingv2.ApplicationTargetGroup(this, 'RzAlbTargetGroup', {
-		// 	vpc: props.vpc,
-		// 	port: 80,
-		// 	targets: [ fargateService ],
-		// 	targetType: aws_elasticloadbalancingv2.TargetType.IP,
-		// 	healthCheck: {
-		// 		path: '/',
-		// 		interval: Duration.seconds(30),
-		// 		timeout: Duration.seconds(5)
-		// 	}
-		// });
+		const targetGroup = new aws_elasticloadbalancingv2.ApplicationTargetGroup(
+			this,
+			'RzAlbTargetGroup',
+			{
+				vpc: props.vpc,
+				port: 80,
+				targets: [fargateService],
+				targetType: aws_elasticloadbalancingv2.TargetType.IP,
+				healthCheck: {
+					path: '/',
+					interval: Duration.seconds(30),
+					timeout: Duration.seconds(5)
+				}
+			}
+		);
 
-		// listener.addTargetGroups('DefaultTargetGroup', {
-		// 	targetGroups: [targetGroup]
-		// });
-
-		// const hostedZone = HostedZone.fromLookup(stack, 'MyHostedZone', {
-		// 	domainName: 'example.com' // Replace with your domain
-		// });
-
-		// new ARecord(stack, 'AliasRecord', {
-		// 	zone: hostedZone,
-		// 	target: RecordTarget.fromAlias(new LoadBalancerTarget(alb)),
-		// 	recordName: 'razor-blog'
-		// });
+		listener.addTargetGroups('DefaultTargetGroup', {
+			targetGroups: [targetGroup]
+		});
 	}
 
 	private createEcsExecutionRole(dataBucket: IBucket): Role {
@@ -147,7 +144,7 @@ export class ContainerServiceStack extends Stack {
 		databaseName: string,
 		databaseUserId: string,
 		databasePassword: string,
-		envVariables: AppConfiguration,
+		appConfiguration: AppConfiguration,
 		ecrRepository: IRepository
 	): FargateTaskDefinition {
 		const taskDefinition = new FargateTaskDefinition(
@@ -163,8 +160,15 @@ export class ContainerServiceStack extends Stack {
 
 		const connectionString = `Server=${databaseEndpoint},${databasePort};Database=${databaseName};User ID=${databaseUserId};Password=${databasePassword};MultipleActiveResultSets=false;TrustServerCertificate=true;`
 
+		const {
+			Aws__CertificateArn,
+			Aws__HostedZoneName,
+			Aws__HostedZoneId,
+			...relevantEnvVariables
+		} = appConfiguration
+
 		const containerEnvVariables = {
-		  	...envVariables,
+			...relevantEnvVariables,
 		  	ConnectionStrings__DefaultConnection: connectionString
 		};
 
