@@ -42,7 +42,7 @@ public class BlogReadPageTest : BaseTest
         }
 
         var url = $"/blogs/Read?id={blogId}";
-        var response = await httpClient.GetAsync(url); 
+        var response = await httpClient.GetAsync(url);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         response.RequestMessage!.RequestUri!.PathAndQuery.Should().BeEquivalentTo("/Error/Error/?ErrorMessage=Not%20Found&ErrorDescription=Resource%20not%20found");
     }
@@ -103,7 +103,7 @@ public class BlogReadPageTest : BaseTest
             {
                 return;
             }
-            
+
             var faker = new Faker();
             var userModerationService = serviceProvider.GetRequiredService<IUserModerationService>();
             var banUserResult = await userModerationService.BanUserAsync(visitorUserName, "admin", faker.Date.Future());

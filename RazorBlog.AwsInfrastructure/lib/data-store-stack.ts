@@ -2,7 +2,7 @@ import { RemovalPolicy, SecretValue, Stack, StackProps } from "aws-cdk-lib";
 import { InstanceType, InstanceClass, InstanceSize, SubnetType, IVpc, ISecurityGroup } from "aws-cdk-lib/aws-ec2";
 import { IRepository, Repository } from "aws-cdk-lib/aws-ecr";
 import { DatabaseInstance, DatabaseInstanceEngine, IDatabaseInstance, SqlServerEngineVersion, SubnetGroup } from "aws-cdk-lib/aws-rds";
-import { Bucket, BlockPublicAccess } from "aws-cdk-lib/aws-s3";
+import { Bucket, BlockPublicAccess, IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 
 export interface DataStoreStackProps extends StackProps {
@@ -17,11 +17,12 @@ export interface DataStoreStackProps extends StackProps {
 export class DataStoreStack extends Stack {
     readonly databaseInstance: IDatabaseInstance
     readonly repository: IRepository
+    readonly dataBucket: IBucket
 
     constructor(scope: Construct, id: string, props: DataStoreStackProps) {
         super(scope, id);
 
-        new Bucket(
+        this.dataBucket =new Bucket(
             this,
             'RazorBlogDataBucket',
             {
@@ -35,7 +36,7 @@ export class DataStoreStack extends Stack {
 
         this.databaseInstance = new DatabaseInstance(
             this,
-            'RazorBlogCdkDb',
+            'RzCdkDb',
             {
                 removalPolicy: RemovalPolicy.SNAPSHOT,
                 instanceIdentifier: props.databaseName,
@@ -52,7 +53,7 @@ export class DataStoreStack extends Stack {
                 securityGroups: [
                     props.databaseTierSecurityGroup
                 ],
-                subnetGroup: new SubnetGroup(this, 'RazorBlogCdkDbSubnetGroup', {
+                subnetGroup: new SubnetGroup(this, 'RzCdkDbSubnetGroup', {
                     vpc: props.vpc,
                     subnetGroupName: 'razorblog-cdk-db-subnet-group',
                     vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
@@ -61,7 +62,7 @@ export class DataStoreStack extends Stack {
             }
         );
 
-        this.repository = new Repository(this, 'RazorBlogCdkRepository', {
+        this.repository = new Repository(this, 'RzCdkRepository', {
             repositoryName: "razorblog-cdk-repository",
             emptyOnDelete: true,
             removalPolicy: RemovalPolicy.DESTROY

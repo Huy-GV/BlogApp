@@ -17,23 +17,24 @@ const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
 	env: awsEnv,
 	vpc: vpcStack.vpc,
 	databaseTierSecurityGroup: vpcStack.databaseTierSecurityGroup,
-	databaseName: appConfiguration.DatabaseName,
-	dataBucketName: appConfiguration.AwsDataBucket,
-	databaseUserId: appConfiguration.DatabaseUserId,
-	databasePassword: appConfiguration.SqlServerPassword
+	databaseName: appConfiguration.Database__Name,
+	dataBucketName: appConfiguration.Aws__DataBucket,
+	databaseUserId: appConfiguration.Database__UserId,
+	databasePassword: appConfiguration.SqlServer__Password
 });
 
 const containerServiceStack = new ContainerServiceStack(app, 'ContainerServiceStack', {
 	env: awsEnv,
+	dataBucket: dataStoreStack.dataBucket,
 	vpc: vpcStack.vpc,
 	webTierSecurityGroup: vpcStack.webTierSecurityGroup,
-	databaseUserId: appConfiguration.DatabaseUserId,
-	databasePassword: appConfiguration.SqlServerPassword,
-	databaseName: appConfiguration.DatabaseName,
+	databaseUserId: appConfiguration.Database__UserId,
+	databasePassword: appConfiguration.SqlServer__Password,
+	databaseName: appConfiguration.Database__Name,
 	databaseEndpoint: dataStoreStack.databaseInstance.dbInstanceEndpointAddress,
 	databasePort: dataStoreStack.databaseInstance.dbInstanceEndpointPort,
 	ecrRepository: dataStoreStack.repository,
-	envProps: appConfiguration.RawConfig
+	envProps: appConfiguration
 })
 
 app.synth();

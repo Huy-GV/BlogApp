@@ -1,20 +1,14 @@
-import { DotenvParseOutput, config } from "dotenv";
+import { config } from "dotenv";
 import { join } from "path";
 
-interface AppConfiguration {
-    SeedUserPassword: string;
-    DatabaseUserId: string;
-    DatabaseName: string;
-    SqlServerPassword: string;
-
-    AspNetCoreKestrelCertPassword: string;
-    AspNetCoreKestrelCertPath: string;
-    AspNetCorUrls: string;
-    AspNetCoreHttpsPort: number;
-
-    AwsDataBucket: string;
-
-    RawConfig: DotenvParseOutput;
+export interface AppConfiguration {
+    SeedUser__Password: string;
+    Database__UserId: string;
+    Database__Name: string;
+    SqlServer__Password: string;
+    ASPNETCORE_URLS: string;
+    Aws__DataBucket: string;
+    Aws__HttpsCertificateArn: string;
 }
 
 export function parseEnvFile(): AppConfiguration | null {
@@ -39,17 +33,13 @@ export function parseEnvFile(): AppConfiguration | null {
     }
 
     const envVariableProps: AppConfiguration = {
-        SeedUserPassword: parsedConfig.SeedUser__Password,
-        DatabaseUserId: parsedConfig.Database__UserId,
-        DatabaseName: parsedConfig.Database__Name,
-        SqlServerPassword: parsedConfig.SqlServer__Password,
-        AspNetCoreKestrelCertPassword: parsedConfig.ASPNETCORE_Kestrel__Certificates__Default__Password,
-        AspNetCoreKestrelCertPath: parsedConfig.ASPNETCORE_Kestrel__Certificates__Default__Path,
-        AwsDataBucket: parsedConfig.Aws__DataBucket,
-        AspNetCoreHttpsPort: Number.parseInt(parsedConfig.ASPNETCORE_HTTPS_PORT),
-        AspNetCorUrls: parsedConfig.ASPNETCORE_URLS,
-
-        RawConfig: parsedConfig
+        SeedUser__Password: parsedConfig.SeedUser__Password,
+        Database__UserId: parsedConfig.Database__UserId,
+        Database__Name: parsedConfig.Database__Name,
+        SqlServer__Password: parsedConfig.SqlServer__Password,
+        Aws__DataBucket: parsedConfig.Aws__DataBucket,
+        ASPNETCORE_URLS: parsedConfig.ASPNETCORE_URLS,
+        Aws__HttpsCertificateArn: parsedConfig.Aws__HttpsCertificateArn
     }
 
     return envVariableProps;

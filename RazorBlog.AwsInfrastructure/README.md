@@ -36,7 +36,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
 - Attach 2 IAM policies to the current user:
     - [./iam/cdkBootstrapPolicy.json](iam/cdkBootstrapPolicy.json)
     - [./iam/cdkDeployPolicy.json](iam/cdkDeployPolicy.json)
-- Run the boostrap command:
+- Run the bootstrap command:
     ```bash
     cdk bootstrap --profile razor-blog
     ```
@@ -48,10 +48,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
     Database__UserId=YOUR_RDS_DB_USER_ID
     Database__Name=YOUR_RDS_INSTANCE_NAME
     SqlServer__Password=YOUR_RDS_DB_PASSWORD
-    ASPNETCORE_URLS=https://+:443
-    ASPNETCORE_HTTPS_PORT=443
-    ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERT_PASSWORD
-    ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
+    ASPNETCORE_URLS=http://+:80
     Aws__DataBucket=YOUR_S3_BUCKET_NAME
     ```
 - Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
