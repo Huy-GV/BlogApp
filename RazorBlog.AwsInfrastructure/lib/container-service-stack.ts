@@ -1,12 +1,12 @@
 import { StackProps, Stack, aws_elasticloadbalancingv2, aws_certificatemanager, Duration } from "aws-cdk-lib";
-import { ISecurityGroup, IVpc, PublicSubnet, SubnetType } from "aws-cdk-lib/aws-ec2";
+import { ISecurityGroup, IVpc, SubnetType } from "aws-cdk-lib/aws-ec2";
 import { IRepository } from "aws-cdk-lib/aws-ecr";
 import { FargateTaskDefinition, FargateService, Cluster, AwsLogDriver, ContainerImage, AppProtocol, Protocol } from "aws-cdk-lib/aws-ecs";
 import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { AppConfiguration } from "../config/appConfiguration";
 import { IBucket } from "aws-cdk-lib/aws-s3";
-import { ARecord, HostedZone, PublicHostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import { ARecord, PublicHostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { LoadBalancerTarget } from "aws-cdk-lib/aws-route53-targets";
 
 interface ContainerServiceStackProps extends StackProps {
@@ -25,7 +25,7 @@ interface ContainerServiceStackProps extends StackProps {
 
 export class ContainerServiceStack extends Stack {
 	constructor(scope: Construct, id: string, props: ContainerServiceStackProps) {
-		super(scope, id);
+		super(scope, id, props);
 
 		const taskExecutionRole = this.createEcsExecutionRole(props.dataBucket);
 		const cluster = new Cluster(this, 'RzCdkCluster', {
@@ -89,6 +89,20 @@ export class ContainerServiceStack extends Stack {
 
 		listener.addTargetGroups('DefaultTargetGroup', {
 			targetGroups: [targetGroup]
+		});
+
+		const hostedZone = PublicHostedZone.fromLookup(
+			this,
+			'RzCdkHostedZone',
+			{
+				domainName: props.appConfiguration.Aws__HostedZoneName
+			}
+		);
+
+		new ARecord(this, 'RzCdkAliasRecord', {
+			zone: hostedZone,
+			target: RecordTarget.fromAlias(new LoadBalancerTarget(appLoadBalancer)),
+			recordName: ''
 		});
 	}
 
@@ -163,7 +177,6 @@ export class ContainerServiceStack extends Stack {
 		const {
 			Aws__CertificateArn,
 			Aws__HostedZoneName,
-			Aws__HostedZoneId,
 			...relevantEnvVariables
 		} = appConfiguration
 

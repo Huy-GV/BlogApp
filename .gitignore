@@ -385,3 +385,5 @@ cdk.out
 
 # ignored as it includes account id
 cdk.context.json
+
+.vscode/

@@ -11,7 +11,7 @@ const app = new cdk.App();
 const awsEnv = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
 
 const appConfiguration = parseEnvFile() || exit(1);
-const vpcStack = new VpcStack(app, 'VpcStack');
+const vpcStack = new VpcStack(app, 'VpcStack', { env: awsEnv });
 
 const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
 	env: awsEnv,

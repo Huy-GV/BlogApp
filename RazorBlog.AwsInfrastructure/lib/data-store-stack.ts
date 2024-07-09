@@ -20,7 +20,7 @@ export class DataStoreStack extends Stack {
     readonly dataBucket: IBucket
 
     constructor(scope: Construct, id: string, props: DataStoreStackProps) {
-        super(scope, id);
+        super(scope, id, props);
 
         this.dataBucket =new Bucket(
             this,
