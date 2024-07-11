@@ -2,27 +2,12 @@
 
 ## Overview
 Simple blog application where users can write blogs or comment on blogs written by others.
-All blogs can be monitored by Moderators and Administrators.
+All blogs can be monitored, hidden, and removed by Moderators and Administrators.
 
 ### Technologies
 - Languages: C#, JavaScript, TypeScript, HTML, CSS,
 - Frameworks: .NET 8 Razor Pages, .NET Blazor, .NET Identity, Entity Framework Core, Hangfire, SASS, SQL Server,
 - Development Tools: Docker, AWS CDK, CloudFormation, Route 53, ALB, S3, IAM, ECS Fargate, ECR, RDS, VPC
-
-### Table of Contents
-- [Overview](#overview)
-- [Images](#images)
-- [Quick Start](#quick-start)
-- [Run With Docker](#run-with-docker)
-- [AWS Deployment](./RazorBlog.AwsInfrastructure/README.md)
-
-### Features
-- Users can post blogs and write comments after creating an account
-- Administrators can assign/remove Moderator role to/from any user
-- Moderators can hide blogs and comments, the final status of which will be decided by Administrators (either un-hidden or deleted)
-	- Posts deleted by Administrators will have their content changed to `Deleted by administrators` temporarily before being deleted
-- Administrators can create and lift bans on offending users
-	- Temporary bans are automatically lifted by a background service
 
 ## Images
 ### Home Page
@@ -74,9 +59,9 @@ All blogs can be monitored by Moderators and Administrators.
 	```
 - To use the AWS S3 as an image store, set the flag `UseAwsS3` to `true` in `appsettings.{env}.json`:
 	```json
-		{
-			"UseAwsS3": true
-		}
+	{
+		"UseAwsS3": true
+	}
 	```
 
 ## Run With Docker

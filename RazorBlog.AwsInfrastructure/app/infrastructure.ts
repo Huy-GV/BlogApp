@@ -4,16 +4,16 @@ import * as cdk from 'aws-cdk-lib';
 import { parseEnvFile } from '../config/appConfiguration';
 import { VpcStack } from '../lib/vpc-stack';
 import { DataStoreStack } from '../lib/data-store-stack';
+import { ContainerStack } from '../lib/container-service-stack';
 import { exit } from 'process';
-import { ContainerServiceStack } from '../lib/container-service-stack';
 
 const app = new cdk.App();
 const awsEnv = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
 
 const appConfiguration = parseEnvFile() || exit(1);
-const vpcStack = new VpcStack(app, 'VpcStack', { env: awsEnv });
+const vpcStack = new VpcStack(app, 'RzbVpcStack', { env: awsEnv });
 
-const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
+const dataStoreStack = new DataStoreStack(app, 'RzbDataStoreStack', {
 	env: awsEnv,
 	vpc: vpcStack.vpc,
 	databaseTierSecurityGroup: vpcStack.databaseTierSecurityGroup,
@@ -23,7 +23,7 @@ const dataStoreStack = new DataStoreStack(app, 'DataStoreStack', {
 	databasePassword: appConfiguration.SqlServer__Password
 });
 
-const containerServiceStack = new ContainerServiceStack(app, 'ContainerServiceStack', {
+const containerServiceStack = new ContainerStack(app, 'RzbContainerStack', {
 	env: awsEnv,
 	dataBucket: dataStoreStack.dataBucket,
 	vpc: vpcStack.vpc,

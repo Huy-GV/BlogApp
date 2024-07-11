@@ -23,7 +23,7 @@ interface ContainerServiceStackProps extends StackProps {
 	appConfiguration: AppConfiguration
 }
 
-export class ContainerServiceStack extends Stack {
+export class ContainerStack extends Stack {
 	constructor(scope: Construct, id: string, props: ContainerServiceStackProps) {
 		super(scope, id, props);
 
@@ -80,9 +80,9 @@ export class ContainerServiceStack extends Stack {
 				targets: [fargateService],
 				targetType: aws_elasticloadbalancingv2.TargetType.IP,
 				healthCheck: {
-					path: '/',
-					interval: Duration.seconds(30),
-					timeout: Duration.seconds(5)
+					path: '/health',
+					interval: Duration.seconds(40),
+					timeout: Duration.seconds(15)
 				}
 			}
 		);
@@ -102,7 +102,7 @@ export class ContainerServiceStack extends Stack {
 		new ARecord(this, 'RzCdkAliasRecord', {
 			zone: hostedZone,
 			target: RecordTarget.fromAlias(new LoadBalancerTarget(appLoadBalancer)),
-			recordName: ''
+			recordName: 'rzb'
 		});
 	}
 

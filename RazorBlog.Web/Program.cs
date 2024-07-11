@@ -50,6 +50,8 @@ public class Program
         app.MapRazorPages();
         app.MapBlazorHub();
 
+        app.MapGet("/health", () => "Application Running");
+
         await app.RunAsync();
     }
 

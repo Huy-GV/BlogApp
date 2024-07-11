@@ -44,7 +44,19 @@ This document describes the AWS deployment process using the CDK with TypeScript
 ### Deploy Application
 - Create an `aws.env` file in [./config](./config/) containing properties of [AppConfiguration](./config/appConfiguration.ts)
 - Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
-    1. Deploy `VpcStack`
-    2. Deploy `DataStoreStack`
-    3. Push Docker image to ECR via [./scripts/build-ecr-image.sh](./scripts/build-ecr-image.sh)
-    4. Deploy `ContainerServiceStack`
+    1. Deploy the VPC stack:
+        ```bash
+        cdk deploy RzbVpcStack
+        ```
+    2. Deploy the data store stack:
+        ```bash
+        cdk deploy RzbDataStoreStack`
+        ```
+    3. Push Docker image to ECR via
+        ```bash
+        ./scripts/build-ecr-image.sh ../
+        ```
+    4. Deploy the container stack:
+        ```bash
+        cdk deploy RzbContainerStack
+        ```
