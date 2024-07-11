@@ -10,14 +10,11 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 - Development Tools: Docker, AWS CDK, CloudFormation, Route 53, ALB, S3, IAM, ECS Fargate, ECR, RDS, VPC
 
 ## Images
+### Demo Gif
+<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/51a252ea-0353-4e99-916e-779d93890db5" width=60% alt="home-page-image">
+
 ### Home Page
 <img src="https://user-images.githubusercontent.com/78300296/145921039-838cb3af-6adc-41d9-b154-6be44df7d827.png" width=60% alt="home-page-image">
-
-### Post Hidden By Moderators
-<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/7ce30232-4659-457d-8d96-8c145faf0827" width=60% alt="hidden-post-image">
-
-### Admin User Reviewing Reported Post
-<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/228498ec-7293-4b64-92be-1ff76fc7e965" width=60% alt="reported-post-image">
 
 ##  Quick Start
 ### Pre-requisites
