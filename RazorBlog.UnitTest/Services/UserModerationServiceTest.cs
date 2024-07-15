@@ -14,7 +14,6 @@ namespace RazorBlog.UnitTest.Services;
 
 public class UserModerationServiceTest
 {
-    private readonly Mock<IUserPermissionValidator> _mockUserPermissionValidator = new();
     private readonly Mock<ILogger<UserModerationService>> _mockLogger = new();
     private readonly Mock<IBackgroundJobClient> _mockHangfireClient = new();
 

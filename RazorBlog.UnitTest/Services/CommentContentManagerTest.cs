@@ -15,14 +15,14 @@ namespace RazorBlog.UnitTest.Services;
 public class CommentContentManagerTest
 {
     private readonly Mock<IUserPermissionValidator> _mockUserPermissionValidator = new();
-    private readonly Mock<IUserModerationService> _mockUserModerationService = new();
+    private readonly Mock<IBanTicketReader> _mockBanTicketReader = new();
 
     private ICommentContentManager CreateTestSubject(
         RazorBlogDbContext dbContext,
         UserManager<ApplicationUser> userManager)
     {
         return new CommentContentManager(dbContext,
-            _mockUserModerationService.Object,
+            _mockBanTicketReader.Object,
             _mockUserPermissionValidator.Object,
             userManager);
     }
@@ -142,7 +142,7 @@ public class CommentContentManagerTest
                 BlogId = viewModel.BlogId,
                 Body = viewModel.Body,
                 AuthorUserName = user.UserName
-            }, 
+            },
             options => options
                 .Excluding(x => x.CreationTime)
                 .Excluding(x => x.LastUpdateTime)

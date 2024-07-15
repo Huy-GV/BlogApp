@@ -64,14 +64,6 @@ internal class PostModerationService : IPostModerationService
         blog.Body = ReplacementText.RemovedContent;
     }
 
-    public async Task<BanTicket?> FindByUserNameAsync(string userName)
-    {
-        return await _dbContext
-            .BanTicket
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(s => s.UserName == userName);
-    }
-
     public async Task<ServiceResultCode> HideCommentAsync(int commentId, string userName)
     {
         var comment = await _dbContext.Comment

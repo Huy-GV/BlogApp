@@ -11,12 +11,17 @@ namespace RazorBlog.Core.ReadServices;
 
 internal class BlogReader : IBlogReader
 {
-    private readonly RazorBlogDbContext _dbContext;
+    private readonly IDbContextFactory<RazorBlogDbContext> _dbContextFactory;
     private readonly IAggregateImageUriResolver _aggregateImageUriResolver;
-    public BlogReader(RazorBlogDbContext dbContext, IAggregateImageUriResolver aggregateImageUriResolver)
+    private readonly IUserPermissionValidator _userPermissionValidator;
+    public BlogReader(
+        IDbContextFactory<RazorBlogDbContext> dbContextFactory,
+        IAggregateImageUriResolver aggregateImageUriResolver,
+        IUserPermissionValidator userPermissionValidator)
     {
-        _dbContext = dbContext;
+        _dbContextFactory = dbContextFactory;
         _aggregateImageUriResolver = aggregateImageUriResolver;
+        _userPermissionValidator = userPermissionValidator;
     }
 
     public async Task<IReadOnlyCollection<IndexBlogDto>> GetBlogsAsync(
@@ -24,7 +29,8 @@ internal class BlogReader : IBlogReader
         int page = 0,
         int pageSize = 10)
     {
-        var blogs = await _dbContext.Blog
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var blogs = await dbContext.Blog
             .Include(b => b.AuthorUser)
             .Include(b => b.Comments)
             .ThenInclude(c => c.AuthorUser)
@@ -58,7 +64,8 @@ internal class BlogReader : IBlogReader
 
     public async Task<(ServiceResultCode, DetailedBlogDto?)> GetBlogAsync(int id)
     {
-        var blog = await _dbContext.Blog
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var blog = await dbContext.Blog
             .IgnoreQueryFilters()
             .AsNoTracking()
             .Include(blog => blog.AuthorUser)
@@ -93,5 +100,32 @@ internal class BlogReader : IBlogReader
         };
 
         return (ServiceResultCode.Success, blogDto);
+    }
+
+    public async Task<(ServiceResultCode, IReadOnlyCollection<HiddenBlogDto>)> GetHiddenBlogsAsync(
+        string authorUserName,
+        string requestUserName)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        if (!await _userPermissionValidator.IsUserAllowedToReviewHiddenPostAsync(requestUserName))
+        {
+            return (ServiceResultCode.Unauthorized, []);
+        }
+
+        var hiddenBlogs = await dbContext.Blog
+            .AsNoTracking()
+            .Include(b => b.AuthorUser)
+            .Where(b => b.AuthorUser.UserName == authorUserName && b.IsHidden)
+            .Select(b => new HiddenBlogDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Introduction = b.Introduction,
+                Content = b.Body,
+                CreationTime = b.CreationTime,
+            })
+            .ToListAsync();
+
+        return (ServiceResultCode.Success, hiddenBlogs);
     }
 }

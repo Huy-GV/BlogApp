@@ -4,6 +4,7 @@ using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Core.Features;
 using RazorBlog.Core.Models;
+using RazorBlog.Core.ReadServices;
 using RazorBlog.Core.WriteServices;
 using RazorBlog.Web.Extensions;
 using System.Threading.Tasks;
@@ -19,6 +20,9 @@ public partial class BanUserForm : RichComponentBase
 
     [SupplyParameterFromForm]
     private BanUserViewModel BanUserViewModel { get; set; } = new();
+
+    [Inject]
+    public IBanTicketReader BanTicketReader { get; set; } = null!;
 
     [Inject]
     public IUserModerationService UserModerationService { get; set; } = null!;
@@ -40,7 +44,7 @@ public partial class BanUserForm : RichComponentBase
 
     private async Task LoadBanTicketAsync()
     {
-        CurrentBanTicket = await UserModerationService.FindBanTicketByUserNameAsync(InspectedUserName);
+        CurrentBanTicket = await BanTicketReader.FindBanTicketByUserNameAsync(InspectedUserName);
     }
 
     private async Task BanUserAsync()
@@ -70,7 +74,7 @@ public partial class BanUserForm : RichComponentBase
     private async Task LiftBanAsync()
     {
         IsConfirmBanButtonDisplayed = false;
-        if (!await UserModerationService.BanTicketExistsAsync(InspectedUserName))
+        if (!await BanTicketReader.BanTicketExistsAsync(InspectedUserName))
         {
             this.NavigateToBadRequest();
             return;

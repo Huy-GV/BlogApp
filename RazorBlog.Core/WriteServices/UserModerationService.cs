@@ -38,7 +38,7 @@ internal class UserModerationService : IUserModerationService
 
     public async Task PrivateRemoveBanTicketAsync(string bannedUserName)
     {
-        var banTicket = await FindBanTicketByUserNameAsync(bannedUserName);
+        var banTicket = await _dbContext.BanTicket.FirstOrDefaultAsync(x => x.UserName == bannedUserName);
         if (banTicket == null)
         {
             _logger.LogWarning("Ban ticket for user {bannedUserName} already removed", bannedUserName);
@@ -56,19 +56,6 @@ internal class UserModerationService : IUserModerationService
         }
     }
 
-    public async Task<bool> BanTicketExistsAsync(string userName)
-    {
-        return await _dbContext.BanTicket.AnyAsync(s => s.UserName == userName);
-    }
-
-    public async Task<BanTicket?> FindBanTicketByUserNameAsync(string userName)
-    {
-        return await _dbContext
-            .BanTicket
-            .Include(x => x.AppUser)
-            .FirstOrDefaultAsync(s => s.UserName == userName);
-    }
-
     public async Task<ServiceResultCode> BanUserAsync(string userToBanName, string userName, DateTime? expiry)
     {
         if (!await IsUserNameFromAdminUser(userName))
@@ -82,7 +69,7 @@ internal class UserModerationService : IUserModerationService
             return ServiceResultCode.InvalidArguments;
         }
 
-        if (await BanTicketExistsAsync(userToBanName))
+        if (await _dbContext.BanTicket.AnyAsync(x => x.UserName == userToBanName))
         {
             _logger.LogInformation("User named {userToBanName} has already been banned", userToBanName);
             return ServiceResultCode.InvalidArguments;

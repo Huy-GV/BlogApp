@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
-using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Dtos;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using RazorBlog.Core.Communication;
 using RazorBlog.Web.Extensions;
 using RazorBlog.Core.WriteServices;
+using RazorBlog.Core.ReadServices;
 
 namespace RazorBlog.Web.Components.Pages.Admin;
 
@@ -17,10 +15,10 @@ public partial class HiddenCommentContainer : RichComponentBase
     public string UserName { get; set; } = string.Empty;
 
     [Inject]
-    public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
+    public IPostModerationService PostModerationService { get; set; } = null!;
 
     [Inject]
-    public IPostModerationService PostModerationService { get; set; } = null!;
+    public ICommentReader CommentReader { get; set; } = null!;
 
     private IReadOnlyCollection<HiddenCommentDto> HiddenComments { get; set; } = [];
 
@@ -32,23 +30,14 @@ public partial class HiddenCommentContainer : RichComponentBase
 
     private async Task LoadHiddenComments()
     {
-        HiddenComments = await GetHiddenComments(UserName);
-    }
+        var (result, hiddenComments) = await CommentReader.GetHiddenCommentsAsync(UserName, CurrentUserName);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
 
-    private async Task<IReadOnlyCollection<HiddenCommentDto>> GetHiddenComments(string userName)
-    {
-        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        return await dbContext.Comment
-            .AsNoTracking()
-            .Include(c => c.AuthorUser)
-            .Where(c => c.AuthorUser.UserName == userName && c.IsHidden)
-            .Select(c => new HiddenCommentDto
-            {
-                Id = c.Id,
-                Content = c.Body,
-                CreationTime = c.CreationTime,
-            })
-            .ToListAsync();
+        HiddenComments = hiddenComments;
     }
 
     private async Task ForciblyDeleteCommentAsync(int commentId)

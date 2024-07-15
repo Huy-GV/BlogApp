@@ -7,23 +7,21 @@ using Microsoft.Extensions.Logging;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Constants;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.WriteServices;
+using RazorBlog.Core.ReadServices;
 
 namespace RazorBlog.Web.Pages.Admin;
 
 [Authorize(Roles = Roles.AdminRole)]
 public class DetailsModel : RichPageModelBase<DetailsModel>
 {
-    private readonly IUserModerationService _userModerationService;
+    private readonly IBanTicketReader _banTicketReader;
 
     public DetailsModel(RazorBlogDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<DetailsModel> logger,
-        IUserModerationService userUserModerationService,
-        IPostModerationService postModerationService,
-        IPostDeletionScheduler postDeletionService) : base(context, userManager, logger)
+        IBanTicketReader banTicketReader) : base(context, userManager, logger)
     {
-        _userModerationService = userUserModerationService;
+        _banTicketReader = banTicketReader;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -48,7 +46,7 @@ public class DetailsModel : RichPageModelBase<DetailsModel>
         }
 
         UserName = userName;
-        CurrentBanTicket = await _userModerationService.FindBanTicketByUserNameAsync(userName);
+        CurrentBanTicket = await _banTicketReader.FindBanTicketByUserNameAsync(userName);
 
         return Page();
     }

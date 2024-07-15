@@ -14,8 +14,7 @@ public interface IBlogReader
     /// <param name="page">Optional. The page number for paginated results (default is 0).</param>
     /// <param name="pageSize">Optional. The number of entries per page (default is 10).</param>
     /// <returns>
-    /// A task representing the asynchronous operation. The task result contains
-    /// a read-only collection of <see cref="IndexBlogDto"/> representing the retrieved blog entries.
+    /// The task result contains a read-only collection of <see cref="IndexBlogDto"/> representing the retrieved blog entries.
     /// </returns>
     Task<IReadOnlyCollection<IndexBlogDto>> GetBlogsAsync(
         string? searchString = null,
@@ -27,9 +26,22 @@ public interface IBlogReader
     /// </summary>
     /// <param name="id">The unique identifier of the blog entry to retrieve.</param>
     /// <returns>
-    /// A task representing the asynchronous operation. The task result contains a tuple with
+    /// The task result contains a tuple with
     /// a <see cref="ServiceResultCode"/> indicating the result of the operation,
     /// and a <see cref="DetailedBlogDto"/> representing the detailed blog entry (null if not found).
     /// </returns>
     Task<(ServiceResultCode, DetailedBlogDto?)> GetBlogAsync(int id);
+
+    /// <summary>
+    /// Retrieves a detailed blog entry based on its identifier asynchronously.
+    /// </summary>
+    /// <param name="id">The unique identifier of the blog entry to retrieve.</param>
+    /// <returns>
+    /// The task result contains a tuple with
+    /// a <see cref="ServiceResultCode"/> indicating the result of the operation,
+    /// and a <see cref="DetailedBlogDto"/> representing the detailed blog entry (null if not found).
+    /// </returns>
+    Task<(ServiceResultCode, IReadOnlyCollection<HiddenBlogDto>)> GetHiddenBlogsAsync(
+        string authorUserName,
+        string requestUserName);
 }

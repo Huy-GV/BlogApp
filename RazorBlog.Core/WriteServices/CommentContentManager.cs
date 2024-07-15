@@ -15,17 +15,17 @@ public class CommentContentManager : ICommentContentManager
 {
     private readonly RazorBlogDbContext _dbContext;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUserModerationService _userModerationService;
+    private readonly IBanTicketReader _banTicketReader;
     private readonly IUserPermissionValidator _userPermissionValidator;
 
     public CommentContentManager(RazorBlogDbContext dbContext,
-        IUserModerationService userModerationService,
+        IBanTicketReader banTicketReader,
         IUserPermissionValidator userPermissionValidator,
         UserManager<ApplicationUser> userManager)
     {
         _dbContext = dbContext;
         _userManager = userManager;
-        _userModerationService = userModerationService;
+        _banTicketReader = banTicketReader;
         _userPermissionValidator = userPermissionValidator;
     }
 
@@ -51,7 +51,7 @@ public class CommentContentManager : ICommentContentManager
 
         if (!isCurrentUserAuthor ||
             comment.IsHidden ||
-            await _userModerationService.BanTicketExistsAsync(userName))
+            await _banTicketReader.BanTicketExistsAsync(userName))
         {
             return ServiceResultCode.Unauthorized;
         }

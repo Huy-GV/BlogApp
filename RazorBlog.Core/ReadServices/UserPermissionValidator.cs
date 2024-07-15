@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Constants;
+using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.WriteServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +14,21 @@ namespace RazorBlog.Core.ReadServices;
 
 internal class UserPermissionValidator : IUserPermissionValidator
 {
-    private readonly IUserModerationService _userModerationService;
+    private readonly IDbContextFactory<RazorBlogDbContext> _dbContextFactory;
+    private readonly IBanTicketReader _banTicketReader;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ILogger<UserPermissionValidator> _logger;
 
     public UserPermissionValidator(
-        IUserModerationService userModerationService,
+        IBanTicketReader banTicketReader,
         UserManager<ApplicationUser> userManager,
-        ILogger<UserPermissionValidator> logger)
+        ILogger<UserPermissionValidator> logger,
+        IDbContextFactory<RazorBlogDbContext> dbContextFactory)
     {
         _logger = logger;
         _userManager = userManager;
-        _userModerationService = userModerationService;
+        _banTicketReader = banTicketReader;
+        _dbContextFactory = dbContextFactory;
     }
 
     public async Task<bool> IsUserAllowedToHidePostAsync(string userName, string postAuthorUserName)
@@ -39,7 +44,7 @@ internal class UserPermissionValidator : IUserPermissionValidator
             return false;
         }
 
-        if (await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
+        if (await _banTicketReader.BanTicketExistsAsync(user.UserName ?? string.Empty))
         {
             return false;
         }
@@ -73,21 +78,44 @@ internal class UserPermissionValidator : IUserPermissionValidator
 
     public async Task<IReadOnlyDictionary<TPostId, bool>> IsUserAllowedToUpdateOrDeletePostsAsync<TPostId>(
         string userName,
-        IEnumerable<Post<TPostId>> posts) where TPostId : notnull
+        IEnumerable<PostPermissionViewModel<TPostId>> posts) where TPostId : notnull
     {
         var allowedToCreatePost = await IsUserAllowedToCreatePostAsync(userName);
 
         return posts.ToDictionary(
-            x => x.Id,
+            x => x.PostId,
             x =>
-                !string.IsNullOrWhiteSpace(x.AuthorUser.UserName) &&
-                userName == x.AuthorUser.UserName &&
+                !string.IsNullOrWhiteSpace(x.AuthorUserName) &&
+                userName == x.AuthorUserName &&
                 !x.IsHidden &&
                 allowedToCreatePost);
     }
 
     public async Task<bool> IsUserAllowedToCreatePostAsync(string userName)
     {
-        return !await _userModerationService.BanTicketExistsAsync(userName);
+        return !await _banTicketReader.BanTicketExistsAsync(userName);
+    }
+
+    public async Task<bool> IsUserAllowedToReviewHiddenPostAsync(string userName)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var role = await dbContext.Roles
+            .Where(r => r.Name == Roles.AdminRole)
+            .FirstAsync();
+
+        var user = await dbContext.Users
+            .Select(x => new { x.UserName, x.Id})
+            .FirstAsync(x => x.UserName == userName);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var userRole = await dbContext.UserRoles
+            .Select(x => new { x.RoleId, x.UserId })
+            .Where(x => x.UserId == user.Id && x.RoleId == role.Id)
+            .FirstOrDefaultAsync();
+
+        return userRole != null;
     }
 }

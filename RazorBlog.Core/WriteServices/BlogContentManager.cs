@@ -16,13 +16,13 @@ internal class BlogContentManager : IBlogContentManager
 {
     private readonly RazorBlogDbContext _dbContext;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUserModerationService _userModerationService;
+    private readonly IBanTicketReader _banTicketReader;
     private readonly IImageStore _imageStore;
     private readonly ILogger<BlogContentManager> _logger;
     private readonly IUserPermissionValidator _userPermissionValidator;
 
     public BlogContentManager(RazorBlogDbContext dbContext,
-        IUserModerationService userModerationService,
+        IBanTicketReader banTicketReader,
         UserManager<ApplicationUser> userManager,
         IImageStore imageStore,
         ILogger<BlogContentManager> logger,
@@ -30,7 +30,7 @@ internal class BlogContentManager : IBlogContentManager
     {
         _dbContext = dbContext;
         _userManager = userManager;
-        _userModerationService = userModerationService;
+        _banTicketReader = banTicketReader;
         _imageStore = imageStore;
         _logger = logger;
         _userPermissionValidator = userPermissionValidator;
@@ -58,7 +58,7 @@ internal class BlogContentManager : IBlogContentManager
 
         if (!isCurrentUserAuthor ||
             blog.IsHidden ||
-            await _userModerationService.BanTicketExistsAsync(user.UserName ?? string.Empty))
+            await _banTicketReader.BanTicketExistsAsync(user.UserName ?? string.Empty))
         {
             return ServiceResultCode.Unauthorized;
         }

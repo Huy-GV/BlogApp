@@ -19,7 +19,7 @@ using RazorBlog.Core.ReadServices;
 namespace RazorBlog.Core.Extensions;
 public static class ServiceCollectionsExtensions
 {
-    public static void UseCoreServices(this IServiceCollection services)
+    private static void RegisterSharedServices(this IServiceCollection services)
     {
         services.AddScoped<IDataSeeder, DataSeeder>();
         services.AddScoped<IUserModerationService, UserModerationService>();
@@ -29,10 +29,15 @@ public static class ServiceCollectionsExtensions
         services.AddScoped<ICommentContentManager, CommentContentManager>();
         services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
         services.AddScoped<IBlogReader, BlogReader>();
+        services.AddScoped<ICommentReader, CommentReader>();
+        services.AddScoped<IBanTicketReader, BanTicketReader>();
         services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
         services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();
+    }
 
-
+    public static void UseCoreServices(this IServiceCollection services)
+    {
+        services.RegisterSharedServices();
         var logger = LoggerFactory
             .Create(x => x.AddConsole())
             .CreateLogger(nameof(ServiceCollectionsExtensions));
@@ -46,16 +51,7 @@ public static class ServiceCollectionsExtensions
        this IServiceCollection services,
        IConfiguration configuration)
     {
-        services.AddScoped<IDataSeeder, DataSeeder>();
-        services.AddScoped<IUserModerationService, UserModerationService>();
-        services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
-        services.AddScoped<IPostModerationService, PostModerationService>();
-        services.AddScoped<IBlogContentManager, BlogContentManager>();
-        services.AddScoped<ICommentContentManager, CommentContentManager>();
-        services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
-        services.AddScoped<IBlogReader, BlogReader>();
-        services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
-        services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();
+        services.RegisterSharedServices();
 
         var logger = LoggerFactory
             .Create(x => x.AddConsole())

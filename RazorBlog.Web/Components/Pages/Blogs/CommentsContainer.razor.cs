@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using RazorBlog.Core.Data;
-using RazorBlog.Core.Data.Constants;
 using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Core.Data.ViewModels;
-using RazorBlog.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,9 +30,6 @@ public partial class CommentsContainer : RichComponentBase
     public CommentViewModel EditCommentViewModel { get; set; } = new();
 
     [Inject]
-    public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
-
-    [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 
     [Inject]
@@ -44,10 +39,7 @@ public partial class CommentsContainer : RichComponentBase
     public ICommentContentManager CommentContentManager { get; set; } = null!;
 
     [Inject]
-    public IDefaultProfileImageProvider DefaultProfileImageProvider { get; set; } = null!;
-
-    [Inject]
-    public IAggregateImageUriResolver AggregateImageUriResolver { get; set; } = null!;
+    public ICommentReader CommentReader { get; set; } = null!;
 
     private bool AreCommentsLoaded { get; set; }
 
@@ -68,44 +60,28 @@ public partial class CommentsContainer : RichComponentBase
 
     private async Task LoadCommentData()
     {
-        var comments = await LoadComments();
+        var comments = await CommentReader.GetCommentsAsync(BlogId);
 
-        AllowedToModifyComment = await UserPermissionValidator.IsUserAllowedToUpdateOrDeletePostsAsync(
+        CommentDtos = comments;
+        AllowedToModifyComment = await UserPermissionValidator.IsUserAllowedToUpdateOrDeletePostsAsync
+        (
             CurrentUserName,
-            comments);
-
-        CommentDtos = await Task.WhenAll(comments
-            .Select(async c => new CommentDto
-            {
-                Id = c.Id,
-                CreationTime = c.CreationTime,
-                LastUpdateTime = c.LastUpdateTime,
-                Content = c.IsHidden ? ReplacementText.HiddenContent : c.Body,
-                AuthorName = c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
-                AuthorProfileImageUri = await AggregateImageUriResolver.ResolveImageUriAsync(c.AuthorUser.ProfileImageUri)
-                    ?? await DefaultProfileImageProvider.GetDefaultProfileImageUriAsync(),
-                IsHidden = c.IsHidden,
-                IsDeleted = c.ToBeDeleted,
-            })
-            .ToList());
+            comments.Select
+            (
+                x => new PostPermissionViewModel<int>
+                {
+                    PostId = x.Id,
+                    AuthorUserName = x.AuthorName,
+                    IsHidden = x.IsHidden
+                }
+            )
+        );
 
         IsCommentEditorDisplayed = CommentDtos
             .Where(x => x.AuthorName == CurrentUser.Identity?.Name)
             .ToDictionary(x => x.Id, _ => false);
 
         AreCommentsLoaded = true;
-    }
-
-    private async Task<List<Comment>> LoadComments()
-    {
-        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        return await dbContext.Comment
-            .AsNoTracking()
-            .Include(x => x.AuthorUser)
-            .Where(x => x.BlogId == BlogId)
-            .OrderByDescending(x => x.CreationTime)
-            .ThenByDescending(x => x.LastUpdateTime)
-            .ToListAsync();
     }
 
     public async Task EditCommentAsync(int commentId)

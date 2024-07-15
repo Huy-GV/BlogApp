@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
-using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Dtos;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using RazorBlog.Core.Communication;
 using RazorBlog.Web.Extensions;
 using RazorBlog.Core.WriteServices;
+using RazorBlog.Core.ReadServices;
 
 namespace RazorBlog.Web.Components.Pages.Admin;
 
@@ -17,10 +15,10 @@ public partial class HiddenBlogContainer : RichComponentBase
     public string UserName { get; set; } = string.Empty;
 
     [Inject]
-    public IDbContextFactory<RazorBlogDbContext> DbContextFactory { get; set; } = null!;
+    public IPostModerationService PostModerationService { get; set; } = null!;
 
     [Inject]
-    public IPostModerationService PostModerationService { get; set; } = null!;
+    public IBlogReader BlogReader { get; set; } = null!;
 
     private IReadOnlyCollection<HiddenBlogDto> HiddenBlogs { get; set; } = [];
 
@@ -30,28 +28,16 @@ public partial class HiddenBlogContainer : RichComponentBase
         await LoadHiddenBlogs();
     }
 
-    private async Task<List<HiddenBlogDto>> GetHiddenBlogs(string userName)
-    {
-        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
-
-        return await dbContext.Blog
-            .AsNoTracking()
-            .Include(b => b.AuthorUser)
-            .Where(b => b.AuthorUser.UserName == userName && b.IsHidden)
-            .Select(b => new HiddenBlogDto
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Introduction = b.Introduction,
-                Content = b.Body,
-                CreationTime = b.CreationTime,
-            })
-            .ToListAsync();
-    }
-
     private async Task LoadHiddenBlogs()
     {
-        HiddenBlogs = await GetHiddenBlogs(UserName);
+        var (result, hiddenBlogs) = await BlogReader.GetHiddenBlogsAsync(UserName, CurrentUserName);
+        if (result != ServiceResultCode.Success)
+        {
+            this.NavigateOnError(result);
+            return;
+        }
+
+        HiddenBlogs = hiddenBlogs!;
     }
 
     private async Task ForciblyDeleteBlogAsync(int blogId)
