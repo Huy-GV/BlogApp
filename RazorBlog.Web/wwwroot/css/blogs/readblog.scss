@@ -226,7 +226,7 @@
     width: 100%;
     box-sizing: border-box;
   }
-  
+
   .comment-counter {
     color: gray;
     align-self: flex-end;
@@ -245,16 +245,6 @@
     }
   }
 
-}
-
-.link {
-  @extend .smooth-transition;
-  margin: 0.1rem;
-  text-decoration: none;
-
-  &:hover {
-    cursor: pointer;
-  }
 }
 
 .delete-post, .edit-post, .delete-comment, .edit-comment {

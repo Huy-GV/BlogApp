@@ -1,34 +1,34 @@
-.smooth-transition, a, .clickable-card, .blog-container .blog, .button, .secondary-button, main .basic-info .info .change-password, .primary-button, main .basic-info .info .edit-profile {
+.smooth-transition, a, .link, main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn, .clickable-card, .blog-container .blog, .button, .secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, a:hover, .clickable-card:hover, .blog-container .blog:hover, .button:hover, .secondary-button:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .basic-info .info .edit-profile:hover {
+.smooth-transition:hover, a:hover, .link:hover, main .edit-button:hover, main .description .heading .edit-summary:hover, main .basic-info .profile-btn-container .cancel-btn:hover, main .basic-info .edit-profile-picture-btn:hover, .clickable-card:hover, .blog-container .blog:hover, .button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   transition: 180ms ease-in;
 }
 
-.button, .secondary-button, main .basic-info .info .change-password, .primary-button, main .basic-info .info .edit-profile {
+.button, .secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
-.button:hover, .secondary-button:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .basic-info .info .edit-profile:hover {
+.button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   cursor: pointer;
 }
 
-.primary-button, main .basic-info .info .edit-profile {
+.primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   border: none;
   background-color: rgb(99, 0, 148);
   text-decoration: none;
   color: white;
 }
-.primary-button:hover, main .basic-info .info .edit-profile:hover {
+.primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   filter: brightness(0.8);
 }
 
-.secondary-button, main .basic-info .info .change-password {
+.secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password {
   color: rgb(99, 0, 148);
   background-color: white;
   border: 1px solid rgb(99, 0, 148);
 }
-.secondary-button:hover, main .basic-info .info .change-password:hover {
+.secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover {
   background-color: rgb(99, 0, 148);
   color: white;
 }
@@ -44,6 +44,15 @@
 }
 .clickable-card:hover, .blog-container .blog:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.link, main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn {
+  margin: 0.1rem;
+  text-decoration: none;
+}
+.link:hover, main .edit-button:hover, main .description .heading .edit-summary:hover, main .basic-info .profile-btn-container .cancel-btn:hover, main .basic-info .edit-profile-picture-btn:hover {
+  cursor: pointer;
 }
 
 .page-title {
@@ -84,12 +93,29 @@ main {
     width: 90%;
   }
 }
+main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn {
+  margin-left: auto;
+  color: grey;
+  border: none;
+  background: white;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 0.3rem;
+}
 main .basic-info {
   grid-column: 1;
   grid-row: 1/3;
   display: flex;
   flex-direction: column;
   padding: 1rem;
+}
+main .basic-info .profile-btn-container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1rem;
+}
+main .basic-info .profile-btn-container button {
+  padding: 0.6rem;
 }
 main .basic-info img {
   -o-object-fit: cover;
@@ -142,6 +168,41 @@ main .description {
   max-height: 20rem;
   align-self: baseline;
 }
+main .description .heading {
+  display: flex;
+}
+main .description .edit-summary-form {
+  width: 100%;
+  margin: auto;
+}
+main .description .edit-summary-form textarea {
+  resize: none;
+  height: 10rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.4rem;
+  margin-top: 1rem;
+  border-radius: 0.4rem;
+  border: 2px solid lightgray;
+}
+main .description .button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+main .description .button-container .save-summary-btn {
+  padding: 0.5rem;
+}
+main .description .button-container .cancel-summary-btn {
+  padding: 0.5rem;
+}
+main .description .length-counter {
+  margin-left: auto;
+  width: -moz-fit-content;
+  width: fit-content;
+  color: gray;
+}
 main .card-title {
   font-weight: 700;
   font-size: 1.2rem;
@@ -181,7 +242,8 @@ main .stats {
   font-weight: 600;
 }
 .blog-container .blog {
-  padding: 1rem;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
   margin-top: 1rem;
   text-decoration: none;
   color: black;

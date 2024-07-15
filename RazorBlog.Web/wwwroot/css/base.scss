@@ -60,5 +60,16 @@ $small-screen-width: 700px;
 
   &:hover {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+}
+
+.link {
+  @extend .smooth-transition;
+  margin: 0.1rem;
+  text-decoration: none;
+
+  &:hover {
+    cursor: pointer;
   }
 }

@@ -1,4 +1,5 @@
 ﻿@page
+@using RazorBlog.Web.Components.Pages.User
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
@@ -6,49 +7,6 @@
     ViewData["Shared"] = "/css/shared.css";
 }
 <p class="page-title">Profile</p>
-<main>
-    <div class="basic-info">
-        <img src="@Model.UserDto.ProfileImageUri">
-        <div class="info">
-            <p>Name: @Model.UserDto.UserName</p>
-            <p>Joined on: @Model.UserDto.RegistrationDate</p>
-            <div class="button-container">
-                <a class="edit-profile"
-                   asp-page="/User/Edit"
-                   asp-route-username="@Model.UserDto.UserName">
-                    Update Profile
-                </a>
-                <a class="change-password">Change Password</a>
-            </div>
 
-        </div>
-    </div>
-    <div class="description">
-        <p class="card-title">Description</p>
-        <p>@Model.UserDto.Description</p>
-    </div>
-    <div class="stats">
-        <p class="card-title">User Activity</p>
-        <ul>
-            <li>Total blogs: @Model.UserDto.BlogCount</li>
-            <li>Total comments: @Model.UserDto.CommentCount</li>
-            <li>Blogs in @DateTime.Now.Year: @Model.UserDto.BlogCountCurrentYear</li>
-            <li>Total views in @DateTime.Now.Year: @Model.UserDto.ViewCountCurrentYear</li>
-        </ul>
-    </div>
-</main>
-<section class="blog-container">
-    <h1>History: </h1>
-    @foreach (var group in Model.UserDto.BlogsGroupedByYear)
-    {
-        <p class="blog-year">@group.Key</p>
-        foreach(var blog in group.Value)
-        {
-            <a class="blog" asp-page="/Blogs/Read"asp-route-id="@blog.Id">
-                <p class="title">@blog.Title</p>
-                <p>@blog.CreationTime</p>
-                <p>Views: @blog.ViewCount</p>
-            </a>
-        }
-    }
-</section>
+<component type="typeof(ProfileSummary)" render-mode="Server" />
+

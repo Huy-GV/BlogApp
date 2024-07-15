@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorBlog.Core", "RazorBlog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorBlog.Web", "RazorBlog.Web\RazorBlog.Web.csproj", "{D974DF1F-4465-422A-AD60-33E10C2CECC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorBlog.UnitTest", "RazorBlog.UnitTest\RazorBlog.UnitTest.csproj", "{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorBlog.UnitTest", "RazorBlog.UnitTest\RazorBlog.UnitTest.csproj", "{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorBlog.IntegrationTest", "RazorBlog.IntegrationTest\RazorBlog.IntegrationTest.csproj", "{08345D6B-816F-49ED-85DF-135468B33451}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorBlog.IntegrationTest", "RazorBlog.IntegrationTest\RazorBlog.IntegrationTest.csproj", "{08345D6B-816F-49ED-85DF-135468B33451}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

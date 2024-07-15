@@ -11,7 +11,7 @@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        <a asp-page="/User/Index" asp-route-username="@User.Identity!.Name">Profile</a>
+        <a asp-page="/User/Index">Profile</a>
 
         @if (User.IsInRole(Roles.AdminRole))
         {

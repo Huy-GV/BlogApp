@@ -30,6 +30,8 @@ public static class ServiceCollectionsExtensions
         services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
         services.AddScoped<IBlogReader, BlogReader>();
         services.AddScoped<ICommentReader, CommentReader>();
+        services.AddScoped<IUserProfileReader, UserProfileReader>();
+        services.AddScoped<IUserProfileEditor, UserProfileEditor>();
         services.AddScoped<IBanTicketReader, BanTicketReader>();
         services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
         services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();

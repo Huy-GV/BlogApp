@@ -1,0 +1,132 @@
+@using System.Globalization
+@inherits RichComponentBase
+@attribute [StreamRendering(true)]
+
+<main>
+    <div class="basic-info">
+        @if (!AreProfilePictureOptionsDisplayed)
+        {
+            <button class="edit-profile-picture-btn" @onclick='ShowProfilePictureOptions'>Edit</button>
+        } 
+        else 
+        {
+            <div class="profile-btn-container">
+                <button class="cancel-btn" @onclick='HideProfilePictureOptions'>Cancel</button>
+                <button class="remove-picture-btn" @onclick='async () => await RemoveProfilePictureAsync()'>Remove Picture</button>
+                @* <button class="change-picture-btn" @onclick='async () => await EditProfilePictureAsync()'>Upload Another</button> *@
+            </div>
+        }
+        <img src="@UserProfile.ProfileImageUri">
+        <div class="info">
+            <p>Name: @UserProfile.UserName</p>
+            <p>Joined on: @UserProfile.RegistrationDate</p>
+        </div>
+    </div>
+
+
+    <div class="description">
+        <div class="heading">
+            <p class="card-title">Description</p>
+            @if (!IsSummaryEditFormDisplayed)
+            {
+                <button class="edit-summary" @onclick='ShowSummaryEditor'>Edit</button>
+            }
+        </div>
+
+        @if (IsSummaryEditFormDisplayed)
+        {
+            <EditForm Model="EditProfileSummaryViewModel"
+                      class="edit-summary-form"
+                      OnValidSubmit="(async () => await EditProfileSummaryAsync())">
+                <DataAnnotationsValidator />
+                <textarea rows="5"
+                          @bind:event="oninput"
+                          @bind="EditProfileSummaryViewModel.Summary"
+                          name="EditProfileSummaryViewModel.Summary"></textarea>
+                <ValidationMessage For="@(() => EditProfileSummaryViewModel.Summary)" />
+
+                @{
+                    var remainingCount = 200 - EditProfileSummaryViewModel.Summary.Length;
+                    if (remainingCount >= 0)
+                    {
+                        <p class='length-counter'>@remainingCount characters remaining</p>
+                    }
+                    else
+                    {
+                        <p class='length-counter'>@Math.Abs(remainingCount) characters over the limit</p>
+                    }
+                }
+                <div class="button-container">
+                    <button @onclick='HideSummaryEditorForm' class="cancel-summary-btn">Cancel</button>
+                    <input type="submit" value="Save" class="save-summary-btn" />
+                </div>
+
+            </EditForm>
+        } 
+        else
+        {
+            <p>@UserProfile.Description</p>
+        }
+    </div>
+    <div class="stats">
+        <p class="card-title">User Activity</p>
+        <ul>
+            <li>Total blogs: @UserProfile.BlogCount</li>
+            <li>Total comments: @UserProfile.CommentCount</li>
+            <li>Blogs in @DateTime.Now.Year: @UserProfile.BlogCountCurrentYear</li>
+            <li>Total views in @DateTime.Now.Year: @UserProfile.ViewCountCurrentYear</li>
+        </ul>
+    </div>
+
+</main>
+
+<section class="blog-container">
+    <h1>History: </h1>
+    @foreach (var group in UserProfile.BlogsGroupedByYear)
+    {
+        <p class="blog-year">@group.Key</p>
+        foreach(var blog in group.Value)
+        {
+            <span class="blog" @onclick='() => NavigateTo($"/Blogs/Read?id={blog.Id}")'>
+                <p class="title">@blog.Title</p>
+                <p>@blog.CreationTime</p>
+            </span>
+        }
+    }
+</section>
+
+
+@code {
+    private void HideSummaryEditorForm()
+    {
+        IsSummaryEditFormDisplayed = false;
+        EditProfileSummaryViewModel = new()
+        {
+            Summary = UserProfile.Description
+        };
+    }
+
+    private void NavigateTo(string path)
+    {
+        NavigationManager.NavigateTo(path, forceLoad: true);
+    }
+
+    private void ShowSummaryEditor()
+    {
+        IsSummaryEditFormDisplayed = true;
+        EditProfileSummaryViewModel = new()
+        {
+            Summary = UserProfile.Description
+        };
+    }
+
+    private void ShowProfilePictureOptions()
+    {
+        AreProfilePictureOptionsDisplayed = true;
+    }
+
+    private void HideProfilePictureOptions()
+    {
+        AreProfilePictureOptionsDisplayed = false;
+    }
+}
