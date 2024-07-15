@@ -6,7 +6,8 @@ using Moq;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.ReadServices;
+using RazorBlog.Core.WriteServices;
 using RazorBlog.UnitTest.Utils;
 
 namespace RazorBlog.UnitTest.Services;

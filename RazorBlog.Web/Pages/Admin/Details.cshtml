@@ -1,7 +1,6 @@
 ﻿@page
-@using RazorBlog.Web.Components;
-    using RazorBlog.Web.Pages.Admin;
-    using RazorBlog.Web.Components
+@using RazorBlog.Web.Components.Pages.Admin;
+@using RazorBlog.Web.Pages.Admin;
 @model DetailsModel
 
 @{
@@ -27,5 +26,5 @@
     <component type="typeof(BanUserForm)"
                render-mode="Server"
                param-InspectedUserName="@Model.UserName" />
- 
+
 </section>

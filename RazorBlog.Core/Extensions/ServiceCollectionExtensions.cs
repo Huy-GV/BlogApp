@@ -8,12 +8,13 @@ using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Seeder;
 using RazorBlog.Core.Models;
 using RazorBlog.Core.Options;
-using RazorBlog.Core.Services;
 using System.IO;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using RazorBlog.Core.WriteServices;
+using RazorBlog.Core.ReadServices;
 
 namespace RazorBlog.Core.Extensions;
 public static class ServiceCollectionsExtensions

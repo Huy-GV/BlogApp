@@ -6,7 +6,8 @@ using Microsoft.Extensions.Logging;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.ViewModels;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.ReadServices;
+using RazorBlog.Core.WriteServices;
 using RazorBlog.Web.Extensions;
 
 namespace RazorBlog.Web.Pages.Blogs;

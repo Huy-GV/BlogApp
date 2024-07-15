@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Constants;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.WriteServices;
 
 namespace RazorBlog.Web.Pages.Admin;
 

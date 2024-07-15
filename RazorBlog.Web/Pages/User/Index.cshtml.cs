@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.ReadServices;
 
 namespace RazorBlog.Web.Pages.User;
 

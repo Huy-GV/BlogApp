@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data.Dtos;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.WriteServices;
 using RazorBlog.IntegrationTest.Fixtures;
 using RazorBlog.Web.Pages.Blogs;
 using System.Net;

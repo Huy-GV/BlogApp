@@ -14,7 +14,8 @@ using Moq;
 using RazorBlog.Core.Communication;
 using RazorBlog.Core.Data;
 using RazorBlog.Core.Models;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.ReadServices;
+using RazorBlog.Core.WriteServices;
 using RazorBlog.UnitTest.Utils;
 using RazorBlog.Web.Pages.Blogs;
 

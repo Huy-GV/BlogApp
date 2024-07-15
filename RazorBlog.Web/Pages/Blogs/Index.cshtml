@@ -21,7 +21,7 @@
             <img alt="Blog Image" src="@blog.CoverImageUri" asp-append-version="true">
             <div class="blog-info">
                 <span class="info">@blog.AuthorName on @blog.CreationTime.ToString("dd MMM yyyy")</span>
-                <span class="info">&#128065; @blog.ViewCount.ToString()</span>
+                @* <span class="info">&#128065; @blog.ViewCount.ToString()</span> *@
                 <p class="title">@blog.Title</p>
                 <p class="description">@blog.Introduction</p>
             </div>

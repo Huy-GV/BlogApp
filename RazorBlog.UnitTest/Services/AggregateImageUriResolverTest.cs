@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RazorBlog.Core.Communication;
-using RazorBlog.Core.Services;
+using RazorBlog.Core.ReadServices;
 
 namespace RazorBlog.UnitTest.Services;
 
