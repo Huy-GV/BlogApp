@@ -50,7 +50,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
         ```
     2. Deploy the data store stack:
         ```bash
-        cdk deploy RzbDataStoreStack`
+        cdk deploy RzbDataStoreStack
         ```
     3. Push Docker image to ECR via
         ```bash
