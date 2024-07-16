@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B52673B-1EFF-4256-87E5-30C3A605F764}"
+	ProjectSection(SolutionItems) = preProject
+		aws.Dockerfile = aws.Dockerfile
+		docker-compose.yaml = docker-compose.yaml
+		Dockerfile = Dockerfile
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleForum.Core", "SimpleForum.Core\SimpleForum.Core.csproj", "{5014C393-CC42-44D0-AC31-0B31B3C60A2D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleForum.Web", "SimpleForum.Web\SimpleForum.Web.csproj", "{D974DF1F-4465-422A-AD60-33E10C2CECC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleForum.UnitTests", "SimpleForum.UnitTests\SimpleForum.UnitTests.csproj", "{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleForum.IntegrationTests", "SimpleForum.IntegrationTests\SimpleForum.IntegrationTests.csproj", "{08345D6B-816F-49ED-85DF-135468B33451}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5014C393-CC42-44D0-AC31-0B31B3C60A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5014C393-CC42-44D0-AC31-0B31B3C60A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5014C393-CC42-44D0-AC31-0B31B3C60A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5014C393-CC42-44D0-AC31-0B31B3C60A2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D974DF1F-4465-422A-AD60-33E10C2CECC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D974DF1F-4465-422A-AD60-33E10C2CECC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D974DF1F-4465-422A-AD60-33E10C2CECC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D974DF1F-4465-422A-AD60-33E10C2CECC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EBC3DB6-56AB-4454-9F8C-FEB7C6628715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08345D6B-816F-49ED-85DF-135468B33451}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7F12D8E-B20A-4EDB-8E6A-ED86DD8FFC2F}
+	EndGlobalSection
+EndGlobal

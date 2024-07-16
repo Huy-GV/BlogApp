@@ -1,7 +1,7 @@
-# Razor Blog
+# Simple Forum
 
 ## Overview
-Simple blog application where users can write blogs or comment on blogs written by others.
+Simple forum application where users can write blogs or comment on blogs written by others.
 All blogs can be monitored, hidden, and removed by Moderators and Administrators.
 
 <p><em>Demo</em></p>
@@ -19,13 +19,13 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 	- [Microsoft SQL Server](https://www.microsoft.com/en-au/sql-server/sql-server-downloads)
 
 ### Set Up Development Environment
-- Initialize user secret storage in the `Razor.Web` project:
+- Initialize user secret storage in the `SimpleForum.Web` project:
 	```bash
 	dotnet user-secrets init
 	```
 - Set up passwords for seeded admin user account and database connection:
 	```bash
-	cd /directory/containing/RazorBlog.csproj/
+	cd /directory/containing/SimpleForum.Web.csproj/
 	dotnet user-secrets set "SeedUser:Password" "YourTestPassword"
 
 	dotnet user-secrets set "ConnectionStrings:DefaultConnection" "YOUR;DB;CONNECTION;STRING;"
@@ -34,8 +34,8 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 	```
 - Create an IAM user and configure their profile locally:
 	```bash
-	aws configure --profile razor-blog
-	export AWS_PROFILE=razor-blog
+	aws configure --profile simple-forum
+	export AWS_PROFILE=simple-frum
 	```
 - To use the AWS S3 to store images, set `FeatureFlags:UseAwsS3` to `true` in `appsettings.{env}.json`:
 - To use Hangfire background service, set `FeatureFlags:UseHangFire` to `true` in `appsettings.{env}.json`:
@@ -45,7 +45,7 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 - Create a `.env` files with fields as shown in the below example:
 	```env
 	SeedUser__Password=SecurePassword123@@
-	ConnectionStrings__DefaultConnection=Server=razorblogdb;Database=RazorBlog;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
+	ConnectionStrings__DefaultConnection=Server=simpleforumdb;Database=SimpleForum;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
 	SqlServer__Password=YOUR_DB_PASSWORD
 	```
 - Start the application stack
@@ -54,4 +54,4 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 	```
 
 ## AWS Deployment
-See [AWS Deployment](./RazorBlog.AwsInfrastructure//README.md)
+See [AWS Deployment](./SimpleForum.AwsInfrastructure//README.md)

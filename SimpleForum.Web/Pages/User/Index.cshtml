@@ -1,0 +1,11 @@
+﻿@page
+@using SimpleForum.Web.Components.Pages.User
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["CSSLink"] = "/css/user/user.css";
+    ViewData["Shared"] = "/css/shared.css";
+}
+<p class="page-title">Profile</p>
+
+<component type="typeof(ProfileSummary)" render-mode="Server" />

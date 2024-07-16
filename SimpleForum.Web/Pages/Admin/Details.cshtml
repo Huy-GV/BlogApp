@@ -1,0 +1,30 @@
+﻿@page
+@using SimpleForum.Web.Components.Pages.Admin;
+@using SimpleForum.Web.Pages.Admin;
+@model DetailsModel
+
+@{
+    ViewData["Title"] = "User Details";
+    ViewData["CSSLink"] = "/css/admin/admindetails.css";
+    ViewData["Shared"] = "/css/shared.css";
+}
+
+<h1>Details of @Model.UserName</h1>
+<main>
+    <component type="typeof(HiddenBlogContainer)"
+                render-mode="Server"
+                param-UserName="@Model.UserName" />
+
+    <component type="typeof(HiddenCommentContainer)"
+                render-mode="Server"
+                param-UserName="@Model.UserName" />
+</main>
+
+<h2 class="middle-aligned">Ban Ticket</h2>
+<section class="ban-details-container">
+
+    <component type="typeof(BanUserForm)"
+               render-mode="Server"
+               param-InspectedUserName="@Model.UserName" />
+
+</section>

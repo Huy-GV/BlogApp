@@ -1,22 +1,22 @@
-name: razor-blog
+name:  simple-forum
 services:
-    razor-blog-app:
-        container_name: razor-blog-app
+    simple-forum-app:
+        container_name: simple-forum-app
         build: .
         ports:
             - "5000:5000"
             - "5001:5001"
-        command: bash -c 'while ! </dev/tcp/razorblogdb/1433; do echo "Waiting for database"; sleep 3; done; dotnet RazorBlog.Web.dll'
+        command: bash -c 'while ! </dev/tcp/simpleforumdb/1433; do echo "Waiting for database"; sleep 3; done; dotnet SimpleForum.Web.dll'
         environment:
             - ASPNETCORE_URLS=http://+:5000;http://+:5001
             - SeedUser__Password=${SeedUser__Password}
             - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
         depends_on:
-            - razorblogdb
+            - simpleforumdb
         volumes:
             - ~/.aws:/root/.aws:ro
-    razorblogdb:
-        container_name: razorblogdb
+    simpleforumdb:
+        container_name: simpleforumdb
         ports:
             - "1433:1433"
         image: "mcr.microsoft.com/mssql/server:2022-latest"

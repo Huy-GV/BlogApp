@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SimpleForum.Core.Data.Constants
+@using SimpleForum.Core.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<nav>
+    <img src="images/readonly/logo.svg" alt="logo">
+    <a asp-page="/Blogs/Index" class="home-link">Home</a>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a asp-page="/User/Index">Profile</a>
+
+        @if (User.IsInRole(Roles.AdminRole))
+        {
+            <a asp-page="/Admin/Index">Users</a>
+        }
+
+        <a asp-page="/Blogs/Create">Write</a>
+        <div class="authentication-links">
+            <p>@User.Identity!.Name</p>
+            <p class="middle-bar"></p>
+            <a class="secondary-button log-btn" asp-page="/Authentication/Logout">Sign Out</a>
+        </div>
+    }
+    else
+    {
+        <div class="authentication-links">
+            <a class="secondary-button log-btn"
+               asp-page="/Authentication/Login">
+                Sign in
+            </a>
+            <p class="middle-bar"></p>
+            <a class="log-btn primary-button"
+               asp-page="/Authentication/Register">
+                Register
+            </a>
+        </div>
+    }
+</nav>
