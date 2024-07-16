@@ -39,7 +39,12 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 	```
 - To use the AWS S3 to store images, set `FeatureFlags:UseAwsS3` to `true` in `appsettings.{env}.json`:
 - To use Hangfire background service, set `FeatureFlags:UseHangFire` to `true` in `appsettings.{env}.json`:
-
+- Running EF migrations:
+	```bash
+	export ConnectionStrings="Server=(localdb)\mssqllocaldb;Database=SimpleForum;Trusted_Connection=True;MultipleActiveResultSets=true;"
+	dotnet ef migrations add <name> -p ./SimpleForum.Core.csproj -s ./SimpleForum.Web.csproj
+	dotnet ef database update -p ./SimpleForum.Core/SimpleForum.Core.csproj -s ./SimpleForum.Web/SimpleForum.Web.csproj 
+	```
 ## Run With Docker
 - Start the Docker engine and ensure it is targeting *Linux*
 - Create a `.env` files with fields as shown in the below example:

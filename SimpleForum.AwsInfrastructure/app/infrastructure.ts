@@ -11,9 +11,9 @@ const app = new cdk.App();
 const awsEnv = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
 
 const appConfiguration = parseEnvFile() || exit(1);
-const vpcStack = new VpcStack(app, 'SfbVpcStack', { env: awsEnv });
+const vpcStack = new VpcStack(app, 'SfoVpcStack', { env: awsEnv });
 
-const dataStoreStack = new DataStoreStack(app, 'SfbDataStoreStack', {
+const dataStoreStack = new DataStoreStack(app, 'SfoDataStoreStack', {
 	env: awsEnv,
 	vpc: vpcStack.vpc,
 	databaseTierSecurityGroup: vpcStack.databaseTierSecurityGroup,
@@ -23,7 +23,7 @@ const dataStoreStack = new DataStoreStack(app, 'SfbDataStoreStack', {
 	databasePassword: appConfiguration.SqlServer__Password
 });
 
-const containerServiceStack = new ContainerStack(app, 'SfbContainerStack', {
+const containerServiceStack = new ContainerStack(app, 'SfoContainerStack', {
 	env: awsEnv,
 	dataBucket: dataStoreStack.dataBucket,
 	vpc: vpcStack.vpc,

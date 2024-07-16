@@ -36,7 +36,7 @@ export class DataStoreStack extends Stack {
 
         this.databaseInstance = new DatabaseInstance(
             this,
-            'SfCdkDb',
+            'SfoCdkDb',
             {
                 removalPolicy: RemovalPolicy.SNAPSHOT,
                 instanceIdentifier: props.databaseName,
@@ -53,17 +53,17 @@ export class DataStoreStack extends Stack {
                 securityGroups: [
                     props.databaseTierSecurityGroup
                 ],
-                subnetGroup: new SubnetGroup(this, 'SfCdkDbSubnetGroup', {
+                subnetGroup: new SubnetGroup(this, 'SfoCdkDbSubnetGroup', {
                     vpc: props.vpc,
-                    subnetGroupName: 'razorblog-cdk-db-subnet-group',
+                    subnetGroupName: 'sfo-cdk-db-subnet-group',
                     vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
                     description: 'private-subnet-group-for-db'
                 })
             }
         );
 
-        this.repository = new Repository(this, 'SfCdkRepository', {
-            repositoryName: "razorblog-cdk-repository",
+        this.repository = new Repository(this, 'SfoCdkRepository', {
+            repositoryName: "sfo-cdk-repository",
             emptyOnDelete: true,
             removalPolicy: RemovalPolicy.DESTROY
         });

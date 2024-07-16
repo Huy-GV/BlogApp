@@ -15,6 +15,8 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using SimpleForum.Core.WriteServices;
 using SimpleForum.Core.ReadServices;
+using Microsoft.AspNetCore.DataProtection;
+using System.Linq;
 
 namespace SimpleForum.Core.Extensions;
 public static class ServiceCollectionsExtensions
@@ -134,6 +136,7 @@ public static class ServiceCollectionsExtensions
             lifetime: ServiceLifetime.Scoped
         );
 
+        services.AddDataProtection().PersistKeysToDbContext<SimpleForumDbContext>();
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services

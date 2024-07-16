@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SimpleForum.Core.Data;
 
-
 #nullable disable
 
 namespace SimpleForum.Migrations
@@ -18,10 +17,29 @@ namespace SimpleForum.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataProtectionKeys");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -156,7 +174,7 @@ namespace SimpleForum.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.ApplicationUser", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -212,7 +230,7 @@ namespace SimpleForum.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.BanTicket", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.BanTicket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,7 +253,7 @@ namespace SimpleForum.Migrations
                     b.ToTable("BanTicket");
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.Blog", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Blog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -286,7 +304,7 @@ namespace SimpleForum.Migrations
                     b.ToTable("Blog");
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.Comment", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -338,7 +356,7 @@ namespace SimpleForum.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SimpleForum.Models.ApplicationUser", null)
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -347,7 +365,7 @@ namespace SimpleForum.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SimpleForum.Models.ApplicationUser", null)
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -362,7 +380,7 @@ namespace SimpleForum.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SimpleForum.Models.ApplicationUser", null)
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -371,28 +389,28 @@ namespace SimpleForum.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SimpleForum.Models.ApplicationUser", null)
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.BanTicket", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.BanTicket", b =>
                 {
-                    b.HasOne("SimpleForum.Models.ApplicationUser", "AppUser")
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", "AppUser")
                         .WithOne()
-                        .HasForeignKey("SimpleForum.Models.BanTicket", "UserName")
-                        .HasPrincipalKey("SimpleForum.Models.ApplicationUser", "UserName")
+                        .HasForeignKey("SimpleForum.Core.Models.BanTicket", "UserName")
+                        .HasPrincipalKey("SimpleForum.Core.Models.ApplicationUser", "UserName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.Blog", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Blog", b =>
                 {
-                    b.HasOne("SimpleForum.Models.ApplicationUser", "AuthorUser")
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", "AuthorUser")
                         .WithMany()
                         .HasForeignKey("AuthorUserName")
                         .HasPrincipalKey("UserName")
@@ -402,16 +420,16 @@ namespace SimpleForum.Migrations
                     b.Navigation("AuthorUser");
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.Comment", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Comment", b =>
                 {
-                    b.HasOne("SimpleForum.Models.ApplicationUser", "AuthorUser")
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", "AuthorUser")
                         .WithMany()
                         .HasForeignKey("AuthorUserName")
                         .HasPrincipalKey("UserName")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("SimpleForum.Models.Blog", null)
+                    b.HasOne("SimpleForum.Core.Models.Blog", null)
                         .WithMany("Comments")
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -420,7 +438,7 @@ namespace SimpleForum.Migrations
                     b.Navigation("AuthorUser");
                 });
 
-            modelBuilder.Entity("SimpleForum.Models.Blog", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Blog", b =>
                 {
                     b.Navigation("Comments");
                 });

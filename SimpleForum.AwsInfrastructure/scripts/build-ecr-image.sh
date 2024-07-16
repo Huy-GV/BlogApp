@@ -11,13 +11,13 @@ if [ ! -d "$ABS_SOLUTION_DIR" ]; then
   exit 1
 fi
 
-REPOSITORY_NAME='sf-cdk-repository'
+REPOSITORY_NAME='sfo-cdk-repository'
 aws ecr describe-repositories --repository-names $REPOSITORY_NAME || { echo "ECR repository not found"; exit 1; }
 
 # dotnet test $ABS_SOLUTION_DIR || { echo "Tests failed"; exit 1; }
 
 # Log into the AWS CLI
-AWS_REGION=$(aws configure get region --profile razor-blog --output text)
+AWS_REGION=$(aws configure get region --profile simple-forum --output text)
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
 ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 REPOSITORY_URI=$ECR_URI/$REPOSITORY_NAME

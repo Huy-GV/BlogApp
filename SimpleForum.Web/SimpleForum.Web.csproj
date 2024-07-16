@@ -11,10 +11,15 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.4.0" />
+          <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SimpleForum.Core\SimpleForum.Core.csproj" />
     </ItemGroup>
+
+
 
 </Project>

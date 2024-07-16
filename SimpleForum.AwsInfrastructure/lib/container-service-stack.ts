@@ -28,8 +28,8 @@ export class ContainerStack extends Stack {
 		super(scope, id, props);
 
 		const taskExecutionRole = this.createEcsExecutionRole(props.dataBucket);
-		const cluster = new Cluster(this, 'SfCdkCluster', {
-			clusterName: "razorblog-cdk-cluster",
+		const cluster = new Cluster(this, 'SfoCdkCluster', {
+			clusterName: "sfo-cdk-cluster",
 			vpc: props.vpc
 		})
 
@@ -53,7 +53,7 @@ export class ContainerStack extends Stack {
 
 		const appLoadBalancer = new aws_elasticloadbalancingv2.ApplicationLoadBalancer(
 			this,
-			'SfCdkAlb',
+			'SfoCdkAlb',
 			{
 				vpc: props.vpc,
 				securityGroup: props.loadBalancerTierSecurityGroup,
@@ -67,7 +67,7 @@ export class ContainerStack extends Stack {
 			open: true,
 			certificates: [aws_certificatemanager.Certificate.fromCertificateArn(
 				this,
-				'SfCdkHttpsCertificateArn',
+				'SfoCdkHttpsCertificateArn',
 				props.appConfiguration.Aws__CertificateArn)]
 		});
 
@@ -93,30 +93,30 @@ export class ContainerStack extends Stack {
 
 		const hostedZone = PublicHostedZone.fromLookup(
 			this,
-			'SfCdkHostedZone',
+			'SfoCdkHostedZone',
 			{
 				domainName: props.appConfiguration.Aws__HostedZoneName
 			}
 		);
 
-		new ARecord(this, 'SfCdkAliasRecord', {
+		new ARecord(this, 'SfoCdkAliasRecord', {
 			zone: hostedZone,
 			target: RecordTarget.fromAlias(new LoadBalancerTarget(appLoadBalancer)),
-			recordName: 'sf'
+			recordName: 'sfo'
 		});
 	}
 
 	private createEcsExecutionRole(dataBucket: IBucket): Role {
-		const razorBlogTaskExecutionRole = new Role(this, 'SfFargateExeRole', {
+		const sfoTaskExecutionRole = new Role(this, 'SfFargateExeRole', {
 		  	assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
 		});
 
 		// required to pull images from the ECR repository
-		razorBlogTaskExecutionRole.addManagedPolicy(
+		sfoTaskExecutionRole.addManagedPolicy(
 		  	ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
 		);
 
-		razorBlogTaskExecutionRole.addToPolicy(
+		sfoTaskExecutionRole.addToPolicy(
 			new PolicyStatement({
 				actions: ['s3:*'],
 				resources: [dataBucket.bucketArn, `${dataBucket.bucketArn}/*`],
@@ -124,7 +124,7 @@ export class ContainerStack extends Stack {
 			})
 		);
 
-		return razorBlogTaskExecutionRole;
+		return sfoTaskExecutionRole;
 	}
 
 	private createFargateService(
@@ -135,7 +135,7 @@ export class ContainerStack extends Stack {
 	) : FargateService {
 		return new FargateService(
 			this,
-			'SfCdkFargateService',
+			'SfoCdkFargateService',
 			{
 				taskDefinition,
 				cluster: cluster,
@@ -163,7 +163,7 @@ export class ContainerStack extends Stack {
 	): FargateTaskDefinition {
 		const taskDefinition = new FargateTaskDefinition(
 			this,
-			'SfCdkFargateTaskDefinition',
+			'SfoCdkFargateTaskDefinition',
 			{
 				cpu: 256,
 				memoryLimitMiB: 512,
@@ -187,7 +187,7 @@ export class ContainerStack extends Stack {
 
 		const logging = new AwsLogDriver({ streamPrefix: "simple-forum" });
 		taskDefinition.addContainer(
-			'SfCdkContainer',
+			'SfoCdkContainer',
 			{
 				containerName: 'sf-cdk-container',
 				image: ContainerImage.fromEcrRepository(ecrRepository, "latest"),

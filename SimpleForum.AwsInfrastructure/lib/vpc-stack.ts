@@ -11,7 +11,7 @@ export class VpcStack extends cdk.Stack {
 	constructor(scope: Construct, id: string, props?: cdk.StackProps) {
 		super(scope, id, props);
 
-		this.vpc = new Vpc(this, 'SfCdkVpc', {
+		this.vpc = new Vpc(this, 'SfoCdkVpc', {
 			cidr: '10.0.0.0/20',
 			maxAzs: 2,
 			subnetConfiguration: [
@@ -28,21 +28,21 @@ export class VpcStack extends cdk.Stack {
 			],
 		});
 
-		this.webTierSecurityGroup = new SecurityGroup(this, 'SfCdkWebSG', {
+		this.webTierSecurityGroup = new SecurityGroup(this, 'SfoCdkWebSG', {
 			vpc: this.vpc,
-			securityGroupName: 'razorblog-cdk-web-sg',
+			securityGroupName: 'sfo-cdk-web-sg',
 			allowAllOutbound: false
 		});
 
-		this.databaseTierSecurityGroup = new SecurityGroup(this, 'SfCdkDatabaseSG', {
+		this.databaseTierSecurityGroup = new SecurityGroup(this, 'SfoCdkDatabaseSG', {
 			vpc: this.vpc,
-			securityGroupName: 'razorblog-cdk-db-sg',
+			securityGroupName: 'sfo-cdk-db-sg',
 			allowAllOutbound: false
 		});
 
-		this.loadBalancerTierSecurityGroup = new SecurityGroup(this, 'SfCdkLoadBalancerSG', {
+		this.loadBalancerTierSecurityGroup = new SecurityGroup(this, 'SfoCdkLoadBalancerSG', {
 			vpc: this.vpc,
-			securityGroupName: 'razorblog-cdk-alb-sg',
+			securityGroupName: 'sfo-cdk-alb-sg',
 			allowAllOutbound: false
 		});
 

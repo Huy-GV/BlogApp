@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SimpleForum.Core.Models;
 
 namespace SimpleForum.Core.Data;
 
-public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>
+public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataProtectionKeyContext
 {
     public SimpleForumDbContext(DbContextOptions<SimpleForumDbContext> options) : base(options)
     {
@@ -14,6 +15,7 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Comment> Comment { get; set; } = null!;
     public DbSet<BanTicket> BanTicket { get; set; } = null!;
     public DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

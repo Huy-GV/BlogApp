@@ -46,11 +46,11 @@ This document describes the AWS deployment process using the CDK with TypeScript
 - Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
     1. Deploy the VPC stack:
         ```bash
-        cdk deploy SfbVpcStack
+        cdk deploy SfoVpcStack
         ```
     2. Deploy the data store stack:
         ```bash
-        cdk deploy SfbDataStoreStack
+        cdk deploy SfoDataStoreStack
         ```
     3. Push Docker image to ECR via
         ```bash
@@ -58,5 +58,5 @@ This document describes the AWS deployment process using the CDK with TypeScript
         ```
     4. Deploy the container stack:
         ```bash
-        cdk deploy SfbContainerStack
+        cdk deploy SfoContainerStack
         ```
