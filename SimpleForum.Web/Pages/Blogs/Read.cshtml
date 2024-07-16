@@ -76,15 +76,6 @@
     </article>
 </main>
 
-<section class="author-info">
-    <div class="profile-header">
-        <img alt="Author's Profile Image" src="@Model.DetailedBlogDto.AuthorProfileImageUri">
-        <span>@Model.DetailedBlogDto.AuthorName</span>
-    </div>
-
-    <p class="@blogContentClass">@Model.DetailedBlogDto.Introduction</p>
-</section>
-
 <component
     type="typeof(CommentsContainer)"
     render-mode="Server"

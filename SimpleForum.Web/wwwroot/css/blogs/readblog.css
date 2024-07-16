@@ -1,7 +1,7 @@
-.smooth-transition, .link, .delete-post, .edit-post, .delete-comment, .edit-comment, .clickable-card, .button, .secondary-button, .primary-button, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment {
+.smooth-transition, .link, .delete-post, .edit-post, .delete-comment, .edit-comment, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment, .clickable-card, .button, .secondary-button, .primary-button {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, .link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover {
+.smooth-transition:hover, .link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover {
   transition: 180ms ease-in;
 }
 
@@ -33,7 +33,7 @@
   color: white;
 }
 
-.card, .comment-section .comment-container .comment, .author-info {
+.card, .comment-section .comment-container .comment {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
 }
@@ -44,6 +44,15 @@
 }
 .clickable-card:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.link, .delete-post, .edit-post, .delete-comment, .edit-comment, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment {
+  margin: 0.1rem;
+  text-decoration: none;
+}
+.link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover {
+  cursor: pointer;
 }
 
 .blog-container {
@@ -113,39 +122,6 @@
   margin-left: 0.1rem;
   color: green;
   font-weight: bold;
-}
-
-.author-info {
-  padding: 1rem;
-  margin-inline: auto;
-  margin-block: 2rem;
-  width: 50%;
-  font-size: 0.8rem;
-}
-@media screen and (max-width: 1200px) {
-  .author-info {
-    width: 60%;
-  }
-}
-@media screen and (max-width: 700px) {
-  .author-info {
-    width: 80%;
-  }
-}
-.author-info .profile-header {
-  display: flex;
-  align-items: center;
-}
-.author-info .profile-header span {
-  margin-left: 1rem;
-  font-weight: 600;
-}
-.author-info .profile-header img {
-  height: 3rem;
-  width: 3rem;
-  border-radius: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
 }
 
 .comment-section {
@@ -271,14 +247,6 @@
 .edit-comment-form .edit-form-btn-container .save-btn {
   font-size: 0.6rem;
   padding: 0.6rem;
-}
-
-.link, .delete-post, .edit-post, .delete-comment, .edit-comment, .comment-form .submit-comment, .edit-comment-form .edit-form-btn-container .save-btn {
-  margin: 0.1rem;
-  text-decoration: none;
-}
-.link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .comment-form .submit-comment:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover {
-  cursor: pointer;
 }
 
 .delete-post, .edit-post, .delete-comment, .edit-comment {

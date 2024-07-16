@@ -6,7 +6,7 @@ services:
         ports:
             - "5000:5000"
             - "5001:5001"
-        command: bash -c 'while ! </dev/tcp/simpleforumdb/1433; do echo "Waiting for database"; sleep 3; done; dotnet SimpleForum.Web.dll'
+        command: bash -c 'while ! </dev/tcp/simpleforumdb/1433; do echo "Waiting for database"; sleep 3; done; export AWS_PROFILE=simple-forum; dotnet SimpleForum.Web.dll'
         environment:
             - ASPNETCORE_URLS=http://+:5000;http://+:5001
             - SeedUser__Password=${SeedUser__Password}

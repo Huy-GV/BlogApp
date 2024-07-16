@@ -71,40 +71,6 @@
   }
 }
 
-.author-info {
-  padding: 1rem;
-  margin-inline: auto;
-  margin-block: 2rem;
-  width: 50%;
-  font-size: 0.8rem;
-  @extend .card;
-
-  @media screen and (max-width: $medium-screen-width) {
-    width: 60%;
-  }
-
-  @media screen and (max-width: $small-screen-width) {
-    width: 80%;
-  }
-
-  .profile-header {
-    display: flex;
-    align-items: center;
-
-    span {
-      margin-left: 1rem;
-      font-weight: 600;
-    }
-
-    img {
-      height: 3rem;
-      width: 3rem;
-      border-radius: 100%;
-      object-fit: cover;
-    }
-  }
-}
-
 .comment-section {
   width: 100%;
   background-color: whitesmoke;

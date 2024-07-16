@@ -1,7 +1,7 @@
-.smooth-transition, .clickable-card, .button, .secondary-button, .primary-button, .add-form .submit-post {
+.smooth-transition, .link, .clickable-card, .button, .secondary-button, .primary-button, .add-form .submit-post {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover, .add-form .submit-post:hover {
+.smooth-transition:hover, .link:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover, .add-form .submit-post:hover {
   transition: 180ms ease-in;
 }
 
@@ -44,6 +44,15 @@
 }
 .clickable-card:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.link {
+  margin: 0.1rem;
+  text-decoration: none;
+}
+.link:hover {
+  cursor: pointer;
 }
 
 :root {

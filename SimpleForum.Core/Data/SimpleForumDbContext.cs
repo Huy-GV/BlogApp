@@ -20,19 +20,22 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<Blog>()
-            .HasQueryFilter(blog => !blog.ToBeDeleted)
-            .HasMany(b => b.Comments)
-            .WithOne()
-            .IsRequired(true)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<Blog>(entity =>
+        {
+            entity
+                .HasQueryFilter(blog => !blog.ToBeDeleted)
+                .HasMany(b => b.Comments)
+                .WithOne()
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<Blog>()
-            .HasOne(x => x.AuthorUser)
-            .WithMany()
-            .HasPrincipalKey(x => x.UserName)
-            .HasForeignKey(x => x.AuthorUserName)
-            .OnDelete(DeleteBehavior.NoAction);
+            entity
+                .HasOne(x => x.AuthorUser)
+                .WithMany()
+                .HasPrincipalKey(x => x.UserName)
+                .HasForeignKey(x => x.AuthorUserName)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
 
         builder.Entity<Comment>()
             .HasOne(x => x.AuthorUser)

@@ -1,7 +1,7 @@
-.smooth-transition, .clickable-card, .blog-container .blog, .button, .secondary-button, .primary-button, .search-form input[type=submit] {
+.smooth-transition, .link, .clickable-card, .blog-container .blog, .button, .secondary-button, .primary-button, .search-form input[type=submit] {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, .clickable-card:hover, .blog-container .blog:hover, .button:hover, .secondary-button:hover, .primary-button:hover, .search-form input[type=submit]:hover {
+.smooth-transition:hover, .link:hover, .clickable-card:hover, .blog-container .blog:hover, .button:hover, .secondary-button:hover, .primary-button:hover, .search-form input[type=submit]:hover {
   transition: 180ms ease-in;
 }
 
@@ -44,6 +44,15 @@
 }
 .clickable-card:hover, .blog-container .blog:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.link {
+  margin: 0.1rem;
+  text-decoration: none;
+}
+.link:hover {
+  cursor: pointer;
 }
 
 .info-text, .blog-container .blog .blog-info .info {
