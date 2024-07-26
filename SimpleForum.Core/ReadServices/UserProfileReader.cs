@@ -37,18 +37,18 @@ internal class UserProfileReader : IUserProfileReader
             return (ServiceResultCode.InvalidArguments, null);
         }
 
-        var blogs = dbContext.Blog
-            .Include(b => b.AuthorUser)
+        var threads = dbContext.Thread
+            .Include(thread => thread.AuthorUser)
             .AsNoTracking()
-            .Where(blog => blog.AuthorUser.UserName == userName)
+            .Where(thread => thread.AuthorUser.UserName == userName)
             .ToList();
 
-        var blogsGroupedByYear = blogs
+        var threadsGroupedByYear = threads
             .GroupBy(b => b.CreationTime.Year)
             .OrderByDescending(g => g.Key)
             .ToDictionary(
                 group => (uint)group.Key,
-                group => group.Select(b => new MinimalBlogDto
+                group => group.Select(b => new MinimalThreadDto
                 {
                     Id = b.Id,
                     Title = b.Title,
@@ -60,10 +60,10 @@ internal class UserProfileReader : IUserProfileReader
         var profileDto = new PersonalProfileDto
         {
             UserName = userName,
-            BlogCount = (uint)blogs.Count,
+            ThreadCount = (uint)threads.Count,
             ProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(user.ProfileImageUri)
                               ?? await _defaultProfileImageProvider.GetDefaultProfileImageUriAsync(),
-            BlogsGroupedByYear = blogsGroupedByYear,
+            ThreadsGroupedByYear = threadsGroupedByYear,
             Description = string.IsNullOrEmpty(user.Description)
                 ? "None"
                 : user.Description,
@@ -72,15 +72,15 @@ internal class UserProfileReader : IUserProfileReader
                 .Where(c => c.AuthorUser.UserName == userName)
                 .ToList()
                 .Count,
-            BlogCountCurrentYear = (uint)blogs
-                .Where(blog => blog.AuthorUser.UserName == userName &&
-                               blog.CreationTime.Year == DateTime.Now.Year)
+            ThreadCountCurrentYear = (uint)threads
+                .Where(thread => thread.AuthorUser.UserName == userName &&
+                               thread.CreationTime.Year == DateTime.Now.Year)
                 .ToList()
                 .Count,
-            ViewCountCurrentYear = (uint)blogs
-                .Where(blog => blog.AuthorUser.UserName == userName &&
-                               blog.CreationTime.Year == DateTime.Now.Year)
-                .Sum(blog => blog.ViewCount),
+            ViewCountCurrentYear = (uint)threads
+                .Where(thread => thread.AuthorUser.UserName == userName &&
+                               thread.CreationTime.Year == DateTime.Now.Year)
+                .Sum(thread => thread.ViewCount),
             RegistrationDate = user.RegistrationDate == null
                     ? "a long time ago"
                     : user.RegistrationDate.Value.ToString("dd/MMMM/yyyy"),

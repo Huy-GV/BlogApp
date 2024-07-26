@@ -27,13 +27,13 @@ internal class CommentReader : ICommentReader
         _defaultProfileImageProvider = defaultProfileImageProvider;
     }
 
-    public async Task<IReadOnlyCollection<CommentDto>> GetCommentsAsync(int blogId)
+    public async Task<IReadOnlyCollection<CommentDto>> GetCommentsAsync(int threadId)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var comments = await dbContext.Comment
             .AsNoTracking()
             .Include(x => x.AuthorUser)
-            .Where(x => x.BlogId == blogId)
+            .Where(x => x.ThreadId == threadId)
             .OrderByDescending(x => x.CreationTime)
             .ThenByDescending(x => x.LastUpdateTime)
             .ToListAsync();

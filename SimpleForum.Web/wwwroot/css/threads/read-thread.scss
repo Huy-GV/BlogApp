@@ -1,0 +1,237 @@
+@import "../base.scss";
+
+.thread-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .thread {
+    padding: 0.6rem;
+    width: 60%;
+
+    @media screen and (max-width: $medium-screen-width) {
+      width: 80%;
+    }
+
+    @media screen and (max-width: $small-screen-width) {
+      width: 90%;
+    }
+
+    .title {
+      font-weight: 700;
+      text-align: center;
+      font-family: Garamond, serif;
+      font-size: 2rem;
+      margin-top: 0.1rem;
+
+      @media screen and (max-width: $medium-screen-width) {
+        font-size: 1.8rem;
+      }
+
+      @media screen and (max-width: $small-screen-width) {
+        font-size: 1.7rem;
+      }
+    }
+
+    .thread-description {
+      white-space: pre-line;
+      color: #606060;;
+    }
+
+    .thread-option-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
+    img {
+      border-radius: 10px;
+      object-fit: cover;
+      width: 100%;
+      max-height: 25rem;
+    }
+
+    .thread-content {
+      font-family: "Open Sans", Helvetica, arial, sans-serif;
+      line-height: 1.4rem;
+      white-space: pre-line;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.thread-info-container {
+  display: flex;
+  justify-content: center;
+
+  .thread-author {
+    margin-left: 0.1rem;
+    color: green;
+    font-weight: bold;
+  }
+}
+
+.comment-section {
+  width: 100%;
+  background-color: whitesmoke;
+  padding-bottom: 3rem;
+
+  .comment-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.1rem;
+    margin: auto;
+    width: 60%;
+    border-radius: 3px;
+
+    @media screen and (max-width: $medium-screen-width) {
+      width: 80%;
+    }
+
+    @media screen and (max-width: $small-screen-width) {
+      width: 90%;
+    }
+
+    .comment {
+      padding: 1rem;
+      background-color: white;
+      margin: 0.3rem;
+      font-size: 1.1rem;
+      @extend .card;
+
+      .author-container {
+        display: flex;
+        align-items: center;
+        gap: 1%;
+
+        img {
+          height: 2.5rem;
+          width: 2.5rem;
+          border-radius: 100%;
+          object-fit: cover;
+        }
+
+        span {
+          display: inline-block;
+          padding: 0.2rem;
+          font-size: 1rem;
+        }
+      }
+
+      .comment-option-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+
+      .comment-author {
+        color: $primary-purple;
+      }
+
+      p {
+        margin-top: 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.text-input-field {
+  border-radius: 6px;
+  border: 2px solid lightgray;
+  padding: 0.5rem;
+}
+
+.comment-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  width: 40%;
+  margin: auto;
+
+  @media screen and (max-width: $medium-screen-width) {
+    width: 80%;
+  }
+
+  @media screen and (max-width: $small-screen-width) {
+    width: 90%;
+  }
+
+  .comment-counter {
+    color: gray;
+    align-self: flex-end;
+    font-size: 0.8rem
+  }
+
+  textarea {
+    @extend .text-input-field;
+    font-size: 0.8rem;
+    width: 100%
+  }
+
+  .submit-comment {
+    @extend .link;
+    @extend .primary-button;
+    width: fit-content;
+    padding: 0.9rem;
+    font-size: 0.8rem;
+    align-self: flex-end
+  }
+}
+
+.edit-comment-form {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  textarea {
+    @extend .text-input-field;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .comment-counter {
+    color: gray;
+    align-self: flex-end;
+    font-size: 0.8rem
+  }
+
+  .edit-form-btn-container {
+    display: flex;
+    flex-direction: row-reverse;
+
+    .save-btn {
+      @extend .link;
+      @extend .primary-button;
+      font-size: 0.6rem;
+      padding: 0.6rem;
+    }
+  }
+
+}
+
+.delete-post, .edit-post, .delete-comment, .edit-comment {
+  @extend .link;
+  color: grey;
+  border: none;
+  background: white;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 0.3rem;
+
+}
+
+.delete-post, .delete-comment {
+  &:hover {
+    color: red;
+  }
+}
+
+.edit-post, .edit-comment {
+  &:hover {
+    color: $primary-purple;
+  }
+}

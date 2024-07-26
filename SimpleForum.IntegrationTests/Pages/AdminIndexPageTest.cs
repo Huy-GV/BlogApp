@@ -47,8 +47,7 @@ public class AdminIndexPageTest : BaseTest
         await using var scope = CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var dbContext = scope.ServiceProvider.GetRequiredService<SimpleForumDbContext>();
-        var cs = dbContext.Database.GetDbConnection().ConnectionString;
-        Debug.WriteLine(cs);
+
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
         var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);

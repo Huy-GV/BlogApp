@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using SimpleForum.Core.Communication;
-using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.ViewModels;
 
 namespace SimpleForum.Core.WriteServices;

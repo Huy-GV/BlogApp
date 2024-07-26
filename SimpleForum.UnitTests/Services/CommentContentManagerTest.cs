@@ -99,7 +99,7 @@ public class CommentContentManagerTest
             UserName = faker.Name.LastName()
         };
 
-        var blog = new Blog
+        var thread = new Core.Models.Thread
         {
             Title = faker.Lorem.Sentence(10),
             Body = faker.Lorem.Sentences(3),
@@ -118,12 +118,12 @@ public class CommentContentManagerTest
         await using var dbContext = await DatabaseTestUtil.CreateInMemorySqliteDbMock();
 
         dbContext.Users.Add(user);
-        dbContext.Blog.Add(blog);
+        dbContext.Thread.Add(thread);
         await dbContext.SaveChangesAsync();
 
         var viewModel = new CommentViewModel()
         {
-            BlogId = blog.Id,
+            ThreadId = thread.Id,
             Body = faker.Lorem.Sentence(),
         };
 
@@ -139,7 +139,7 @@ public class CommentContentManagerTest
             .BeEquivalentTo(new Comment
             {
                 Id = id!.Value,
-                BlogId = viewModel.BlogId,
+                ThreadId = viewModel.ThreadId,
                 Body = viewModel.Body,
                 AuthorUserName = user.UserName
             },

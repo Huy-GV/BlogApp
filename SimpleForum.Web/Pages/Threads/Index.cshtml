@@ -1,0 +1,30 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["CSSLink"] = "/css/threads/index.css";
+    ViewData["Shared"] = "/css/shared.css";
+    var today = DateTime.Now.ToString("dddd d MMMM yyyy");
+}
+
+<p class="today">@today</p>
+<form method="get" class="search-form">
+    <input type="text" asp-for="SearchString" required placeholder="Enter author or thread title">
+    <input type="submit" value="Search">
+</form>
+
+<main class="thread-container">
+    @foreach (var thread in Model.Threads)
+    {
+        <a class="thread" asp-page="/Threads/Read" asp-route-id="@thread.Id">
+            <img alt="Thread Cover Image" src="@thread.CoverImageUri" asp-append-version="true">
+            <div class="thread-info">
+                <span class="info">@thread.AuthorName on @thread.CreationTime.ToString("dd MMM yyyy")</span>
+                @* <span class="info">&#128065; @thread.ViewCount.ToString()</span> *@
+                <p class="title">@thread.Title</p>
+                <p class="description">@thread.Introduction</p>
+            </div>
+        </a>
+    }
+</main>

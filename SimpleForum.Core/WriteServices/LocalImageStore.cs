@@ -57,16 +57,16 @@ internal class LocalImageStore : IImageStore
         }
     }
 
-    public async Task<(ServiceResultCode, string?)> UploadBlogCoverImageAsync(IFormFile imageFile)
+    public async Task<(ServiceResultCode, string?)> UploadThreadCoverImageAsync(IFormFile imageFile)
     {
         try
         {
-            var uri = await UploadImageAsync(imageFile, ImageType.BlogCover);
+            var uri = await UploadImageAsync(imageFile, ImageType.ThreadCoverImage);
             return (ServiceResultCode.Success, uri);
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to upload blog cover image named '{name}': {e}", imageFile.FileName, e);
+            _logger.LogError("Failed to upload thread cover image named '{name}': {e}", imageFile.FileName, e);
             return (ServiceResultCode.Error, null);
         }
     }
@@ -80,7 +80,7 @@ internal class LocalImageStore : IImageStore
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to upload blog cover image named '{name}': {e}", imageFile.FileName, e);
+            _logger.LogError("Failed to upload thread cover image named '{name}': {e}", imageFile.FileName, e);
             return (ServiceResultCode.Error, null);
         }
     }

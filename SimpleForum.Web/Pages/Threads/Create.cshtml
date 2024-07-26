@@ -1,0 +1,37 @@
+﻿@page
+@model CreateModel
+
+@{
+    ViewData["Title"] = "Create Thread";
+    ViewData["CSSLink"] = "/css/threads/create-thread.css";
+    ViewData["Shared"] = "/css/shared.css";
+}
+
+<form class="add-form" method="post" enctype="multipart/form-data">
+    <div class="form-inputs">
+        <label asp-for="CreateThreadViewModel.Title">Title</label>
+        <input asp-for="CreateThreadViewModel.Title" type="text" required>
+        <span asp-validation-for="CreateThreadViewModel.Title" class="error-message"></span>
+        <label asp-for="CreateThreadViewModel.Introduction">Introduction</label>
+        <textarea rows="8" cols="50"
+            asp-for="CreateThreadViewModel.Introduction"
+            required
+            type="text"
+            placeholder="Description">
+        </textarea>
+        <span asp-validation-for="CreateThreadViewModel.Introduction" class="error-message"></span>
+        <label asp-for="CreateThreadViewModel.CoverImage"></label>
+        <input type="file" asp-for="CreateThreadViewModel.CoverImage" accept=".png,.jpg,.jpeg" multiple>
+        <span asp-validation-for="CreateThreadViewModel.CoverImage" class="error-message"></span>
+        <label asp-for="CreateThreadViewModel.Body">Body</label>
+        <textarea rows="18" cols="50"
+            asp-for="CreateThreadViewModel.Body"
+            required
+            placeholder="What do you want to share?"
+            type="text"></textarea>
+        <br>
+        <span asp-validation-for="CreateThreadViewModel.Body" class="error-message"></span>
+    </div>
+
+    <input type="submit" value="Submit Post" class="submit-post"/>
+</form>

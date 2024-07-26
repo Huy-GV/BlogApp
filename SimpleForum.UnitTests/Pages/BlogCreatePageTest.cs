@@ -15,13 +15,13 @@ using SimpleForum.Core.Models;
 using SimpleForum.Core.ReadServices;
 using SimpleForum.Core.WriteServices;
 using SimpleForum.UnitTests.Utils;
-using SimpleForum.Web.Pages.Blogs;
+using SimpleForum.Web.Pages.Threads;
 
 namespace SimpleForum.UnitTests.Pages;
 
-public class BlogCreatePageTest
+public class ThreadCreatePageTest
 {
-    private readonly Mock<IBlogContentManager> _mockBlogContentManager = new();
+    private readonly Mock<IThreadContentManager> _mockThreadContentManager = new();
     private readonly Mock<ILogger<CreateModel>> _mockLogger = new();
     private readonly Mock<IUserPermissionValidator> _mockUserPermissionValidator = new();
 
@@ -35,7 +35,7 @@ public class BlogCreatePageTest
         return new CreateModel(
             mockAppDbContext,
             mockUserManager,
-            _mockBlogContentManager.Object,
+            _mockThreadContentManager.Object,
             _mockLogger.Object,
             _mockUserPermissionValidator.Object)
         {

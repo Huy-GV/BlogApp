@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Data.ViewModels;

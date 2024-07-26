@@ -22,22 +22,22 @@ internal class PostDeletionScheduler : IPostDeletionScheduler
         _backgroundJobClient = backgroundJobClient;
     }
 
-    public void ScheduleBlogDeletion(DateTimeOffset deleteTime, int blogId)
+    public void ScheduleThreadDeletion(DateTimeOffset deleteTime, int threadId)
     {
-        _logger.LogInformation("Blog with ID {blogId} scheduled for deletion", blogId);
-        _backgroundJobClient.Schedule(() => DeleteBlog(blogId), deleteTime);
+        _logger.LogInformation("Thread with ID {threadId} scheduled for deletion", threadId);
+        _backgroundJobClient.Schedule(() => DeleteThread(threadId), deleteTime);
     }
 
-    public void DeleteBlog(int blogId)
+    public void DeleteThread(int threadId)
     {
-        var blogToDelete = _dbContext.Blog.FirstOrDefault(x => x.Id == blogId);
-        if (blogToDelete == null)
+        var threadToDelete = _dbContext.Thread.FirstOrDefault(x => x.Id == threadId);
+        if (threadToDelete == null)
         {
-            _logger.LogInformation("Blog with ID {blogId} already deleted ahead of schedule", blogId);
+            _logger.LogInformation("Thread with ID {threadId} already deleted ahead of schedule", threadId);
             return;
         }
 
-        _dbContext.Blog.Remove(blogToDelete);
+        _dbContext.Thread.Remove(threadToDelete);
         _dbContext.SaveChanges();
     }
 

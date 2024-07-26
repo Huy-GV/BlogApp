@@ -1,0 +1,85 @@
+﻿@page
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SimpleForum.Core.Models
+@using SimpleForum.Web.Components.Pages.Threads
+@using SimpleForum.Web.Pages.Threads
+@model ReadModel
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Thread";
+    ViewData["CSSLink"] = "/css/threads/read-thread.css";
+    ViewData["Shared"] = "/css/shared.css";
+    var userInfo = Model.UserPermissionsDto;
+}
+
+<main class="thread-container">
+    <article class="thread">
+        @{
+            var threadContentClass = Model.DetailedThreadDto.IsHidden
+                ? "suspended-post"
+                : string.Empty;
+        }
+        <div class="thread-info-container">
+            <span class="thread-author">@Model.DetailedThreadDto.AuthorName</span>
+            <span class="thread-info">, @Model.DetailedThreadDto.CreationTime.ToString("dd MMMM yyyy")</span>
+            @{
+                if (Model.DetailedThreadDto.IsModified)
+                {
+                    <span class="thread-info">, last updated @Model.DetailedThreadDto.LastUpdateTime.ToString("dd MMMM yyyy")</span>
+                }
+            }
+        </div>
+
+        <p class="title @threadContentClass">@Model.DetailedThreadDto.Title</p>
+        <hr>
+        <div class="thread-option-container">
+            @{
+                if (userInfo.AllowedToModifyOrDeletePost)
+                {
+                    <form asp-page-handler="DeleteThread"
+                          asp-route-threadId="@Model.DetailedThreadDto.Id"
+                          method="post">
+                        <input class="delete-post" type="submit" value="Delete">
+                    </form>
+
+                    <a asp-page="/Threads/Edit"
+                       asp-route-username="@userInfo.UserName"
+                       asp-route-threadId="@Model.DetailedThreadDto.Id">
+                       <button class="edit-post">Edit</button>
+                    </a>
+                }
+
+                if (userInfo.AllowedToHidePost && !Model.DetailedThreadDto.IsHidden)
+                {
+                    <form asp-page-handler="HideThread"
+                          asp-route-threadId="@Model.DetailedThreadDto.Id"
+                          method="post">
+                        <button class="delete-comment">Hide</button>
+                    </form>
+                }
+            }
+        </div>
+
+        <p class="thread-description @threadContentClass">@Model.DetailedThreadDto.Introduction</p>
+        <img alt="Thread Cover Image" src="@Model.DetailedThreadDto.CoverImageUri" asp-append-version="true">
+
+        @{
+            foreach (var paragraph in Model.DetailedThreadDto.Content.Split(Environment.NewLine))
+            {
+                <p class="thread-content @threadContentClass">@paragraph</p>
+            }
+        }
+    </article>
+</main>
+
+<component
+    type="typeof(CommentsContainer)"
+    render-mode="Server"
+    param-threadId="@Model.DetailedThreadDto.Id"
+    param-ThreadAuthorName="@Model.DetailedThreadDto.AuthorName"
+    param-UserPermissionsDto="@Model.UserPermissionsDto" />

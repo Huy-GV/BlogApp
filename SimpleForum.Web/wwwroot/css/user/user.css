@@ -1,7 +1,7 @@
-.smooth-transition, a, .link, main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn, .clickable-card, .blog-container .blog, .button, .secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
+.smooth-transition, a, .link, main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn, .clickable-card, .thread-container .thread, .button, .secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, a:hover, .link:hover, main .edit-button:hover, main .description .heading .edit-summary:hover, main .basic-info .profile-btn-container .cancel-btn:hover, main .basic-info .edit-profile-picture-btn:hover, .clickable-card:hover, .blog-container .blog:hover, .button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
+.smooth-transition:hover, a:hover, .link:hover, main .edit-button:hover, main .description .heading .edit-summary:hover, main .basic-info .profile-btn-container .cancel-btn:hover, main .basic-info .edit-profile-picture-btn:hover, .clickable-card:hover, .thread-container .thread:hover, .button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   transition: 180ms ease-in;
 }
 
@@ -38,11 +38,11 @@
   border-radius: 5px;
 }
 
-.clickable-card, .blog-container .blog {
+.clickable-card, .thread-container .thread {
   box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
-.clickable-card:hover, .blog-container .blog:hover {
+.clickable-card:hover, .thread-container .thread:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
@@ -213,7 +213,7 @@ main .stats {
   padding: 1.2rem;
 }
 
-.blog-container {
+.thread-container {
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -223,35 +223,35 @@ main .stats {
   margin-bottom: 3rem;
 }
 @media screen and (max-width: 1200px) {
-  .blog-container {
+  .thread-container {
     width: 70%;
   }
 }
 @media screen and (max-width: 700px) {
-  .blog-container {
+  .thread-container {
     width: 80%;
   }
 }
-.blog-container h1 {
+.thread-container h1 {
   padding-left: 1rem;
 }
-.blog-container .blog-year {
+.thread-container .thread-year {
   border-bottom: 1px solid black;
   padding: 1rem;
   font-size: 1.2rem;
   font-weight: 600;
 }
-.blog-container .blog {
+.thread-container .thread {
   padding-inline: 1rem;
   padding-block: 0.5rem;
   margin-top: 1rem;
   text-decoration: none;
   color: black;
 }
-.blog-container .blog .title {
+.thread-container .thread .title {
   font-weight: 700;
 }
-.blog-container p {
+.thread-container p {
   overflow: hidden;
   max-height: 3.5rem;
 }/*# sourceMappingURL=user.css.map */

@@ -5,11 +5,11 @@ namespace SimpleForum.Core.WriteServices;
 public interface IPostDeletionScheduler
 {
     /// <summary>
-    /// Schedules the deletion of a blog for a specific time.
+    /// Schedules the deletion of a thread for a specific time.
     /// </summary>
-    /// <param name="deleteTime">The date and time when the blog deletion is scheduled to occur.</param>
-    /// <param name="blogId">The identifier of the blog to be deleted.</param>
-    void ScheduleBlogDeletion(DateTimeOffset deleteTime, int blogId);
+    /// <param name="deleteTime">The date and time when the thread deletion is scheduled to occur.</param>
+    /// <param name="threadId">The identifier of the thread to be deleted.</param>
+    void ScheduleThreadDeletion(DateTimeOffset deleteTime, int threadId);
 
     /// <summary>
     /// Schedules the deletion of a comment for a specific time.

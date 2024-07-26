@@ -5,13 +5,13 @@
 
 @{
     ViewData["Title"] = "User Details";
-    ViewData["CSSLink"] = "/css/admin/admindetails.css";
+    ViewData["CSSLink"] = "/css/admin/admin-details.css";
     ViewData["Shared"] = "/css/shared.css";
 }
 
 <h1>Details of @Model.UserName</h1>
 <main>
-    <component type="typeof(HiddenBlogContainer)"
+    <component type="typeof(HiddenThreadContainer)"
                 render-mode="Server"
                 param-UserName="@Model.UserName" />
 

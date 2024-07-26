@@ -1,0 +1,44 @@
+﻿@inherits RichComponentBase
+@attribute [StreamRendering(true)]
+
+@if (HiddenThreads.Count == 0)
+{
+    <h2 class="middle-aligned">Reported Threads</h2>
+    <div class="middle-aligned">
+        <p>None</p>
+    </div>
+}
+else
+{
+    <h2 class="middle-aligned">Reported Threads (@HiddenThreads.Count)</h2>
+    <section class="hidden-thread-container">
+        @{
+            foreach (var thread in HiddenThreads)
+            {
+                <div class="hidden-thread">
+                    <h2>@thread.Title</h2>
+
+                    <h4>Introduction</h4>
+                    <hr />
+                    <p>@thread.Introduction</p>
+
+                    <h4>Content</h4>
+                    <hr />
+                    @{
+                        foreach (var paragraph in thread.Content.Split(Environment.NewLine))
+                        {
+                            <p>@paragraph</p>
+                        }
+                    }
+
+                    <form method="post" @onsubmit="(async () => await UnhideThreadAsync(thread.Id))">
+                        <button class="un-hide-post">Unhide Thread</button>
+                    </form>
+                    <form method="post" @onsubmit="(async () => await ForciblyDeleteThreadAsync(thread.Id))">
+                        <button class="delete-post">Delete Thread</button>
+                    </form>
+                </div>
+            }
+        }
+    </section>
+}

@@ -16,7 +16,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using SimpleForum.Core.WriteServices;
 using SimpleForum.Core.ReadServices;
 using Microsoft.AspNetCore.DataProtection;
-using System.Linq;
 
 namespace SimpleForum.Core.Extensions;
 public static class ServiceCollectionsExtensions
@@ -27,10 +26,10 @@ public static class ServiceCollectionsExtensions
         services.AddScoped<IUserModerationService, UserModerationService>();
         services.AddScoped<IPostDeletionScheduler, PostDeletionScheduler>();
         services.AddScoped<IPostModerationService, PostModerationService>();
-        services.AddScoped<IBlogContentManager, BlogContentManager>();
+        services.AddScoped<IThreadContentManager, ThreadContentManager>();
         services.AddScoped<ICommentContentManager, CommentContentManager>();
         services.AddScoped<IUserPermissionValidator, UserPermissionValidator>();
-        services.AddScoped<IBlogReader, BlogReader>();
+        services.AddScoped<IThreadReader, ThreadReader>();
         services.AddScoped<ICommentReader, CommentReader>();
         services.AddScoped<IUserProfileReader, UserProfileReader>();
         services.AddScoped<IUserProfileEditor, UserProfileEditor>();

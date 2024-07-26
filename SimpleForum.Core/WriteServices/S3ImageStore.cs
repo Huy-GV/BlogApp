@@ -105,39 +105,39 @@ public class S3ImageStore : IImageStore
         return string.Format(AwsS3UrlFormat, _awsS3Options.DataBucket, region, objectKey);
     }
 
-    public async Task<(ServiceResultCode, string?)> UploadBlogCoverImageAsync(IFormFile imageFile)
+    public async Task<(ServiceResultCode, string?)> UploadThreadCoverImageAsync(IFormFile imageFile)
     {
         var tag = new Tag
         {
             Key = nameof(ImageType),
-            Value = ImageType.BlogCover.ToString(),
+            Value = ImageType.ThreadCoverImage.ToString(),
         };
 
-        var putBlogCoverImageRequest = new PutObjectRequest
+        var putThreadCoverImageRequest = new PutObjectRequest
         {
-            Key = BuildFileName(imageFile.FileName, ImageType.BlogCover.ToString()),
+            Key = BuildFileName(imageFile.FileName, ImageType.ThreadCoverImage.ToString()),
             BucketName = _awsS3Options.DataBucket,
             InputStream = imageFile.OpenReadStream(),
             TagSet = [tag],
         };
 
         _logger.LogInformation(
-            "Uploading blog cover image '{fileName}' to bucket '{bucketName}'",
-            putBlogCoverImageRequest.Key,
-            putBlogCoverImageRequest.BucketName);
+            "Uploading thread cover image '{fileName}' to bucket '{bucketName}'",
+            putThreadCoverImageRequest.Key,
+            putThreadCoverImageRequest.BucketName);
 
         try
         {
-            var putObjectResponse = await _awsS3Client.PutObjectAsync(putBlogCoverImageRequest);
+            var putObjectResponse = await _awsS3Client.PutObjectAsync(putThreadCoverImageRequest);
             if (putObjectResponse.HttpStatusCode != HttpStatusCode.OK)
             {
                 _logger.LogError(
-                    "Failed to upload blog cover image, HTTP code: {code}",
+                    "Failed to upload thread cover image, HTTP code: {code}",
                     putObjectResponse.HttpStatusCode);
                 return (ServiceResultCode.Error, null);
             }
 
-            var imageUrl = BuildImageUrl(putBlogCoverImageRequest.Key);
+            var imageUrl = BuildImageUrl(putThreadCoverImageRequest.Key);
 
             return (ServiceResultCode.Success, imageUrl);
         }

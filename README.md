@@ -1,8 +1,8 @@
 # Simple Forum
 
 ## Overview
-Simple forum application where users can write blogs or comment on blogs written by others.
-All blogs can be monitored, hidden, and removed by Moderators and Administrators.
+Simple forum application where users can create threads or comment on threads written by others.
+All posts can be monitored, hidden, and removed by Moderators and Administrators.
 
 <p><em>Demo</em></p>
 <img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/51a252ea-0353-4e99-916e-779d93890db5" width=80% alt="demo-gif">
@@ -41,9 +41,9 @@ All blogs can be monitored, hidden, and removed by Moderators and Administrators
 - To use Hangfire background service, set `FeatureFlags:UseHangFire` to `true` in `appsettings.{env}.json`:
 - Running EF migrations:
 	```bash
-	export ConnectionStrings="Server=(localdb)\mssqllocaldb;Database=SimpleForum;Trusted_Connection=True;MultipleActiveResultSets=true;"
-	dotnet ef migrations add <name> -p ./SimpleForum.Core.csproj -s ./SimpleForum.Web.csproj
-	dotnet ef database update -p ./SimpleForum.Core/SimpleForum.Core.csproj -s ./SimpleForum.Web/SimpleForum.Web.csproj 
+	export ConnectionString="Server=(localdb)\mssqllocaldb;Database=SimpleForum;Trusted_Connection=True;MultipleActiveResultSets=true;"
+	dotnet ef migrations add <name> -p ./SimpleForum.Core/SimpleForum.Core.csproj -s ./SimpleForum.Web/SimpleForum.Web.csproj
+	dotnet ef database update -p ./SimpleForum.Core/SimpleForum.Core.csproj -s ./SimpleForum.Web/SimpleForum.Web.csproj
 	```
 ## Run With Docker
 - Start the Docker engine and ensure it is targeting *Linux*

@@ -18,7 +18,6 @@ internal class PostModerationService : IPostModerationService
     private readonly SimpleForumDbContext _dbContext;
     private readonly ILogger<UserModerationService> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUserModerationService _userModerationService;
     private readonly IPostDeletionScheduler _postDeletionScheduler;
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IFeatureManager _featureManager;
@@ -27,7 +26,6 @@ internal class PostModerationService : IPostModerationService
         SimpleForumDbContext dbContext,
         ILogger<UserModerationService> logger,
         UserManager<ApplicationUser> userManager,
-        IUserModerationService userModerationService,
         IPostDeletionScheduler postDeletionScheduler,
         IUserPermissionValidator userPermissionValidator,
         IFeatureManager featureManager)
@@ -35,7 +33,6 @@ internal class PostModerationService : IPostModerationService
         _dbContext = dbContext;
         _logger = logger;
         _userManager = userManager;
-        _userModerationService = userModerationService;
         _postDeletionScheduler = postDeletionScheduler;
         _userPermissionValidator = userPermissionValidator;
         _featureManager = featureManager;
@@ -55,13 +52,13 @@ internal class PostModerationService : IPostModerationService
         comment.ToBeDeleted = true;
     }
 
-    private static void CensorDeletedBlog(Blog blog)
+    private static void CensorDeletedThread(Thread thread)
     {
-        blog.IsHidden = false;
-        blog.ToBeDeleted = true;
-        blog.Title = ReplacementText.RemovedContent;
-        blog.Introduction = ReplacementText.RemovedContent;
-        blog.Body = ReplacementText.RemovedContent;
+        thread.IsHidden = false;
+        thread.ToBeDeleted = true;
+        thread.Title = ReplacementText.RemovedContent;
+        thread.Introduction = ReplacementText.RemovedContent;
+        thread.Body = ReplacementText.RemovedContent;
     }
 
     public async Task<ServiceResultCode> HideCommentAsync(int commentId, string userName)
@@ -88,25 +85,25 @@ internal class PostModerationService : IPostModerationService
         return ServiceResultCode.Success;
     }
 
-    public async Task<ServiceResultCode> HideBlogAsync(int blogId, string userName)
+    public async Task<ServiceResultCode> HideThreadAsync(int threadId, string userName)
     {
-        var blog = await _dbContext.Blog
+        var thread = await _dbContext.Thread
             .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == blogId);
+            .FirstOrDefaultAsync(x => x.Id == threadId);
 
-        if (blog == null)
+        if (thread == null)
         {
-            _logger.LogError("Blog with ID {blogId} not found", blogId);
+            _logger.LogError("Thread with ID {threadId} not found", threadId);
             return ServiceResultCode.NotFound;
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToHidePostAsync(userName, blog.AuthorUserName))
+        if (!await _userPermissionValidator.IsUserAllowedToHidePostAsync(userName, thread.AuthorUserName))
         {
-            _logger.LogError(message: "Blog with ID {blogId} cannot be hidden by user {userName}", blogId, userName);
+            _logger.LogError(message: "Thread with ID {threadId} cannot be hidden by user {userName}", threadId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
-        blog.IsHidden = true;
+        thread.IsHidden = true;
         await _dbContext.SaveChangesAsync();
 
         return ServiceResultCode.Success;
@@ -136,25 +133,25 @@ internal class PostModerationService : IPostModerationService
         return ServiceResultCode.Success;
     }
 
-    public async Task<ServiceResultCode> UnhideBlogAsync(int blogId, string userName)
+    public async Task<ServiceResultCode> UnhideThreadAsync(int threadId, string userName)
     {
-        var blog = await _dbContext.Blog
+        var thread = await _dbContext.Thread
             .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == blogId);
+            .FirstOrDefaultAsync(x => x.Id == threadId);
 
-        if (blog == null)
+        if (thread == null)
         {
-            _logger.LogError("Blog with ID {blogId} not found", blogId);
+            _logger.LogError("thread with ID {threadId} not found", threadId);
             return ServiceResultCode.NotFound;
         }
 
         if (!await IsUserInAdminRole(userName))
         {
-            _logger.LogError(message: "Blog with ID {blogId} cannot be un-hidden by user {userName}", blogId, userName);
+            _logger.LogError(message: "Thread with ID {threadId} cannot be un-hidden by user {userName}", threadId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
-        blog.IsHidden = false;
+        thread.IsHidden = false;
         await _dbContext.SaveChangesAsync();
 
         return ServiceResultCode.Success;
@@ -199,38 +196,38 @@ internal class PostModerationService : IPostModerationService
         return ServiceResultCode.Success;
     }
 
-    public async Task<ServiceResultCode> ForciblyDeleteBlogAsync(int blogId, string deletorUserName)
+    public async Task<ServiceResultCode> ForciblyDeleteThreadAsync(int threadId, string deletorUserName)
     {
         if (!await IsUserInAdminRole(deletorUserName))
         {
             return ServiceResultCode.Unauthorized;
         }
 
-        var blog = await _dbContext.Blog
+        var thread = await _dbContext.Thread
             .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == blogId);
+            .FirstOrDefaultAsync(x => x.Id == threadId);
 
-        if (blog == null)
+        if (thread == null)
         {
             return ServiceResultCode.NotFound;
         }
 
-        if (!blog.IsHidden)
+        if (!thread.IsHidden)
         {
-            _logger.LogError("Blog with ID {blogId} must be hidden before being forcibly deleted", blogId);
+            _logger.LogError("Thread with ID {threadId} must be hidden before being forcibly deleted", threadId);
             return ServiceResultCode.Unauthorized;
         }
 
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
-            CensorDeletedBlog(blog);
-            _postDeletionScheduler.ScheduleBlogDeletion(
+            CensorDeletedThread(thread);
+            _postDeletionScheduler.ScheduleThreadDeletion(
                 new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
-                blogId);
+                threadId);
         }
         else
         {
-            _dbContext.Blog.Remove(blog);
+            _dbContext.Thread.Remove(thread);
         }
 
         await _dbContext.SaveChangesAsync();

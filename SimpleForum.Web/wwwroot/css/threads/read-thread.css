@@ -1,0 +1,267 @@
+.smooth-transition, .link, .delete-post, .edit-post, .delete-comment, .edit-comment, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment, .clickable-card, .button, .secondary-button, .primary-button {
+  transition: 180ms ease-in;
+}
+.smooth-transition:hover, .link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover {
+  transition: 180ms ease-in;
+}
+
+.button, .secondary-button, .primary-button, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment {
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+.button:hover, .secondary-button:hover, .primary-button:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover {
+  cursor: pointer;
+}
+
+.primary-button, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment {
+  border: none;
+  background-color: rgb(99, 0, 148);
+  text-decoration: none;
+  color: white;
+}
+.primary-button:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover {
+  filter: brightness(0.8);
+}
+
+.secondary-button {
+  color: rgb(99, 0, 148);
+  background-color: white;
+  border: 1px solid rgb(99, 0, 148);
+}
+.secondary-button:hover {
+  background-color: rgb(99, 0, 148);
+  color: white;
+}
+
+.card, .comment-section .comment-container .comment {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+.clickable-card {
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+.clickable-card:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.link, .delete-post, .edit-post, .delete-comment, .edit-comment, .edit-comment-form .edit-form-btn-container .save-btn, .comment-form .submit-comment {
+  margin: 0.1rem;
+  text-decoration: none;
+}
+.link:hover, .delete-post:hover, .edit-post:hover, .delete-comment:hover, .edit-comment:hover, .edit-comment-form .edit-form-btn-container .save-btn:hover, .comment-form .submit-comment:hover {
+  cursor: pointer;
+}
+
+.thread-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.thread-container .thread {
+  padding: 0.6rem;
+  width: 60%;
+}
+@media screen and (max-width: 1200px) {
+  .thread-container .thread {
+    width: 80%;
+  }
+}
+@media screen and (max-width: 700px) {
+  .thread-container .thread {
+    width: 90%;
+  }
+}
+.thread-container .thread .title {
+  font-weight: 700;
+  text-align: center;
+  font-family: Garamond, serif;
+  font-size: 2rem;
+  margin-top: 0.1rem;
+}
+@media screen and (max-width: 1200px) {
+  .thread-container .thread .title {
+    font-size: 1.8rem;
+  }
+}
+@media screen and (max-width: 700px) {
+  .thread-container .thread .title {
+    font-size: 1.7rem;
+  }
+}
+.thread-container .thread .thread-description {
+  white-space: pre-line;
+  color: #606060;
+}
+.thread-container .thread .thread-option-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.thread-container .thread img {
+  border-radius: 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+  max-height: 25rem;
+}
+.thread-container .thread .thread-content {
+  font-family: "Open Sans", Helvetica, arial, sans-serif;
+  line-height: 1.4rem;
+  white-space: pre-line;
+  font-size: 1.2rem;
+}
+
+.thread-info-container {
+  display: flex;
+  justify-content: center;
+}
+.thread-info-container .thread-author {
+  margin-left: 0.1rem;
+  color: green;
+  font-weight: bold;
+}
+
+.comment-section {
+  width: 100%;
+  background-color: whitesmoke;
+  padding-bottom: 3rem;
+}
+.comment-section .comment-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.1rem;
+  margin: auto;
+  width: 60%;
+  border-radius: 3px;
+}
+@media screen and (max-width: 1200px) {
+  .comment-section .comment-container {
+    width: 80%;
+  }
+}
+@media screen and (max-width: 700px) {
+  .comment-section .comment-container {
+    width: 90%;
+  }
+}
+.comment-section .comment-container .comment {
+  padding: 1rem;
+  background-color: white;
+  margin: 0.3rem;
+  font-size: 1.1rem;
+}
+.comment-section .comment-container .comment .author-container {
+  display: flex;
+  align-items: center;
+  gap: 1%;
+}
+.comment-section .comment-container .comment .author-container img {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.comment-section .comment-container .comment .author-container span {
+  display: inline-block;
+  padding: 0.2rem;
+  font-size: 1rem;
+}
+.comment-section .comment-container .comment .comment-option-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.comment-section .comment-container .comment .comment-author {
+  color: rgb(99, 0, 148);
+}
+.comment-section .comment-container .comment p {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+}
+
+.text-input-field, .edit-comment-form textarea, .comment-form textarea {
+  border-radius: 6px;
+  border: 2px solid lightgray;
+  padding: 0.5rem;
+}
+
+.comment-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  width: 40%;
+  margin: auto;
+}
+@media screen and (max-width: 1200px) {
+  .comment-form {
+    width: 80%;
+  }
+}
+@media screen and (max-width: 700px) {
+  .comment-form {
+    width: 90%;
+  }
+}
+.comment-form .comment-counter {
+  color: gray;
+  align-self: flex-end;
+  font-size: 0.8rem;
+}
+.comment-form textarea {
+  font-size: 0.8rem;
+  width: 100%;
+}
+.comment-form .submit-comment {
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 0.9rem;
+  font-size: 0.8rem;
+  align-self: flex-end;
+}
+
+.edit-comment-form {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.edit-comment-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+.edit-comment-form .comment-counter {
+  color: gray;
+  align-self: flex-end;
+  font-size: 0.8rem;
+}
+.edit-comment-form .edit-form-btn-container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.edit-comment-form .edit-form-btn-container .save-btn {
+  font-size: 0.6rem;
+  padding: 0.6rem;
+}
+
+.delete-post, .edit-post, .delete-comment, .edit-comment {
+  color: grey;
+  border: none;
+  background: white;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 0.3rem;
+}
+
+.delete-post:hover, .delete-comment:hover {
+  color: red;
+}
+
+.edit-post:hover, .edit-comment:hover {
+  color: rgb(99, 0, 148);
+}/*# sourceMappingURL=read-thread.css.map */

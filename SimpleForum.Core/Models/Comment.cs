@@ -8,5 +8,5 @@ public class Comment : Post<int>
     [MaxLength(250)]
     public override string Body { get; set; } = string.Empty;
 
-    public int BlogId { get; set; }
+    public int ThreadId { get; set; }
 }

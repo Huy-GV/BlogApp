@@ -1,5 +1,4 @@
 ﻿using SimpleForum.Core.Data.ViewModels;
-using SimpleForum.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

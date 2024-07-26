@@ -206,7 +206,7 @@ main {
 
 }
 
-.blog-container {
+.thread-container {
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -226,14 +226,14 @@ main {
     padding-left: 1rem;
   }
 
-  .blog-year {
+  .thread-year {
     border-bottom: 1px solid black;
     padding: 1rem;
     font-size: 1.2rem;
     font-weight: 600;
   }
 
-  .blog {
+  .thread {
     @extend .clickable-card;
     padding-inline: 1rem;
     padding-block: 0.5rem;

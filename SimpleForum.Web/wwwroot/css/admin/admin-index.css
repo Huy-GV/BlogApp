@@ -1,0 +1,131 @@
+.smooth-transition, .link, .clickable-card, .button, .secondary-button, .primary-button {
+  transition: 180ms ease-in;
+}
+.smooth-transition:hover, .link:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover {
+  transition: 180ms ease-in;
+}
+
+.button, .secondary-button, .primary-button {
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+.button:hover, .secondary-button:hover, .primary-button:hover {
+  cursor: pointer;
+}
+
+.primary-button {
+  border: none;
+  background-color: rgb(99, 0, 148);
+  text-decoration: none;
+  color: white;
+}
+.primary-button:hover {
+  filter: brightness(0.8);
+}
+
+.secondary-button {
+  color: rgb(99, 0, 148);
+  background-color: white;
+  border: 1px solid rgb(99, 0, 148);
+}
+.secondary-button:hover {
+  background-color: rgb(99, 0, 148);
+  color: white;
+}
+
+.card {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+.clickable-card {
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+.clickable-card:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.link {
+  margin: 0.1rem;
+  text-decoration: none;
+}
+.link:hover {
+  cursor: pointer;
+}
+
+.user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 50%;
+  margin-inline: auto;
+  margin-top: 5rem;
+}
+.user-container form {
+  margin-left: auto;
+  display: flex;
+}
+@media screen and (max-width: 700px) {
+  .user-container form {
+    margin: auto;
+  }
+}
+.user-container h2 {
+  align-self: flex-start;
+}
+@media screen and (max-width: 1200px) {
+  .user-container {
+    width: 80%;
+  }
+}
+@media screen and (max-width: 700px) {
+  .user-container {
+    width: 90%;
+  }
+}
+.user-container .user-card {
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+  width: 100%;
+}
+.user-container .user-card .button, .user-container .user-card .primary-button, .user-container .user-card .secondary-button {
+  color: white;
+  font-weight: 700;
+  border-radius: 5px;
+  border: none;
+  padding: 1rem 0.6rem;
+  min-width: 10rem;
+}
+.user-container .user-card .button:hover, .user-container .user-card .primary-button:hover, .user-container .user-card .secondary-button:hover {
+  filter: brightness(0.6);
+  cursor: pointer;
+}
+@media screen and (max-width: 700px) {
+  .user-container .user-card .button, .user-container .user-card .primary-button, .user-container .user-card .secondary-button {
+    padding-block: 1rem;
+  }
+}
+.user-container .user-card .assign-role {
+  background-color: green;
+}
+.user-container .user-card .remove-role {
+  background-color: red;
+}
+.user-container .user-card .details-btn {
+  padding: 1rem;
+  color: blue;
+  font-weight: 700;
+}
+@media screen and (max-width: 700px) {
+  .user-container .user-card {
+    width: 90%;
+    flex-direction: column;
+    align-items: center;
+  }
+}/*# sourceMappingURL=admin-index.css.map */

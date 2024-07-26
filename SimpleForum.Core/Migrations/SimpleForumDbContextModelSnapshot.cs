@@ -253,7 +253,48 @@ namespace SimpleForum.Migrations
                     b.ToTable("BanTicket");
                 });
 
-            modelBuilder.Entity("SimpleForum.Core.Models.Blog", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ThreadId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ToBeDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorUserName");
+
+                    b.HasIndex("ThreadId");
+
+                    b.ToTable("Comment");
+                });
+
+            modelBuilder.Entity("SimpleForum.Core.Models.Thread", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,48 +342,7 @@ namespace SimpleForum.Migrations
 
                     b.HasIndex("AuthorUserName");
 
-                    b.ToTable("Blog");
-                });
-
-            modelBuilder.Entity("SimpleForum.Core.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AuthorUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("BlogId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastUpdateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("ToBeDeleted")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorUserName");
-
-                    b.HasIndex("BlogId");
-
-                    b.ToTable("Comment");
+                    b.ToTable("Thread");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -408,18 +408,6 @@ namespace SimpleForum.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("SimpleForum.Core.Models.Blog", b =>
-                {
-                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", "AuthorUser")
-                        .WithMany()
-                        .HasForeignKey("AuthorUserName")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("AuthorUser");
-                });
-
             modelBuilder.Entity("SimpleForum.Core.Models.Comment", b =>
                 {
                     b.HasOne("SimpleForum.Core.Models.ApplicationUser", "AuthorUser")
@@ -429,16 +417,28 @@ namespace SimpleForum.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("SimpleForum.Core.Models.Blog", null)
+                    b.HasOne("SimpleForum.Core.Models.Thread", null)
                         .WithMany("Comments")
-                        .HasForeignKey("BlogId")
+                        .HasForeignKey("ThreadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AuthorUser");
                 });
 
-            modelBuilder.Entity("SimpleForum.Core.Models.Blog", b =>
+            modelBuilder.Entity("SimpleForum.Core.Models.Thread", b =>
+                {
+                    b.HasOne("SimpleForum.Core.Models.ApplicationUser", "AuthorUser")
+                        .WithMany()
+                        .HasForeignKey("AuthorUserName")
+                        .HasPrincipalKey("UserName")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AuthorUser");
+                });
+
+            modelBuilder.Entity("SimpleForum.Core.Models.Thread", b =>
                 {
                     b.Navigation("Comments");
                 });

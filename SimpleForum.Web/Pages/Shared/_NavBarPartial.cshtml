@@ -7,7 +7,7 @@
 
 <nav>
     <img src="images/readonly/logo.svg" alt="logo">
-    <a asp-page="/Blogs/Index" class="home-link">Home</a>
+    <a asp-page="/Threads/Index" class="home-link">Home</a>
 
     @if (SignInManager.IsSignedIn(User))
     {
@@ -18,7 +18,7 @@
             <a asp-page="/Admin/Index">Users</a>
         }
 
-        <a asp-page="/Blogs/Create">Write</a>
+        <a asp-page="/Threads/Create">Write</a>
         <div class="authentication-links">
             <p>@User.Identity!.Name</p>
             <p class="middle-bar"></p>

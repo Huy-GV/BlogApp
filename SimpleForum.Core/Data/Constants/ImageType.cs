@@ -2,6 +2,6 @@
 
 public enum ImageType
 {
-    BlogCover,
+    ThreadCoverImage,
     ProfileImage
 }

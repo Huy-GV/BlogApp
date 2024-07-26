@@ -19,8 +19,8 @@ This document describes the AWS deployment process using the CDK with TypeScript
 ### Set Up AWS Credentials
 - Run the following command and specify the access key, secret key, and region
     ```bash
-    aws configure --profile razor-blog
-    set AWS_PROFILE=razor-blog
+    aws configure --profile simple-forum
+    set AWS_PROFILE=simple-forum
     ```
 - Create a file named `cdk.context.json` containing availabilities zones within your region:
     ```json
@@ -38,7 +38,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
     - [./iam/cdkDeployPolicy.json](iam/cdkDeployPolicy.json)
 - Run the bootstrap command:
     ```bash
-    cdk bootstrap --profile razor-blog
+    cdk bootstrap --profile simple-forum
     ```
 
 ### Deploy Application

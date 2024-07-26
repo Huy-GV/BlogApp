@@ -11,7 +11,7 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     {
     }
 
-    public DbSet<Blog> Blog { get; set; } = null!;
+    public DbSet<Thread> Thread { get; set; } = null!;
     public DbSet<Comment> Comment { get; set; } = null!;
     public DbSet<BanTicket> BanTicket { get; set; } = null!;
     public DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
@@ -20,11 +20,11 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<Blog>(entity =>
+        builder.Entity<Thread>(entity =>
         {
             entity
-                .HasQueryFilter(blog => !blog.ToBeDeleted)
-                .HasMany(b => b.Comments)
+                .HasQueryFilter(x => !x.ToBeDeleted)
+                .HasMany(x => x.Comments)
                 .WithOne()
                 .IsRequired(true)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -45,7 +45,7 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<BanTicket>()
-            .HasOne(b => b.AppUser)
+            .HasOne(x => x.AppUser)
             .WithOne()
             .HasPrincipalKey<ApplicationUser>(x => x.UserName)
             .HasForeignKey<BanTicket>(x => x.UserName)

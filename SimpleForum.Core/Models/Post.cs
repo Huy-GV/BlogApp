@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SimpleForum.Core.Models;
 
-public class Post<TId>
+public abstract class Post<TId>
 {
     public TId Id { get; set; } = default!;
 

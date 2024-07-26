@@ -86,7 +86,7 @@ public class Program
             .AddMvc()
             .AddRazorPagesOptions(options =>
             {
-                options.Conventions.AddPageRoute("/Blogs/Index", "");
+                options.Conventions.AddPageRoute("/Threads/Index", "");
             });
 
         builder.Services.AddAuthorization();

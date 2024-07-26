@@ -2,7 +2,7 @@
 
 namespace SimpleForum.Core.Data.Dtos;
 
-public record DetailedBlogDto
+public record DetailedThreadDto
 {
     public required int Id { get; set; }
     public required string Title { get; set; }

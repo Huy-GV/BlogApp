@@ -126,7 +126,7 @@ public class CommentContentManager : ICommentContentManager
         _dbContext.Comment.Add(new Comment
         {
             AuthorUserName = userName,
-            BlogId = createCommentViewModel.BlogId,
+            ThreadId = createCommentViewModel.ThreadId,
             Body = createCommentViewModel.Body,
             CreationTime = creationTime,
             LastUpdateTime = creationTime,
@@ -134,6 +134,6 @@ public class CommentContentManager : ICommentContentManager
 
         await _dbContext.SaveChangesAsync();
 
-        return (ServiceResultCode.Success, createCommentViewModel.BlogId);
+        return (ServiceResultCode.Success, createCommentViewModel.ThreadId);
     }
 }

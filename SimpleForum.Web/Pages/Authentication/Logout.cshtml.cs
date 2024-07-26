@@ -28,7 +28,7 @@ public class LogoutModel : PageModel
 
     public async Task<IActionResult> OnPost()
     {
-        var returnUrl = "/Blogs/Index";
+        var returnUrl = "/Threads/Index";
         await _signInManager.SignOutAsync();
         _logger.LogInformation("User logged out.");
 

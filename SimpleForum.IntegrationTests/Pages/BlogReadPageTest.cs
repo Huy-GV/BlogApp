@@ -14,34 +14,34 @@ using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Models;
 using SimpleForum.Core.WriteServices;
 using SimpleForum.IntegrationTests.Fixtures;
-using SimpleForum.Web.Pages.Blogs;
+using SimpleForum.Web.Pages.Threads;
 using System.Net;
 using System.Security.Claims;
 using Xunit;
 
 namespace SimpleForum.IntegrationTests.Pages;
 
-public class BlogReadPageTest : BaseTest
+public class ThreadReadPageTest : BaseTest
 {
-    public BlogReadPageTest(TestWebAppFactoryFixture webApplicationFactory) : base(webApplicationFactory)
+    public ThreadReadPageTest(TestWebAppFactoryFixture webApplicationFactory) : base(webApplicationFactory)
     {
     }
 
     [Fact]
-    private async Task GetBlog_ShouldReturnNotFound_IfBlogIsNotFound()
+    private async Task GetThread_ShouldReturnNotFound_IfThreadIsNotFound()
     {
         var httpClient = ApplicationFactory.CreateClient();
         await using var scope = CreateScope();
         await using var dbContext = CreateDbContext(scope.ServiceProvider);
-        var existingBlogIds = dbContext.Blog.Select(x => x.Id).ToHashSet();
+        var existingThreadIds = dbContext.Thread.Select(x => x.Id).ToHashSet();
         var faker = new Faker();
-        var blogId = Math.Abs(faker.Random.Int());
-        while (existingBlogIds.Contains(blogId))
+        var threadId = Math.Abs(faker.Random.Int());
+        while (existingThreadIds.Contains(threadId))
         {
-            blogId = Math.Abs(faker.Random.Int());
+            threadId = Math.Abs(faker.Random.Int());
         }
 
-        var url = $"/blogs/Read?id={blogId}";
+        var url = $"/threads/Read?id={threadId}";
         var response = await httpClient.GetAsync(url);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         response.RequestMessage!.RequestUri!.PathAndQuery.Should().BeEquivalentTo("/Error/Error/?ErrorMessage=Not%20Found&ErrorDescription=Resource%20not%20found");
@@ -55,7 +55,7 @@ public class BlogReadPageTest : BaseTest
     [InlineData("Author5", "", "moderator", "moderator", true, false)]
     [InlineData("Author6", "", "admin", "admin", true, false)]
     [InlineData("admin", "", "moderator", "moderator", true, false)]
-    private async Task GetBlog_ShouldReturnBlogPage_IfBlogIsFound(
+    private async Task GetThread_ShouldReturnThreadPage_IfThreadIsFound(
         string authorUserName,
         string authorUserRole,
         string visitorUserName,
@@ -110,11 +110,11 @@ public class BlogReadPageTest : BaseTest
             banUserResult.Should().Be(ServiceResultCode.Success);
         }
 
-        async Task<Blog> SetUpBlogCreated(IServiceProvider serviceProvider)
+        async Task<Core.Models.Thread> SetUpThreadCreated(IServiceProvider serviceProvider)
         {
             var faker = new Faker();
             await using var dbContext = CreateDbContext(serviceProvider);
-            var blog = new Blog
+            var thread = new Core.Models.Thread
             {
                 AuthorUserName = authorUserName,
                 Body = faker.Lorem.Paragraph(),
@@ -122,17 +122,17 @@ public class BlogReadPageTest : BaseTest
                 Introduction = faker.Lorem.Sentences(2),
             };
 
-            dbContext.Blog.Add(blog);
+            dbContext.Thread.Add(thread);
             await dbContext.SaveChangesAsync();
 
-            return blog;
+            return thread;
         }
 
         var faker = new Faker();
         await using var scope = CreateScope();
 
         await EnsureUserExists(scope.ServiceProvider, authorUserName, authorUserRole);
-        var blog = await SetUpBlogCreated(scope.ServiceProvider);
+        var thread = await SetUpThreadCreated(scope.ServiceProvider);
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
@@ -160,17 +160,17 @@ public class BlogReadPageTest : BaseTest
             pageModel.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(authenticationType: null));
         }
 
-        var pageModelResult = await pageModel.OnGetAsync(blog.Id);
+        var pageModelResult = await pageModel.OnGetAsync(thread.Id);
 
         pageModelResult.Should().BeOfType<PageResult>();
-        pageModel.DetailedBlogDto.Title.Should().BeEquivalentTo(blog.Title);
-        pageModel.DetailedBlogDto.Introduction.Should().BeEquivalentTo(blog.Introduction);
-        pageModel.DetailedBlogDto.Content.Should().BeEquivalentTo(blog.Body);
-        pageModel.DetailedBlogDto.AuthorName.Should().BeEquivalentTo(blog.AuthorUserName);
+        pageModel.DetailedThreadDto.Title.Should().BeEquivalentTo(thread.Title);
+        pageModel.DetailedThreadDto.Introduction.Should().BeEquivalentTo(thread.Introduction);
+        pageModel.DetailedThreadDto.Content.Should().BeEquivalentTo(thread.Body);
+        pageModel.DetailedThreadDto.AuthorName.Should().BeEquivalentTo(thread.AuthorUserName);
 
         var isVisitorUserAuthor = visitorUserName == authorUserName;
         var isAdminOrModerator = visitorUserRole is "admin" or "moderator";
-        var expectedUserInfo = new CurrentUserInfo
+        var expectedUserInfo = new UserPermissionsDto
         {
             UserName = visitorUserName,
             AllowedToHidePost = isVisitorUserAuthenticated && isAdminOrModerator && authorUserRole != "admin",
@@ -178,6 +178,6 @@ public class BlogReadPageTest : BaseTest
             AllowedToCreateComment = isVisitorUserAuthenticated && !isVisitorUserBanned,
         };
 
-        pageModel.CurrentUserInfo.Should().BeEquivalentTo(expectedUserInfo);
+        pageModel.UserPermissionsDto.Should().BeEquivalentTo(expectedUserInfo);
     }
 }

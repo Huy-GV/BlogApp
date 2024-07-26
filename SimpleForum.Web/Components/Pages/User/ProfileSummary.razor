@@ -7,8 +7,8 @@
         @if (!AreProfilePictureOptionsDisplayed)
         {
             <button class="edit-profile-picture-btn" @onclick='ShowProfilePictureOptions'>Edit</button>
-        } 
-        else 
+        }
+        else
         {
             <div class="profile-btn-container">
                 <button class="cancel-btn" @onclick='HideProfilePictureOptions'>Cancel</button>
@@ -62,7 +62,7 @@
                 </div>
 
             </EditForm>
-        } 
+        }
         else
         {
             <p>@UserProfile.Description</p>
@@ -71,25 +71,25 @@
     <div class="stats">
         <p class="card-title">User Activity</p>
         <ul>
-            <li>Total blogs: @UserProfile.BlogCount</li>
-            <li>Total comments: @UserProfile.CommentCount</li>
-            <li>Blogs in @DateTime.Now.Year: @UserProfile.BlogCountCurrentYear</li>
-            <li>Total views in @DateTime.Now.Year: @UserProfile.ViewCountCurrentYear</li>
+            <li>Total thread count: @UserProfile.ThreadCount</li>
+            <li>Total comment count: @UserProfile.CommentCount</li>
+            <li>Threads in @DateTime.Now.Year: @UserProfile.ThreadCountCurrentYear</li>
+            @* <li>Total views in @DateTime.Now.Year: @UserProfile.ViewCountCurrentYear</li> *@
         </ul>
     </div>
 
 </main>
 
-<section class="blog-container">
+<section class="thread-container">
     <h1>History: </h1>
-    @foreach (var group in UserProfile.BlogsGroupedByYear)
+    @foreach (var group in UserProfile.ThreadsGroupedByYear)
     {
-        <p class="blog-year">@group.Key</p>
-        foreach(var blog in group.Value)
+        <p class="thread-year">@group.Key</p>
+        foreach(var thread in group.Value)
         {
-            <span class="blog" @onclick='() => NavigateTo($"/Blogs/Read?id={blog.Id}")'>
-                <p class="title">@blog.Title</p>
-                <p>@blog.CreationTime</p>
+            <span class="thread" @onclick='() => NavigateTo($"/Threads/Read?id={thread.Id}")'>
+                <p class="title">@thread.Title</p>
+                <p>@thread.CreationTime</p>
             </span>
         }
     }
