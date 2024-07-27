@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +38,7 @@ public class IndexModel : RichPageModelBase<IndexModel>
                 UserName = x.UserName!,
                 RegistrationDate = x.RegistrationDate == null
                     ? "a long time ago"
-                    : x.RegistrationDate.Value.ToString(@"d/M/yyy"),
+                    : x.RegistrationDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
             })
             .ToListAsync();
 

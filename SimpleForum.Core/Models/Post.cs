@@ -19,7 +19,9 @@ public abstract class Post<TId>
 
     public ApplicationUser AuthorUser { get; set; } = null!;
 
-    public bool IsHidden { get; set; } = false;
+    public int? ReportTicketId { get; set; }
+
+    public ReportTicket? ReportTicket { get; set; }
 
     public bool ToBeDeleted { get; set; } = false;
 }

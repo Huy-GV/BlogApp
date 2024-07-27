@@ -20,24 +20,24 @@ public partial class HiddenCommentContainer : RichComponentBase
     [Inject]
     public ICommentReader CommentReader { get; set; } = null!;
 
-    private IReadOnlyCollection<HiddenCommentDto> HiddenComments { get; set; } = [];
+    private IReadOnlyCollection<HiddenCommentDto> ReportedComments { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        await LoadHiddenComments();
+        await LoadReportedComments();
     }
 
-    private async Task LoadHiddenComments()
+    private async Task LoadReportedComments()
     {
-        var (result, hiddenComments) = await CommentReader.GetHiddenCommentsAsync(UserName, CurrentUserName);
+        var (result, reportedComments) = await CommentReader.GetReportedCommentsAsync(UserName, CurrentUserName);
         if (result != ServiceResultCode.Success)
         {
             this.NavigateOnError(result);
             return;
         }
 
-        HiddenComments = hiddenComments;
+        ReportedComments = reportedComments;
     }
 
     private async Task ForciblyDeleteCommentAsync(int commentId)
@@ -49,18 +49,18 @@ public partial class HiddenCommentContainer : RichComponentBase
             return;
         }
 
-        await LoadHiddenComments();
+        await LoadReportedComments();
     }
 
-    private async Task UnhideCommentAsync(int commentId)
+    private async Task UnhideCommentAsync(int reportTicketId)
     {
-        var result = await PostModerationService.UnhideCommentAsync(commentId, CurrentUserName);
+        var result = await PostModerationService.CancelReportTicket(reportTicketId, CurrentUserName);
         if (result != ServiceResultCode.Success)
         {
             this.NavigateOnError(result);
             return;
         }
 
-        await LoadHiddenComments();
+        await LoadReportedComments();
     }
 }

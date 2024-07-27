@@ -1,5 +1,10 @@
 @import "../base.scss";
 
+
+.reported-post {
+  color: red !important;
+}
+
 .thread-container {
   display: flex;
   flex-direction: column;
@@ -62,7 +67,9 @@
 
 .thread-info-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 
   .thread-author {
     margin-left: 0.1rem;

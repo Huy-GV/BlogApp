@@ -47,21 +47,19 @@ internal class PostModerationService : IPostModerationService
 
     private static void CensorDeletedComment(Comment comment)
     {
-        comment.IsHidden = false;
         comment.Body = ReplacementText.RemovedContent;
         comment.ToBeDeleted = true;
     }
 
-    private static void CensorDeletedThread(Thread thread)
+    private static void CensorDeletedThread(Models.Thread thread)
     {
-        thread.IsHidden = false;
         thread.ToBeDeleted = true;
         thread.Title = ReplacementText.RemovedContent;
         thread.Introduction = ReplacementText.RemovedContent;
         thread.Body = ReplacementText.RemovedContent;
     }
 
-    public async Task<ServiceResultCode> HideCommentAsync(int commentId, string userName)
+    public async Task<ServiceResultCode> ReportCommentAsync(int commentId, string requestUserName)
     {
         var comment = await _dbContext.Comment
             .Include(x => x.AuthorUser)
@@ -73,19 +71,27 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.NotFound;
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToHidePostAsync(userName, comment.AuthorUserName))
+        if (!await _userPermissionValidator.IsUserAllowedToReportPostAsync(requestUserName, comment.AuthorUserName))
         {
-            _logger.LogError("Comment with ID {commentId} cannot be hidden by user {userName}", commentId, userName);
+            _logger.LogError("Comment with ID {commentId} cannot be hidden by user {userName}", commentId, requestUserName);
             return ServiceResultCode.Unauthorized;
         }
 
-        comment.IsHidden = true;
+        var reportTicket = new ReportTicket
+        {
+            CreationDate = DateTime.UtcNow,
+            CommentId = commentId,
+            ReportingUserName = requestUserName
+        };
+
+        _dbContext.ReportTicket.Add(reportTicket);
+        comment.ReportTicket = reportTicket;
         await _dbContext.SaveChangesAsync();
 
         return ServiceResultCode.Success;
     }
 
-    public async Task<ServiceResultCode> HideThreadAsync(int threadId, string userName)
+    public async Task<ServiceResultCode> ReportThreadAsync(int threadId, string requestUserName)
     {
         var thread = await _dbContext.Thread
             .Include(x => x.AuthorUser)
@@ -97,61 +103,48 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.NotFound;
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToHidePostAsync(userName, thread.AuthorUserName))
+        if (!await _userPermissionValidator.IsUserAllowedToReportPostAsync(requestUserName, thread.AuthorUserName))
         {
-            _logger.LogError(message: "Thread with ID {threadId} cannot be hidden by user {userName}", threadId, userName);
+            _logger.LogError(message: "Thread with ID {threadId} cannot be hidden by user {userName}", threadId, requestUserName);
             return ServiceResultCode.Unauthorized;
         }
 
-        thread.IsHidden = true;
+        var reportTicket = new ReportTicket
+        {
+            CreationDate = DateTime.UtcNow,
+            ThreadId = threadId,
+            ReportingUserName = requestUserName
+        };
+
+        _dbContext.ReportTicket.Add(reportTicket);
+        thread.ReportTicket = reportTicket;
+
         await _dbContext.SaveChangesAsync();
 
         return ServiceResultCode.Success;
     }
 
-    public async Task<ServiceResultCode> UnhideCommentAsync(int commentId, string userName)
+    public async Task<ServiceResultCode> CancelReportTicket(int reportTicketId, string userName)
     {
-        var comment = await _dbContext.Comment
-            .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == commentId);
+        var reportTicket = await _dbContext.ReportTicket
+            .Include(x => x.ReportingUser)
+            .FirstOrDefaultAsync(x => x.Id == reportTicketId);
 
-        if (comment == null)
+        if (reportTicket == null)
         {
-            _logger.LogError("Comment with ID {commentId} not found", commentId);
+            _logger.LogError("Report ticket with ID {reportTicketId} not found", reportTicketId);
             return ServiceResultCode.NotFound;
         }
 
         if (!await IsUserInAdminRole(userName))
         {
-            _logger.LogError("Comment with ID {commentId} cannot be un-hidden by user {userName}", commentId, userName);
+            _logger.LogError(message: "Report ticket with ID {reportTicketId} cannot be cancelled by user {userName}", reportTicketId, userName);
             return ServiceResultCode.Unauthorized;
         }
 
-        comment.IsHidden = false;
-        await _dbContext.SaveChangesAsync();
 
-        return ServiceResultCode.Success;
-    }
+        _dbContext.ReportTicket.Remove(reportTicket);
 
-    public async Task<ServiceResultCode> UnhideThreadAsync(int threadId, string userName)
-    {
-        var thread = await _dbContext.Thread
-            .Include(x => x.AuthorUser)
-            .FirstOrDefaultAsync(x => x.Id == threadId);
-
-        if (thread == null)
-        {
-            _logger.LogError("thread with ID {threadId} not found", threadId);
-            return ServiceResultCode.NotFound;
-        }
-
-        if (!await IsUserInAdminRole(userName))
-        {
-            _logger.LogError(message: "Thread with ID {threadId} cannot be un-hidden by user {userName}", threadId, userName);
-            return ServiceResultCode.Unauthorized;
-        }
-
-        thread.IsHidden = false;
         await _dbContext.SaveChangesAsync();
 
         return ServiceResultCode.Success;
@@ -166,6 +159,7 @@ internal class PostModerationService : IPostModerationService
 
         var comment = await _dbContext.Comment
             .Include(x => x.AuthorUser)
+            .Include(x => x.ReportTicket)
             .FirstOrDefaultAsync(x => x.Id == commentId);
 
         if (comment == null)
@@ -173,7 +167,7 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.NotFound;
         }
 
-        if (!comment.IsHidden)
+        if (comment.ReportTicketId == null)
         {
             _logger.LogError("Comment with ID {commentId} must be hidden before being forcibly deleted", commentId);
             return ServiceResultCode.Unauthorized;
@@ -183,6 +177,7 @@ internal class PostModerationService : IPostModerationService
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
             CensorDeletedComment(comment);
+            comment.ReportTicket!.ActionDate = DateTime.UtcNow;
             _postDeletionScheduler.ScheduleCommentDeletion(
                 new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
                 commentId);
@@ -212,9 +207,9 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.NotFound;
         }
 
-        if (!thread.IsHidden)
+        if (thread.ReportTicketId == null)
         {
-            _logger.LogError("Thread with ID {threadId} must be hidden before being forcibly deleted", threadId);
+            _logger.LogError("Thread with ID {threadId} must be reported before being forcibly deleted", threadId);
             return ServiceResultCode.Unauthorized;
         }
 

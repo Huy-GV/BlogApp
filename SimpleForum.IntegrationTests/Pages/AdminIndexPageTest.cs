@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Models;
 using SimpleForum.IntegrationTests.Fixtures;
-using System.Diagnostics;
 using System.Security.Claims;
 using Xunit;
 using IndexModel = SimpleForum.Web.Pages.Admin.IndexModel;

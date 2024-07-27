@@ -52,7 +52,7 @@ public class EditModel : RichPageModelBase<EditModel>
 
         if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
                 user.UserName ?? string.Empty,
-                thread.IsHidden,
+                thread.ReportTicket != null,
                 thread.AuthorUserName))
         {
             return Forbid();

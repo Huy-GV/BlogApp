@@ -11,11 +11,12 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     {
     }
 
-    public DbSet<Thread> Thread { get; set; } = null!;
-    public DbSet<Comment> Comment { get; set; } = null!;
-    public DbSet<BanTicket> BanTicket { get; set; } = null!;
-    public DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+    public DbSet<Thread> Thread => Set<Thread>();
+    public DbSet<Comment> Comment => Set<Comment>();
+    public DbSet<BanTicket> BanTicket => Set<BanTicket>();
+    public DbSet<ReportTicket> ReportTicket => Set<ReportTicket>();
+    public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -35,14 +36,49 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
                 .HasPrincipalKey(x => x.UserName)
                 .HasForeignKey(x => x.AuthorUserName)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            entity
+                .HasOne(x => x.ReportTicket)
+                .WithOne()
+                .HasForeignKey<Thread>(x => x.ReportTicketId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
-        builder.Entity<Comment>()
-            .HasOne(x => x.AuthorUser)
-            .WithMany()
-            .HasPrincipalKey(x => x.UserName)
-            .HasForeignKey(x => x.AuthorUserName)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<Comment>(entity =>
+        {
+            entity
+                .HasOne(x => x.AuthorUser)
+                .WithMany()
+                .HasPrincipalKey(x => x.UserName)
+                .HasForeignKey(x => x.AuthorUserName)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity
+                .HasOne(x => x.ReportTicket)
+                .WithOne()
+                .HasForeignKey<Comment>(x => x.ReportTicketId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<ReportTicket>(entity =>
+        {
+            var threadIdColumnName = $"[{nameof(Models.ReportTicket.ThreadId)}]";
+            var commentIdColumnName = $"[{nameof(Models.ReportTicket.CommentId)}]";
+
+            var postIdCheckConstraint = @$"
+                ({threadIdColumnName} IS NOT NULL AND {commentIdColumnName} IS NULL) OR
+                ({threadIdColumnName} IS NULL AND {commentIdColumnName} IS NOT NULL)";
+            entity.ToTable(x => x.HasCheckConstraint("PostId", postIdCheckConstraint));
+
+            entity
+                .HasOne(x => x.ReportingUser)
+                .WithMany()
+                .HasPrincipalKey(x => x.UserName)
+                .HasForeignKey(x => x.ReportingUserName)
+                .IsRequired();
+        });
 
         builder.Entity<BanTicket>()
             .HasOne(x => x.AppUser)

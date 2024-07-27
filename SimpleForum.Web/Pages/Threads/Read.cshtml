@@ -20,13 +20,17 @@
 <main class="thread-container">
     <article class="thread">
         @{
-            var threadContentClass = Model.DetailedThreadDto.IsHidden
-                ? "suspended-post"
+            var threadContentClass = Model.DetailedThreadDto.IsReported
+                ? "reported-post"
                 : string.Empty;
         }
         <div class="thread-info-container">
-            <span class="thread-author">@Model.DetailedThreadDto.AuthorName</span>
-            <span class="thread-info">, @Model.DetailedThreadDto.CreationTime.ToString("dd MMMM yyyy")</span>
+            @if (Model.DetailedThreadDto.IsReported && Model.UserPermissionsDto.AllowedToReportPost)
+            {
+                <span class="thread-author @threadContentClass">Reported by @Model.DetailedThreadDto.ReportTicket!.ReportingUserName on @Model.DetailedThreadDto.ReportTicket.ReportDate</span>
+            }
+
+            <span class="thread-author">@Model.DetailedThreadDto.AuthorName, @Model.DetailedThreadDto.CreationTime.ToString("dd MMMM yyyy")</span>
             @{
                 if (Model.DetailedThreadDto.IsModified)
                 {
@@ -35,7 +39,7 @@
             }
         </div>
 
-        <p class="title @threadContentClass">@Model.DetailedThreadDto.Title</p>
+        <p class="title">@Model.DetailedThreadDto.Title</p>
         <hr>
         <div class="thread-option-container">
             @{
@@ -54,7 +58,7 @@
                     </a>
                 }
 
-                if (userInfo.AllowedToHidePost && !Model.DetailedThreadDto.IsHidden)
+                if (userInfo.AllowedToReportPost && !Model.DetailedThreadDto.IsReported)
                 {
                     <form asp-page-handler="HideThread"
                           asp-route-threadId="@Model.DetailedThreadDto.Id"
@@ -65,13 +69,13 @@
             }
         </div>
 
-        <p class="thread-description @threadContentClass">@Model.DetailedThreadDto.Introduction</p>
+        <p class="thread-description">@Model.DetailedThreadDto.Introduction</p>
         <img alt="Thread Cover Image" src="@Model.DetailedThreadDto.CoverImageUri" asp-append-version="true">
 
         @{
             foreach (var paragraph in Model.DetailedThreadDto.Content.Split(Environment.NewLine))
             {
-                <p class="thread-content @threadContentClass">@paragraph</p>
+                <p class="thread-content">@paragraph</p>
             }
         }
     </article>

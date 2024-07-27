@@ -50,7 +50,6 @@ public class CommentContentManager : ICommentContentManager
             user.UserName == comment.AuthorUser.UserName;
 
         if (!isCurrentUserAuthor ||
-            comment.IsHidden ||
             await _banTicketReader.BanTicketExistsAsync(userName))
         {
             return ServiceResultCode.Unauthorized;
@@ -89,7 +88,7 @@ public class CommentContentManager : ICommentContentManager
 
         if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
                 userName,
-                comment.IsHidden,
+                comment.ReportTicketId != null,
                 comment.AuthorUserName))
         {
             return ServiceResultCode.Unauthorized;

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -44,16 +45,16 @@ internal class UserProfileReader : IUserProfileReader
             .ToList();
 
         var threadsGroupedByYear = threads
-            .GroupBy(b => b.CreationTime.Year)
+            .GroupBy(x => x.CreationTime.Year)
             .OrderByDescending(g => g.Key)
             .ToDictionary(
                 group => (uint)group.Key,
-                group => group.Select(b => new MinimalThreadDto
+                group => group.Select(x => new MinimalThreadDto
                 {
-                    Id = b.Id,
-                    Title = b.Title,
-                    ViewCount = b.ViewCount,
-                    CreationTime = b.CreationTime,
+                    Id = x.Id,
+                    Title = x.Title,
+                    ViewCount = x.ViewCount,
+                    CreationTime = x.CreationTime,
                 })
             .ToList());
 
@@ -83,7 +84,7 @@ internal class UserProfileReader : IUserProfileReader
                 .Sum(thread => thread.ViewCount),
             RegistrationDate = user.RegistrationDate == null
                     ? "a long time ago"
-                    : user.RegistrationDate.Value.ToString("dd/MMMM/yyyy"),
+                    : user.RegistrationDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
         };
 
         return (ServiceResultCode.Success, profileDto);

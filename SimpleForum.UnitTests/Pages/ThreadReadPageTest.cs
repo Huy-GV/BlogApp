@@ -71,7 +71,7 @@ public class ThreadReadPageTest
         var threadId = faker.Random.Int(0, int.MaxValue);
 
         _mockThreadReader
-            .Setup(x => x.GetThreadAsync(threadId))
+            .Setup(x => x.GetThreadAsync(threadId, string.Empty))
             .ReturnsAsync((ServiceResultCode.NotFound, null));
 
         var result = await pageModel.OnGetAsync(threadId);

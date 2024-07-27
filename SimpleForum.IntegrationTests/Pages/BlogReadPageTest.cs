@@ -54,7 +54,7 @@ public class ThreadReadPageTest : BaseTest
     [InlineData("Author4", "", "Author4", "", true, false)]
     [InlineData("Author5", "", "moderator", "moderator", true, false)]
     [InlineData("Author6", "", "admin", "admin", true, false)]
-    [InlineData("admin", "", "moderator", "moderator", true, false)]
+    [InlineData("admin", "admin", "moderator", "moderator", true, false)]
     private async Task GetThread_ShouldReturnThreadPage_IfThreadIsFound(
         string authorUserName,
         string authorUserRole,
@@ -173,7 +173,7 @@ public class ThreadReadPageTest : BaseTest
         var expectedUserInfo = new UserPermissionsDto
         {
             UserName = visitorUserName,
-            AllowedToHidePost = isVisitorUserAuthenticated && isAdminOrModerator && authorUserRole != "admin",
+            AllowedToReportPost = isVisitorUserAuthenticated && isAdminOrModerator && authorUserRole != "admin",
             AllowedToModifyOrDeletePost = isVisitorUserAuthenticated && isVisitorUserAuthor,
             AllowedToCreateComment = isVisitorUserAuthenticated && !isVisitorUserBanned,
         };

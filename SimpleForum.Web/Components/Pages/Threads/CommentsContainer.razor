@@ -51,7 +51,7 @@
 
         @foreach (var comment in CommentDtos)
         {
-            <article class="comment" data-id="@comment.Id">
+            <article class="comment" data-id="@comment.Id" id="comment-@comment.Id">
                 @{
                     var authorClass = comment.AuthorName == ThreadAuthorName
                         ? "thread-author"
@@ -64,8 +64,8 @@
                         <span class="@authorClass">@comment.AuthorName</span>
                         @{
                             var timestampText = comment.IsModified
-                                ? $"Updated {comment.LastUpdateTime.ToShortDateString()}"
-                                : $"On {@comment.CreationTime.ToShortDateString()}";
+                                ? $"Updated {comment.LastUpdateTime.ToString("dd\\/MM\\/yyyy")}"
+                                : $"On {@comment.CreationTime.ToString("dd\\/MM\\/yyyy")}";
                             <span>@timestampText</span>
                         }
                     </div>
@@ -75,16 +75,16 @@
                     @{
                         if (AllowedToModifyComment[comment.Id] &&
                             !IsCommentEditorDisplayed[comment.Id] &&
-                            !comment.IsHidden)
+                            !comment.IsReported)
                         {
                             <form method="post" @onsubmit="(async () => await DeleteCommentAsync(comment.Id))">
                                 <button class="delete-comment">Delete</button>
                             </form>
                         }
 
-                        if (UserPermissionsDto.AllowedToHidePost &&
+                        if (UserPermissionsDto.AllowedToReportPost &&
                             comment.AuthorName != UserPermissionsDto.UserName &&
-                            !comment.IsHidden &&
+                            !comment.IsReported &&
                             !isCommentEditorDisplayed)
                         {
                             <form method="post" @onsubmit="(async () => await HideCommentAsync(comment.Id))">
@@ -92,7 +92,7 @@
                             </form>
                         }
 
-                        if (AllowedToModifyComment[comment.Id] && !comment.IsHidden)
+                        if (AllowedToModifyComment[comment.Id] && !comment.IsReported)
                         {
                             if (!isCommentEditorDisplayed)
                             {
@@ -140,9 +140,14 @@
                     }
                 </div>
                 @{
-                    var postClass = comment.IsHidden || comment.IsDeleted
-                    ? "suspended-post"
-                    : string.Empty;
+                    var postClass = comment.IsReported || comment.IsDeleted
+                        ? "reported-post"
+                        : string.Empty;
+                }
+
+                @if (comment.IsReported && UserPermissionsDto.AllowedToReportPost)
+                {
+                    <p class="@postClass">Reported by: @comment.ReportingUserName on @comment.ReportDate!.Value.ToString("dd\\/MM\\/yyyy")</p>
                 }
 
                 @if (!isCommentEditorDisplayed)
@@ -152,6 +157,7 @@
                         <p class="comment-text @postClass">@paragraph</p>
                     }
                 }
+
             </article>
         }
 

@@ -1,7 +1,7 @@
-.smooth-transition, .link, .clickable-card, .button, .secondary-button, .primary-button {
+.smooth-transition, .link, .user-container .user-card .details-btn, .user-container .user-card .role-button, .user-container .user-card .remove-role, .user-container .user-card .assign-role, .clickable-card, .button, .secondary-button, .primary-button {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, .link:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover {
+.smooth-transition:hover, .link:hover, .user-container .user-card .details-btn:hover, .user-container .user-card .role-button:hover, .user-container .user-card .remove-role:hover, .user-container .user-card .assign-role:hover, .clickable-card:hover, .button:hover, .secondary-button:hover, .primary-button:hover {
   transition: 180ms ease-in;
 }
 
@@ -47,11 +47,11 @@
   cursor: pointer;
 }
 
-.link {
+.link, .user-container .user-card .details-btn, .user-container .user-card .role-button, .user-container .user-card .remove-role, .user-container .user-card .assign-role {
   margin: 0.1rem;
   text-decoration: none;
 }
-.link:hover {
+.link:hover, .user-container .user-card .details-btn:hover, .user-container .user-card .role-button:hover, .user-container .user-card .remove-role:hover, .user-container .user-card .assign-role:hover {
   cursor: pointer;
 }
 
@@ -91,36 +91,29 @@
   padding: 0.5rem 0.6rem;
   display: flex;
   flex-direction: row;
-  gap: 0.3rem;
   width: 100%;
+  align-items: center;
 }
-.user-container .user-card .button, .user-container .user-card .primary-button, .user-container .user-card .secondary-button {
-  color: white;
-  font-weight: 700;
-  border-radius: 5px;
+.user-container .user-card .role-button, .user-container .user-card .remove-role, .user-container .user-card .assign-role {
+  padding: 0.5rem;
+  color: grey;
+  background: none;
   border: none;
-  padding: 1rem 0.6rem;
-  min-width: 10rem;
+  font-weight: 700;
 }
-.user-container .user-card .button:hover, .user-container .user-card .primary-button:hover, .user-container .user-card .secondary-button:hover {
-  filter: brightness(0.6);
-  cursor: pointer;
+.user-container .user-card .assign-role:hover {
+  color: green;
 }
-@media screen and (max-width: 700px) {
-  .user-container .user-card .button, .user-container .user-card .primary-button, .user-container .user-card .secondary-button {
-    padding-block: 1rem;
-  }
-}
-.user-container .user-card .assign-role {
-  background-color: green;
-}
-.user-container .user-card .remove-role {
-  background-color: red;
+.user-container .user-card .remove-role:hover {
+  color: red;
 }
 .user-container .user-card .details-btn {
-  padding: 1rem;
-  color: blue;
+  padding: 0.5rem;
+  color: grey;
   font-weight: 700;
+}
+.user-container .user-card .details-btn:hover {
+  color: rgb(99, 0, 148);
 }
 @media screen and (max-width: 700px) {
   .user-container .user-card {

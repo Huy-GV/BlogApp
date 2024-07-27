@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -6,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data;
-using SimpleForum.Core.Data.Constants;
 using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Models;
 using SimpleForum.Core.ReadServices;
@@ -46,7 +44,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        var (result, threadDto) = await _threadReader.GetThreadAsync(id);
+        var (result, threadDto) = await _threadReader.GetThreadAsync(id, User.Identity?.Name ?? string.Empty);
         if (result != ServiceResultCode.Success)
         {
             return this.NavigateOnError(result);
@@ -60,16 +58,17 @@ public class ReadModel : RichPageModelBase<ReadModel>
             ? await UserManager.GetRolesAsync(currentUser)
             : [];
 
+        var isUserAllowedToUpdateOrDeletePost = await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
+                currentUserName,
+                DetailedThreadDto.IsReported,
+                DetailedThreadDto.AuthorName);
+
+        var isUserAllowedToReportPost = await _userPermissionValidator.IsUserAllowedToReportPostAsync(currentUserName, DetailedThreadDto.AuthorName);
         UserPermissionsDto = new UserPermissionsDto
         {
             UserName = currentUserName,
-            AllowedToHidePost = IsAuthenticated && currentUserRoles
-                                            .Intersect([Roles.AdminRole, Roles.ModeratorRole])
-                                            .Any(),
-            AllowedToModifyOrDeletePost = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
-                currentUserName,
-                DetailedThreadDto.IsHidden,
-                DetailedThreadDto.AuthorName),
+            AllowedToReportPost = IsAuthenticated && isUserAllowedToReportPost,
+            AllowedToModifyOrDeletePost = IsAuthenticated && isUserAllowedToUpdateOrDeletePost,
             AllowedToCreateComment = IsAuthenticated && await _userPermissionValidator.IsUserAllowedToCreatePostAsync(currentUserName),
         };
 
@@ -90,7 +89,7 @@ public class ReadModel : RichPageModelBase<ReadModel>
         }
 
         return this.NavigateOnResult(
-            await _postModerationService.HideThreadAsync(threadId, user.UserName ?? string.Empty),
+            await _postModerationService.ReportThreadAsync(threadId, user.UserName ?? string.Empty),
             () => RedirectToPage("/Threads/Read", new { id = threadId }));
     }
 

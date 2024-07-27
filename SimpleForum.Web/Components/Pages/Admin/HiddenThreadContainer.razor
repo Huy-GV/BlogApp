@@ -1,7 +1,7 @@
 ﻿@inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-@if (HiddenThreads.Count == 0)
+@if (ReportedThreads.Count == 0)
 {
     <h2 class="middle-aligned">Reported Threads</h2>
     <div class="middle-aligned">
@@ -10,33 +10,22 @@
 }
 else
 {
-    <h2 class="middle-aligned">Reported Threads (@HiddenThreads.Count)</h2>
-    <section class="hidden-thread-container">
+    <h2 class="middle-aligned">Reported Threads (@ReportedThreads.Count)</h2>
+    <section>
         @{
-            foreach (var thread in HiddenThreads)
+            foreach (var thread in ReportedThreads)
             {
-                <div class="hidden-thread">
-                    <h2>@thread.Title</h2>
-
-                    <h4>Introduction</h4>
-                    <hr />
-                    <p>@thread.Introduction</p>
-
-                    <h4>Content</h4>
-                    <hr />
-                    @{
-                        foreach (var paragraph in thread.Content.Split(Environment.NewLine))
-                        {
-                            <p>@paragraph</p>
-                        }
-                    }
-
-                    <form method="post" @onsubmit="(async () => await UnhideThreadAsync(thread.Id))">
-                        <button class="un-hide-post">Unhide Thread</button>
-                    </form>
-                    <form method="post" @onsubmit="(async () => await ForciblyDeleteThreadAsync(thread.Id))">
-                        <button class="delete-post">Delete Thread</button>
-                    </form>
+                <div class="reported-post">
+                    <p>Title: @thread.Title</p>
+                    <p>Reporting user: @thread.ReportingUserName</p>
+                    <p>Thread creation date: @thread.CreationTime.ToString("dd\\/MM\\/yyyy")</p>
+                    <p>Report date: @thread.ReportDate.ToString("dd\\/MM\\/yyyy")</p>
+                    <hr>
+                    <div class="btn-container">
+                        <a class="post-link" href="/Threads/Read?id=@thread.Id">Thread Link</a>
+                        <button @onclick="(async () => await CancelThreadReportTicket(thread.ReportTicketId))" class="un-hide-post">Unhide Thread</button>
+                        <button @onclick="(async () => await ForciblyDeleteThreadAsync(thread.Id))" class="delete-post">Delete Thread</button>
+                    </div>
                 </div>
             }
         }

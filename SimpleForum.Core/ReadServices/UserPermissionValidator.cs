@@ -31,7 +31,7 @@ internal class UserPermissionValidator : IUserPermissionValidator
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<bool> IsUserAllowedToHidePostAsync(string userName, string postAuthorUserName)
+    public async Task<bool> IsUserAllowedToReportPostAsync(string userName, string postAuthorUserName)
     {
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
@@ -87,7 +87,7 @@ internal class UserPermissionValidator : IUserPermissionValidator
             x =>
                 !string.IsNullOrWhiteSpace(x.AuthorUserName) &&
                 userName == x.AuthorUserName &&
-                !x.IsHidden &&
+                x.ReportTicketId == null &&
                 allowedToCreatePost);
     }
 
@@ -96,7 +96,7 @@ internal class UserPermissionValidator : IUserPermissionValidator
         return !await _banTicketReader.BanTicketExistsAsync(userName);
     }
 
-    public async Task<bool> IsUserAllowedToReviewHiddenPostAsync(string userName)
+    public async Task<bool> IsUserAllowedToReviewReportedPostAsync(string userName)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var role = await dbContext.Roles
@@ -105,7 +105,8 @@ internal class UserPermissionValidator : IUserPermissionValidator
 
         var user = await dbContext.Users
             .Select(x => new { x.UserName, x.Id})
-            .FirstAsync(x => x.UserName == userName);
+            .FirstOrDefaultAsync(x => x.UserName == userName);
+
         if (user == null)
         {
             return false;
@@ -114,6 +115,30 @@ internal class UserPermissionValidator : IUserPermissionValidator
         var userRole = await dbContext.UserRoles
             .Select(x => new { x.RoleId, x.UserId })
             .Where(x => x.UserId == user.Id && x.RoleId == role.Id)
+            .FirstOrDefaultAsync();
+
+        return userRole != null;
+    }
+
+    public async Task<bool> IsUserAllowedToViewReportedPostAsync(string userName)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var roleIds = dbContext.Roles
+            .Where(r => r.Name == Roles.AdminRole || r.Name == Roles.ModeratorRole)
+            .Select(x => x.Id);
+
+        var user = await dbContext.Users
+            .Select(x => new { x.UserName, x.Id})
+            .FirstOrDefaultAsync(x => x.UserName == userName);
+
+        if (user == null)
+        {
+            return false;
+        }
+
+        var userRole = await dbContext.UserRoles
+            .Select(x => new { x.RoleId, x.UserId })
+            .Where(x => x.UserId == user.Id && roleIds.Contains(x.RoleId))
             .FirstOrDefaultAsync();
 
         return userRole != null;

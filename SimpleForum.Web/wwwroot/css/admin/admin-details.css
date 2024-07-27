@@ -1,15 +1,15 @@
-.smooth-transition, .link, .clickable-card, .button, .delete-post, .un-hide-post, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
+.smooth-transition, .link, .reported-post .btn-container .delete-post, .reported-post .btn-container .un-hide-post, .reported-post .btn-container .post-link, .clickable-card, .button, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, .link:hover, .clickable-card:hover, .button:hover, .delete-post:hover, .un-hide-post:hover, .cancel-btn:hover, .ban-btn:hover, .confirm-ban-btn:hover, .secondary-button:hover, .primary-button:hover {
+.smooth-transition:hover, .link:hover, .reported-post .btn-container .delete-post:hover, .reported-post .btn-container .un-hide-post:hover, .reported-post .btn-container .post-link:hover, .clickable-card:hover, .button:hover, .cancel-btn:hover, .ban-btn:hover, .confirm-ban-btn:hover, .secondary-button:hover, .primary-button:hover {
   transition: 180ms ease-in;
 }
 
-.button, .delete-post, .un-hide-post, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
+.button, .cancel-btn, .ban-btn, .confirm-ban-btn, .secondary-button, .primary-button {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
-.button:hover, .delete-post:hover, .un-hide-post:hover, .cancel-btn:hover, .ban-btn:hover, .confirm-ban-btn:hover, .secondary-button:hover, .primary-button:hover {
+.button:hover, .cancel-btn:hover, .ban-btn:hover, .confirm-ban-btn:hover, .secondary-button:hover, .primary-button:hover {
   cursor: pointer;
 }
 
@@ -47,11 +47,11 @@
   cursor: pointer;
 }
 
-.link {
+.link, .reported-post .btn-container .delete-post, .reported-post .btn-container .un-hide-post, .reported-post .btn-container .post-link {
   margin: 0.1rem;
   text-decoration: none;
 }
-.link:hover {
+.link:hover, .reported-post .btn-container .delete-post:hover, .reported-post .btn-container .un-hide-post:hover, .reported-post .btn-container .post-link:hover {
   cursor: pointer;
 }
 
@@ -61,22 +61,64 @@ h1 {
   font-size: 2rem;
 }
 
-.middle-aligned, .hidden-thread-container {
+.middle-aligned, .reported-post {
   display: flex;
   margin-block: 2rem;
   flex-direction: column;
   margin-left: 20%;
 }
 
-.hidden-thread-container {
+.reported-post {
   background-color: white;
   border-radius: 10px;
   border: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
-
-.hidden-thread {
-  padding: 0.2rem;
+.reported-post p {
+  padding-block: 0;
+  margin-block: 0.6rem;
+}
+.reported-post .btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+.reported-post .btn-container .post-link {
+  display: inline-block;
+  color: grey;
+  border: none;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.3rem;
+  background: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  line-height: inherit;
+}
+.reported-post .btn-container .post-link:hover {
+  color: rgb(99, 0, 148);
+}
+.reported-post .btn-container .un-hide-post {
+  color: grey;
+  border: none;
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.3rem;
+  background: none;
+}
+.reported-post .btn-container .un-hide-post:hover {
+  color: lightgreen;
+}
+.reported-post .btn-container .delete-post {
+  color: grey;
+  border: none;
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.3rem;
+  background: none;
+}
+.reported-post .btn-container .delete-post:hover {
+  color: red;
 }
 
 .ban-details-container {
@@ -88,7 +130,7 @@ h1 {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.profile-container, .hidden-thread-container, .ban-details-container {
+.profile-container, .reported-post, .ban-details-container {
   padding: 1rem;
   width: 60%;
   margin-inline: auto;
@@ -96,7 +138,7 @@ h1 {
   background-color: white;
 }
 @media screen and (max-width: 1200px) {
-  .profile-container, .hidden-thread-container, .ban-details-container {
+  .profile-container, .reported-post, .ban-details-container {
     width: 80%;
   }
 }
@@ -105,13 +147,13 @@ h1 {
   margin-bottom: 1rem;
 }
 
-.suspend-form {
+.ban-form {
   margin-top: 0.2rem;
 }
-.suspend-form h4 {
+.ban-form h4 {
   font-size: 1.2rem;
 }
-.suspend-form input[type=date] {
+.ban-form input[type=date] {
   padding: 0.4rem;
   font-size: 1rem;
   margin: 0.5rem 0.5rem 0 0;
@@ -139,10 +181,11 @@ h1 {
 
 .ban-btn, .confirm-ban-btn {
   font-size: 0.8rem;
-  padding: 0.6rem;
+  padding: 0.4rem;
   background-color: rgb(112, 26, 26);
   border: 2px solid rgb(112, 26, 26);
   color: white;
+  margin-inline: 0.5rem;
 }
 
 .cancel-btn {
@@ -152,27 +195,4 @@ h1 {
   border: 1px solid green;
   color: white;
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-}
-
-.un-hide-post {
-  margin-top: 0.2rem;
-  background-color: green;
-  border: 1px solid green;
-  width: 100%;
-  color: white;
-  font-size: 0.8rem;
-  padding: 1rem;
-  font-weight: 700;
-}
-
-.delete-post {
-  align-items: center;
-  margin-top: 0.2rem;
-  background-color: red;
-  border: 1px solid red;
-  width: 100%;
-  color: white;
-  font-size: 0.8rem;
-  padding: 1rem;
-  font-weight: 700;
-}/*# sourceMappingURL=admindetails.css.map */
+}/*# sourceMappingURL=admin-details.css.map */

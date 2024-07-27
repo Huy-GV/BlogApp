@@ -1,7 +1,7 @@
 ﻿@inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-@if (HiddenComments.Count == 0)
+@if (ReportedComments.Count == 0)
 {
     <h2 class="middle-aligned">Reported Comments</h2>
     <div class="middle-aligned">
@@ -10,22 +10,21 @@
 }
 else
 {
-    <h2 class="middle-aligned">Reported Comments (@HiddenComments.Count)</h2>
-    <section class="hidden-thread-container">
+    <h2 class="middle-aligned">Reported Comments (@ReportedComments.Count)</h2>
+    <section>
         @{
-            foreach (var comment in HiddenComments)
+            foreach (var comment in ReportedComments)
             {
-                <div class="suspended-comment">
-                    <h5>Original content</h5>
-                    <p>@comment.Content</p>
-                    <form method="post" @onsubmit="(async () => await UnhideCommentAsync(comment.Id))">
-                        <button class="un-hide-post">Unhide comment</button>
-                    </form>
-
-                    <form method="post" @onsubmit="(async () => await ForciblyDeleteCommentAsync(comment.Id))">
-                        <button class="delete-post">Delete comment</button>
-                    </form>
+                <div class="reported-post">
+                    <p>Reporting user: @comment.ReportingUserName</p>
+                    <p>Comment date: @comment.CreationTime.ToString("dd\\/MM\\/yyyy")</p>
+                    <p>Report date: @comment.ReportDate.ToString("dd\\/MM\\/yyyy")</p>
                     <hr>
+                    <div class="btn-container">
+                        <a class="post-link" href="/Threads/Read/?id=@comment.ThreadId#comment-@comment.Id">Comment Link</a>
+                        <button @onclick="(async () => await UnhideCommentAsync(comment.ReportTicketId))" class="un-hide-post">Unhide Comment</button>
+                        <button @onclick="(async () => await ForciblyDeleteCommentAsync(comment.Id))" class="delete-post">Delete Comment</button>
+                    </div>
                 </div>
             }
         }

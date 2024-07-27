@@ -15,5 +15,5 @@ public class Thread : Post<int>
     [Required]
     public string CoverImageUri { get; set; } = string.Empty;
 
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public ICollection<Comment> Comments { get; set; } = [];
 }

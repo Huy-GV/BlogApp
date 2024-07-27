@@ -35,39 +35,40 @@
     padding: 0.5rem 0.6rem;
     display: flex;
     flex-direction: row;
-    gap: 0.3rem;
     width: 100%;
+    align-items: center;
 
-    .button {
-      color: white;
-      font-weight: 700;
-      border-radius: 5px;
+    .role-button {
+      @extend .link;
+      padding: 0.5rem;
+      color: grey;
+      background: none;
       border: none;
-      padding: 1rem 0.6rem;
-      min-width: 10rem;
-
-      &:hover {
-        filter: brightness(0.6);
-        cursor: pointer;
-      }
-
-      @media screen and (max-width: $small-screen-width) {
-        padding-block: 1rem;
-      }
+      font-weight: 700;
     }
 
     .assign-role {
-      background-color: green;
+      @extend .role-button;
+      &:hover {
+        color: green;
+      }
     }
 
     .remove-role {
-      background-color: red;
+      @extend .role-button;
+      &:hover {
+        color: red;
+      }
     }
 
     .details-btn {
-      padding: 1rem;
-      color: blue;
+      @extend .link;
+      padding: 0.5rem;
+      color: grey;
       font-weight: 700;
+      &:hover {
+        color: $primary-purple;
+      }
     }
 
     @media screen and (max-width: $small-screen-width) {

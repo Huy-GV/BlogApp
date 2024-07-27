@@ -57,7 +57,7 @@ internal class ThreadContentManager : IThreadContentManager
             user.UserName == thread.AuthorUser.UserName;
 
         if (!isCurrentUserAuthor ||
-            thread.IsHidden ||
+            thread.ReportTicketId != null ||
             await _banTicketReader.BanTicketExistsAsync(user.UserName ?? string.Empty))
         {
             return ServiceResultCode.Unauthorized;
@@ -91,7 +91,10 @@ internal class ThreadContentManager : IThreadContentManager
             return ServiceResultCode.Unauthorized;
         }
 
-        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(userName, thread.IsHidden, thread.AuthorUserName))
+        if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
+            userName, 
+            thread.ReportTicketId != null, 
+            thread.AuthorUserName))
         {
             return ServiceResultCode.Unauthorized;
         }

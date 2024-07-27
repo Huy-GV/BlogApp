@@ -20,24 +20,24 @@ public partial class HiddenThreadContainer : RichComponentBase
     [Inject]
     public IThreadReader ThreadReader { get; set; } = null!;
 
-    private IReadOnlyCollection<HiddenThreadDto> HiddenThreads { get; set; } = [];
+    private IReadOnlyCollection<HiddenThreadDto> ReportedThreads { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        await LoadHiddenThreads();
+        await LoadReportedThreads();
     }
 
-    private async Task LoadHiddenThreads()
+    private async Task LoadReportedThreads()
     {
-        var (result, hiddenThreads) = await ThreadReader.GetHiddenThreadsAsync(UserName, CurrentUserName);
+        var (result, reportedhreads) = await ThreadReader.GetReportTicketAsync(UserName, CurrentUserName);
         if (result != ServiceResultCode.Success)
         {
             this.NavigateOnError(result);
             return;
         }
 
-        HiddenThreads = hiddenThreads!;
+        ReportedThreads = reportedhreads!;
     }
 
     private async Task ForciblyDeleteThreadAsync(int threadId)
@@ -49,18 +49,18 @@ public partial class HiddenThreadContainer : RichComponentBase
             return;
         }
 
-        await LoadHiddenThreads();
+        await LoadReportedThreads();
     }
 
-    private async Task UnhideThreadAsync(int threadId)
+    private async Task CancelThreadReportTicket(int reportTicketId)
     {
-        var result = await PostModerationService.UnhideThreadAsync(threadId, CurrentUserName);
+        var result = await PostModerationService.CancelReportTicket(reportTicketId, CurrentUserName);
         if (result != ServiceResultCode.Success)
         {
             this.NavigateOnError(result);
             return;
         }
 
-        await LoadHiddenThreads();
+        await LoadReportedThreads();
     }
 }

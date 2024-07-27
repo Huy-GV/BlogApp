@@ -27,55 +27,64 @@ internal class CommentReader : ICommentReader
         _defaultProfileImageProvider = defaultProfileImageProvider;
     }
 
-    public async Task<IReadOnlyCollection<CommentDto>> GetCommentsAsync(int threadId)
+    public async Task<IReadOnlyCollection<CommentDto>> GetCommentsAsync(int threadId, string requestUserName)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var comments = await dbContext.Comment
             .AsNoTracking()
             .Include(x => x.AuthorUser)
+            .Include(x => x.ReportTicket)
             .Where(x => x.ThreadId == threadId)
             .OrderByDescending(x => x.CreationTime)
             .ThenByDescending(x => x.LastUpdateTime)
             .ToListAsync();
 
+        var isUserAllowedToViewHiddenPost = await _userPermissionValidator.IsUserAllowedToViewReportedPostAsync(requestUserName);
+
         return await Task.WhenAll(comments
-            .Select(async c => new CommentDto
+            .Select(async x => new CommentDto
             {
-                Id = c.Id,
-                CreationTime = c.CreationTime,
-                LastUpdateTime = c.LastUpdateTime,
-                Content = c.IsHidden ? ReplacementText.HiddenContent : c.Body,
-                AuthorName = c.AuthorUser.UserName ?? ReplacementText.DeletedUser,
-                AuthorProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(c.AuthorUser.ProfileImageUri)
+                Id = x.Id,
+                CreationTime = x.CreationTime,
+                LastUpdateTime = x.LastUpdateTime,
+                Content = (x.ReportTicketId == null || isUserAllowedToViewHiddenPost) ? x.Body : ReplacementText.HiddenContent,
+                AuthorName = x.AuthorUser.UserName ?? ReplacementText.DeletedUser,
+                AuthorProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(x.AuthorUser.ProfileImageUri)
                     ?? await _defaultProfileImageProvider.GetDefaultProfileImageUriAsync(),
-                IsHidden = c.IsHidden,
-                IsDeleted = c.ToBeDeleted,
+                IsDeleted = x.ToBeDeleted,
+                ReportTicketId = x.ReportTicketId,
+                ReportDate = x.ReportTicket?.CreationDate,
+                ReportingUserName = x.ReportTicket?.ReportingUserName ?? string.Empty,
             })
             .ToList());
     }
 
-    public async Task<(ServiceResultCode, IReadOnlyCollection<HiddenCommentDto>)> GetHiddenCommentsAsync(
+    public async Task<(ServiceResultCode, IReadOnlyCollection<HiddenCommentDto>)> GetReportedCommentsAsync(
         string authorUserName,
         string requestUserName)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        if (!await _userPermissionValidator.IsUserAllowedToReviewHiddenPostAsync(requestUserName))
+        if (!await _userPermissionValidator.IsUserAllowedToReviewReportedPostAsync(requestUserName))
         {
             return (ServiceResultCode.Unauthorized, []);
         }
 
-        var hiddenComments = await dbContext.Comment
+        var reportedComments = await dbContext.Comment
             .AsNoTracking()
             .Include(c => c.AuthorUser)
-            .Where(c => c.AuthorUser.UserName == authorUserName && c.IsHidden)
+            .Include(x => x.ReportTicket)
+            .Where(c => c.AuthorUser.UserName == authorUserName && c.ReportTicketId != null && c.ReportTicket!.ActionDate == null)
             .Select(c => new HiddenCommentDto
             {
                 Id = c.Id,
-                Content = c.Body,
                 CreationTime = c.CreationTime,
+                ReportDate = c.ReportTicket!.CreationDate,
+                ReportingUserName = c.ReportTicket.ReportingUserName,
+                ThreadId = c.ThreadId,
+                ReportTicketId = c.ReportTicketId!.Value
             })
             .ToListAsync();
 
-        return (ServiceResultCode.Success, hiddenComments);
+        return (ServiceResultCode.Success, reportedComments);
     }
 }

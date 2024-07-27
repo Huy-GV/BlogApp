@@ -30,7 +30,7 @@ public interface IThreadReader
     /// a <see cref="ServiceResultCode"/> indicating the result of the operation,
     /// and a <see cref="DetailedThreadDto"/> representing the detailed thread entry (null if not found).
     /// </returns>
-    Task<(ServiceResultCode, DetailedThreadDto?)> GetThreadAsync(int id);
+    Task<(ServiceResultCode, DetailedThreadDto?)> GetThreadAsync(int id, string requestUserName);
 
     /// <summary>
     /// Retrieves a detailed thread entry based on its identifier asynchronously.
@@ -41,7 +41,7 @@ public interface IThreadReader
     /// a <see cref="ServiceResultCode"/> indicating the result of the operation,
     /// and a <see cref="DetailedThreadDto"/> representing the detailed thread entry (null if not found).
     /// </returns>
-    Task<(ServiceResultCode, IReadOnlyCollection<HiddenThreadDto>)> GetHiddenThreadsAsync(
+    Task<(ServiceResultCode, IReadOnlyCollection<HiddenThreadDto>)> GetReportTicketAsync(
         string authorUserName,
         string requestUserName);
 }

@@ -194,10 +194,6 @@ nav + * {
   display: none;
 }
 
-.suspended-post {
-  color: red !important;
-}
-
 p {
   word-break: break-word;
 }

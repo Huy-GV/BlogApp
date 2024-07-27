@@ -58,7 +58,7 @@ public partial class CommentsContainer : RichComponentBase
 
     private async Task LoadCommentData()
     {
-        var comments = await CommentReader.GetCommentsAsync(ThreadId);
+        var comments = await CommentReader.GetCommentsAsync(ThreadId, CurrentUserName);
 
         CommentDtos = comments;
         AllowedToModifyComment = await UserPermissionValidator.IsUserAllowedToUpdateOrDeletePostsAsync
@@ -70,7 +70,7 @@ public partial class CommentsContainer : RichComponentBase
                 {
                     PostId = x.Id,
                     AuthorUserName = x.AuthorName,
-                    IsHidden = x.IsHidden
+                    ReportTicketId = x.ReportTicketId
                 }
             )
         );
@@ -157,7 +157,7 @@ public partial class CommentsContainer : RichComponentBase
             return;
         }
 
-        var result = await PostModerationService.HideCommentAsync(commentId, user.UserName ?? string.Empty);
+        var result = await PostModerationService.ReportCommentAsync(commentId, user.UserName ?? string.Empty);
         if (result != ServiceResultCode.Success)
         {
             this.NavigateOnError(result);

@@ -31,24 +31,24 @@ internal class ThreadReader : IThreadReader
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var threads = await dbContext.Thread
-            .Include(b => b.AuthorUser)
-            .Include(b => b.Comments)
-            .ThenInclude(c => c.AuthorUser)
-            .Where(x => !x.IsHidden)
-            .Select(b => new IndexThreadDto
+            .Include(x => x.AuthorUser)
+            .Include(x => x.Comments)
+            .ThenInclude(y => y.AuthorUser)
+            .Where(x => x.ReportTicketId == null)
+            .Select(x => new IndexThreadDto
             {
-                Id = b.Id,
-                Title = b.IsHidden ? ReplacementText.HiddenContent : b.Title,
-                AuthorName = b.AuthorUser.UserName!,
-                CreationTime = b.CreationTime,
-                LastUpdateTime = b.LastUpdateTime,
-                ViewCount = b.ViewCount,
-                CoverImageUri = b.CoverImageUri,
-                Introduction = b.IsHidden ? ReplacementText.HiddenContent : b.Introduction
+                Id = x.Id,
+                Title = x.Title,
+                AuthorName = x.AuthorUser.UserName!,
+                CreationTime = x.CreationTime,
+                LastUpdateTime = x.LastUpdateTime,
+                ViewCount = x.ViewCount,
+                CoverImageUri = x.CoverImageUri,
+                Introduction = x.Introduction
             })
-            .Where(b => string.IsNullOrEmpty(searchString) ||
-                        b.Title.Contains(searchString) ||
-                        b.AuthorName.Contains(searchString))
+            .Where(x => string.IsNullOrEmpty(searchString) ||
+                        x.Title.Contains(searchString) ||
+                        x.AuthorName.Contains(searchString))
             .OrderByDescending(x => x.CreationTime)
             .ThenByDescending(x => x.LastUpdateTime)
             .Take(10)
@@ -62,13 +62,14 @@ internal class ThreadReader : IThreadReader
             }).ToList());
     }
 
-    public async Task<(ServiceResultCode, DetailedThreadDto?)> GetThreadAsync(int id)
+    public async Task<(ServiceResultCode, DetailedThreadDto?)> GetThreadAsync(int id, string requestUserName)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var thread = await dbContext.Thread
             .IgnoreQueryFilters()
             .AsNoTracking()
             .Include(thread => thread.AuthorUser)
+            .Include(thread => thread.ReportTicket)
             .FirstOrDefaultAsync(thread => thread.Id == id);
 
         if (thread == null)
@@ -81,48 +82,67 @@ internal class ThreadReader : IThreadReader
 
         var resolvedCoverImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(thread.CoverImageUri)
             ?? string.Empty;
-        var resolvedAuthorProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(thread.AuthorUser.ProfileImageUri)
+        var resolvedAuthorProfileImageUri = await _aggregateImageUriResolver.ResolveImageUriAsync(
+            thread.AuthorUser.ProfileImageUri)
             ?? string.Empty;
+
+        var isUserAllowedToViewHiddenPost = await _userPermissionValidator.IsUserAllowedToViewReportedPostAsync(requestUserName);
+        var isThreadReported = thread.ReportTicketId != null;
 
         var threadDto = new DetailedThreadDto
         {
             Id = thread.Id,
-            Introduction = thread.IsHidden ? ReplacementText.HiddenContent : thread.Introduction,
-            Title = thread.IsHidden ? ReplacementText.HiddenContent : thread.Title,
-            Content = thread.IsHidden ? ReplacementText.HiddenContent : thread.Body,
+
+            Introduction = (!isThreadReported || isUserAllowedToViewHiddenPost)
+                ? thread.Introduction
+                : ReplacementText.HiddenContent,
+            Title = (!isThreadReported || isUserAllowedToViewHiddenPost)
+                ? thread.Title
+                : ReplacementText.HiddenContent,
+            Content = (!isThreadReported || isUserAllowedToViewHiddenPost)
+                ? thread.Body
+                : ReplacementText.HiddenContent,
             CoverImageUri = resolvedCoverImageUri,
             CreationTime = thread.CreationTime,
             LastUpdateTime = thread.LastUpdateTime,
-            IsHidden = thread.IsHidden,
             AuthorDescription = thread.AuthorUser.Description,
             AuthorName = thread.AuthorUser.UserName ?? ReplacementText.DeletedUser,
             AuthorProfileImageUri = resolvedAuthorProfileImageUri,
+            ReportTicket = isThreadReported
+                ? new ThreadReportTicketDto
+                {
+                    ReportDate = thread.ReportTicket!.CreationDate,
+                    ReportingUserName = thread.ReportTicket.ReportingUserName
+                }
+                : null
         };
 
         return (ServiceResultCode.Success, threadDto);
     }
 
-    public async Task<(ServiceResultCode, IReadOnlyCollection<HiddenThreadDto>)> GetHiddenThreadsAsync(
+    public async Task<(ServiceResultCode, IReadOnlyCollection<HiddenThreadDto>)> GetReportTicketAsync(
         string authorUserName,
         string requestUserName)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        if (!await _userPermissionValidator.IsUserAllowedToReviewHiddenPostAsync(requestUserName))
+        if (!await _userPermissionValidator.IsUserAllowedToReviewReportedPostAsync(requestUserName))
         {
             return (ServiceResultCode.Unauthorized, []);
         }
 
         var hiddenThreads = await dbContext.Thread
             .AsNoTracking()
-            .Include(b => b.AuthorUser)
-            .Where(b => b.AuthorUser.UserName == authorUserName && b.IsHidden)
-            .Select(b => new HiddenThreadDto
+            .Include(x => x.AuthorUser)
+            .Include(x => x.ReportTicket)
+            .Where(x => x.AuthorUser.UserName == authorUserName && x.ReportTicketId != null)
+            .Select(x => new HiddenThreadDto
             {
-                Id = b.Id,
-                Title = b.Title,
-                Introduction = b.Introduction,
-                Content = b.Body,
-                CreationTime = b.CreationTime,
+                Id = x.Id,
+                Title = x.Title,
+                CreationTime = x.CreationTime,
+                ReportingUserName = x.ReportTicket!.ReportingUserName,
+                ReportDate = x.ReportTicket.CreationDate,
+                ReportTicketId = x.ReportTicketId!.Value
             })
             .ToListAsync();
 

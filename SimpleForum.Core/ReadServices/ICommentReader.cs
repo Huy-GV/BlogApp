@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 namespace SimpleForum.Core.ReadServices;
 public interface ICommentReader
 {
-    Task<IReadOnlyCollection<CommentDto>> GetCommentsAsync(int threadId);
-    Task<(ServiceResultCode, IReadOnlyCollection<HiddenCommentDto>)> GetHiddenCommentsAsync(
+    Task<IReadOnlyCollection<CommentDto>> GetCommentsAsync(
+        int threadId,
+        string requestUserName);
+    Task<(ServiceResultCode, IReadOnlyCollection<HiddenCommentDto>)> GetReportedCommentsAsync(
         string authorUserName,
         string requestUserName);
 }

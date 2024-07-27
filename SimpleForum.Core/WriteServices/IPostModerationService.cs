@@ -5,20 +5,20 @@ namespace SimpleForum.Core.WriteServices;
 public interface IPostModerationService
 {
     /// <summary>
-    /// Hides a thread asynchronously.
+    /// Reports a thread asynchronously.
     /// </summary>
     /// <param name="threadId">The identifier of the thread to be hidden.</param>
     /// <param name="name">The name of the user hiding the thread.</param>
     /// <returns>The result code indicating the outcome of the hide operation.</returns>
-    Task<ServiceResultCode> HideThreadAsync(int threadId, string name);
+    Task<ServiceResultCode> ReportThreadAsync(int threadId, string name);
 
     /// <summary>
-    /// Hides a comment asynchronously.
+    /// Reports a comment asynchronously.
     /// </summary>
     /// <param name="commentId">The identifier of the comment to be hidden.</param>
     /// <param name="name">The name of the user hiding the comment.</param>
     /// <returns>The result code indicating the outcome of the hide operation.</returns>
-    Task<ServiceResultCode> HideCommentAsync(int commentId, string name);
+    Task<ServiceResultCode> ReportCommentAsync(int commentId, string name);
 
     /// <summary>
     /// Forcibly deletes a comment asynchronously.
@@ -39,16 +39,8 @@ public interface IPostModerationService
     /// <summary>
     /// Unhides a thread asynchronously.
     /// </summary>
-    /// <param name="threadId">The identifier of the thread to be unhidden.</param>
+    /// <param name="reportTicketId">The identifier of the report ticket to be cancelled.</param>
     /// <param name="name">The name of the user unhiding the thread.</param>
     /// <returns>The result code indicating the outcome of the unhide operation.</returns>
-    Task<ServiceResultCode> UnhideThreadAsync(int threadId, string name);
-
-    /// <summary>
-    /// Unhides a comment asynchronously.
-    /// </summary>
-    /// <param name="commentId">The identifier of the comment to be unhidden.</param>
-    /// <param name="name">The name of the user unhiding the comment.</param>
-    /// <returns>The result code indicating the outcome of the unhide operation.</returns>
-    Task<ServiceResultCode> UnhideCommentAsync(int commentId, string name);
+    Task<ServiceResultCode> CancelReportTicket(int reportTicketId, string name);
 }

@@ -17,7 +17,7 @@
             <form asp-page-handler="RemoveModeratorRole"
                     asp-route-username="@moderator.UserName"
                     method="post">
-                <button class="button remove-role">Unassign Moderator</button>
+                <button class="remove-role">Unassign Moderator</button>
             </form>
 
             <a class="details-btn" asp-route-username="@moderator.UserName" asp-page="Details">Details</a>
@@ -36,7 +36,7 @@
             <form asp-page-handler="AssignModeratorRole"
                     asp-route-username="@user.UserName"
                     method="post">
-                <button class="button assign-role">Assign Moderator</button>
+                <button class="assign-role">Assign Moderator</button>
             </form>
 
             <a class="details-btn" asp-route-username="@user.UserName" asp-page="Details">Details</a>

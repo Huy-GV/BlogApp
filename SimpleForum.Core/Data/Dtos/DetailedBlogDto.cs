@@ -15,5 +15,6 @@ public record DetailedThreadDto
     public bool IsModified => CreationTime != LastUpdateTime;
     public required string Content { get; set; }
     public required string CoverImageUri { get; set; }
-    public bool IsHidden { get; set; }
+    public ThreadReportTicketDto? ReportTicket { get; set; }
+    public bool IsReported => ReportTicket != null;
 }

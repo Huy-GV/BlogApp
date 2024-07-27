@@ -2,4 +2,5 @@
 
 public record HiddenCommentDto : HiddenPostPto
 {
+    public required int ThreadId { get; init; }
 }
