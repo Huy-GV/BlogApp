@@ -4,9 +4,9 @@ using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.WriteServices;
 using SimpleForum.UnitTests.Utils;
 
 namespace SimpleForum.UnitTests.Services;

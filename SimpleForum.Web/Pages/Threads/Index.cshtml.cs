@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
+using SimpleForum.Core.QueryServices;
 
 namespace SimpleForum.Web.Pages.Threads;
 

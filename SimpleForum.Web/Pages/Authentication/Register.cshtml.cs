@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.ViewModels;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.Web.Extensions;
 
 namespace SimpleForum.Web.Pages.Authentication;
@@ -17,6 +18,7 @@ namespace SimpleForum.Web.Pages.Authentication;
 public class RegisterModel : RichPageModelBase<RegisterModel>
 {
     private readonly IImageStore _imageStore;
+    private readonly IDefaultProfileImageProvider _defaultProfileImageProvider;
     private readonly ILogger<RegisterModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -26,12 +28,14 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger,
-        IImageStore imageStore) : base(dbContext, userManager, logger)
+        IImageStore imageStore,
+        IDefaultProfileImageProvider defaultProfileImageProvider) : base(dbContext, userManager, logger)
     {
         _imageStore = imageStore;
         _logger = logger;
         _signInManager = signInManager;
         _userManager = userManager;
+        _defaultProfileImageProvider = defaultProfileImageProvider;
     }
 
     [BindProperty]
@@ -48,7 +52,7 @@ public class RegisterModel : RichPageModelBase<RegisterModel>
             return Page();
         }
 
-        var profileImageUri = await _imageStore.GetDefaultProfileImageUriAsync();
+        var profileImageUri = _defaultProfileImageProvider.GetDefaultProfileImageUri();
         if (CreateUserViewModel.ProfilePicture is not null)
         {
             var (uploadResult, uri) = await _imageStore.UploadProfileImageAsync(CreateUserViewModel.ProfilePicture);

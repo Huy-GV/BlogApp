@@ -101,8 +101,14 @@
   border: none;
   font-weight: 700;
 }
+.user-container .user-card .assign-role {
+  font-size: 0.8rem;
+}
 .user-container .user-card .assign-role:hover {
   color: green;
+}
+.user-container .user-card .remove-role {
+  font-size: 0.8rem;
 }
 .user-container .user-card .remove-role:hover {
   color: red;
@@ -111,6 +117,7 @@
   padding: 0.5rem;
   color: grey;
   font-weight: 700;
+  font-size: 0.8rem;
 }
 .user-container .user-card .details-btn:hover {
   color: rgb(99, 0, 148);

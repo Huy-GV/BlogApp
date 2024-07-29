@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FeatureManagement;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data.ViewModels;
 using SimpleForum.Core.Features;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.Web.Extensions;
 using System.Threading.Tasks;
 

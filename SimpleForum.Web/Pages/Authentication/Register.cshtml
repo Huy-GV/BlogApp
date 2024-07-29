@@ -1,14 +1,14 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Sign In";
     ViewData["CSSLink"] = "#";
     ViewData["Shared"] = "/css/shared.css";
 }
 
 
 <form enctype="multipart/form-data" method="post" class="log-in-form">
-    <h4>Create a new account.</h4>
+    <h2>Create a new account.</h2>
     <hr/>
     <div asp-validation-summary="All"></div>
     <label asp-for="CreateUserViewModel.UserName">Username</label>

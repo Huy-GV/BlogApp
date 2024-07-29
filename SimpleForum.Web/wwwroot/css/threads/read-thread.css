@@ -57,6 +57,8 @@
 
 .reported-post {
   color: red !important;
+  padding: 1rem;
+  background-color: mistyrose;
 }
 
 .thread-container {
@@ -66,7 +68,7 @@
 }
 .thread-container .thread {
   padding: 0.6rem;
-  width: 60%;
+  width: 50%;
 }
 @media screen and (max-width: 1200px) {
   .thread-container .thread {
@@ -78,10 +80,17 @@
     width: 90%;
   }
 }
+.thread-container .thread hr {
+  display: block;
+  border: 0;
+  border-top: 1px solid lightgray;
+  margin: 1em 0;
+  padding: 0;
+}
 .thread-container .thread .title {
   font-weight: 700;
-  text-align: center;
-  font-family: Garamond, serif;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 2rem;
   margin-top: 0.1rem;
 }
@@ -109,11 +118,11 @@
   -o-object-fit: cover;
      object-fit: cover;
   width: 100%;
-  max-height: 25rem;
+  max-height: 20rem;
 }
 .thread-container .thread .thread-content {
   font-family: "Open Sans", Helvetica, arial, sans-serif;
-  line-height: 1.4rem;
+  line-height: 1.8rem;
   white-space: pre-line;
   font-size: 1.2rem;
 }
@@ -122,12 +131,32 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
 }
-.thread-info-container .thread-author {
-  margin-left: 0.1rem;
+.thread-info-container .author-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+.thread-info-container .author-info .author-profile-image {
+  width: 5rem;
+  height: 5rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.thread-info-container .author-info .author-text-info-container {
+  display: flex;
+  flex-direction: column;
+}
+.thread-info-container .author-info .author-text-info-container .author-text-info {
+  color: gray;
+  margin-block: 0.2rem;
+}
+.thread-info-container .author-info .author-text-info-container .thread-author {
   color: green;
   font-weight: bold;
+  font-size: 1.4rem;
+  margin-block: 0.3rem;
 }
 
 .comment-section {
@@ -140,7 +169,7 @@
   flex-direction: column;
   padding: 0.1rem;
   margin: auto;
-  width: 60%;
+  width: 50%;
   border-radius: 3px;
 }
 @media screen and (max-width: 1200px) {
@@ -154,7 +183,7 @@
   }
 }
 .comment-section .comment-container .comment {
-  padding: 1rem;
+  padding: 0.6rem 1rem;
   background-color: white;
   margin: 0.3rem;
   font-size: 1.1rem;
@@ -167,7 +196,7 @@
 .comment-section .comment-container .comment .author-container img {
   height: 2.5rem;
   width: 2.5rem;
-  border-radius: 100%;
+  border-radius: 10px;
   -o-object-fit: cover;
      object-fit: cover;
 }
@@ -222,6 +251,7 @@
 .comment-form textarea {
   font-size: 0.8rem;
   width: 100%;
+  resize: vertical;
 }
 .comment-form .submit-comment {
   width: -moz-fit-content;

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.ViewModels;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.Web.Extensions;
 
 namespace SimpleForum.Web.Pages.Threads;

@@ -109,7 +109,7 @@ public class Program
         else
         {
             logger.LogInformation("Using local image store");
-            builder.Services.UseCoreServices();
+            builder.Services.UseCoreServices(builder.Configuration);
         }
 
         var useHangFire = bool.TryParse(featureFlags[FeatureNames.UseHangFire], out var useHangFireOption) && useHangFireOption;

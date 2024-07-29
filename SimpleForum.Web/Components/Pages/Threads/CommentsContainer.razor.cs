@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using SimpleForum.Core.Communication;
 using SimpleForum.Web.Extensions;
-using SimpleForum.Core.WriteServices;
-using SimpleForum.Core.ReadServices;
+using SimpleForum.Core.QueryServices;
+using SimpleForum.Core.CommandServices;
 
 namespace SimpleForum.Web.Components.Pages.Threads;
 public partial class CommentsContainer : RichComponentBase
@@ -70,7 +70,7 @@ public partial class CommentsContainer : RichComponentBase
                 {
                     PostId = x.Id,
                     AuthorUserName = x.AuthorName,
-                    ReportTicketId = x.ReportTicketId
+                    ReportTicketId = x.ReportTicketDto?.Id
                 }
             )
         );

@@ -1,9 +1,5 @@
 @import "../base.scss";
 
-:root {
-    --primary-purple: rgb(99, 0, 148);
-}
-
 .text-input {
     font-size: 0.9rem;
     display: block;
@@ -54,10 +50,11 @@
 
     .submit-post {
         @extend .primary-button;
+        align-self: flex-end;
         margin-block: 1rem;
         padding: 0.8rem;
         font-size: 1rem;
-        width: 50%;
+        width: 20%;
 
         &:hover {
             filter: brightness(0.6);

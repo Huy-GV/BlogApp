@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SimpleForum.Core.Communication;
 using SimpleForum.Web.Extensions;
-using SimpleForum.Core.WriteServices;
-using SimpleForum.Core.ReadServices;
+using SimpleForum.Core.QueryServices;
+using SimpleForum.Core.CommandServices;
 
 namespace SimpleForum.Web.Components.Pages.Admin;
 
@@ -20,7 +20,7 @@ public partial class HiddenCommentContainer : RichComponentBase
     [Inject]
     public ICommentReader CommentReader { get; set; } = null!;
 
-    private IReadOnlyCollection<HiddenCommentDto> ReportedComments { get; set; } = [];
+    private IReadOnlyCollection<ReportedCommentDto> ReportedComments { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {

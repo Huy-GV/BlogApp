@@ -180,9 +180,9 @@
   color: #2a2aa5;
 }
 .thread-container .thread .thread-info .title {
-  font-family: Garamond, serif;
+  font-family: Arial, Helvetica, sans-serif;
   height: 30%;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1rem;
 }
 .thread-container .thread .thread-info .description {

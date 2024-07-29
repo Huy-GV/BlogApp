@@ -1,34 +1,34 @@
-.smooth-transition, a, .link, main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn, .clickable-card, .thread-container .thread, .button, .secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
+.smooth-transition, a, .link, main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn, .clickable-card, .thread-container .thread, .button, .secondary-button, main .description .button-container .cancel-summary-btn, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   transition: 180ms ease-in;
 }
-.smooth-transition:hover, a:hover, .link:hover, main .edit-button:hover, main .description .heading .edit-summary:hover, main .basic-info .profile-btn-container .cancel-btn:hover, main .basic-info .edit-profile-picture-btn:hover, .clickable-card:hover, .thread-container .thread:hover, .button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
+.smooth-transition:hover, a:hover, .link:hover, main .edit-button:hover, main .description .heading .edit-summary:hover, main .basic-info .profile-btn-container .cancel-btn:hover, main .basic-info .edit-profile-picture-btn:hover, .clickable-card:hover, .thread-container .thread:hover, .button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   transition: 180ms ease-in;
 }
 
-.button, .secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
+.button, .secondary-button, main .description .button-container .cancel-summary-btn, .primary-button, main .description .button-container .save-summary-btn, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
-.button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
+.button:hover, .secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, .primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   cursor: pointer;
 }
 
-.primary-button, main .description .button-container .save-summary-btn, main .basic-info .info .edit-profile, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
+.primary-button, main .description .button-container .save-summary-btn, main .basic-info .profile-btn-container .change-picture-btn, main .basic-info .profile-btn-container .remove-picture-btn {
   border: none;
   background-color: rgb(99, 0, 148);
   text-decoration: none;
   color: white;
 }
-.primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .info .edit-profile:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
+.primary-button:hover, main .description .button-container .save-summary-btn:hover, main .basic-info .profile-btn-container .change-picture-btn:hover, main .basic-info .profile-btn-container .remove-picture-btn:hover {
   filter: brightness(0.8);
 }
 
-.secondary-button, main .description .button-container .cancel-summary-btn, main .basic-info .info .change-password {
+.secondary-button, main .description .button-container .cancel-summary-btn {
   color: rgb(99, 0, 148);
   background-color: white;
   border: 1px solid rgb(99, 0, 148);
 }
-.secondary-button:hover, main .description .button-container .cancel-summary-btn:hover, main .basic-info .info .change-password:hover {
+.secondary-button:hover, main .description .button-container .cancel-summary-btn:hover {
   background-color: rgb(99, 0, 148);
   color: white;
 }
@@ -74,23 +74,31 @@
   }
 }
 
+.loading-text {
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  color: gray;
+}
+
 main {
   width: 60%;
   margin: auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(20rem, 1fr));
-  grid-template-rows: auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
   gap: 1rem;
 }
 @media screen and (max-width: 1200px) {
   main {
     width: 80%;
-    grid-template-columns: 1fr;
   }
 }
 @media screen and (max-width: 700px) {
   main {
     width: 90%;
+    display: flex;
+    flex-direction: column;
   }
 }
 main .edit-button, main .description .heading .edit-summary, main .basic-info .profile-btn-container .cancel-btn, main .basic-info .edit-profile-picture-btn {
@@ -103,8 +111,8 @@ main .edit-button, main .description .heading .edit-summary, main .basic-info .p
   padding: 0.3rem;
 }
 main .basic-info {
-  grid-column: 1;
-  grid-row: 1/3;
+  grid-column: 1/span 1;
+  grid-row: 1/span 2;
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -117,56 +125,44 @@ main .basic-info .profile-btn-container {
 main .basic-info .profile-btn-container button {
   padding: 0.6rem;
 }
-main .basic-info img {
-  -o-object-fit: cover;
-     object-fit: cover;
-  width: 12rem;
-  height: 12rem;
-  justify-self: center;
-  align-self: center;
-  border-radius: 100%;
-}
-main .basic-info .info {
-  height: 12rem;
+main .basic-info .profile-container {
   display: flex;
   flex-direction: column;
-  justify-self: center;
-  padding: 1rem;
-  margin-top: 0.5rem;
-}
-main .basic-info .info p {
-  margin-block: 0;
-  margin-left: 2.5rem;
-}
-main .basic-info .info a {
-  padding: 0.8rem;
-  margin: 0.3rem;
-  margin-inline: auto;
-  text-align: center;
-  width: 50%;
-  font-size: 0.7rem;
-}
-@media screen and (max-width: 1200px) {
-  main .basic-info .info a {
-    width: 70%;
-    font-size: 0.8rem;
-  }
+  align-items: center;
 }
 @media screen and (max-width: 700px) {
-  main .basic-info .info a {
-    width: 90%;
-    font-size: 0.9rem;
+  main .basic-info .profile-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 }
-main .basic-info .info .edit-profile {
-  margin-top: 3rem;
+main .basic-info .profile-container img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  justify-self: center;
+  align-self: center;
+  border-radius: 10px;
+  width: 40%;
+}
+@media screen and (max-width: 700px) {
+  main .basic-info .profile-container img {
+    width: 5rem;
+    height: 5rem;
+  }
+}
+main .basic-info .profile-container .info {
+  justify-self: center;
+  padding: 1rem;
+}
+main .basic-info .profile-container .info p {
+  margin-block: 1rem;
 }
 main .description {
+  grid-column: 2/span 1;
+  grid-row: 1/span 1;
   align-self: center;
   padding: 1.2rem;
-  min-height: 15rem;
-  max-height: 20rem;
-  align-self: baseline;
 }
 main .description .heading {
   display: flex;
@@ -177,7 +173,6 @@ main .description .edit-summary-form {
 }
 main .description .edit-summary-form textarea {
   resize: none;
-  height: 10rem;
   width: 100%;
   box-sizing: border-box;
   padding: 0.4rem;
@@ -209,8 +204,16 @@ main .card-title {
   margin: 0;
 }
 main .stats {
-  align-self: center;
+  grid-column: 2/span 1;
+  grid-row: 2/span 1;
   padding: 1.2rem;
+  grid-column: 2;
+}
+main .stats ul {
+  padding-left: 1.2rem;
+}
+main .stats ul li {
+  margin-block: 0.5rem;
 }
 
 .thread-container {
@@ -238,6 +241,7 @@ main .stats {
 .thread-container .thread-year {
   border-bottom: 1px solid black;
   padding: 1rem;
+  margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
 }

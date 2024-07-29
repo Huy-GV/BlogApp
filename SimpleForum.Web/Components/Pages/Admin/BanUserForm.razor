@@ -12,7 +12,7 @@
         <form method="post"
                 asp-page-handler="LiftBan"
                 asp-route-username="UserName"
-              @onsubmit="(async () => await LiftBanAsync())">
+              @onsubmit="LiftBanAsync">
             <button class="lift-ban-btn">Lift Ban</button>
         </form>
     </div>
@@ -21,7 +21,7 @@ else
 {
     <p>No ban ticket exists</p>
 
-    <EditForm Model="BanUserViewModel" class="suspend-form" OnValidSubmit="async () => await BanUserAsync()">
+    <EditForm Model="BanUserViewModel" class="suspend-form" OnValidSubmit="() => BanUserAsync()">
         <DataAnnotationsValidator />
 
         @if (IsTemporaryBanEnabled)

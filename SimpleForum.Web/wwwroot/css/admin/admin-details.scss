@@ -10,13 +10,21 @@ h1 {
   display: flex;
   margin-block: 2rem;
   flex-direction: column;
-  margin-left: 20%;
+  width: 50%;
+  margin-inline: auto;
+  @media screen and (max-width: $medium-screen-width) {
+    width: 80%;
+  }
+
+  @media screen and (max-width: $small-screen-width) {
+    width: 90%;
+  }
 }
 
 .reported-post {
   @extend .middle-aligned;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 3px;
   border: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 
@@ -28,9 +36,11 @@ h1 {
   .btn-container {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 
     .post-link {
       @extend .link;
+      font-family: Arial, Helvetica, sans-serif;
       display: inline-block;
       color: grey;
       border: none;
@@ -40,6 +50,7 @@ h1 {
       background: none;
       appearance: none;
       line-height: inherit;
+      margin: 0;
 
       &:hover {
         color: $primary-purple
@@ -53,10 +64,11 @@ h1 {
       font-weight: 600;
       font-size: 0.7rem;
       padding: 0.3rem;
-      background: none;
+      margin: 0;
+      background: none;font-family: Arial, Helvetica, sans-serif;
 
       &:hover {
-        color: lightgreen
+        color: green
       }
     }
 
@@ -68,6 +80,7 @@ h1 {
       font-size: 0.7rem;
       padding: 0.3rem;
       background: none;
+      margin: 0;font-family: Arial, Helvetica, sans-serif;
 
       &:hover {
         color: red
@@ -77,18 +90,9 @@ h1 {
   }
 }
 
-.ban-details-container {
-  margin-left: 20%;
-  margin-top: 2rem;
-  background-color: white;
-  border-radius: 10px;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-}
-
 .profile-container, .reported-post, .ban-details-container {
   padding: 1rem;
-  width: 60%;
+  width: 50%;
   margin-inline: auto;
   border-radius: 3px;
   background-color: white;
@@ -98,64 +102,67 @@ h1 {
   }
 }
 
+.current-ban-ticket {
+  .lift-ban-btn {
+    @extend .button;
+    font-size: 0.8rem;
+    color: white;
+    margin-inline: 0.5rem;
+    padding: 0.5rem;
+    background-color: green;
+    border: 1px solid green;
+    width: 100%;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+    color: white;
+  }
+}
+
 .ban-details-container {
   margin-bottom: 1rem;
-}
+  margin-top: 2rem;
+  background-color: white;
+  border-radius: 3px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  .ban-form {
+    margin-top: 0.2rem;
 
-.ban-form {
-  margin-top: 0.2rem;
+    h4 {
+      font-size: 1.2rem;
+    }
 
-  h4 {
-    font-size: 1.2rem;
+    input[type="date"] {
+      padding: 0.4rem;
+      font-size: 1rem;
+      margin: 0.5rem 0.5rem 0 0;
+    }
+
+    .ban-btn {
+      @extend .button;
+      font-size: 0.8rem;
+      background-color: rgb(112, 26, 26);
+      border: 2px solid rgb(112, 26, 26);
+      color: white;
+      margin-inline: 0.5rem;
+      padding: 0.5rem;
+      min-width: 6rem
+    }
+
+    .confirm-ban-btn {
+      @extend .ban-btn;
+      padding: 0.5rem;
+      min-width: 6rem
+    }
+
+    .cancel-btn {
+      @extend .button;
+      font-size: 0.8rem;
+      background-color: green;
+      border: 1px solid green;
+      color: white;
+      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+      padding: 0.5rem;
+      min-width: 6rem
+    }
   }
-
-  input[type="date"] {
-    padding: 0.4rem;
-    font-size: 1rem;
-    margin: 0.5rem 0.5rem 0 0;
-  }
-}
-
-.confirm-ban-btn, .lift-ban-btn, .ban-btn, .cancel-btn, .un-hide-post, .delete-post {
-  padding: 0.3rem;
-  border-radius: 2px;
-  font-size: medium;
-}
-
-.confirm-ban-btn:hover, .lift-ban-btn:hover, .ban-btn:hover,
-.cancel-btn:hover, .un-hide-post:hover, .delete-post:hover {
-  cursor: pointer;
-  filter: brightness(0.6);
-}
-
-.lift-ban-btn {
-  background-color: green;
-  border: 1px solid green;
-  width: 100%;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-  color: white;
-}
-
-.ban-btn {
-  @extend .button;
-  font-size: 0.8rem;
-  padding: 0.4rem;
-  background-color: rgb(112, 26, 26);
-  border: 2px solid rgb(112, 26, 26);
-  color: white;
-  margin-inline: 0.5rem;
-}
-
-.confirm-ban-btn {
-  @extend .ban-btn;
-}
-
-.cancel-btn {
-  @extend .button;
-  font-size: 0.8rem;
-  padding: 0.6rem;
-  background-color: green;
-  border: 1px solid green;
-  color: white;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
 }

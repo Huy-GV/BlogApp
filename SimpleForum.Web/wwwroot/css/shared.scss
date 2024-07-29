@@ -22,6 +22,8 @@ hr {
   margin-block: 4rem;
   padding: 1rem;
   border-radius: 3px;
+  display: flex;
+  flex-direction: column;
 
   @media screen and (max-width: $medium-screen-width) {
     width: 70%;
@@ -146,7 +148,7 @@ p {
   font-size: 1rem;
   text-decoration: none;
   display: block;
-  margin: 0.2rem;
+  margin: 0.4rem;
   text-align: center;
   padding: 0.6rem;
   font-weight: 600;

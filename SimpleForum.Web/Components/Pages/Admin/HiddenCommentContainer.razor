@@ -16,14 +16,14 @@ else
             foreach (var comment in ReportedComments)
             {
                 <div class="reported-post">
-                    <p>Reporting user: @comment.ReportingUserName</p>
-                    <p>Comment date: @comment.CreationTime.ToString("dd\\/MM\\/yyyy")</p>
-                    <p>Report date: @comment.ReportDate.ToString("dd\\/MM\\/yyyy")</p>
+                    <p>Reporting user: @comment.ReportTicket.ReportingUserName</p>
+                    <p>Comment date: @comment.CreationTime.ToString(@"dd\/MM\/yyyy")</p>
+                    <p>Report date: @comment.ReportTicket.ReportDate.ToString(@"dd\/MM\/yyyy")</p>
                     <hr>
                     <div class="btn-container">
                         <a class="post-link" href="/Threads/Read/?id=@comment.ThreadId#comment-@comment.Id">Comment Link</a>
-                        <button @onclick="(async () => await UnhideCommentAsync(comment.ReportTicketId))" class="un-hide-post">Unhide Comment</button>
-                        <button @onclick="(async () => await ForciblyDeleteCommentAsync(comment.Id))" class="delete-post">Delete Comment</button>
+                        <button @onclick="(() => UnhideCommentAsync(comment.ReportTicket.Id))" class="un-hide-post">Unhide Comment</button>
+                        <button @onclick="(() => ForciblyDeleteCommentAsync(comment.Id))" class="delete-post">Delete Comment</button>
                     </div>
                 </div>
             }

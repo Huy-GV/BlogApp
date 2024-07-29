@@ -7,25 +7,18 @@ using Microsoft.Extensions.Logging;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.Constants;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
 
 namespace SimpleForum.Web.Pages.Admin;
 
 [Authorize(Roles = Roles.AdminRole)]
 public class DetailsModel : RichPageModelBase<DetailsModel>
 {
-    private readonly IBanTicketReader _banTicketReader;
-
-    public DetailsModel(SimpleForumDbContext context,
+    public DetailsModel(
+        SimpleForumDbContext context,
         UserManager<ApplicationUser> userManager,
-        ILogger<DetailsModel> logger,
-        IBanTicketReader banTicketReader) : base(context, userManager, logger)
+        ILogger<DetailsModel> logger) : base(context, userManager, logger)
     {
-        _banTicketReader = banTicketReader;
     }
-
-    [BindProperty(SupportsGet = true)]
-    public BanTicket? CurrentBanTicket { get; set; }
 
     [BindProperty(SupportsGet = true)]
     [Required]
@@ -46,7 +39,6 @@ public class DetailsModel : RichPageModelBase<DetailsModel>
         }
 
         UserName = userName;
-        CurrentBanTicket = await _banTicketReader.FindBanTicketByUserNameAsync(userName);
 
         return Page();
     }

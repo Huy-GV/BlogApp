@@ -13,14 +13,14 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using SimpleForum.Core.WriteServices;
-using SimpleForum.Core.ReadServices;
 using Microsoft.AspNetCore.DataProtection;
+using SimpleForum.Core.QueryServices;
+using SimpleForum.Core.CommandServices;
 
 namespace SimpleForum.Core.Extensions;
 public static class ServiceCollectionsExtensions
 {
-    private static void RegisterSharedServices(this IServiceCollection services)
+    private static void RegisterSharedServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IDataSeeder, DataSeeder>();
         services.AddScoped<IUserModerationService, UserModerationService>();
@@ -35,12 +35,19 @@ public static class ServiceCollectionsExtensions
         services.AddScoped<IUserProfileEditor, UserProfileEditor>();
         services.AddScoped<IBanTicketReader, BanTicketReader>();
         services.AddScoped<IAggregateImageUriResolver, AggregateImageUriResolver>();
-        services.AddScoped<IDefaultProfileImageProvider, LocalImageStore>();
+        services.AddScoped<IDefaultProfileImageProvider, DefaultProfileImageProvider>();
+        services
+            .AddOptions<DefaultProfileImageOptions>()
+            .Bind(configuration.GetRequiredSection(DefaultProfileImageOptions.SectionName))
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
     }
 
-    public static void UseCoreServices(this IServiceCollection services)
+    public static void UseCoreServices(
+        this IServiceCollection services,
+       IConfiguration configuration)
     {
-        services.RegisterSharedServices();
+        services.RegisterSharedServices(configuration);
         var logger = LoggerFactory
             .Create(x => x.AddConsole())
             .CreateLogger(nameof(ServiceCollectionsExtensions));
@@ -54,7 +61,7 @@ public static class ServiceCollectionsExtensions
        this IServiceCollection services,
        IConfiguration configuration)
     {
-        services.RegisterSharedServices();
+        services.RegisterSharedServices(configuration);
 
         var logger = LoggerFactory
             .Create(x => x.AddConsole())
@@ -169,15 +176,16 @@ public static class ServiceCollectionsExtensions
         }
 
         var dbLocation = configuration.GetConnectionString(location);
-        if (!string.IsNullOrEmpty(dbLocation))
+        if (string.IsNullOrEmpty(dbLocation))
         {
-            logger.LogInformation("Creating database directory '{directory}'", dbLocation);
-
-            var dbDirectory = Path.GetDirectoryName(dbLocation)
-                ?? throw new InvalidOperationException("Invalid DB directory name");
-            Directory.CreateDirectory(dbDirectory);
-            dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
+            return dbConnectionString;
         }
+        
+        logger.LogInformation("Creating database directory '{directory}'", dbLocation);
+        var dbDirectory = Path.GetDirectoryName(dbLocation)
+                          ?? throw new InvalidOperationException("Invalid DB directory name");
+        Directory.CreateDirectory(dbDirectory);
+        dbConnectionString = $"{dbConnectionString}AttachDbFileName={dbLocation};";
 
         return dbConnectionString;
     }

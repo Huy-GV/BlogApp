@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.UnitTests.Utils;
 using SimpleForum.Web.Pages.Threads;
 

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SimpleForum.Core.Communication;
 using SimpleForum.Web.Extensions;
-using SimpleForum.Core.WriteServices;
-using SimpleForum.Core.ReadServices;
+using SimpleForum.Core.QueryServices;
+using SimpleForum.Core.CommandServices;
 
 namespace SimpleForum.Web.Components.Pages.Admin;
 
@@ -20,7 +20,7 @@ public partial class HiddenThreadContainer : RichComponentBase
     [Inject]
     public IThreadReader ThreadReader { get; set; } = null!;
 
-    private IReadOnlyCollection<HiddenThreadDto> ReportedThreads { get; set; } = [];
+    private IReadOnlyCollection<ReportedThreadDto> ReportedThreads { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -30,14 +30,14 @@ public partial class HiddenThreadContainer : RichComponentBase
 
     private async Task LoadReportedThreads()
     {
-        var (result, reportedhreads) = await ThreadReader.GetReportTicketAsync(UserName, CurrentUserName);
+        var (result, reportedThreads) = await ThreadReader.GetReportedThreadsAsync(UserName, CurrentUserName);
         if (result != ServiceResultCode.Success)
         {
             this.NavigateOnError(result);
             return;
         }
 
-        ReportedThreads = reportedhreads!;
+        ReportedThreads = reportedThreads!;
     }
 
     private async Task ForciblyDeleteThreadAsync(int threadId)

@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SimpleForum.Core.Communication;
-using SimpleForum.Core.ReadServices;
+using SimpleForum.Core.QueryServices;
 
 namespace SimpleForum.UnitTests.Services;
 

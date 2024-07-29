@@ -7,9 +7,9 @@
 {
     <EditForm Model="CreateCommentViewModel"
               class="comment-form"
-              OnValidSubmit="(async () => await CreateCommentAsync())">
+              OnValidSubmit="(() => CreateCommentAsync())">
         <DataAnnotationsValidator />
-        <textarea rows="5" cols="50"
+        <textarea rows="5" cols="20"
                 @bind:event="oninput"
                 @bind="CreateCommentViewModel.Body"
                 name="CreateCommentViewModel.Body"></textarea>
@@ -64,8 +64,8 @@
                         <span class="@authorClass">@comment.AuthorName</span>
                         @{
                             var timestampText = comment.IsModified
-                                ? $"Updated {comment.LastUpdateTime.ToString("dd\\/MM\\/yyyy")}"
-                                : $"On {@comment.CreationTime.ToString("dd\\/MM\\/yyyy")}";
+                                ? $@"Updated {comment.LastUpdateTime:dd\/MM\/yyyy}"
+                                : $@"On {@comment.CreationTime:dd\/MM\/yyyy}";
                             <span>@timestampText</span>
                         }
                     </div>
@@ -77,7 +77,7 @@
                             !IsCommentEditorDisplayed[comment.Id] &&
                             !comment.IsReported)
                         {
-                            <form method="post" @onsubmit="(async () => await DeleteCommentAsync(comment.Id))">
+                            <form method="post" @onsubmit="() => DeleteCommentAsync(comment.Id)">
                                 <button class="delete-comment">Delete</button>
                             </form>
                         }
@@ -87,7 +87,7 @@
                             !comment.IsReported &&
                             !isCommentEditorDisplayed)
                         {
-                            <form method="post" @onsubmit="(async () => await HideCommentAsync(comment.Id))">
+                            <form method="post" @onsubmit="(() => HideCommentAsync(comment.Id))">
                                 <button class="delete-comment">Hide</button>
                             </form>
                         }
@@ -104,7 +104,7 @@
                             {
                                 <EditForm Model="EditCommentViewModel"
                                           class="edit-comment-form"
-                                          OnValidSubmit="(async () => await EditCommentAsync(comment.Id))">
+                                          OnValidSubmit="() => EditCommentAsync(comment.Id)">
                                     <DataAnnotationsValidator />
 
                                     <ValidationMessage For="@(() => EditCommentViewModel.Body)" />
@@ -147,14 +147,14 @@
 
                 @if (comment.IsReported && UserPermissionsDto.AllowedToReportPost)
                 {
-                    <p class="@postClass">Reported by: @comment.ReportingUserName on @comment.ReportDate!.Value.ToString("dd\\/MM\\/yyyy")</p>
+                    <p class="@postClass">Reported by @comment.ReportTicketDto!.ReportingUserName on @comment.ReportTicketDto.ReportDate.ToString(@"dd\/MM\/yyyy")</p>
                 }
 
                 @if (!isCommentEditorDisplayed)
                 {
                     foreach (var paragraph in comment.Content.Split(Environment.NewLine))
                     {
-                        <p class="comment-text @postClass">@paragraph</p>
+                        <p class="comment-text">@paragraph</p>
                     }
                 }
 

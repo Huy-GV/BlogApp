@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SimpleForum.Core.CommandServices;
+using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.ViewModels;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.Web.Extensions;
 
 namespace SimpleForum.Web.Pages.Threads;
@@ -17,14 +18,17 @@ public class EditModel : RichPageModelBase<EditModel>
 {
     private readonly IUserPermissionValidator _userPermissionValidator;
     private readonly IThreadContentManager _threadContentManager;
+    private readonly IThreadReader _threadReader;
 
     public EditModel(SimpleForumDbContext context,
         UserManager<ApplicationUser> userManager,
         IThreadContentManager threadContentManager,
         ILogger<EditModel> logger,
-        IUserPermissionValidator userPermissionValidator) : base(context, userManager, logger)
+        IUserPermissionValidator userPermissionValidator,
+        IThreadReader threadReader) : base(context, userManager, logger)
     {
         _userPermissionValidator = userPermissionValidator;
+        _threadReader = threadReader;
         _threadContentManager = threadContentManager;
     }
 
@@ -44,15 +48,15 @@ public class EditModel : RichPageModelBase<EditModel>
             return Forbid();
         }
 
-        var thread = await DbContext.Thread.FindAsync(threadId);
-        if (thread == null)
+        var (result, thread) = await _threadReader.GetThreadAsync(threadId.Value, user.UserName);
+        if (result != ServiceResultCode.Success)
         {
-            return NotFound();
+            return this.NavigateOnError(result);
         }
-
+        
         if (!await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
                 user.UserName ?? string.Empty,
-                thread.ReportTicket != null,
+                thread!.IsReported,
                 thread.AuthorUserName))
         {
             return Forbid();
@@ -62,7 +66,7 @@ public class EditModel : RichPageModelBase<EditModel>
         {
             Id = thread.Id,
             Title = thread.Title,
-            Body = thread.Body,
+            Body = thread.Content,
             Introduction = thread.Introduction
         };
 

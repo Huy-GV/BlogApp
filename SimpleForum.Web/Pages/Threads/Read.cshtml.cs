@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.Web.Extensions;
 
 namespace SimpleForum.Web.Pages.Threads;
@@ -37,10 +37,10 @@ public class ReadModel : RichPageModelBase<ReadModel>
     }
 
     [BindProperty(SupportsGet = true)]
-    public UserPermissionsDto UserPermissionsDto { get; set; } = null!;
+    public UserPermissionsDto UserPermissions { get; set; } = null!;
 
     [BindProperty(SupportsGet = true)]
-    public DetailedThreadDto DetailedThreadDto { get; set; } = null!;
+    public DetailedThreadDto Thread { get; set; } = null!;
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
@@ -50,21 +50,20 @@ public class ReadModel : RichPageModelBase<ReadModel>
             return this.NavigateOnError(result);
         }
 
-        DetailedThreadDto = threadDto!;
+        Thread = threadDto!;
 
         var currentUser = await GetUserOrDefaultAsync();
         var currentUserName = currentUser?.UserName ?? string.Empty;
-        var currentUserRoles = currentUser != null
-            ? await UserManager.GetRolesAsync(currentUser)
-            : [];
-
         var isUserAllowedToUpdateOrDeletePost = await _userPermissionValidator.IsUserAllowedToUpdateOrDeletePostAsync(
                 currentUserName,
-                DetailedThreadDto.IsReported,
-                DetailedThreadDto.AuthorName);
+                Thread.IsReported,
+                Thread.AuthorUserName);
 
-        var isUserAllowedToReportPost = await _userPermissionValidator.IsUserAllowedToReportPostAsync(currentUserName, DetailedThreadDto.AuthorName);
-        UserPermissionsDto = new UserPermissionsDto
+        var isUserAllowedToReportPost = await _userPermissionValidator.IsUserAllowedToReportPostAsync(
+            currentUserName, 
+            Thread.AuthorUserName);
+        
+        UserPermissions = new UserPermissionsDto
         {
             UserName = currentUserName,
             AllowedToReportPost = IsAuthenticated && isUserAllowedToReportPost,

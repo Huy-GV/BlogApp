@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.WriteServices;
 using SimpleForum.IntegrationTests.Fixtures;
 using SimpleForum.Web.Pages.Threads;
 using System.Net;
@@ -163,10 +163,10 @@ public class ThreadReadPageTest : BaseTest
         var pageModelResult = await pageModel.OnGetAsync(thread.Id);
 
         pageModelResult.Should().BeOfType<PageResult>();
-        pageModel.DetailedThreadDto.Title.Should().BeEquivalentTo(thread.Title);
-        pageModel.DetailedThreadDto.Introduction.Should().BeEquivalentTo(thread.Introduction);
-        pageModel.DetailedThreadDto.Content.Should().BeEquivalentTo(thread.Body);
-        pageModel.DetailedThreadDto.AuthorName.Should().BeEquivalentTo(thread.AuthorUserName);
+        pageModel.Thread.Title.Should().BeEquivalentTo(thread.Title);
+        pageModel.Thread.Introduction.Should().BeEquivalentTo(thread.Introduction);
+        pageModel.Thread.Content.Should().BeEquivalentTo(thread.Body);
+        pageModel.Thread.AuthorUserName.Should().BeEquivalentTo(thread.AuthorUserName);
 
         var isVisitorUserAuthor = visitorUserName == authorUserName;
         var isAdminOrModerator = visitorUserRole is "admin" or "moderator";
@@ -178,6 +178,6 @@ public class ThreadReadPageTest : BaseTest
             AllowedToCreateComment = isVisitorUserAuthenticated && !isVisitorUserBanned,
         };
 
-        pageModel.UserPermissionsDto.Should().BeEquivalentTo(expectedUserInfo);
+        pageModel.UserPermissions.Should().BeEquivalentTo(expectedUserInfo);
     }
 }

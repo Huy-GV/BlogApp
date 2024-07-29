@@ -17,14 +17,14 @@ else
             {
                 <div class="reported-post">
                     <p>Title: @thread.Title</p>
-                    <p>Reporting user: @thread.ReportingUserName</p>
-                    <p>Thread creation date: @thread.CreationTime.ToString("dd\\/MM\\/yyyy")</p>
-                    <p>Report date: @thread.ReportDate.ToString("dd\\/MM\\/yyyy")</p>
+                    <p>Reporting user: @thread.ReportTicket.ReportingUserName</p>
+                    <p>Thread creation date: @thread.CreationTime.ToString(@"dd\/MM\/yyyy")</p>
+                    <p>Report date: @thread.ReportTicket.ReportDate.ToString(@"dd\/MM\/yyyy")</p>
                     <hr>
                     <div class="btn-container">
                         <a class="post-link" href="/Threads/Read?id=@thread.Id">Thread Link</a>
-                        <button @onclick="(async () => await CancelThreadReportTicket(thread.ReportTicketId))" class="un-hide-post">Unhide Thread</button>
-                        <button @onclick="(async () => await ForciblyDeleteThreadAsync(thread.Id))" class="delete-post">Delete Thread</button>
+                        <button @onclick="() => CancelThreadReportTicket(thread.ReportTicket.Id)" class="un-hide-post">Unhide Thread</button>
+                        <button @onclick="() => ForciblyDeleteThreadAsync(thread.Id)" class="delete-post">Delete Thread</button>
                     </div>
                 </div>
             }

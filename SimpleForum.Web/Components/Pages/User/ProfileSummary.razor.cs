@@ -1,16 +1,16 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Communication;
 using SimpleForum.Core.Data.Dtos;
 using SimpleForum.Core.Data.ViewModels;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.Web.Extensions;
 
 namespace SimpleForum.Web.Components.Pages.User;
 public partial class ProfileSummary : RichComponentBase
 {
-    public PersonalProfileDto UserProfile { get; set; } = new();
+    public PersonalProfileDto? UserProfile { get; set; }
 
     [SupplyParameterFromForm]
     public EditProfileSummaryViewModel EditProfileSummaryViewModel { get; set; } = new();

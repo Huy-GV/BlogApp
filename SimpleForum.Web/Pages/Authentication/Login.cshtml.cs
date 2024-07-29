@@ -28,20 +28,14 @@ public class LoginModel : PageModel
     [BindProperty]
     public LogInViewModel LogInViewModel { get; set; } = null!;
 
-    public string? ReturnUrl { get; set; }
-
-    public async Task OnGetAsync(string? returnUrl = null)
+    public async Task OnGetAsync()
     {
-        returnUrl ??= Url.Content("~/");
         await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-
-        ReturnUrl = returnUrl;
     }
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
-        Console.WriteLine("Return URL from log in model: " + returnUrl);
 
         if (!ModelState.IsValid)
         {

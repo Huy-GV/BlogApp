@@ -3,11 +3,11 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using SimpleForum.Core.CommandServices;
 using SimpleForum.Core.Data;
 using SimpleForum.Core.Data.ViewModels;
 using SimpleForum.Core.Models;
-using SimpleForum.Core.ReadServices;
-using SimpleForum.Core.WriteServices;
+using SimpleForum.Core.QueryServices;
 using SimpleForum.UnitTests.Utils;
 
 namespace SimpleForum.UnitTests.Services;
