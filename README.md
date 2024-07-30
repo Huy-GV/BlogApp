@@ -5,11 +5,10 @@ Simple forum application where users can create threads or comment on threads wr
 All posts can be monitored, hidden, and removed by Moderators and Administrators.
 
 <p><em>Demo</em></p>
-<img src="https://github.com/Huy-GV/RazorBlog/assets/78300296/51a252ea-0353-4e99-916e-779d93890db5" width=80% alt="demo-gif">
+<img src="https://github.com/user-attachments/assets/a29741b1-b3f8-44c5-bf5e-74b6117be172" width=80% alt="demo-gif">
 
-- Technologies
-	- Frameworks: .NET Razor Pages, Blazor, Entity Framework Core, SASS, SQL Server
-	- Development Tools: Docker, AWS CDK, Route 53, ALB, S3, ECS Fargate, RDS, VPC
+- Frameworks & Libraries: .NET Razor Pages, Blazor, Entity Framework Core, SASS, SQL Server
+- Development Tools: Docker, AWS CDK, Route 53, ALB, S3, ECS Fargate, RDS, VPC
 
 ##  Quick Start
 ### Pre-requisites
