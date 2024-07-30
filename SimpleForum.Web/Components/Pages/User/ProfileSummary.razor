@@ -3,11 +3,11 @@
 @inherits RichComponentBase
 @attribute [StreamRendering(true)]
 
-@if (UserProfile == null) 
+@if (UserProfile == null)
 {
     <h2 class="loading-text">Loading Profile...</h2>
 }
-else 
+else
 {
     <main>
         <div class="basic-info">
@@ -115,7 +115,7 @@ else
         IsSummaryEditFormDisplayed = false;
         EditProfileSummaryViewModel = new EditProfileSummaryViewModel
         {
-            Summary = UserProfile.Description
+            Summary = UserProfile?.Description ?? string.Empty
         };
     }
 
@@ -129,7 +129,7 @@ else
         IsSummaryEditFormDisplayed = true;
         EditProfileSummaryViewModel = new EditProfileSummaryViewModel
         {
-            Summary = UserProfile.Description
+            Summary = UserProfile?.Description ?? string.Empty
         };
     }
 

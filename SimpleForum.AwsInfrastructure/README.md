@@ -11,10 +11,9 @@ This document describes the AWS deployment process using the CDK with TypeScript
 - Required installations
     - [Node.js](https://nodejs.org/en/download/current)
     - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions)
-- Install AWS CDK, TypeScript, and Node.js packages
-    ```bash
-    ./scripts/install-packages.sh
-    ```
+    - TypeScript: `npm install -g typescript`
+    - AWS CDK: `npm -g install typescript`
+    - Node.js packages: `npm install`
 
 ### Set Up AWS Credentials
 - Run the following command and specify the access key, secret key, and region
@@ -22,6 +21,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
     aws configure --profile simple-forum
     set AWS_PROFILE=simple-forum
     ```
+- Generate a GitHub Token with `admin:repo_hook`, `repo` scopes and add it to AWS Secret Manager with the key `GitHubToken`
 - Create a file named `cdk.context.json` containing availabilities zones within your region:
     ```json
     {
@@ -52,11 +52,11 @@ This document describes the AWS deployment process using the CDK with TypeScript
         ```bash
         cdk deploy SfoDataStoreStack
         ```
-    3. Push Docker image to ECR via
-        ```bash
-        ./scripts/build-ecr-image.sh ../
-        ```
-    4. Deploy the container stack:
+    3. Deploy the container stack:
         ```bash
         cdk deploy SfoContainerStack
+        ```
+    4. Deploy the CI/CD pipeline stack:
+        ```bash
+        cdk deploy SfoCodePipelineStack
         ```

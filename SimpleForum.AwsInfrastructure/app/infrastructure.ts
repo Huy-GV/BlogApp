@@ -6,6 +6,7 @@ import { VpcStack } from '../lib/vpc-stack';
 import { DataStoreStack } from '../lib/data-store-stack';
 import { ContainerStack } from '../lib/container-service-stack';
 import { exit } from 'process';
+import { CodePipelineStack } from '../lib/codepipeline-stack';
 
 const app = new cdk.App();
 const awsEnv = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
@@ -36,6 +37,19 @@ const containerServiceStack = new ContainerStack(app, 'SfoContainerStack', {
 	databasePort: dataStoreStack.databaseInstance.dbInstanceEndpointPort,
 	ecrRepository: dataStoreStack.repository,
 	appConfiguration: appConfiguration
-})
+});
+
+const codePipelineStack = new CodePipelineStack(app, 'SfoCodePipelineStack', {
+	env: awsEnv,
+	gitHubOwner: appConfiguration.GitHub__OwnerName,
+	gitHubRepositoryName: appConfiguration.GitHub__RepositoryName,
+	gitHubSecretName: appConfiguration.GitHub__SecretName,
+	fargateService: containerServiceStack.fargateService,
+	ecrRepository: dataStoreStack.repository,
+	awsAccountId: appConfiguration.Aws__AccountId,
+	awsContainerName: appConfiguration.Aws__ContainerName,
+	awsRegion: appConfiguration.Aws__Region,
+	awsRepositoryName: appConfiguration.Aws__RepositoryName
+});
 
 app.synth();

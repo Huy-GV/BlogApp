@@ -46,14 +46,14 @@ export class VpcStack extends cdk.Stack {
 			allowAllOutbound: false
 		});
 
-		this.loadBalancerTierSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443));
-		this.loadBalancerTierSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443));
-		this.loadBalancerTierSecurityGroup.addEgressRule(this.webTierSecurityGroup, Port.tcp(80));
+		this.loadBalancerTierSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.HTTPS);
+		this.loadBalancerTierSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.HTTPS);
+		this.loadBalancerTierSecurityGroup.addEgressRule(this.webTierSecurityGroup, Port.HTTP);
 
-		this.webTierSecurityGroup.addIngressRule(this.loadBalancerTierSecurityGroup, Port.tcp(80));
-		this.webTierSecurityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(443));
-		this.webTierSecurityGroup.addEgressRule(this.databaseTierSecurityGroup, Port.tcp(1433));
+		this.webTierSecurityGroup.addIngressRule(this.loadBalancerTierSecurityGroup, Port.HTTP);
+		this.webTierSecurityGroup.addEgressRule(Peer.anyIpv4(), Port.HTTPS);
+		this.webTierSecurityGroup.addEgressRule(this.databaseTierSecurityGroup, Port.MSSQL);
 
-		this.databaseTierSecurityGroup.addIngressRule(this.webTierSecurityGroup, Port.tcp(1433));
+		this.databaseTierSecurityGroup.addIngressRule(this.webTierSecurityGroup, Port.MSSQL);
 	}
 }

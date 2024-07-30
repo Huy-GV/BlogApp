@@ -9,6 +9,7 @@
                 "cloudformation:DescribeStackEvents",
                 "cloudformation:DescribeStacks",
                 "cloudformation:ExecuteChangeSet",
+                "cloudformation:DeleteChangeSet",
                 "cloudformation:GetTemplate"
             ],
             "Resource": "arn:aws:cloudformation:ap-southeast-2:YOUR_AWS_ACCOUNT_ID:stack/CDKToolkit/*",

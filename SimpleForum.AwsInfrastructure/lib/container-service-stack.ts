@@ -1,7 +1,7 @@
 import { StackProps, Stack, aws_elasticloadbalancingv2, aws_certificatemanager, Duration } from "aws-cdk-lib";
 import { ISecurityGroup, IVpc, SubnetType } from "aws-cdk-lib/aws-ec2";
 import { IRepository } from "aws-cdk-lib/aws-ecr";
-import { FargateTaskDefinition, FargateService, Cluster, AwsLogDriver, ContainerImage, AppProtocol, Protocol } from "aws-cdk-lib/aws-ecs";
+import { FargateTaskDefinition, FargateService, Cluster, AwsLogDriver, ContainerImage, AppProtocol, Protocol, IFargateService } from "aws-cdk-lib/aws-ecs";
 import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { AppConfiguration } from "../config/appConfiguration";
@@ -24,6 +24,8 @@ interface ContainerServiceStackProps extends StackProps {
 }
 
 export class ContainerStack extends Stack {
+	readonly fargateService: FargateService
+
 	constructor(scope: Construct, id: string, props: ContainerServiceStackProps) {
 		super(scope, id, props);
 
@@ -44,7 +46,7 @@ export class ContainerStack extends Stack {
 			props.ecrRepository
 		);
 
-		const fargateService = this.createFargateService(
+		this.fargateService = this.createFargateService(
 			taskDefinition,
 			props.webTierSecurityGroup,
 			props.vpc,
@@ -77,7 +79,7 @@ export class ContainerStack extends Stack {
 			{
 				vpc: props.vpc,
 				port: 80,
-				targets: [fargateService],
+				targets: [this.fargateService],
 				targetType: aws_elasticloadbalancingv2.TargetType.IP,
 				healthCheck: {
 					path: '/health',
