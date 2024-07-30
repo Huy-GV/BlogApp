@@ -108,6 +108,7 @@ a {
 
 nav {
   display: flex;
+  align-items: center;
   position: fixed;
   background-color: white;
   top: 0;
@@ -134,7 +135,7 @@ nav a {
   text-decoration: none;
   font-weight: 600;
   color: black;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 @media screen and (max-width: 1200px) {
   nav a {
@@ -143,7 +144,6 @@ nav a {
 }
 @media screen and (max-width: 700px) {
   nav a {
-    padding-block: 0.7rem;
     padding-inline: 0.3rem;
   }
 }
@@ -160,9 +160,9 @@ nav .authentication-links {
   margin-left: auto;
   margin-block: auto;
   display: flex;
+  align-items: center;
 }
 nav .authentication-links .middle-bar {
-  border-right: 2px solid black;
   display: inline;
   margin-inline: 1rem;
   padding-block: 0.4rem;
@@ -171,6 +171,12 @@ nav .authentication-links .middle-bar {
 @media screen and (max-width: 700px) {
   nav .authentication-links .middle-bar {
     margin-inline: 0.5rem;
+  }
+}
+@media screen and (max-width: 700px) {
+  nav .authentication-links > *:not([class*=log-btn]) {
+    display: none;
+    border: none;
   }
 }
 nav .authentication-links .log-btn {

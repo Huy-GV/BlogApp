@@ -51,6 +51,7 @@ a {
 
 nav {
   display: flex;
+  align-items: center;
   position: fixed;
   background-color: white;
   top: 0;
@@ -75,14 +76,13 @@ nav {
     text-decoration: none;
     font-weight: 600;
     color: black;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 
     @media screen and (max-width: $medium-screen-width) {
       padding-inline: 0.3rem;
     }
 
     @media screen and (max-width: $small-screen-width) {
-      padding-block: 0.7rem;
       padding-inline: 0.3rem;
     }
   }
@@ -99,15 +99,23 @@ nav {
     margin-left: auto;
     margin-block: auto;
     display: flex;
+    align-items: center;
+
 
     .middle-bar {
-      border-right: 2px solid black;
       display: inline;
       margin-inline: 1rem;
       padding-block: 0.4rem;
       border-right: 2px solid gray;
       @media screen and (max-width: $small-screen-width) {
         margin-inline: 0.5rem;
+      }
+    }
+
+    @media screen and (max-width: $small-screen-width) {
+      > *:not([class*="log-btn"]) {
+        display: none;
+        border: none;
       }
     }
 

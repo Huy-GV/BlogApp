@@ -128,7 +128,7 @@
     }
 
     @media screen and (max-width: $small-screen-width) {
-      width: 90%;
+      width: 95%;
     }
 
     .comment {
@@ -137,7 +137,7 @@
       background-color: white;
       margin: 0.3rem;
       font-size: 1.1rem;
-      
+
       .author-container {
         display: flex;
         align-items: center;
@@ -242,12 +242,14 @@
   .edit-form-btn-container {
     display: flex;
     flex-direction: row-reverse;
+    gap: 1rem;
 
     .save-btn {
       @extend .link;
       @extend .primary-button;
       font-size: 0.6rem;
       padding: 0.6rem;
+      min-width: 4rem
     }
   }
 

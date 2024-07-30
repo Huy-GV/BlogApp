@@ -22,7 +22,7 @@ public class CreateUserViewModel
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string ConfirmPassword { get; set; } = string.Empty;
 
-    [Display(Name = "Profile picture (optional)")]
+    [Display(Name = "Profile Picture (optional)")]
     [FileType("jpg", "jpeg", "png", ErrorMessage = "File type must be one of: .png, .jpeg, .jpg")]
     public IFormFile? ProfilePicture { get; set; }
 }

@@ -1,0 +1,9 @@
+﻿@inherits RichComponentBase
+@attribute [StreamRendering(true)]
+
+<HiddenThreadContainer UserName="@UserName" OnThreadDeleted="Reload" />
+<HiddenCommentContainer UserName="@UserName" ReloadToggled="@ReloadToggled" />
+
+@code {
+
+}

@@ -22,8 +22,8 @@ else
                     <hr>
                     <div class="btn-container">
                         <a class="post-link" href="/Threads/Read/?id=@comment.ThreadId#comment-@comment.Id">Comment Link</a>
-                        <button @onclick="(() => UnhideCommentAsync(comment.ReportTicket.Id))" class="un-hide-post">Unhide Comment</button>
-                        <button @onclick="(() => ForciblyDeleteCommentAsync(comment.Id))" class="delete-post">Delete Comment</button>
+                        <button @onclick="() => UnhideCommentAsync(comment.ReportTicket.Id)" class="un-hide-post">Unhide Comment</button>
+                        <button @onclick="() => ForciblyDeleteCommentAsync(comment.Id)" class="delete-post">Delete Comment</button>
                     </div>
                 </div>
             }

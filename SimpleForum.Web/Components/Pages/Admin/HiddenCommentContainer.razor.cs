@@ -14,6 +14,9 @@ public partial class HiddenCommentContainer : RichComponentBase
     [Parameter]
     public string UserName { get; set; } = string.Empty;
 
+    [Parameter]
+    public bool ReloadToggled { get; set; }
+
     [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 

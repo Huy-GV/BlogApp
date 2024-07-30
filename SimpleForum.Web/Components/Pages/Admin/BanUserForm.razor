@@ -4,7 +4,7 @@
 
 @if (CurrentBanTicket != null)
 {
-    <div class="current-suspension">
+    <div class="current-ban-ticket">
         @{
             var expiryDate = CurrentBanTicket.Expiry?.ToString("dddd, dd/MM/yyyy", CultureInfo.InvariantCulture) ?? "Permanent";
             <p>Expiry date: @expiryDate</p>
@@ -21,7 +21,7 @@ else
 {
     <p>No ban ticket exists</p>
 
-    <EditForm Model="BanUserViewModel" class="suspend-form" OnValidSubmit="() => BanUserAsync()">
+    <EditForm Model="BanUserViewModel" class="ban-form" OnValidSubmit="() => BanUserAsync()">
         <DataAnnotationsValidator />
 
         @if (IsTemporaryBanEnabled)

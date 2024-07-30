@@ -13,7 +13,7 @@ public class ReportTicket
     [DataType(DataType.DateTime)]
     public DateTime? ActionDate { get; set; }
 
-    public int? ThreadId { get; set; }
+    public int ThreadId { get; set; }
 
     public int? CommentId { get; set; }
 

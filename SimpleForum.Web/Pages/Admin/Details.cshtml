@@ -11,18 +11,14 @@
 
 <h1>Details of @Model.UserName</h1>
 <main>
-    <component type="typeof(HiddenThreadContainer)"
-                render-mode="Server"
-                param-UserName="@Model.UserName" />
-
-    <component type="typeof(HiddenCommentContainer)"
-                render-mode="Server"
-                param-UserName="@Model.UserName" />
+    <component type="typeof(ReportedPostContainer)"
+               render-mode="Server"
+               param-UserName="@Model.UserName" />
 </main>
 
 <h2 class="middle-aligned">Ban Ticket</h2>
 <section class="ban-details-container">
-
+    
     <component type="typeof(BanUserForm)"
                render-mode="Server"
                param-InspectedUserName="@Model.UserName" />

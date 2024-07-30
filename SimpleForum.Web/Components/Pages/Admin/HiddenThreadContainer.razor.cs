@@ -14,6 +14,9 @@ public partial class HiddenThreadContainer : RichComponentBase
     [Parameter]
     public string UserName { get; set; } = string.Empty;
 
+    [Parameter] 
+    public EventCallback OnThreadDeleted { get; set; }
+
     [Inject]
     public IPostModerationService PostModerationService { get; set; } = null!;
 
@@ -49,6 +52,7 @@ public partial class HiddenThreadContainer : RichComponentBase
             return;
         }
 
+        await OnThreadDeleted.InvokeAsync();
         await LoadReportedThreads();
     }
 

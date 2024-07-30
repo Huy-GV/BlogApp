@@ -27,6 +27,7 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
                 .HasQueryFilter(x => !x.ToBeDeleted)
                 .HasMany(x => x.Comments)
                 .WithOne()
+                .HasForeignKey(x => x.ThreadId)
                 .IsRequired(true)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -37,10 +38,12 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
                 .HasForeignKey(x => x.AuthorUserName)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // report ticket might be for a comment on the thread, not the thread itself
             entity
                 .HasOne(x => x.ReportTicket)
-                .WithOne()
-                .HasForeignKey<Thread>(x => x.ReportTicketId)
+                .WithMany()
+                .HasPrincipalKey(x => x.Id)
+                .HasForeignKey(x => x.ReportTicketId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
         });
@@ -64,20 +67,30 @@ public class SimpleForumDbContext : IdentityDbContext<ApplicationUser>, IDataPro
 
         builder.Entity<ReportTicket>(entity =>
         {
-            var threadIdColumnName = $"[{nameof(Models.ReportTicket.ThreadId)}]";
-            var commentIdColumnName = $"[{nameof(Models.ReportTicket.CommentId)}]";
-
-            var postIdCheckConstraint = @$"
-                ({threadIdColumnName} IS NOT NULL AND {commentIdColumnName} IS NULL) OR
-                ({threadIdColumnName} IS NULL AND {commentIdColumnName} IS NOT NULL)";
-            entity.ToTable(x => x.HasCheckConstraint("PostId", postIdCheckConstraint));
-
             entity
                 .HasOne(x => x.ReportingUser)
                 .WithMany()
                 .HasPrincipalKey(x => x.UserName)
                 .HasForeignKey(x => x.ReportingUserName)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // report ticket might be for a comment on the thread, not the thread itself
+            entity
+                .HasOne<Thread>()
+                .WithMany()
+                .HasForeignKey(x => x.ThreadId)
+                .HasPrincipalKey(x => x.Id)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity
+                .HasOne<Comment>()
+                .WithOne()
+                .HasForeignKey<ReportTicket>(x => x.CommentId)
+                .HasPrincipalKey<Comment>(x => x.Id)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         builder.Entity<BanTicket>()

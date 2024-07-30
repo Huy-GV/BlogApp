@@ -121,22 +121,13 @@ public static class ServiceCollectionsExtensions
 
         var dbConnectionString = ResolveConnectionString(configuration, "DefaultConnection", "DefaultLocation", logger);
 
-        Action<SqlServerDbContextOptionsBuilder> buildSqlServerOptions = sqlServerOptions =>
-        {
-            sqlServerOptions.EnableRetryOnFailure(
-                maxRetryCount: 3,
-                maxRetryDelay: TimeSpan.FromSeconds(3),
-                errorNumbersToAdd: null
-            );
-        };
-
         services.AddDbContext<SimpleForumDbContext>(
-            options => options.UseSqlServer(dbConnectionString, buildSqlServerOptions)
+            options => options.UseSqlServer(dbConnectionString)
         );
 
         // for use in Blazor components as injected DB context is not scoped
         services.AddDbContextFactory<SimpleForumDbContext>(
-            options => options.UseSqlServer(dbConnectionString, buildSqlServerOptions),
+            options => options.UseSqlServer(dbConnectionString),
 
             // use Scoped lifetime as the injected DbContextOptions used by AddDbContext also has a Scoped lifetime
             lifetime: ServiceLifetime.Scoped

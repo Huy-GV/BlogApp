@@ -10,6 +10,9 @@ using SimpleForum.Core.Data.Constants;
 using Microsoft.FeatureManagement;
 using SimpleForum.Core.Features;
 using SimpleForum.Core.QueryServices;
+using System.Linq;
+using System.Threading;
+using Thread = SimpleForum.Core.Models.Thread;
 
 namespace SimpleForum.Core.CommandServices;
 
@@ -81,6 +84,7 @@ internal class PostModerationService : IPostModerationService
         {
             CreationDate = DateTime.UtcNow,
             CommentId = commentId,
+            ThreadId = comment.ThreadId,
             ReportingUserName = requestUserName
         };
 
@@ -173,7 +177,13 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
+        // manually delete this to avoid circular dependency error
+        var commentReportQuery = _dbContext.ReportTicket.Where(x => x.CommentId == commentId);
+        _dbContext.ReportTicket.RemoveRange(commentReportQuery);
+
+        await _dbContext.SaveChangesAsync();
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
             CensorDeletedComment(comment);
@@ -188,6 +198,8 @@ internal class PostModerationService : IPostModerationService
         }
 
         await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+
         return ServiceResultCode.Success;
     }
 
@@ -213,6 +225,13 @@ internal class PostModerationService : IPostModerationService
             return ServiceResultCode.Unauthorized;
         }
 
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+        // manually delete this to avoid circular dependency error
+        var reportedThreadQuery = _dbContext.ReportTicket.Where(x => x.ThreadId == threadId);
+        _dbContext.ReportTicket.RemoveRange(reportedThreadQuery);
+        await _dbContext.SaveChangesAsync();
+
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
             CensorDeletedThread(thread);
@@ -226,6 +245,8 @@ internal class PostModerationService : IPostModerationService
         }
 
         await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+
         return ServiceResultCode.Success;
     }
 }

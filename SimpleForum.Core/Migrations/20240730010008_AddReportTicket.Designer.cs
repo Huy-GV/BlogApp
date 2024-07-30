@@ -12,7 +12,7 @@ using SimpleForum.Core.Data;
 namespace SimpleForum.Migrations
 {
     [DbContext(typeof(SimpleForumDbContext))]
-    [Migration("20240728052145_AddReportTicket")]
+    [Migration("20240730010008_AddReportTicket")]
     partial class AddReportTicket
     {
         /// <inheritdoc />
@@ -322,17 +322,20 @@ namespace SimpleForum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("ThreadId")
+                    b.Property<int>("ThreadId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CommentId")
+                        .IsUnique()
+                        .HasFilter("[CommentId] IS NOT NULL");
+
                     b.HasIndex("ReportingUserName");
 
-                    b.ToTable("ReportTicket", t =>
-                        {
-                            t.HasCheckConstraint("PostId", "\r\n                ([ThreadId] IS NOT NULL AND [CommentId] IS NULL) OR\r\n                ([ThreadId] IS NULL AND [CommentId] IS NOT NULL)");
-                        });
+                    b.HasIndex("ThreadId");
+
+                    b.ToTable("ReportTicket");
                 });
 
             modelBuilder.Entity("SimpleForum.Core.Models.Thread", b =>
@@ -383,9 +386,7 @@ namespace SimpleForum.Migrations
 
                     b.HasIndex("AuthorUserName");
 
-                    b.HasIndex("ReportTicketId")
-                        .IsUnique()
-                        .HasFilter("[ReportTicketId] IS NOT NULL");
+                    b.HasIndex("ReportTicketId");
 
                     b.ToTable("Thread");
                 });
@@ -480,11 +481,22 @@ namespace SimpleForum.Migrations
 
             modelBuilder.Entity("SimpleForum.Core.Models.ReportTicket", b =>
                 {
+                    b.HasOne("SimpleForum.Core.Models.Comment", null)
+                        .WithOne()
+                        .HasForeignKey("SimpleForum.Core.Models.ReportTicket", "CommentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("SimpleForum.Core.Models.ApplicationUser", "ReportingUser")
                         .WithMany()
                         .HasForeignKey("ReportingUserName")
                         .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SimpleForum.Core.Models.Thread", null)
+                        .WithMany()
+                        .HasForeignKey("ThreadId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ReportingUser");
@@ -500,8 +512,8 @@ namespace SimpleForum.Migrations
                         .IsRequired();
 
                     b.HasOne("SimpleForum.Core.Models.ReportTicket", "ReportTicket")
-                        .WithOne()
-                        .HasForeignKey("SimpleForum.Core.Models.Thread", "ReportTicketId")
+                        .WithMany()
+                        .HasForeignKey("ReportTicketId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("AuthorUser");

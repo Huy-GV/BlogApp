@@ -137,7 +137,9 @@ internal class ThreadReader : IThreadReader
             .AsNoTracking()
             .Include(x => x.AuthorUser)
             .Include(x => x.ReportTicket)
-            .Where(x => x.AuthorUser.UserName == authorUserName && x.ReportTicketId != null)
+            .Where(x => x.AuthorUser.UserName == authorUserName 
+                && x.ReportTicket != null
+                && x.ReportTicket.CommentId == null)
             .Select(x => new ReportedThreadDto
             {
                 Id = x.Id,
