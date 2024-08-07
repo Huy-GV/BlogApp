@@ -15,7 +15,6 @@ public class ErrorPageRoutingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Call the next middleware in the pipeline
         await _next(context);
 
         if (context.Response.StatusCode < 400)

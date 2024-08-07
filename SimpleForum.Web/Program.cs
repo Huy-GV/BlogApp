@@ -78,7 +78,7 @@ public class Program
             builder.Configuration.AddEnvironmentVariables();
         }
 
-        builder.Services.UseCoreDataStore(builder.Configuration);
+        builder.Services.UseCoreDataStore(builder.Configuration, environmentName);
 
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
@@ -116,7 +116,7 @@ public class Program
         if (useHangFire)
         {
             logger.LogInformation("Using HangFire as background job server");
-            builder.Services.UseHangFireServer(builder.Configuration);
+            builder.Services.UseHangFireServer(builder.Configuration, environmentName);
         }
         else
         {

@@ -182,12 +182,11 @@ internal class PostModerationService : IPostModerationService
         // manually delete this to avoid circular dependency error
         var commentReportQuery = _dbContext.ReportTicket.Where(x => x.CommentId == commentId);
         _dbContext.ReportTicket.RemoveRange(commentReportQuery);
-
         await _dbContext.SaveChangesAsync();
+
         if (await _featureManager.IsEnabledAsync(FeatureNames.UseHangFire))
         {
             CensorDeletedComment(comment);
-            comment.ReportTicket!.ActionDate = DateTime.UtcNow;
             _postDeletionScheduler.ScheduleCommentDeletion(
                 new DateTimeOffset(DateTime.UtcNow.AddDays(7)),
                 commentId);
