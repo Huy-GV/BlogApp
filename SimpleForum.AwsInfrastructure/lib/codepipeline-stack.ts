@@ -65,6 +65,7 @@ export class CodePipelineStack extends cdk.Stack {
 
 		const pipeline = new codepipeline.Pipeline(this, 'SfoCdkCodePipeline', {
 			pipelineName: 'SfoCdkCodePipeline',
+			pipelineType: codepipeline.PipelineType.V2
 		});
 
 		const sourceOutput = new codepipeline.Artifact('SourceArtifact');

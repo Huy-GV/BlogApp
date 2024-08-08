@@ -1,24 +1,22 @@
-import { StackProps, Stack, aws_elasticloadbalancingv2, aws_certificatemanager, Duration } from "aws-cdk-lib";
+import { StackProps, Stack, aws_elasticloadbalancingv2, aws_certificatemanager, Duration, aws_ecs } from "aws-cdk-lib";
 import { ISecurityGroup, IVpc, SubnetType } from "aws-cdk-lib/aws-ec2";
 import { IRepository } from "aws-cdk-lib/aws-ecr";
-import { FargateTaskDefinition, FargateService, Cluster, AwsLogDriver, ContainerImage, AppProtocol, Protocol, IFargateService } from "aws-cdk-lib/aws-ecs";
+import { FargateTaskDefinition, FargateService, Cluster, AwsLogDriver, ContainerImage, AppProtocol, Protocol } from "aws-cdk-lib/aws-ecs";
 import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { AppConfiguration } from "../config/appConfiguration";
 import { IBucket } from "aws-cdk-lib/aws-s3";
 import { ARecord, PublicHostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { LoadBalancerTarget } from "aws-cdk-lib/aws-route53-targets";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 interface ContainerServiceStackProps extends StackProps {
 	vpc: IVpc,
 	dataBucket: IBucket,
-	loadBalancerTierSecurityGroup: ISecurityGroup
-	webTierSecurityGroup: ISecurityGroup
-	databaseUserId: string
-	databasePassword: string
-	databaseName: string
-	databaseEndpoint: string
-	databasePort: string
+	loadBalancerTierSecurityGroup: ISecurityGroup,
+	webTierSecurityGroup: ISecurityGroup,
+	databaseEndpoint: string,
+	databaseName: string,
 	ecrRepository: IRepository,
 	appConfiguration: AppConfiguration
 }
@@ -37,11 +35,8 @@ export class ContainerStack extends Stack {
 
 		const taskDefinition = this.createTaskDefinition(
 			taskExecutionRole,
-			props.databaseEndpoint,
-			props.databasePort,
 			props.databaseName,
-			props.databaseUserId,
-			props.databasePassword,
+			props.databaseEndpoint,
 			props.appConfiguration,
 			props.ecrRepository
 		);
@@ -57,6 +52,7 @@ export class ContainerStack extends Stack {
 			this,
 			'SfoCdkAlb',
 			{
+				loadBalancerName: 'sfo-cdk-alb',
 				vpc: props.vpc,
 				securityGroup: props.loadBalancerTierSecurityGroup,
 				vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PUBLIC }),
@@ -141,7 +137,7 @@ export class ContainerStack extends Stack {
 			{
 				taskDefinition,
 				cluster: cluster,
-				desiredCount: 1,
+				desiredCount: 0,
 				assignPublicIp: true,
 				securityGroups: [
 					webServerTierSecurityGroup
@@ -155,11 +151,8 @@ export class ContainerStack extends Stack {
 
 	private createTaskDefinition(
 		taskExecutionRole: Role,
-		databaseEndpoint: string,
-		databasePort: string,
 		databaseName: string,
-		databaseUserId: string,
-		databasePassword: string,
+		databaseEndpoint: string,
 		appConfiguration: AppConfiguration,
 		ecrRepository: IRepository
 	): FargateTaskDefinition {
@@ -174,18 +167,24 @@ export class ContainerStack extends Stack {
 			},
 		);
 
-		const connectionString = `Server=${databaseEndpoint},${databasePort};Database=${databaseName};User ID=${databaseUserId};Password=${databasePassword};MultipleActiveResultSets=false;TrustServerCertificate=true;`
-
-		const {
-			Aws__CertificateArn,
-			Aws__HostedZoneName,
-			...relevantEnvVariables
-		} = appConfiguration
-
 		const containerEnvVariables = {
-			...relevantEnvVariables,
-		  	ConnectionStrings__DefaultConnection: connectionString
-		};
+			ConnectionStrings__DatabaseName: databaseName,
+			ConnectionStrings__Endpoint: databaseEndpoint,
+			ConnectionStrings__UserId: appConfiguration.ConnectionStrings__UserId,
+			ASPNETCORE_URLS: appConfiguration.ASPNETCORE_URLS,
+			Aws__DataBucket: appConfiguration.Aws__DataBucket,
+		}
+
+		const databasePasswordParameter = StringParameter.fromSecureStringParameterAttributes(this, 'SfoCdkDbPassword', {
+			parameterName: '/sfo/prod/db/password',
+		});
+
+		const seedUserPasswordParameter = StringParameter.fromSecureStringParameterAttributes(this, 'SfoCdkSeedUserPassword', {
+			parameterName: '/sfo/prod/seeduser/password',
+		});
+
+		const dbPassword = aws_ecs.Secret.fromSsmParameter(databasePasswordParameter);
+		const seedUserPassword = aws_ecs.Secret.fromSsmParameter(seedUserPasswordParameter);
 
 		const logging = new AwsLogDriver({ streamPrefix: "simple-forum" });
 		taskDefinition.addContainer(
@@ -205,7 +204,11 @@ export class ContainerStack extends Stack {
 						appProtocol: AppProtocol.http,
 						name: 'http-mappings'
 					}
-				]
+				],
+				secrets: {
+					SeedUser__Password: seedUserPassword,
+					ConnectionStrings__Password: dbPassword,
+				}
 			}
 		);
 

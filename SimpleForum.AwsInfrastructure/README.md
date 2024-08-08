@@ -22,14 +22,10 @@ This document describes the AWS deployment process using the CDK with TypeScript
     set AWS_PROFILE=simple-forum
     ```
 - Generate a GitHub Token with `admin:repo_hook`, `repo` scopes and add it to AWS Secret Manager with the key `GitHubToken`
-- Create a file named `cdk.context.json` containing availabilities zones within your region:
-    ```json
-    {
-        "availability-zones:account=YOUR_AWS_ACCOUNT_ID:region=YOUR_AWS_REGION": [
-            "YOUR_AWS_REGION_AZ_1",
-            "YOUR_AWS_REGION_AZ_2",
-        ]
-    }
+- Upload secrets to AWS Secret Manager:
+    ```bash
+    ./scripts/set-aws-secrets.sh /sfo/prod/db/password "DbPassword123"
+    ./scripts/set-aws-secrets.sh /sfo/prod/seeduser/password "SecurePassword123@@"
     ```
 
 ### Bootstrap CDK
@@ -43,7 +39,7 @@ This document describes the AWS deployment process using the CDK with TypeScript
 
 ### Deploy Application
 - Create an `aws.env` file in [./config](./config/) containing properties of [AppConfiguration](./config/appConfiguration.ts)
-- Deploy the stacks to AWS using the command `cdk deploy STACK_NAME` in the following order:
+- Deploy the stacks to AWS in the following order:
     1. Deploy the VPC stack:
         ```bash
         cdk deploy SfoVpcStack

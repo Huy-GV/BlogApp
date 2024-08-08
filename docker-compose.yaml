@@ -10,7 +10,11 @@ services:
         environment:
             - ASPNETCORE_URLS=http://+:5000;http://+:5001
             - SeedUser__Password=${SeedUser__Password}
-            - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+            - ConnectionStrings__Endpoint=${ConnectionStrings__Endpoint}
+            - ConnectionStrings__DatabaseName=${ConnectionStrings__DatabaseName}
+            - ConnectionStrings__UserId=${ConnectionStrings__UserId}
+            - ConnectionStrings__Password=${ConnectionStrings__Password}
+
         depends_on:
             - simpleforumdb
         volumes:
@@ -21,6 +25,6 @@ services:
             - "1433:1433"
         image: "mcr.microsoft.com/mssql/server:2022-latest"
         environment:
-            SA_PASSWORD: ${SqlServer__Password}
+            SA_PASSWORD: ${ConnectionStrings__Password}
             ACCEPT_EULA: Y
             MSSQL_PID: Express

@@ -9,9 +9,7 @@ export interface DataStoreStackProps extends StackProps {
     vpc: IVpc,
     databaseTierSecurityGroup: ISecurityGroup,
     dataBucketName: string,
-    databaseName: string,
     databaseUserId: string,
-    databasePassword: string
 }
 
 export class DataStoreStack extends Stack {
@@ -39,7 +37,6 @@ export class DataStoreStack extends Stack {
             'SfoCdkDb',
             {
                 removalPolicy: RemovalPolicy.SNAPSHOT,
-                instanceIdentifier: props.databaseName,
                 engine: DatabaseInstanceEngine.sqlServerEx({ version: SqlServerEngineVersion.VER_16 }),
                 vpc: props.vpc,
                 instanceType: InstanceType.of(
@@ -47,7 +44,7 @@ export class DataStoreStack extends Stack {
                     InstanceSize.MICRO),
                 credentials: {
                     username: props.databaseUserId,
-                    password: SecretValue.unsafePlainText(props.databasePassword),
+                    password: SecretValue.ssmSecure('/sfo/prod/db/password'),
                 },
                 vpcSubnets: props.vpc.selectSubnets({ subnetType: SubnetType.PRIVATE_ISOLATED }),
                 securityGroups: [

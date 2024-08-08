@@ -26,10 +26,7 @@ All posts can be monitored, hidden, and removed by Moderators and Administrators
 	```bash
 	cd /directory/containing/SimpleForum.Web.csproj/
 	dotnet user-secrets set "SeedUser:Password" "YourTestPassword"
-
-	dotnet user-secrets set "ConnectionStrings:DefaultConnection" "YOUR;DB;CONNECTION;STRING;"
-	# Optionally set custom database location
-	dotnet user-secrets set "ConnectionStrings:DefaultLocation" "\\PATH\\TO\\DB\\FILE\\DATABASE_NAME.mdf"
+	dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=(localdb)\mssqllocaldb;Database=SimpleForum;Trusted_Connection=True;MultipleActiveResultSets=true;"
 	```
 - Create an IAM user and configure their profile locally:
 	```bash
@@ -49,8 +46,10 @@ All posts can be monitored, hidden, and removed by Moderators and Administrators
 - Create a `.env` files with fields as shown in the below example:
 	```env
 	SeedUser__Password=SecurePassword123@@
-	ConnectionStrings__DefaultConnection=Server=simpleforumdb;Database=SimpleForum;User ID=SA;Password=YOUR_DB_PASSWORD;MultipleActiveResultSets=false;TrustServerCertificate=True
-	SqlServer__Password=YOUR_DB_PASSWORD
+	ConnectionStrings__Endpoint=simpleforumdb
+	ConnectionStrings__DatabaseName=SimpleForum
+	ConnectionStrings__UserId=SA
+	ConnectionStrings__Password=YourDbPassword
 	```
 - Start the application stack
 	```bash

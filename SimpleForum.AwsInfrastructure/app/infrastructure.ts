@@ -18,10 +18,8 @@ const dataStoreStack = new DataStoreStack(app, 'SfoDataStoreStack', {
 	env: awsEnv,
 	vpc: vpcStack.vpc,
 	databaseTierSecurityGroup: vpcStack.databaseTierSecurityGroup,
-	databaseName: appConfiguration.Database__Name,
 	dataBucketName: appConfiguration.Aws__DataBucket,
-	databaseUserId: appConfiguration.Database__UserId,
-	databasePassword: appConfiguration.SqlServer__Password
+	databaseUserId: appConfiguration.ConnectionStrings__UserId,
 });
 
 const containerServiceStack = new ContainerStack(app, 'SfoContainerStack', {
@@ -30,11 +28,8 @@ const containerServiceStack = new ContainerStack(app, 'SfoContainerStack', {
 	vpc: vpcStack.vpc,
 	loadBalancerTierSecurityGroup: vpcStack.loadBalancerTierSecurityGroup,
 	webTierSecurityGroup: vpcStack.webTierSecurityGroup,
-	databaseUserId: appConfiguration.Database__UserId,
-	databasePassword: appConfiguration.SqlServer__Password,
-	databaseName: appConfiguration.Database__Name,
 	databaseEndpoint: dataStoreStack.databaseInstance.dbInstanceEndpointAddress,
-	databasePort: dataStoreStack.databaseInstance.dbInstanceEndpointPort,
+	databaseName: dataStoreStack.databaseInstance.instanceIdentifier,
 	ecrRepository: dataStoreStack.repository,
 	appConfiguration: appConfiguration
 });

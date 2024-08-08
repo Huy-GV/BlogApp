@@ -2,21 +2,18 @@ import { config } from "dotenv";
 import { join } from "path";
 
 export interface AppConfiguration {
-    SeedUser__Password: string;
-    Database__UserId: string;
-    Database__Name: string;
-    SqlServer__Password: string;
+    ConnectionStrings__UserId: string;
     ASPNETCORE_URLS: string;
-    Aws__DataBucket: string;
     Aws__CertificateArn: string;
     Aws__HostedZoneName: string;
-    GitHub__SecretName: string;
-    GitHub__RepositoryName: string;
-    GitHub__OwnerName: string;
+    Aws__DataBucket: string;
     Aws__Region: string;
     Aws__AccountId: string;
     Aws__RepositoryName: string;
     Aws__ContainerName: string;
+    GitHub__SecretName: string;
+    GitHub__RepositoryName: string;
+    GitHub__OwnerName: string;
 }
 
 export function parseEnvFile(): AppConfiguration | null {
@@ -41,21 +38,20 @@ export function parseEnvFile(): AppConfiguration | null {
     }
 
     const envVariableProps: AppConfiguration = {
-        SeedUser__Password: parsedConfig.SeedUser__Password,
-        Database__UserId: parsedConfig.Database__UserId,
-        Database__Name: parsedConfig.Database__Name,
-        SqlServer__Password: parsedConfig.SqlServer__Password,
-        Aws__DataBucket: parsedConfig.Aws__DataBucket,
+        ConnectionStrings__UserId: parsedConfig.ConnectionStrings__UserId,
         ASPNETCORE_URLS: parsedConfig.ASPNETCORE_URLS,
-        Aws__CertificateArn: parsedConfig.Aws__CertificateArn,
-        Aws__HostedZoneName: parsedConfig.Aws__HostedZoneName,
+        Aws__DataBucket: parsedConfig.Aws__DataBucket,
+
         GitHub__SecretName: parsedConfig.GitHub__SecretName,
         GitHub__RepositoryName: parsedConfig.GitHub__RepositoryName,
         GitHub__OwnerName: parsedConfig.GitHub__OwnerName,
-        Aws__Region: parsedConfig.AWS_REGION,
-        Aws__AccountId: parsedConfig.AWS_ACCOUNT_ID,
-        Aws__RepositoryName: parsedConfig.REPOSITORY_NAME,
-        Aws__ContainerName: parsedConfig.CONTAINER_NAME,
+
+        Aws__CertificateArn: parsedConfig.Aws__CertificateArn,
+        Aws__HostedZoneName: parsedConfig.Aws__HostedZoneName,
+        Aws__Region: parsedConfig.Aws__Region,
+        Aws__AccountId: parsedConfig.Aws__AccountId,
+        Aws__RepositoryName: parsedConfig.Aws__RepositoryName,
+        Aws__ContainerName: parsedConfig.Aws__ContainerName,
     }
 
     return envVariableProps;

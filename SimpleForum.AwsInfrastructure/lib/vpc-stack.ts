@@ -1,5 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
-import { ISecurityGroup, IVpc, Peer, Port, SecurityGroup, SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
+import { IpAddresses, ISecurityGroup, IVpc, Peer, Port, SecurityGroup, SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
 
 export class VpcStack extends cdk.Stack {
@@ -12,7 +12,7 @@ export class VpcStack extends cdk.Stack {
 		super(scope, id, props);
 
 		this.vpc = new Vpc(this, 'SfoCdkVpc', {
-			cidr: '10.0.0.0/20',
+			ipAddresses: IpAddresses.cidr('10.0.0.0/20'),
 			maxAzs: 2,
 			subnetConfiguration: [
 				{
